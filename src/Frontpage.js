@@ -39,9 +39,32 @@ class Frontpage extends Component {
       .catch(err => console.log("Check if the server is running"));
   };
 
+  showLogo = () => {
+    console.log("\n\
+    UUUUUUUU     UUUUUUUU   SSSSSSSSSSSSSSS NNNNNNNN        NNNNNNNN\n\
+    U::::::U     U::::::U SS:::::::::::::::SN:::::::N       N::::::N\n\
+    U::::::U     U::::::US:::::SSSSSS::::::SN::::::::N      N::::::N\n\
+    UU:::::U     U:::::UUS:::::S     SSSSSSSN:::::::::N     N::::::N\n\
+     U:::::U     U:::::U S:::::S            N::::::::::N    N::::::N\n\
+     U:::::D     D:::::U S:::::S            N:::::::::::N   N::::::N\n\
+     U:::::D     D:::::U  S::::SSSS         N:::::::N::::N  N::::::N\n\
+     U:::::D     D:::::U   SS::::::SSSSS    N::::::N N::::N N::::::N\n\
+     U:::::D     D:::::U     SSS::::::::SS  N::::::N  N::::N:::::::N\n\
+     U:::::D     D:::::U        SSSSSS::::S N::::::N   N:::::::::::N\n\
+     U:::::D     D:::::U             S:::::SN::::::N    N::::::::::N\n\
+     U::::::U   U::::::U             S:::::SN::::::N     N:::::::::N\n\
+     U:::::::UUU:::::::U SSSSSSS     S:::::SN::::::N      N::::::::N\n\
+      UU:::::::::::::UU  S::::::SSSSSS:::::SN::::::N       N:::::::N\n\
+        UU:::::::::UU    S:::::::::::::::SS N::::::N        N::::::N\n\
+          UUUUUUUUU       SSSSSSSSSSSSSSS   NNNNNNNN         NNNNNNN\n\
+    \n\
+    Kunne du tenkt deg å jobbe som webutvikler? Ta kontakt!");
+  }
+
+
   render() {
     return (
-      <div className="Frontpage">
+      <div className="Frontpage" onLoad={this.showLogo}>
         <header className="Frontpage-header">
           <img src={usnlogo} className="Frontpage-logo" alt="logo" />
           <form className="post" onSubmit={this.handleSubmit}>
