@@ -68,3 +68,16 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `yarn build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+
+### Fjernet fra manifests.json
+{
+    "src": "logo192.png",
+    "type": "image/png",
+    "sizes": "192x192"
+},
+{
+    "src": "logo512.png",
+    "type": "image/png",
+    "sizes": "512x512"
+}
