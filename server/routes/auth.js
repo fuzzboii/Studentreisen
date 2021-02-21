@@ -19,6 +19,10 @@ Order
 }
 */
 
+router.get('/register', async (req, res) => {
+    res.status(404);
+});
+
 router.post('/register', async (req, res) => {
     if(req.body.personnr !== undefined & req.body.status !== undefined & req.body.fnavn !== undefined & req.body.enavn !== undefined & req.body.telefon !== undefined & req.body.email !== undefined & req.body.pwd !== undefined) {
         const validation = registerValidation(req.body);
@@ -75,6 +79,19 @@ router.post('/register', async (req, res) => {
     }
 });
 
+
+/*
+Order
+{
+    "email": "",
+    "pwd": ""
+}
+*/
+
+router.get('/login', async (req, res) => {
+    res.status(404);
+});
+
 router.post('/login', async (req, res) => {
     if(req.body.email !== undefined & req.body.pwd !== undefined) {
         const validation = loginValidation(req.body);
@@ -115,6 +132,8 @@ router.post('/login', async (req, res) => {
                 }
             });
         }
+    } else {
+        res.status(400).json({"status" : "error", "message" : "Ikke tilstrekkelig data"});
     }
 });
 
