@@ -40,6 +40,7 @@ class Frontpage extends Component {
   };
 
   showLogo = () => {
+    // eslint-disable-next-line
     console.log("\n\
     UUUUUUUU     UUUUUUUU   SSSSSSSSSSSSSSS NNNNNNNN        NNNNNNNN\n\
     U::::::U     U::::::U SS:::::::::::::::SN:::::::N       N::::::N\n\
