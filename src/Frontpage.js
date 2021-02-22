@@ -36,7 +36,7 @@ class Frontpage extends Component {
           console.log(res.data.message);
         }
       })
-      .catch(err => console.log("Check if the server is running"));
+      .catch(err => console.log("Check if the server is running or if CORS policy is blocking you"));
   };
 
   showLogo = () => {
