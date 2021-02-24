@@ -1,9 +1,25 @@
 import './App.css';
-import Testlogin from './components/Testlogin';
+import Login from './components/Login';
+import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 
 function App() {
   return (
-    <Testlogin />
+    <Router>
+      <div className="App">
+        <Switch>
+          <Route path = "/" exact component = {Home} />
+          <Route path = "/login" component = {Login} />
+        </Switch>
+      </div>
+    </Router>
+  );
+}
+
+const Home = () => {
+  return(
+    <div>
+      <h1>Forside</h1>
+    </div>
   );
 }
 
