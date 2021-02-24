@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import usnlogo from './usn.png';
-import './Frontpage.css';
+import usnlogo from '../usn.png';
+import '../App.css';
 import axios from 'axios';
 
-class Frontpage extends Component {
+class Testlogin extends Component {
   state = {
     email: "",
     pwd: ""
@@ -65,9 +65,9 @@ class Frontpage extends Component {
 
   render() {
     return (
-      <div className="Frontpage" onLoad={this.showLogo}>
-        <header className="Frontpage-header">
-          <img src={usnlogo} className="Frontpage-logo" alt="logo" />
+      <div className="App" onLoad={this.showLogo}>
+        <header className="App-header">
+          <img src={usnlogo} className="App-logo" alt="logo" />
           <form className="post" onSubmit={this.handleSubmit}>
             <input
               placeholder="Email" value={this.state.email}
@@ -85,4 +85,4 @@ class Frontpage extends Component {
   }
 }
 
-export default Frontpage;
+export default Testlogin;
