@@ -36,3 +36,21 @@
     transform: rotate(360deg);
   }
 }
+  
+
+
+
+/* Media queries
+----------------------------- */
+
+/* Medium skjerm, 1080p */
+@media screen and (min-width: 1920px) {
+  
+}
+
+/* Stor skjerm, 1440p */
+@media screen and (min-width: 2560px) {
+
+}
+
+
