@@ -2,6 +2,7 @@ import './App.css';
 import Login from './components/Login';
 import Register from './components/Register';
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
+import Home from './components/pages/Home';
 
 function App() {
   return (
@@ -17,12 +18,6 @@ function App() {
   );
 }
 
-const Home = () => {
-  return(
-    <div>
-      <h1>ForsideTEST</h1>
-    </div>
-  );
-}
+
 
 export default App;
