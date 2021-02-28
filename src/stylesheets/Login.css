@@ -1,0 +1,46 @@
+#main_login {
+    margin-top: 2em;
+    padding-top: 0.5em; padding-bottom: 0.5em;
+}
+
+#section_logo_login {
+    display: block;
+    background-color: #6A8CCE;
+    height: 5em;
+    width: 10em;
+    margin-left: auto; margin-right: auto;
+    border-radius: 0.5em;
+    border: 2px solid #C9CACA;
+}
+
+#section_logo_login img {
+    max-height: 100%;
+}
+
+#form_login {
+    display: block;
+    width: 90%;
+    margin-top: 1em;
+    margin-left: auto; margin-right: auto;
+}
+
+#form_login input {
+    height: 2em;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#form_email_login, #form_password_login {
+    width: 100%;
+    margin-top: 1em;
+}
+
+#form_btn_login {
+    margin-right: 10%;
+}
+
+#form_btn_login, #form_btn_login + button {
+    height: 2.5em;
+    width: 45%;
+    margin-top: 2em;
+}
