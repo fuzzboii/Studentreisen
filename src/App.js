@@ -18,7 +18,7 @@ function App() {
 const Home = () => {
   return(
     <div>
-      <h1>Forside</h1>
+      <h1>ForsideTEST</h1>
     </div>
   );
 }
