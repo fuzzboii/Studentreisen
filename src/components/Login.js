@@ -66,7 +66,7 @@ class Login extends Component {
           <section id="section_logo_login">
             <img src={usnlogo} alt="USN logo" />
           </section>
-          <Alert id="alert_login" className="fade-in" style={{display: this.alert.display}} variant="outlined" severity="error">
+          <Alert id="alert_login" className="fade_in" style={{display: this.alert.display}} variant="outlined" severity="error">
             {this.alert.text}
           </Alert>
           <form id="form_login" onSubmit={this.handleLogin}>
