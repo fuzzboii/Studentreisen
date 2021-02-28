@@ -76,7 +76,7 @@ class Login extends Component {
             </FormControl>
             <FormControl id="form_password_login">
               <InputLabel>Passord</InputLabel>
-              <Input className="form_input_login" value={this.state.password} onChange={this.onPasswordChange} placeholder="Passord" required={true} variant="outlined" type="password" />
+              <Input className="form_input_login" value={this.state.password} onChange={this.onPasswordChange} required={true} variant="outlined" type="password" />
             </FormControl>
             <Button id="form_btn_login" onClick={this.handleLogin} variant="contained">Logg inn</Button>
             <Button onClick={this.gotoRegister} variant="contained">Ny bruker</Button>
