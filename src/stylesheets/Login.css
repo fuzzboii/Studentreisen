@@ -17,6 +17,12 @@
     max-height: 100%;
 }
 
+#alert_login {
+    width: 80%;
+    margin-top: 2em;
+    margin-left: auto; margin-right: auto;
+}
+
 #form_login {
     display: block;
     width: 90%;
@@ -43,4 +49,13 @@
     height: 2.5em;
     width: 45%;
     margin-top: 2em;
+}
+
+.fade-in {
+    animation: fadeIn ease 0.5s;
+}
+
+@keyframes fadeIn {
+    0% {opacity:0;}
+    100% {opacity:1;}
 }

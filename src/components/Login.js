@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Button, FormControl, InputLabel, Input } from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
 import axios from 'axios';
 import '../stylesheets/Login.css';
 import usnlogo from '../assets/usn.png';
@@ -11,15 +12,24 @@ class Login extends Component {
     pwd: ""
   };
 
+  alert = {
+    display: "none",
+    text: ""
+  };
+
   onEmailChange = e => {
     this.setState({
       email: e.target.value
     });
+    this.alert.display = "none";
+    this.alert.text = "";
   };
   onPasswordChange = e => {
     this.setState({
       pwd: e.target.value
     });
+    this.alert.display = "none";
+    this.alert.text = "";
   };
   
   handleLogin = e => {
@@ -36,7 +46,9 @@ class Login extends Component {
             // Mottok autentiserings-token fra server, lagrer i Cookie
         } else {
             // Feil oppstod ved innlogging, viser meldingen
-            console.log(res.data.message);
+            this.alert.display = "";
+            this.alert.text = res.data.message;
+            this.forceUpdate();
         }
       })
       .catch(err => {
@@ -54,6 +66,9 @@ class Login extends Component {
           <section id="section_logo_login">
             <img src={usnlogo} alt="USN logo" />
           </section>
+          <Alert id="alert_login" className="fade-in" style={{display: this.alert.display}} variant="outlined" severity="error">
+            {this.alert.text}
+          </Alert>
           <form id="form_login" onSubmit={this.handleLogin}>
             <FormControl id="form_email_login">
               <InputLabel>E-post</InputLabel>
