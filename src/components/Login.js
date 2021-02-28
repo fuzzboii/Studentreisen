@@ -60,6 +60,12 @@ class Login extends Component {
     this.props.history.push('/register/');
   }
 
+  handleKeyUp = e => {
+    if(e.key == "Enter") {
+      this.handleLogin(e);
+    }
+  }
+
   render() {
     return (
       <main id="main_login">
@@ -72,11 +78,11 @@ class Login extends Component {
           <form id="form_login" onSubmit={this.handleLogin}>
             <FormControl id="form_email_login">
               <InputLabel>E-post</InputLabel>
-              <Input className="form_input_login" value={this.state.email} onChange={this.onEmailChange} required={true} autoFocus={true} autoComplete="email" variant="outlined" />
+              <Input className="form_input_login" value={this.state.email} onKeyUp={this.handleKeyUp} onChange={this.onEmailChange} required={true} autoFocus={true} autoComplete="email" variant="outlined" />
             </FormControl>
             <FormControl id="form_password_login">
               <InputLabel>Passord</InputLabel>
-              <Input className="form_input_login" value={this.state.password} onChange={this.onPasswordChange} required={true} variant="outlined" type="password" />
+              <Input className="form_input_login" value={this.state.password} onKeyUp={this.handleKeyUp} onChange={this.onPasswordChange} required={true} variant="outlined" type="password" />
             </FormControl>
             <Button id="form_btn_login" onClick={this.handleLogin} variant="contained">Logg inn</Button>
             <Button onClick={this.gotoRegister} variant="contained">Ny bruker</Button>
