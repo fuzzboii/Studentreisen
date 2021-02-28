@@ -35,10 +35,6 @@ class Login extends Component {
   handleLogin = e => {
     e.preventDefault();
 
-    // Check if the user has entered any values into the form fields
-    const userInput = document.getElementsByClassName("form_input_login");
-    
-
     // Temporarily disable the button
     const button = document.getElementById("form_btn_login");
 
@@ -46,7 +42,6 @@ class Login extends Component {
     button.innerHTML = "Vennligst vent";
     button.style.backgroundColor = "rgba(0,0,0,0.25)";
     button.style.opacity = "50%";
-
 
     const data = {
       email: this.state.email,
