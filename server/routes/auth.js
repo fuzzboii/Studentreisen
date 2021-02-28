@@ -98,6 +98,22 @@ router.post('/login', async (req, res) => {
         
         if(validation.error) {
             // If the validation failed we send back an error message containing information provided by joi
+            if(validation.error.details[0].path[0] == "email") {
+                if(validation.error.details[0].type == "string.empty") {
+                    // The email field is empty
+                    return res.json({ "status" : "error", "message" : "E-post er ikke fylt inn" });
+                } else if(validation.error.details[0].type == "string.email") {
+                    // Invalid email entered
+                    return res.json({ "status" : "error", "message" : "E-post adressen er ugyldig" });
+                }
+            } else if(validation.error.details[0].path[0] == "pwd") {
+                if(validation.error.details[0].type == "string.empty") {
+                    // The email field is empty
+                    return res.json({ "status" : "error", "message" : "Passordet er ikke fylt inn" });
+                }
+            }
+
+            // An uncaught validation error, send the full message
             return res.json({ "status" : "error", "message" : validation.error.details[0].message });
         } else {
             // Check if the PIN or email already exists
