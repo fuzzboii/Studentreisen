@@ -1,6 +1,6 @@
 import React from 'react';
 import '../App.css';
-import { Button } from './Button';
+import { Button } from '@material-ui/core';
 import './HeroSection.css';
 
 function HeroSection() {
@@ -10,14 +10,12 @@ function HeroSection() {
             <p>Noe undertekst her</p>
             <div className="hero-btns">
                 <Button className='btns' 
-                buttonStyle='btn--outline'
-                buttonSize='btn--large'
+
                 >
                  Knapp 1 test  
                 </Button>
                 <Button className='btns' 
-                buttonStyle='btn--primary'
-                buttonSize='btn--large'
+
                 >
                  Knapp 2 test <i className='knapp2' />  
                 </Button>                
