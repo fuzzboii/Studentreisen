@@ -9,16 +9,9 @@ function HeroSection() {
             <h1>STUDENTREISEN</h1>
             <p>Noe undertekst her</p>
             <div className="hero-btns">
-                <Button className='btns' 
-
-                >
-                 Knapp 1 test  
-                </Button>
-                <Button className='btns' 
-
-                >
-                 Knapp 2 test <i className='knapp2' />  
-                </Button>                
+                <Button className='btns' variant="outlined" color="primary">
+                 Sett i gang reisen  
+                </Button>              
             </div>
             
         </div>
