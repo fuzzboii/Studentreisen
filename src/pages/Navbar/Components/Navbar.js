@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../CSS/Navbar.css';
+import MenuIcon from '@material-ui/core/Icon';
 import { Button } from '../../../global/Components/Button';
+import favicon from '../../../assets/usn.png';
 
 function Navbar() {
     const [click, setClick] = useState(false);
@@ -18,18 +20,21 @@ function Navbar() {
         }
     };
 
+    useEffect( () => {
+      showButton();
+    }, []); 
+
     window.addEventListener('resize', showButton);
     
     return (
         <>
           <nav className='navbar'>
             <div className='navbar-container'>
-              <Link to='/' className='navbar-logo' onClick={closeMobileMenu}>
-                STDNTRSN
-                <i class='fab fa-typo3' />
+              <Link to="/" className="navbar-logo" onClick={closeMobileMenu}>
+                <img className="navbar-logo-png" src={favicon} alt="USN" />
               </Link>
               <div className='menu-icon' onClick={handleClick}>
-                <i className={click ? 'fas fa-times' : 'fas fa-bars'} />
+                <i className={click? 'fas fa-times' : 'fas fa-bars'} />
               </div>
               <ul className={click ? 'nav-menu active' : 'nav-menu'}>
                 <li className='nav-item'>
@@ -76,7 +81,6 @@ function Navbar() {
                   </Link>
                 </li>
               </ul>
-              {button && <Button buttonStyle='btn--outline'>BURGER</Button>}
             </div>
           </nav>
         </>
