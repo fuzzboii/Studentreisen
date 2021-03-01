@@ -40,7 +40,6 @@ class Login extends Component {
 
     button.disabled = true;
     button.innerHTML = "Vennligst vent";
-    button.style.backgroundColor = "rgba(0,0,0,0.25)";
     button.style.opacity = "50%";
 
     const data = {
@@ -61,7 +60,6 @@ class Login extends Component {
             
             button.disabled = false;
             button.innerHTML = "Logg inn";
-            button.style.backgroundColor = "#9DACD5";
             button.style.opacity = "100%";
         }
       })
@@ -70,7 +68,6 @@ class Login extends Component {
         
         button.disabled = false;
         button.innerHTML = "Logg inn";
-        button.style.backgroundColor = "#9DACD5";
         button.style.opacity = "100%";
       });
   };
@@ -104,7 +101,7 @@ class Login extends Component {
             </FormControl>
             <Button onClick={this.gotoGlemt} id="form_glemt_login" variant="outlined">Glemt Passord</Button>
             <Button onClick={this.gotoRegister} variant="outlined">Ny bruker</Button>
-            <Button type="submit" id="form_btn_login" variant="contained">Logg inn</Button>
+            <Button type="submit" id="form_btn_login" color="primary" variant="contained">Logg inn</Button>
           </form>
       </main>
     );
