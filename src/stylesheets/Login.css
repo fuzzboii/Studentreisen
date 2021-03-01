@@ -30,6 +30,7 @@
     width: 90%;
     margin-top: 1em;
     margin-left: auto; margin-right: auto;
+    align-items: center;
 }
 
 #form_login input {
@@ -43,14 +44,22 @@
     margin-top: 1em;
 }
 
-#form_btn_login {
+#form_btn_glemt {
     margin-right: 10%;
+    line-height: 1.2em;
 }
 
-#form_btn_login, #form_btn_login + button {
+#form_btn_glemt, #form_btn_glemt + button {
     height: 2.5em;
     width: 45%;
     margin-top: 2em;
+}
+
+#form_btn_login {
+    height: 2.5em;
+    background-color: #9DACD5;
+    width: 100%;
+    margin-top: 4em;
 }
 
 /* Media queries
@@ -61,7 +70,7 @@
     
     #main_login {
         width: 40em;
-        padding-bottom: 6em; padding-top: 4em;
+        padding-bottom: 4em; padding-top: 4em;
         padding-left: 1em; padding-right: 1em;
         border: 2px solid #DDDDDD;
         border-radius: 0.5em;

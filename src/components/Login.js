@@ -61,7 +61,7 @@ class Login extends Component {
             
             button.disabled = false;
             button.innerHTML = "Logg inn";
-            button.style.backgroundColor = "";
+            button.style.backgroundColor = "#9DACD5";
             button.style.opacity = "100%";
         }
       })
@@ -70,13 +70,18 @@ class Login extends Component {
         
         button.disabled = false;
         button.innerHTML = "Logg inn";
-        button.style.backgroundColor = "";
+        button.style.backgroundColor = "#9DACD5";
         button.style.opacity = "100%";
       });
   };
 
   gotoRegister = () => {
     this.props.history.push('/register/');
+  }
+
+  // TODO
+  gotoGlemt = () => {
+    this.props.history.push('/login');
   }
 
   render() {
@@ -97,8 +102,9 @@ class Login extends Component {
               <InputLabel>Passord</InputLabel>
               <Input className="form_input_login" required={true} value={this.state.password} onKeyUp={this.onSubmit} onChange={this.onPasswordChange} variant="outlined" type="password" />
             </FormControl>
-            <Button type="submit" id="form_btn_login" variant="contained">Logg inn</Button>
+            <Button onClick={this.gotoGlemt} id="form_btn_glemt" variant="contained">Glemt Passord</Button>
             <Button onClick={this.gotoRegister} variant="contained">Ny bruker</Button>
+            <Button type="submit" id="form_btn_login" variant="contained">Logg inn</Button>
           </form>
       </main>
     );
