@@ -101,7 +101,7 @@ class Login extends Component {
             </FormControl>
             <Button onClick={this.gotoGlemt} id="form_glemt_login" variant="outlined">Glemt Passord</Button>
             <Button onClick={this.gotoRegister} variant="outlined">Ny bruker</Button>
-            <Button type="submit" id="form_btn_login" color="primary" variant="contained">Logg inn</Button>
+            <Button type="submit" id="form_btn_login" variant="contained">Logg inn</Button>
           </form>
       </main>
     );
