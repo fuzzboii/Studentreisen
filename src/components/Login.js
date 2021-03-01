@@ -102,8 +102,8 @@ class Login extends Component {
               <InputLabel>Passord</InputLabel>
               <Input className="form_input_login" required={true} value={this.state.password} onKeyUp={this.onSubmit} onChange={this.onPasswordChange} variant="outlined" type="password" />
             </FormControl>
-            <Button onClick={this.gotoGlemt} id="form_glemt_login" variant="contained">Glemt Passord</Button>
-            <Button onClick={this.gotoRegister} variant="contained">Ny bruker</Button>
+            <Button onClick={this.gotoGlemt} id="form_glemt_login" variant="outlined">Glemt Passord</Button>
+            <Button onClick={this.gotoRegister} variant="outlined">Ny bruker</Button>
             <Button type="submit" id="form_btn_login" variant="contained">Logg inn</Button>
           </form>
       </main>
