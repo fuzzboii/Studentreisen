@@ -44,12 +44,12 @@
     margin-top: 1em;
 }
 
-#form_btn_glemt {
+#form_glemt_login {
     margin-right: 10%;
     line-height: 1.2em;
 }
 
-#form_btn_glemt, #form_btn_glemt + button {
+#form_glemt_login, #form_glemt_login + button {
     height: 2.5em;
     width: 45%;
     margin-top: 2em;
