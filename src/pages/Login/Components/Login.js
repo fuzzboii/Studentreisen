@@ -2,9 +2,8 @@ import React, { Component } from "react";
 import { Button, FormControl, InputLabel, Input } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import axios from 'axios';
-import '../stylesheets/Login.css';
-import usnlogo from '../assets/usn.png';
-
+import '../CSS/Login.css';
+import usnlogo from '../../../assets/usn.png';
 
 class Login extends Component {
   state = {

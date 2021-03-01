@@ -1,7 +1,7 @@
 import React from 'react';
-import '../App.css';
+import '../../../App.css';
 import { Button } from '@material-ui/core';
-import './HeroSection.css';
+import '../CSS/HeroSection.css';
 
 function HeroSection() {
     return (
