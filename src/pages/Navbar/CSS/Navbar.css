@@ -15,7 +15,7 @@
     justify-content: center;
     align-items: center;
     height: 80px;
-    max-width: 1500px;
+    width: 95vw;
   }
   
   .navbar-logo {
@@ -24,23 +24,23 @@
     margin-left: 20px;
     cursor: pointer;
     text-decoration: none;
-    font-size: 2rem;
     display: flex;
     align-items: center;
+    padding: 0.5rem 1rem;
   }
 
   .navbar-logo-png {
-    height: 4rem;
-    margin-left: 20px;  
+    height: 4.5rem;
+    margin-left: 20px;
   }
   
   .nav-menu {
     display: grid;
-    grid-template-columns: repeat(4, auto);
-    grid-gap: 10px;
+    grid-template-columns: repeat(5, auto);
+    grid-gap: 5vw;
     list-style: none;
     text-align: center;
-    width: 60vw;
+    width: 100%;
     justify-content: center;
     margin-right: 2rem;
   }
@@ -84,6 +84,14 @@
 
   .fa-user {
     color: #fff;
+    display:flex;
+    align-items: center;
+    height: 100%;
+    font-size: 1.5rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .logout-btn {
     padding: 0.5rem, 1rem;
     font-size: 1.5rem;
   }
@@ -130,7 +138,7 @@
   
     .navbar-logo {
       position: absolute;
-      top: 0;
+      top: 0.8rem;
       left: 0;
     }
   
@@ -150,23 +158,24 @@
     }
   
     .nav-links-mobile {
-      display: table;
       text-align: center;
-      /* margin: 2rem auto; */
-      border-radius: 4px;
-      width: 80%;
-      text-decoration: none;
-      font-size: 1.5rem;
-      background-color: transparent;
-      color: #fff;
-      /* padding: 14px 20px; */
-      border: 1px solid #fff;
-      transition: all 0.5s ease-out;
+      padding: 2rem;
+      width: 100%;
+      display: table;
+      height: fit-content;
     }
   
     .nav-links-mobile:hover {
-      background: lightgray;
+      background-color: lightgray;
       color: #242424;
-      transition: 250ms;
+      border-radius: 0;
+    }
+    
+    .fa-user {
+      display: block;
+      position: absolute;
+      font-size: 2rem;
+      top: 2rem;
+      right: 6rem;
     }
   }
