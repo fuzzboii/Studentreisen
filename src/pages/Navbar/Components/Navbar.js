@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../CSS/Navbar.css';
-import MenuIcon from '@material-ui/core/Icon';
-import { Button } from '../../../global/Components/Button';
 import favicon from '../../../assets/usn.png';
+import { Button } from '../../../global/Components/Button';
 
 function Navbar() {
     const [click, setClick] = useState(false);
@@ -36,6 +35,7 @@ function Navbar() {
               <div className='menu-icon' onClick={handleClick}>
                 <i className={click? 'fas fa-times' : 'fas fa-bars'} />
               </div>
+              
               <ul className={click ? 'nav-menu active' : 'nav-menu'}>
                 <li className='nav-item'>
                   <Link to='/' className='nav-links' onClick={closeMobileMenu}>
@@ -73,15 +73,23 @@ function Navbar() {
 
                 <li>
                   <Link
-                    to='/'
-                    className='nav-links'
+                    to='/sign-up'
+                    className='nav-links-mobile'
                     onClick={closeMobileMenu}
                   >
-                    Innstillinger
+                    Logg ut
                   </Link>
                 </li>
               </ul>
-            </div>
+              <Link
+                to="/"
+                onClick={closeMobileMenu}
+              >
+                <i className="far fa-user" />
+              </Link>
+              {button && <Button buttonStyle='btn--outline'>LOGG UT</Button>}
+
+            </div> 
           </nav>
         </>
       );

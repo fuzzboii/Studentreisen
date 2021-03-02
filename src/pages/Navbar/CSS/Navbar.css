@@ -33,20 +33,15 @@
     height: 4rem;
     margin-left: 20px;  
   }
-
-  .fa-typo3 {
-    margin-left: 0.5rem;
-    font-size: 1.8rem;
-  }
   
   .nav-menu {
     display: grid;
-    grid-template-columns: repeat(5, auto);
+    grid-template-columns: repeat(4, auto);
     grid-gap: 10px;
     list-style: none;
     text-align: center;
     width: 60vw;
-    justify-content: end;
+    justify-content: center;
     margin-right: 2rem;
   }
   
@@ -61,6 +56,7 @@
     text-decoration: none;
     padding: 0.5rem 1rem;
     height: 100%;
+    font-size: 1.5rem;
   }
   
   .nav-links:hover {
@@ -73,11 +69,23 @@
   }
   
   .nav-links-mobile {
+    color: #fff;
     display: none;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    height: 100%;
+    font-size: 1.5rem;
   }
   
   .menu-icon {
     display: none;
+  }
+
+  .fa-user {
+    color: #fff;
+    padding: 0.5rem, 1rem;
+    font-size: 1.5rem;
   }
   
   @media screen and (max-width: 960px) {
@@ -88,11 +96,10 @@
     .nav-menu {
       display: flex;
       flex-direction: column;
-      width: 100%;
-      height: 90vh;
+      width: 88vw;
+      height: 45vh;
       position: absolute;
-      /* Skyver elementene av små skjermer. Hacky? Kode fra tutorial */
-      top: -100vh;
+      top: -100vh;  /* Skyver elementene av små skjermer. Hacky? Kode fra tutorial */
       left: 0;
       opacity: 1;
       transition:  all 0.5s ease-out;
@@ -105,7 +112,6 @@
       opacity: 1;
       transition: all 0.5s ease-out;
       z-index: 1;
-      /* Begrens høyden til innhold */
     }
   
     .nav-links {
@@ -113,6 +119,7 @@
       padding: 2rem;
       width: 100%;
       display: table;
+      height: fit-content;
     }
   
     .nav-links:hover {
@@ -125,7 +132,6 @@
       position: absolute;
       top: 0;
       left: 0;
-      /* transform: translate(25%, 50%); */
     }
   
     .menu-icon {
@@ -134,7 +140,7 @@
       top: 0;
       right: 0;
       transform: translate( -100%, 60%);
-      font-size: 1.8rem;
+      font-size: 2rem;
       cursor: pointer;
     }
   
@@ -144,16 +150,16 @@
     }
   
     .nav-links-mobile {
-      display: inside;
+      display: table;
       text-align: center;
-      margin: 2rem auto;
+      /* margin: 2rem auto; */
       border-radius: 4px;
       width: 80%;
       text-decoration: none;
       font-size: 1.5rem;
       background-color: transparent;
       color: #fff;
-      padding: 14px 20px;
+      /* padding: 14px 20px; */
       border: 1px solid #fff;
       transition: all 0.5s ease-out;
     }
