@@ -1,35 +1,82 @@
-.hero-container {
-    height: 50vh;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
+.home_hero-section {
+    color: #ffff;
+    padding-top: 4em;
+    padding-bottom: 4em;
+}
+
+.home_hero-row {
     align-items: center;
-    box-shadow: inset 0 0 0 1000px rgba(0,0,0,0.2);
-    object-fit: contain;
-    background: url('/src/assets/HeroBackgroundTest.jpg');
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
+}
+
+.row {
+    display: flex;
+    margin-left: -15px;
+    flex-wrap: wrap;
+    align-content: stretch;
+}
+
+.column {
+    padding-bottom: 2em;
+    flex: 1;
+    max-width: 100%;
+    flex-basis: 50%;
+    margin-left: 3em;
+    margin-right: 3em;
+}
+
+.button {
+    justify-content: center;
+}
+
+.home_hero-text-wrapper {
+    max-width: 540px;
+    padding-top: 0;
+    padding-bottom: 60px;
+}
+
+.heading {
+    margin-bottom: 24px;
+    font-size: 48px;
+    line-height: 1.1;
+    font-weight: 600;
+    color: #f7f8fa;
+}
+
+.dark {
+    color: #1c2237;
+}
+
+.darkBg {
+    background-color: #4646a5;
+}
+
+.home_hero-subtitle {
+    max-width: 440px;
+    margin-bottom: 1.5em;
+    font-size: 18px;
+    line-height: 24px;
+}
+
+.home_hero-img_wrapper {
+    max-width: 555px;
+}
+
+.home_hero-img {
+    max-width: 85%;
+    border-radius: 2%;
+    margin-top: 0;
+    margin-left: 2em;
+    margin-right: 2em;
     
 }
 
-.hero-container > h1 {
-    color: #ffff;
-    font-size: 2em;
-    margin-top: 3em;
-    margin-bottom: 0.3em;
+img {
+  border: 0;
+  max-width: 100%;
+  vertical-align: middle;
+  display: inline-block;  
 }
 
-.hero-container > p {
-    color: #ffff;
-    font-size: 1em;
-    margin-top: 0em;
-    margin-bottom: 2em;
-}
-
-.btns {
-    width: 100%;
-}
 
 /* Media queries
 ----------------------------- */
@@ -43,14 +90,20 @@
 
 }
 
-    /* Medium skjerm, 1080p */
+/* Medium skjerm, 1080p */
 @media screen and (min-width: 1920px) {
-
+    .container {
+        padding-right: 30px;
+        padding-left: 30px;
+    }
 }
 
 
 
 /* Stor skjerm, 1440p */
 @media screen and (min-width: 2560px) {
-
+    .container {
+        padding-right: 30px;
+        padding-left: 30px;
+    }
 }
