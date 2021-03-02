@@ -48,7 +48,6 @@ class Login extends Component {
     axios
       .post("http://localhost:5000/api/user/login", data)
       .then(res => {
-        console.log("hello");
         if(res.headers.authtoken) {
             // Mottok autentiserings-token fra server, lagrer i Cookie
         } else {
