@@ -104,10 +104,10 @@
     .nav-menu {
       display: flex;
       flex-direction: column;
-      width: 88vw;
-      height: 45vh;
+      width: 100vw;
+      height: 60vh;
       position: absolute;
-      top: -100vh;  /* Skyver elementene av små skjermer. Hacky? Kode fra tutorial */
+      top: -100vh;  /* Skyver elementene av små skjermer. Hacky? Kode fra tutorial. Nødvendig for å få rett transition, og derfor ikke display:none? */
       left: 0;
       opacity: 1;
       transition:  all 0.5s ease-out;
@@ -124,10 +124,10 @@
   
     .nav-links {
       text-align: center;
-      padding: 2rem;
+      padding: 0.5rem;
       width: 100%;
       display: table;
-      height: fit-content;
+      height: 5vh;
     }
   
     .nav-links:hover {
@@ -138,7 +138,6 @@
   
     .navbar-logo {
       position: absolute;
-      top: 0.8rem;
       left: 0;
     }
   
@@ -159,10 +158,10 @@
   
     .nav-links-mobile {
       text-align: center;
-      padding: 2rem;
+      padding: 0.5rem;
       width: 100%;
       display: table;
-      height: fit-content;
+      height: 6vh;
     }
   
     .nav-links-mobile:hover {
@@ -175,7 +174,7 @@
       display: block;
       position: absolute;
       font-size: 2rem;
-      top: 2rem;
+      top: 1.5rem;
       right: 6rem;
     }
   }
