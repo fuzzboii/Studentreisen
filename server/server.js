@@ -24,7 +24,7 @@ app.use((req, res, next) => {
 
 // Route Middlewares
 // Everything in authRoute will now have the following prefix
-app.use('/api/user', authRoute);
+app.use('/api/v1', authRoute);
 
 
 app.listen(process.env.PORT, () => {

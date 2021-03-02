@@ -45,8 +45,9 @@ class Login extends Component {
       email: this.state.email,
       pwd: this.state.pwd
     };
+
     axios
-      .post("http://localhost:5000/api/user/login", data)
+      .post(process.env.REACT_APP_APIURL + "/login", data)
       .then(res => {
         if(res.headers.authtoken) {
             // Mottok autentiserings-token fra server, lagrer i Cookie
@@ -62,7 +63,10 @@ class Login extends Component {
         }
       })
       .catch(err => {
-        console.log("En feil oppstod ved oppkobling til server");
+        // En feil oppstod ved oppkobling til server
+        this.alert.display = "";
+        this.alert.text = "En intern feil oppstod, vennligst forsøk igjen senere";
+        this.forceUpdate();
         
         button.disabled = false;
         button.innerHTML = "Logg inn";
