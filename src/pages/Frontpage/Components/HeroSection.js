@@ -9,7 +9,7 @@ function HeroSection() {
             <h1>STUDENTREISEN</h1>
             <p>Noe undertekst her</p>
             <div className="hero-btns">
-                <Button className='btns' variant="outlined" color="primary">
+                <Button className='btns' variant="contained" color="primary">
                  Sett i gang reisen  
                 </Button>              
             </div>
