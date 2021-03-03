@@ -12,6 +12,7 @@
     display: flex;
     flex-wrap: wrap;
     align-content: stretch;
+    justify-content: center;
 }
 
 
@@ -62,12 +63,7 @@
     padding-right: 0;
 }
 
-img {
-    border: 0;
-    max-width: 100%;
-    vertical-align: middle;
-    display: inline-block;
-}
+
 
 
 
@@ -79,9 +75,7 @@ img {
 
 /* Tab */
 @media screen and (min-width: 720px) {
-    .column {
-        flex: 1;
-    }
+
 
     .heading {
         font-size: 4em;
@@ -90,10 +84,12 @@ img {
 
 /* Laptop / Liten skjerm,, 720p */
 @media only screen and (min-width: 1280px) {
+
 }
 
 /* Medium skjerm, 1080p */
 @media screen and (min-width: 1920px) {
+
 }
 
 /* Stor skjerm, 1440p */
