@@ -23,6 +23,7 @@ class Login extends Component {
     this.alert.display = "none";
     this.alert.text = "";
   };
+
   onPasswordChange = e => {
     this.setState({
       pwd: e.target.value
@@ -34,12 +35,11 @@ class Login extends Component {
   handleLogin = e => {
     e.preventDefault();
 
-    // Temporarily disable the button
-    const button = document.getElementById("form_btn_login");
-
-    button.disabled = true;
-    button.innerHTML = "Vennligst vent";
-    button.style.opacity = "50%";
+    // Slår midlertidig av knappen
+    const login_btn = document.getElementById("form_btn_login");
+    login_btn.disabled = true;
+    login_btn.innerHTML = "Vennligst vent";
+    login_btn.style.opacity = "50%";
 
     const data = {
       email: this.state.email,
@@ -56,10 +56,6 @@ class Login extends Component {
             this.alert.display = "";
             this.alert.text = res.data.message;
             this.forceUpdate();
-            
-            button.disabled = false;
-            button.innerHTML = "Logg inn";
-            button.style.opacity = "100%";
         }
       })
       .catch(err => {
@@ -67,21 +63,22 @@ class Login extends Component {
         this.alert.display = "";
         this.alert.text = "En intern feil oppstod, vennligst forsøk igjen senere";
         this.forceUpdate();
-        
-        button.disabled = false;
-        button.innerHTML = "Logg inn";
-        button.style.opacity = "100%";
+      }).finally( () => {
+        // Utføres alltid til slutt, gjør Logg inn knappen tilgjengelig igjen
+        login_btn.disabled = false;
+        login_btn.innerHTML = "Logg inn";
+        login_btn.style.opacity = "100%";
       });
   };
 
   gotoRegister = () => {
     this.props.history.push('/register/');
-  }
+  };
 
   // TODO
   gotoGlemt = () => {
     this.props.history.push('/login');
-  }
+  };
 
   render() {
     return (
