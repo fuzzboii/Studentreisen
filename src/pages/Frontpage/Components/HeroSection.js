@@ -2,11 +2,11 @@ import React from 'react';
 import '../../../App.css';
 import { Button } from '@material-ui/core';
 import '../CSS/HeroSection.css';
-import HeroBackgroundTest from '../../../assets/HeroBackgroundTest.jpg';
+import reise from '../../../assets/reise.svg';
 
 
 function HeroSection( {
-    lightBg, lightText, lightTextDesc, headline, description, imgStart
+    lightBg, lightText, lightTextDesc, headline, description, img, alt, imgStart
 }) {
     return (
         <>
@@ -25,7 +25,7 @@ function HeroSection( {
                     </div>
                 <div className="column"></div>
                     <div className="home_hero-img-wrapper">
-                        <img className="home_hero-img" src={HeroBackgroundTest} alt="Campus USN" />
+                        <img src={reise} alt='Student reise' className="img_destination" imgStart=''/>
                     </div>
                 </div>
             </div>
