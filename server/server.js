@@ -3,6 +3,7 @@ const express = require("express");
 
 // Import Routes
 const authRoute = require('./routes/auth');
+const forgotPasswordRoute = require('./routes/forgotPassword');
 
 // We can after this call environment variables in .env
 dotenv.config();
@@ -23,8 +24,9 @@ app.use((req, res, next) => {
 });
 
 // Route Middlewares
-// Everything in authRoute will now have the following prefix
+// Everything in these routes will now have the following prefix
 app.use('/api/v1', authRoute);
+app.use('/api/v1', forgotPasswordRoute);
 
 
 app.listen(process.env.PORT, () => {
