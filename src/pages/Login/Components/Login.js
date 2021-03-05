@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, FormControl, InputLabel, Input, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, CircularProgress } from '@material-ui/core';
+import { Button, FormControl, InputLabel, Input, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Checkbox, FormControlLabel } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import axios from 'axios';
 import '../CSS/Login.css';
@@ -175,6 +175,7 @@ class Login extends Component {
             <InputLabel>Passord</InputLabel>
             <Input className="form_input_login" required={true} value={this.state.password} onKeyUp={this.onSubmit} onChange={this.onPasswordChange} variant="outlined" type="password" />
           </FormControl>
+          <FormControlLabel id="form_huskmeg" control={<Checkbox color="primary" />} label="Husk meg" labelPlacement="end" />
           <Button onClick={this.handleClickForgot} id="form_glemt_login" variant="outlined">Glemt Passord</Button>
           <Button onClick={this.gotoRegister} variant="outlined">Ny bruker</Button>
           <Button type="submit" id="form_btn_login" variant="contained">Logg inn</Button>
