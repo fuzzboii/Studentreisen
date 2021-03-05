@@ -28,5 +28,16 @@ const loginValidation = (data) => {
     return validation_schema.validate(data);
 }
 
+// Email validation 
+const emailValidation = (data) => {
+    const validation_schema = Joi.object({
+        email: Joi.string().email({ minDomainSegments: 2 }).required()
+    });
+
+    // Return the result of the validation
+    return validation_schema.validate(data);
+}
+
 module.exports.registerValidation = registerValidation;
 module.exports.loginValidation = loginValidation;
+module.exports.emailValidation = emailValidation;
