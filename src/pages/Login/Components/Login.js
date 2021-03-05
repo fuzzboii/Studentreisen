@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, FormControl, InputLabel, Input, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@material-ui/core';
+import { Button, FormControl, InputLabel, Input, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, CircularProgress } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import axios from 'axios';
 import '../CSS/Login.css';
@@ -18,7 +18,8 @@ class Login extends Component {
 
   forgot = {
     epost: "",
-    display: true,
+    display: false,
+    btnDisabled: false,
     alertDisplay: "none",
     alertText: "",
     alertSeverity: "error"
@@ -80,6 +81,9 @@ class Login extends Component {
   };
 
   handleForgot = () => {
+    this.forgot.btnDisabled = true;
+    this.forceUpdate();
+
     // Henter eposten brukeren har oppgitt
     const epost = document.getElementById("dialog_glemt_epost").value;
 
@@ -87,20 +91,47 @@ class Login extends Component {
       // Epost validering med regex
       if (/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i.test(epost)) {
         // Axios API
-        this.forgot.alertDisplay = "";
-        this.forgot.alertText = "Om e-posten er registrert hos oss vil du motta en lenke for tilbakestilling snart";
-        this.forgot.alertSeverity = "success";
-        this.forceUpdate();
+        const data = {
+          epost
+        };
+        
+        axios
+        .post(process.env.REACT_APP_APIURL + "/forgotPassword", data)
+        .then(res => {
+          if(res.data.status == "success") {
+            this.forgot.alertDisplay = "";
+            this.forgot.alertText = "Om e-posten er registrert hos oss vil du motta en lenke for tilbakestilling snart";
+            this.forgot.alertSeverity = "success";
+            this.forceUpdate();
+          } else {
+            // Feil oppstod, viser meldingen
+            this.forgot.alertDisplay = "";
+            this.forgot.alertText = res.data.message;
+            this.forceUpdate();
+          }
+        })
+        .catch(err => {
+          // En feil oppstod ved oppkobling til server
+          this.forgot.alertDisplay = "";
+          this.forgot.alertText = "En intern feil oppstod, vennligst forsøk igjen senere";
+          this.forceUpdate();
+        }).finally( () => {
+          // Utføres alltid til slutt, gjør Tilbakestill knappen tilgjengelig igjen
+          this.forgot.btnDisabled = false;
+          this.forceUpdate();
+        });
       } else {
         // Ugyldig epost
         this.forgot.alertDisplay = "";
-        this.forgot.alertText = "E-posten er ikke gyldig";
+        this.forgot.alertText = "E-post adressen er ugyldig";
+        this.forgot.btnDisabled = false;
         this.forceUpdate();
       }
     } else {
       // Ingen epost oppgitt
       this.forgot.alertDisplay = "";
-      this.forgot.alertText = "Du må oppgi en e-post";
+      this.forgot.alertText = "E-post er ikke fylt inn";
+      this.forgot.btnDisabled = false;
       this.forceUpdate();
     }
   };
@@ -129,26 +160,25 @@ class Login extends Component {
   render() {
     return (
       <main id="main_login">
-          <section id="section_logo_login">
-            <img src={usnlogo} alt="USN logo" />
-          </section>
-          <Alert id="alert_login" className="fade_in" style={{display: this.alert.display}} variant="outlined" severity="error">
-            {this.alert.text}
-          </Alert>
-          <form id="form_login" onSubmit={this.handleLogin}>
-            <FormControl id="form_email_login">
-              <InputLabel>E-post</InputLabel>
-              <Input type="email" className="form_input_login" required={true} value={this.state.email} onKeyUp={this.onSubmit} onChange={this.onEmailChange} autoFocus={true} autoComplete="email" variant="outlined" />
-            </FormControl>
-            <FormControl id="form_password_login">
-              <InputLabel>Passord</InputLabel>
-              <Input className="form_input_login" required={true} value={this.state.password} onKeyUp={this.onSubmit} onChange={this.onPasswordChange} variant="outlined" type="password" />
-            </FormControl>
-            <Button onClick={this.handleClickForgot} id="form_glemt_login" variant="outlined">Glemt Passord</Button>
-            <Button onClick={this.gotoRegister} variant="outlined">Ny bruker</Button>
-            <Button type="submit" id="form_btn_login" variant="contained">Logg inn</Button>
-          </form>
-          
+        <section id="section_logo_login">
+          <img src={usnlogo} alt="USN logo" />
+        </section>
+        <Alert id="alert_login" className="fade_in" style={{display: this.alert.display}} variant="outlined" severity="error">
+          {this.alert.text}
+        </Alert>
+        <form id="form_login" onSubmit={this.handleLogin}>
+          <FormControl id="form_email_login">
+            <InputLabel>E-post</InputLabel>
+            <Input type="email" className="form_input_login" required={true} value={this.state.email} onKeyUp={this.onSubmit} onChange={this.onEmailChange} autoFocus={true} autoComplete="email" variant="outlined" />
+          </FormControl>
+          <FormControl id="form_password_login">
+            <InputLabel>Passord</InputLabel>
+            <Input className="form_input_login" required={true} value={this.state.password} onKeyUp={this.onSubmit} onChange={this.onPasswordChange} variant="outlined" type="password" />
+          </FormControl>
+          <Button onClick={this.handleClickForgot} id="form_glemt_login" variant="outlined">Glemt Passord</Button>
+          <Button onClick={this.gotoRegister} variant="outlined">Ny bruker</Button>
+          <Button type="submit" id="form_btn_login" variant="contained">Logg inn</Button>
+        </form>
         <Dialog open={this.forgot.display} onClose={this.handleCloseForgot} aria-labelledby="dialog_glemt_tittel">
           <DialogTitle id="dialog_glemt_tittel">Glemt passord</DialogTitle>
           <DialogContent>
@@ -160,7 +190,7 @@ class Login extends Component {
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleCloseForgot} color="primary">Avbryt</Button>
-            <Button onClick={this.handleForgot} color="primary">Tilbakestill passord</Button>
+            <Button id="dialog_glemt_btn" disabled={this.forgot.btnDisabled} onClick={this.handleForgot} color="primary">Tilbakestill passord</Button>
           </DialogActions>
         </Dialog>
       </main>
