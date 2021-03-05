@@ -31,7 +31,7 @@ const loginValidation = (data) => {
 // Email validation 
 const emailValidation = (data) => {
     const validation_schema = Joi.object({
-        email: Joi.string().email({ minDomainSegments: 2 }).required()
+        epost: Joi.string().email({ minDomainSegments: 2 }).required()
     });
 
     // Return the result of the validation

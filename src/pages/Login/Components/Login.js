@@ -150,7 +150,7 @@ class Login extends Component {
 
   handleCloseForgot = () => {
     this.forgot.display = false;
-    this.forceUpdate();
+    this.removeDialogAlert();
   };
 
   gotoRegister = () => {

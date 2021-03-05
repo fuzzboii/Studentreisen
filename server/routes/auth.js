@@ -122,8 +122,7 @@ router.post('/login', async (req, res) => {
 
             connection.query(checkQueryFormat, (error, results) => {
                 if (error) {
-                    // Proper error handling here
-                    throw error;
+                    return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                 }
 
                 if(results[0] !== undefined) {
