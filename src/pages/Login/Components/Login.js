@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, FormControl, InputLabel, Input } from '@material-ui/core';
+import { Button, FormControl, InputLabel, Input, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import axios from 'axios';
 import '../CSS/Login.css';
@@ -14,6 +14,14 @@ class Login extends Component {
   alert = {
     display: "none",
     text: ""
+  };
+
+  forgot = {
+    epost: "",
+    display: true,
+    alertDisplay: "none",
+    alertText: "",
+    alertSeverity: "error"
   };
 
   onEmailChange = e => {
@@ -71,13 +79,51 @@ class Login extends Component {
       });
   };
 
-  gotoRegister = () => {
-    this.props.history.push('/register/');
+  handleForgot = () => {
+    // Henter eposten brukeren har oppgitt
+    const epost = document.getElementById("dialog_glemt_epost").value;
+
+    if(epost !== "") {
+      // Epost validering med regex
+      if (/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i.test(epost)) {
+        // Axios API
+        this.forgot.alertDisplay = "";
+        this.forgot.alertText = "Om e-posten er registrert hos oss vil du motta en lenke for tilbakestilling snart";
+        this.forgot.alertSeverity = "success";
+        this.forceUpdate();
+      } else {
+        // Ugyldig epost
+        this.forgot.alertDisplay = "";
+        this.forgot.alertText = "E-posten er ikke gyldig";
+        this.forceUpdate();
+      }
+    } else {
+      // Ingen epost oppgitt
+      this.forgot.alertDisplay = "";
+      this.forgot.alertText = "Du må oppgi en e-post";
+      this.forceUpdate();
+    }
   };
 
-  // TODO
-  gotoGlemt = () => {
-    this.props.history.push('/login');
+  removeDialogAlert = () => {
+    this.forgot.alertDisplay = "none";
+    this.forgot.alertText = "";
+    this.forgot.alertSeverity = "error";
+    this.forceUpdate();
+  };
+
+  handleClickForgot = () => {
+    this.forgot.display = true;
+    this.forceUpdate();
+  };
+
+  handleCloseForgot = () => {
+    this.forgot.display = false;
+    this.forceUpdate();
+  };
+
+  gotoRegister = () => {
+    this.props.history.push('/register/');
   };
 
   render() {
@@ -98,10 +144,25 @@ class Login extends Component {
               <InputLabel>Passord</InputLabel>
               <Input className="form_input_login" required={true} value={this.state.password} onKeyUp={this.onSubmit} onChange={this.onPasswordChange} variant="outlined" type="password" />
             </FormControl>
-            <Button onClick={this.gotoGlemt} id="form_glemt_login" variant="outlined">Glemt Passord</Button>
+            <Button onClick={this.handleClickForgot} id="form_glemt_login" variant="outlined">Glemt Passord</Button>
             <Button onClick={this.gotoRegister} variant="outlined">Ny bruker</Button>
             <Button type="submit" id="form_btn_login" variant="contained">Logg inn</Button>
           </form>
+          
+        <Dialog open={this.forgot.display} onClose={this.handleCloseForgot} aria-labelledby="dialog_glemt_tittel">
+          <DialogTitle id="dialog_glemt_tittel">Glemt passord</DialogTitle>
+          <DialogContent>
+            <DialogContentText>Skriv inn e-posten for å tilbakestille passordet ditt</DialogContentText>
+            <Alert id="alert_dialog_glemt" className="fade_in" style={{display: this.forgot.alertDisplay}} severity={this.forgot.alertSeverity}>
+              {this.forgot.alertText}
+            </Alert>
+            <TextField autoFocus id="dialog_glemt_epost" margin="dense" onChange={this.removeDialogAlert} label="E-post" type="email" fullWidth />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleCloseForgot} color="primary">Avbryt</Button>
+            <Button onClick={this.handleForgot} color="primary">Tilbakestill passord</Button>
+          </DialogActions>
+        </Dialog>
       </main>
     );
   }
