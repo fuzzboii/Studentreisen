@@ -4,7 +4,6 @@ const Joi = require('joi');
 // Register validation
 const registerValidation = (data) => {
     const validation_schema = Joi.object({
-        personnr: Joi.string().alphanum().min(11).max(11).required(),
         status: Joi.number().required(),
         fnavn: Joi.string().alphanum().required(),
         enavn: Joi.string().alphanum().required(),
@@ -21,7 +20,8 @@ const registerValidation = (data) => {
 const loginValidation = (data) => {
     const validation_schema = Joi.object({
         email: Joi.string().email({ minDomainSegments: 2 }).required(),
-        pwd: Joi.string().required()
+        pwd: Joi.string().required(),
+        remember: Joi.boolean().required()
     });
 
     // Data validation before we allow the user to login
