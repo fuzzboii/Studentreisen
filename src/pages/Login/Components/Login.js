@@ -2,31 +2,21 @@ import React, { Component } from "react";
 import { Button, FormControl, InputLabel, Input, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Checkbox, FormControlLabel } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import axios from 'axios';
-import CookieService from '../../../global/Services/CookieService';
 
+import Loader from '../../../global/Components/Loader';
+import CookieService from '../../../global/Services/CookieService';
+import AuthService from '../../../global/Services/AuthService';
 import '../CSS/Login.css';
 import usnlogo from '../../../assets/usn.png';
+import { Redirect } from "react-router-dom";
 
 class Login extends Component {
-  state = {
-    email: "",
-    pwd: "",
-    remember: false
-  };
-
-  alert = {
-    display: "none",
-    text: ""
-  };
-
-  forgot = {
-    epost: "",
-    display: false,
-    btnDisabled: false,
-    alertDisplay: "none",
-    alertText: "",
-    alertSeverity: "error"
-  };
+  constructor () {
+    super()
+    this.state = {loading : true, authenticated : false, email : "", pwd : "", remember : false}
+    this.alert = {display : "none", text : ""}
+    this.forgot = {epost : "", display : false, btnDisabled : false, alertDisplay : "none", alertText : "", alertSeverity : "error"}
+  }
 
   onEmailChange = e => {
     this.setState({
@@ -45,6 +35,7 @@ class Login extends Component {
   };
 
   onRememberChange = e => {
+    console.log(this.state.remember);
     this.setState({
       remember: e.target.checked
     });
@@ -54,7 +45,7 @@ class Login extends Component {
     e.preventDefault();
 
     // Slår midlertidig av knappen
-    const login_btn = document.getElementById("form_btn_login");
+    let login_btn = document.getElementById("form_btn_login");
     login_btn.disabled = true;
     login_btn.innerHTML = "Vennligst vent";
     login_btn.style.opacity = "50%";
@@ -66,7 +57,7 @@ class Login extends Component {
     };
 
     axios
-      .post(process.env.REACT_APP_APIURL + "/login", data)
+      .post(process.env.REACT_APP_APIURL + "/auth/login", data)
       .then(res => {
         if(res.data.authtoken) {
             // Mottok autentiserings-token fra server, lagrer i Cookie
@@ -186,45 +177,73 @@ class Login extends Component {
     this.props.history.push('/register/');
   };
 
+  componentDidMount() {
+    // Check if the user is already authenticated
+    const token = CookieService.get("authtoken");
+
+    AuthService.isAuthenticated(token).then(res => {
+      this.setState({authenticated : res});
+      this.setState({loading: false});
+    });
+  };
+
   render() {
-    return (
-      <main id="main_login">
-        <section id="section_logo_login">
-          <img src={usnlogo} alt="USN logo" />
-        </section>
-        <Alert id="alert_login" className="fade_in" style={{display: this.alert.display}} variant="outlined" severity="error">
-          {this.alert.text}
-        </Alert>
-        <form id="form_login" onSubmit={this.handleLogin}>
-          <FormControl id="form_email_login">
-            <InputLabel>E-post</InputLabel>
-            <Input type="email" className="form_input_login" required={true} value={this.state.email} onKeyUp={this.onSubmit} onChange={this.onEmailChange} autoFocus={true} autoComplete="email" variant="outlined" />
-          </FormControl>
-          <FormControl id="form_password_login">
-            <InputLabel>Passord</InputLabel>
-            <Input className="form_input_login" required={true} value={this.state.password} onKeyUp={this.onSubmit} onChange={this.onPasswordChange} variant="outlined" type="password" />
-          </FormControl>
-          <FormControlLabel id="form_huskmeg" control={<Checkbox value={this.state.remember} onChange={this.onRememberChange} color="primary" />} label="Husk meg" labelPlacement="end" />
-          <Button onClick={this.handleClickForgot} id="form_glemt_login" variant="outlined">Glemt Passord</Button>
-          <Button onClick={this.gotoRegister} variant="outlined">Ny bruker</Button>
-          <Button type="submit" id="form_btn_login" variant="contained">Logg inn</Button>
-        </form>
-        <Dialog open={this.forgot.display} onClose={this.handleCloseForgot} aria-labelledby="dialog_glemt_tittel">
-          <DialogTitle id="dialog_glemt_tittel">Glemt passord</DialogTitle>
-          <DialogContent>
-            <DialogContentText>Skriv inn e-posten for å tilbakestille passordet ditt</DialogContentText>
-            <Alert id="alert_dialog_glemt" className="fade_in" style={{display: this.forgot.alertDisplay}} severity={this.forgot.alertSeverity}>
-              {this.forgot.alertText}
-            </Alert>
-            <TextField autoFocus id="dialog_glemt_epost" margin="dense" onChange={this.removeDialogAlert} label="E-post" type="email" fullWidth />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleCloseForgot} color="primary">Avbryt</Button>
-            <Button id="dialog_glemt_btn" disabled={this.forgot.btnDisabled} onClick={this.handleForgot} color="primary">Tilbakestill passord</Button>
-          </DialogActions>
-        </Dialog>
-      </main>
-    );
+    const {loading, authenticated} = this.state;
+
+    if(loading) {
+      return(
+        <main id="loading">
+          <Loader/>
+        </main>
+      );
+    }
+    
+    if(!loading && !authenticated) {
+      // Brukeren er foreløpig ikke innlogget, viser login-side
+      return (
+        <main id="main_login">
+          <section id="section_logo_login">
+            <img src={usnlogo} alt="USN logo" />
+          </section>
+          <Alert id="alert_login" className="fade_in" style={{display: this.alert.display}} variant="outlined" severity="error">
+            {this.alert.text}
+          </Alert>
+          <form id="form_login" onSubmit={this.handleLogin}>
+            <FormControl id="form_email_login">
+              <InputLabel>E-post</InputLabel>
+              <Input type="email" className="form_input_login" required={true} value={this.state.email} onKeyUp={this.onSubmit} onChange={this.onEmailChange} autoFocus={true} autoComplete="email" variant="outlined" />
+            </FormControl>
+            <FormControl id="form_password_login">
+              <InputLabel>Passord</InputLabel>
+              <Input className="form_input_login" required={true} value={this.state.password} onKeyUp={this.onSubmit} onChange={this.onPasswordChange} autoComplete="current-password" variant="outlined" type="password" />
+            </FormControl>
+            <FormControlLabel id="form_huskmeg" control={<Checkbox value={this.state.remember} onChange={this.onRememberChange} color="primary" />} label="Husk meg" labelPlacement="end" />
+            <Button onClick={this.handleClickForgot} id="form_glemt_login" variant="outlined">Glemt Passord</Button>
+            <Button onClick={this.gotoRegister} variant="outlined">Ny bruker</Button>
+            <Button type="submit" id="form_btn_login" variant="contained">Logg inn</Button>
+          </form>
+          <Dialog open={this.forgot.display} onClose={this.handleCloseForgot} aria-labelledby="dialog_glemt_tittel">
+            <DialogTitle id="dialog_glemt_tittel">Glemt passord</DialogTitle>
+            <DialogContent>
+              <DialogContentText>Skriv inn e-posten for å tilbakestille passordet ditt</DialogContentText>
+              <Alert id="alert_dialog_glemt" className="fade_in" style={{display: this.forgot.alertDisplay}} severity={this.forgot.alertSeverity}>
+                {this.forgot.alertText}
+              </Alert>
+              <TextField autoFocus id="dialog_glemt_epost" margin="dense" onChange={this.removeDialogAlert} label="E-post" type="email" fullWidth />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={this.handleCloseForgot} color="primary">Avbryt</Button>
+              <Button id="dialog_glemt_btn" disabled={this.forgot.btnDisabled} onClick={this.handleForgot} color="primary">Tilbakestill passord</Button>
+            </DialogActions>
+          </Dialog>
+        </main>
+      );
+    } else {
+      return (
+        // Brukeren er allerede innlogget, går til forsiden
+        <Redirect to={{pathname: "/"}} />
+      );
+    }
   }
 }
 
