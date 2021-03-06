@@ -1,4 +1,4 @@
-#main_login {
+#section_login {
     margin-top: 2em;
     padding-top: 0.5em; padding-bottom: 0.5em;
 }
@@ -77,7 +77,7 @@
 /* Tablet */
 @media screen and (min-width: 720px) {
     
-    #main_login {
+    #section_login {
         width: 40em;
         padding-bottom: 4em; padding-top: 4em;
         padding-left: 1em; padding-right: 1em;
