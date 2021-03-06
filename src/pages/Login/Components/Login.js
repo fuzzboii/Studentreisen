@@ -13,29 +13,28 @@ import { Redirect } from "react-router-dom";
 class Login extends Component {
   constructor () {
     super()
-    this.state = {loading : true, authenticated : false, email : "", pwd : "", remember : false}
-    this.alert = {display : "none", text : ""}
-    this.forgot = {epost : "", display : false, btnDisabled : false, alertDisplay : "none", alertText : "", alertSeverity : "error"}
+    this.state = {loading : true, authenticated : false, email : "", pwd : "", remember : false, loginDisabled : false, loginText : "Logg inn",
+                  alertDisplay : "none", alertText : "",
+                  forgotEmail : "", forgotDisplay : false, forgotBtnDisabled : false, forgotAlertDisplay : "none", forgotAlertText : "", forgotAlertSeverity : "error"}
   }
 
   onEmailChange = e => {
     this.setState({
-      email: e.target.value
+      email: e.target.value,
+      alertDisplay: "none",
+      alertText: ""
     });
-    this.alert.display = "none";
-    this.alert.text = "";
   };
 
   onPasswordChange = e => {
     this.setState({
-      pwd: e.target.value
+      pwd: e.target.value,
+      alertDisplay: "none",
+      alertText: ""
     });
-    this.alert.display = "none";
-    this.alert.text = "";
   };
 
   onRememberChange = e => {
-    console.log(this.state.remember);
     this.setState({
       remember: e.target.checked
     });
@@ -45,10 +44,10 @@ class Login extends Component {
     e.preventDefault();
 
     // Slår midlertidig av knappen
-    let login_btn = document.getElementById("form_btn_login");
-    login_btn.disabled = true;
-    login_btn.innerHTML = "Vennligst vent";
-    login_btn.style.opacity = "50%";
+    this.setState({
+      loginDisabled: true,
+      loginText: "Vennligst vent"
+    });
 
     const data = {
       email: this.state.email,
@@ -82,27 +81,31 @@ class Login extends Component {
             }
         } else {
             // Feil oppstod ved innlogging, viser meldingen
-            this.alert.display = "";
-            this.alert.text = res.data.message;
-            this.forceUpdate();
+            this.setState({
+              alertDisplay: "",
+              alertText: res.data.message
+            });
         }
       })
       .catch(err => {
         // En feil oppstod ved oppkobling til server
-        this.alert.display = "";
-        this.alert.text = "En intern feil oppstod, vennligst forsøk igjen senere";
-        this.forceUpdate();
+        this.setState({
+          alertDisplay: "",
+          alertText: "En intern feil oppstod, vennligst forsøk igjen senere"
+        });
       }).finally( () => {
         // Utføres alltid til slutt, gjør Logg inn knappen tilgjengelig igjen
-        login_btn.disabled = false;
-        login_btn.innerHTML = "Logg inn";
-        login_btn.style.opacity = "100%";
+        this.setState({
+          loginDisabled: false,
+          loginText: "Logg inn"
+        });
       });
   };
 
   handleForgot = () => {
-    this.forgot.btnDisabled = true;
-    this.forceUpdate();
+    this.setState({
+      forgotBtnDisabled: true
+    });
 
     // Henter eposten brukeren har oppgitt
     const epost = document.getElementById("dialog_glemt_epost").value;
@@ -111,66 +114,71 @@ class Login extends Component {
       // Epost validering med regex
       if (/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i.test(epost)) {
         // Axios API
-        const data = {
-          epost
-        };
-        
         axios
-        .post(process.env.REACT_APP_APIURL + "/forgotPassword", data)
+        .post(process.env.REACT_APP_APIURL + "/forgotPassword", {epost})
         .then(res => {
           if(res.data.status == "success") {
-            this.forgot.alertDisplay = "";
-            this.forgot.alertText = "Om e-posten er registrert hos oss vil du motta en lenke for tilbakestilling snart";
-            this.forgot.alertSeverity = "success";
-            this.forceUpdate();
+            this.setState({
+              forgotAlertDisplay: "",
+              forgotAlertText: "Om e-posten er registrert hos oss vil du motta en lenke for tilbakestilling snart",
+              forgotAlertSeverity: "success"
+            });
           } else {
             // Feil oppstod, viser meldingen
-            this.forgot.alertDisplay = "";
-            this.forgot.alertText = res.data.message;
-            this.forceUpdate();
+            this.setState({
+              forgotAlertDisplay: "",
+              forgotAlertText: res.data.message
+            });
           }
         })
         .catch(err => {
           // En feil oppstod ved oppkobling til server
-          this.forgot.alertDisplay = "";
-          this.forgot.alertText = "En intern feil oppstod, vennligst forsøk igjen senere";
-          this.forceUpdate();
+          this.setState({
+            forgotAlertDisplay: "",
+            forgotAlertText: "En intern feil oppstod, vennligst forsøk igjen senere"
+          });
         }).finally( () => {
           // Utføres alltid til slutt, gjør Tilbakestill knappen tilgjengelig igjen
-          this.forgot.btnDisabled = false;
-          this.forceUpdate();
+          this.setState({
+            forgotBtnDisabled: false
+          });
         });
       } else {
         // Ugyldig epost
-        this.forgot.alertDisplay = "";
-        this.forgot.alertText = "E-post adressen er ugyldig";
-        this.forgot.btnDisabled = false;
-        this.forceUpdate();
+        this.setState({
+          forgotAlertDisplay: "",
+          forgotAlertText: "E-post adressen er ugyldig",
+          forgotBtnDisabled: false
+        });
       }
     } else {
       // Ingen epost oppgitt
-      this.forgot.alertDisplay = "";
-      this.forgot.alertText = "E-post er ikke fylt inn";
-      this.forgot.btnDisabled = false;
-      this.forceUpdate();
+      this.setState({
+        forgotAlertDisplay: "",
+        forgotAlertText: "E-post er ikke fylt inn",
+        forgotBtnDisabled: false
+      });
     }
   };
 
   removeDialogAlert = () => {
-    this.forgot.alertDisplay = "none";
-    this.forgot.alertText = "";
-    this.forgot.alertSeverity = "error";
-    this.forceUpdate();
+    this.setState({
+      forgotAlertDisplay: "none",
+      forgotAlertText: "",
+      forgotAlertSeverity: "error"
+    });
   };
 
   handleClickForgot = () => {
-    this.forgot.display = true;
-    this.forceUpdate();
+    this.setState({
+      forgotDisplay: true
+    });
   };
 
   handleCloseForgot = () => {
-    this.forgot.display = false;
-    this.removeDialogAlert();
+    this.setState({
+      forgotDisplay: false
+    });
   };
 
   gotoRegister = () => {
@@ -182,8 +190,10 @@ class Login extends Component {
     const token = CookieService.get("authtoken");
 
     AuthService.isAuthenticated(token).then(res => {
-      this.setState({authenticated : res});
-      this.setState({loading: false});
+      this.setState({
+        authenticated : res,
+        loading: false
+      });
     });
   };
 
@@ -205,8 +215,8 @@ class Login extends Component {
           <section id="section_logo_login">
             <img src={usnlogo} alt="USN logo" />
           </section>
-          <Alert id="alert_login" className="fade_in" style={{display: this.alert.display}} variant="outlined" severity="error">
-            {this.alert.text}
+          <Alert id="alert_login" className="fade_in" style={{display: this.state.alertDisplay}} variant="outlined" severity="error">
+            {this.state.alertText}
           </Alert>
           <form id="form_login" onSubmit={this.handleLogin}>
             <FormControl id="form_email_login">
@@ -220,20 +230,20 @@ class Login extends Component {
             <FormControlLabel id="form_huskmeg" control={<Checkbox value={this.state.remember} onChange={this.onRememberChange} color="primary" />} label="Husk meg" labelPlacement="end" />
             <Button onClick={this.handleClickForgot} id="form_glemt_login" variant="outlined">Glemt Passord</Button>
             <Button onClick={this.gotoRegister} variant="outlined">Ny bruker</Button>
-            <Button type="submit" id="form_btn_login" variant="contained">Logg inn</Button>
+            <Button type="submit" id="form_btn_login" disabled={this.state.loginDisabled} variant="contained">{this.state.loginText}</Button>
           </form>
-          <Dialog open={this.forgot.display} onClose={this.handleCloseForgot} aria-labelledby="dialog_glemt_tittel">
+          <Dialog open={this.state.forgotDisplay} onClose={this.handleCloseForgot} aria-labelledby="dialog_glemt_tittel">
             <DialogTitle id="dialog_glemt_tittel">Glemt passord</DialogTitle>
             <DialogContent>
               <DialogContentText>Skriv inn e-posten for å tilbakestille passordet ditt</DialogContentText>
-              <Alert id="alert_dialog_glemt" className="fade_in" style={{display: this.forgot.alertDisplay}} severity={this.forgot.alertSeverity}>
-                {this.forgot.alertText}
+              <Alert id="alert_dialog_glemt" className="fade_in" style={{display: this.state.forgotAlertDisplay}} severity={this.state.forgotAlertSeverity}>
+                {this.state.forgotAlertText}
               </Alert>
               <TextField autoFocus id="dialog_glemt_epost" margin="dense" onChange={this.removeDialogAlert} label="E-post" type="email" fullWidth />
             </DialogContent>
             <DialogActions>
               <Button onClick={this.handleCloseForgot} color="primary">Avbryt</Button>
-              <Button id="dialog_glemt_btn" disabled={this.forgot.btnDisabled} onClick={this.handleForgot} color="primary">Tilbakestill passord</Button>
+              <Button id="dialog_glemt_btn" disabled={this.state.forgotBtnDisabled} onClick={this.handleForgot} color="primary">Tilbakestill passord</Button>
             </DialogActions>
           </Dialog>
         </main>
