@@ -93,11 +93,12 @@ router.get('/login', async (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
-    if(req.body.email !== undefined & req.body.pwd !== undefined & req.body.remember !== undefined) {
+    if(req.body.email !== undefined && req.body.pwd !== undefined && req.body.remember !== undefined) {
         const validation = loginValidation(req.body);
         
         if(validation.error) {
             // If the validation failed we send back an error message containing information provided by joi
+            // Email validation
             if(validation.error.details[0].path[0] == "email") {
                 if(validation.error.details[0].type == "string.empty") {
                     // The email field is empty
@@ -105,11 +106,24 @@ router.post('/login', async (req, res) => {
                 } else if(validation.error.details[0].type == "string.email") {
                     // Invalid email entered
                     return res.json({ "status" : "error", "message" : "E-post adressen er ugyldig" });
+                } else if(validation.error.details[0].type == "any.required") {
+                    // A required field is not present
+                    return res.json({ "status" : "error", "message" : "Ett eller flere felt mangler" });
                 }
+            // Password validation (Don't check if it's valid according to the password rules, just if it's filled in and of the correct type)
             } else if(validation.error.details[0].path[0] == "pwd") {
                 if(validation.error.details[0].type == "string.empty") {
                     // The email field is empty
                     return res.json({ "status" : "error", "message" : "Passordet er ikke fylt inn" });
+                } else if(validation.error.details[0].type == "any.required") {
+                    // A required field is not present
+                    return res.json({ "status" : "error", "message" : "Ett eller flere felt mangler" });
+                }
+            // Remember validation
+            } else if(validation.error.details[0].path[0] == "remember") {
+                if(validation.error.details[0].type == "any.required") {
+                    // A required field is not present
+                    return res.json({ "status" : "error", "message" : "Ett eller flere felt mangler" });
                 }
             }
 
@@ -134,9 +148,18 @@ router.post('/login', async (req, res) => {
                         // Create and assign a token
                         const token = jwt.sign({_id: results[0].email}, process.env.TOKEN_SECRET);
 
-                        res.header("authtoken", token);
+                        // Alter the expiry date depending on the "Remember me" option
+                        if(req.body.remember) {
+                            // Remember the user for 72 hours
 
-                        res.json({ "status" : "success", "message" : "Bruker innlogget" });
+                        } else {
+                            // Remember the user for 3 hours
+
+                        }
+
+                        res.json({"status" : "success", "message" : "OK", "authtoken" : token});
+
+                        //res.json({ "status" : "success", "message" : "Bruker innlogget" });
                     } else {
                         // Wrong password
                         res.json({ "status" : "error", "message" : "Feil brukernavn eller passord" });

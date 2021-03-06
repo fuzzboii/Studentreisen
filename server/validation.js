@@ -22,7 +22,7 @@ const loginValidation = (data) => {
     const validation_schema = Joi.object({
         email: Joi.string().email({ minDomainSegments: 2 }).required(),
         pwd: Joi.string().required(),
-        remember: Joi.boolean()
+        remember: Joi.boolean().required()
     });
 
     // Data validation before we allow the user to login

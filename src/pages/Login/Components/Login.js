@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { Button, FormControl, InputLabel, Input, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Checkbox, FormControlLabel } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import axios from 'axios';
+import CookieService from '../../../global/Services/CookieService';
+
 import '../CSS/Login.css';
 import usnlogo from '../../../assets/usn.png';
 
@@ -66,8 +68,27 @@ class Login extends Component {
     axios
       .post(process.env.REACT_APP_APIURL + "/login", data)
       .then(res => {
-        if(res.headers.authtoken) {
+        if(res.data.authtoken) {
             // Mottok autentiserings-token fra server, lagrer i Cookie
+
+            // Sjekker om bruker har satt "Husk meg"
+            if(!this.state.remember) {
+              let date = new Date();
+              date.setTime(date.getTime() + ((60 * 3) * 60 * 1000));
+
+              const options = { path: "/", expires: date };
+              CookieService.set('authtoken', res.data.authtoken, options);
+              
+              this.props.history.push('/');
+            } else {
+              let date = new Date();
+              date.setTime(date.getTime() + ((60 * 72) * 60 * 1000));
+
+              const options = { path: "/", expires: date };
+              CookieService.set('authtoken', res.data.authtoken, options);
+              
+              this.props.history.push('/');
+            }
         } else {
             // Feil oppstod ved innlogging, viser meldingen
             this.alert.display = "";
