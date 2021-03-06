@@ -1,0 +1,21 @@
+footer {
+    align-items: center;
+}
+
+.react-cookie-law-dialog {
+    display: inline-block;
+    position: fixed;
+    width: 100%;
+    bottom: 0px;
+    z-index: 999;
+    background-color: rgb(248, 247, 247);
+    margin-top: 0.5em;
+}
+
+.react-cookie-law-container {
+    padding: 1em;
+}
+
+.react-cookie-law-manage-btn {
+    border-radius: 0.2em;
+}
