@@ -1,7 +1,7 @@
 const { connection } = require('../db');
 const mysql = require('mysql');
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+const cryptojs = require('crypto-js');
 const { registerValidation, loginValidation } = require('../validation');
 
 const router = require('express').Router();
@@ -9,7 +9,6 @@ const router = require('express').Router();
 /*
 Order
 {
-    "personnr": "",
     "status": "",
     "fnavn": "",
     "enavn": "",
@@ -24,7 +23,7 @@ router.get('/register', async (req, res) => {
 });
 
 router.post('/register', async (req, res) => {
-    if(req.body.personnr !== undefined & req.body.status !== undefined & req.body.fnavn !== undefined & req.body.enavn !== undefined & req.body.telefon !== undefined & req.body.email !== undefined & req.body.pwd !== undefined) {
+    if(req.body.status !== undefined & req.body.fnavn !== undefined & req.body.enavn !== undefined & req.body.telefon !== undefined & req.body.email !== undefined & req.body.pwd !== undefined) {
         const validation = registerValidation(req.body);
         
         if(validation.error) {
@@ -37,13 +36,13 @@ router.post('/register', async (req, res) => {
                 const hashedPW = await bcrypt.hash(req.body.pwd, salt);
 
                 // Check if the PIN or email already exists
-                let checkQuery = "SELECT personnr, email FROM bruker WHERE personnr = ? OR email = ?";
-                let checkQueryFormat = mysql.format(checkQuery, [req.body.personnr, req.body.email]);
+                let checkQuery = "SELECT email FROM bruker WHERE email = ?";
+                let checkQueryFormat = mysql.format(checkQuery, [req.body.email]);
     
                 connection.query(checkQueryFormat, (error, results) => {
                     if (error) {
-                        // Proper error handling here
-                        throw error;
+                        console.log("An error occurred while checking for previously existing users, details: " + error.errno + ", " + error.sqlMessage)
+                        return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                     }
     
                     if(results.length > 0) {
@@ -51,13 +50,13 @@ router.post('/register', async (req, res) => {
                     } else {
 
                         // Add the user
-                        let insertQuery = "INSERT INTO bruker(personnr, niva, statusid, fnavn, enavn, telefon, email, pwd) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
-                        let insertQueryFormat = mysql.format(insertQuery, [req.body.personnr, 3, req.body.status, req.body.fnavn, req.body.enavn, req.body.telefon, req.body.email, hashedPW]);
+                        let insertQuery = "INSERT INTO bruker(niva, statusid, fnavn, enavn, telefon, email, pwd) VALUES(?, ?, ?, ?, ?, ?, ?)";
+                        let insertQueryFormat = mysql.format(insertQuery, [3, req.body.status, req.body.fnavn, req.body.enavn, req.body.telefon, req.body.email, hashedPW]);
                 
                         connection.query(insertQueryFormat, (error, results) => {
                             if (error) {
-                                // Proper error handling here
-                                throw error;
+                                console.log("An error occurred while user was creating an account, details: " + error.errno + ", " + error.sqlMessage)
+                                return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                             }
                             // Returning the number of affected rows to indicate the insert went OK
                             if(results.affectedRows > 0) {
@@ -131,11 +130,12 @@ router.post('/login', async (req, res) => {
             return res.json({ "status" : "error", "message" : validation.error.details[0].message });
         } else {
             // Check if the PIN or email already exists
-            let checkQuery = "SELECT email, pwd FROM bruker WHERE email = ?";
+            let checkQuery = "SELECT brukerid, email, pwd FROM bruker WHERE email = ?";
             let checkQueryFormat = mysql.format(checkQuery, [req.body.email]);
 
             connection.query(checkQueryFormat, (error, results) => {
                 if (error) {
+                    console.log("An error occurred while checking for matches while logging in, details: " + error.errno + ", " + error.sqlMessage)
                     return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                 }
 
@@ -145,21 +145,36 @@ router.post('/login', async (req, res) => {
                     if(validatePass) {
                         // User authenticated
 
-                        // Create and assign a token
-                        const token = jwt.sign({_id: results[0].email}, process.env.TOKEN_SECRET);
-
                         // Alter the expiry date depending on the "Remember me" option
+                        let date = new Date();
+
                         if(req.body.remember) {
                             // Remember the user for 72 hours
-
+                            date.setTime(date.getTime() + ((60 * 72) * 60 * 1000));
                         } else {
                             // Remember the user for 3 hours
-
+                            date.setTime(date.getTime() + ((60 * 3) * 60 * 1000));
                         }
 
-                        res.json({"status" : "success", "message" : "OK", "authtoken" : token});
+                        // Create and assign a token
+                        const token = cryptojs.AES.encrypt(results[0].email, process.env.TOKEN_SECRET);
 
-                        //res.json({ "status" : "success", "message" : "Bruker innlogget" });
+                        // Add the token to the database
+                        let insertQuery = "INSERT INTO login_token(gjelderfor, token, utlopsdato) VALUES(?, ?, ?)";
+                        let insertQueryFormat = mysql.format(insertQuery, [results[0].brukerid, token.toString(), date]);
+                
+                        connection.query(insertQueryFormat, (error, results) => {
+                            if (error) {
+                                console.log("An error occurred while adding a token to a user, details: " + error.errno + ", " + error.sqlMessage)
+                                return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                            }
+                            // Returning the number of affected rows to indicate the insert went OK
+                            if(results.affectedRows > 0) {
+                                return res.json({"status" : "success", "message" : "OK", "authtoken" : token.toString()});
+                            } else {
+                                return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                            }
+                        });
                     } else {
                         // Wrong password
                         res.json({ "status" : "error", "message" : "Feil brukernavn eller passord" });
@@ -174,5 +189,6 @@ router.post('/login', async (req, res) => {
         res.status(400).json({"status" : "error", "message" : "Ikke tilstrekkelig data"});
     }
 });
+
 
 module.exports = router;
