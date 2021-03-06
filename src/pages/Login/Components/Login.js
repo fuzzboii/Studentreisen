@@ -60,6 +60,9 @@ class Login extends Component {
       .then(res => {
         if(res.data.authtoken) {
             // Mottok autentiserings-token fra server, lagrer i Cookie
+            this.setState({
+              authenticated: true
+            });
 
             // Sjekker om bruker har satt "Husk meg"
             if(!this.state.remember) {
@@ -95,10 +98,12 @@ class Login extends Component {
         });
       }).finally( () => {
         // Utføres alltid til slutt, gjør Logg inn knappen tilgjengelig igjen
-        this.setState({
-          loginDisabled: false,
-          loginText: "Logg inn"
-        });
+        if(!this.state.authenticated) {
+          this.setState({
+            loginDisabled: false,
+            loginText: "Logg inn"
+          });
+        }
       });
   };
 
