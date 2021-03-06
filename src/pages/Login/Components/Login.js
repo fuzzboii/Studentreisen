@@ -1,23 +1,30 @@
-import React, { Component } from "react";
+// React-spesifikt
+import { Component } from "react";
+import { Redirect } from "react-router-dom";
+
+// 3rd-party Packages
 import { Button, FormControl, InputLabel, Input, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Checkbox, FormControlLabel } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import axios from 'axios';
 
+// Studentreisen-assets og komponenter
 import Loader from '../../../global/Components/Loader';
 import CookieService from '../../../global/Services/CookieService';
 import AuthService from '../../../global/Services/AuthService';
 import '../CSS/Login.css';
 import usnlogo from '../../../assets/usn.png';
-import { Redirect } from "react-router-dom";
 
 class Login extends Component {
-  constructor () {
-    super()
-    this.state = {loading : true, authenticated : false, email : "", pwd : "", remember : false, loginDisabled : false, loginText : "Logg inn",
+  constructor(props) {
+    super(props)
+    // Login-spesifikke states, delt opp i før-visning autentisering, login, alert og glemt passord
+    this.state = {loading : true, authenticated : false, 
+                  email : "", pwd : "", remember : false, loginDisabled : false, loginText : "Logg inn",
                   alertDisplay : "none", alertText : "",
                   forgotEmail : "", forgotDisplay : false, forgotBtnDisabled : false, forgotAlertDisplay : "none", forgotAlertText : "", forgotAlertSeverity : "error"}
   }
 
+  // Utføres når bruker gjør en handling i input-feltet for e-post
   onEmailChange = e => {
     this.setState({
       email: e.target.value,
@@ -26,6 +33,7 @@ class Login extends Component {
     });
   };
 
+  // Utføres når bruker gjør en handling i input-feltet for passord
   onPasswordChange = e => {
     this.setState({
       pwd: e.target.value,
@@ -34,29 +42,37 @@ class Login extends Component {
     });
   };
 
+  // Utføres når bruker gjør en handling i checkbox-feltet for "Husk meg"
   onRememberChange = e => {
     this.setState({
       remember: e.target.checked
     });
   };
   
+  // Utføres når bruker trykker på "Logg inn" eller trykker på Enter i ett av input-feltene
   handleLogin = e => {
+    // Stopper siden fra å laste inn på nytt
     e.preventDefault();
 
-    // Slår midlertidig av knappen
+    // Slår midlertidig av "Logg inn"-knappen og endrer teksten til "Vennligst vent"
     this.setState({
       loginDisabled: true,
       loginText: "Vennligst vent"
     });
 
+    // Definerer objektet med dataen vi sender til server
     const data = {
       email: this.state.email,
       pwd: this.state.pwd,
       remember: this.state.remember
     };
 
+    // Axios POST request
     axios
+      // Henter API URL fra .env og utfører en POST request med dataen fra objektet over
+      // Axios serialiserer objektet til JSON selv
       .post(process.env.REACT_APP_APIURL + "/auth/login", data)
+      // Utføres ved mottatt resultat
       .then(res => {
         if(res.data.authtoken) {
             // Mottok autentiserings-token fra server, lagrer i Cookie
@@ -67,6 +83,7 @@ class Login extends Component {
             // Sjekker om bruker har satt "Husk meg"
             if(!this.state.remember) {
               let date = new Date();
+              // Token utløper om 3 timer om "Husk meg" ikke er satt
               date.setTime(date.getTime() + ((60 * 3) * 60 * 1000));
 
               const options = { path: "/", expires: date };
@@ -75,6 +92,7 @@ class Login extends Component {
               this.props.history.push('/');
             } else {
               let date = new Date();
+              // Token utløper om 72 timer om "Husk meg" ikke er satt
               date.setTime(date.getTime() + ((60 * 72) * 60 * 1000));
 
               const options = { path: "/", expires: date };
@@ -96,8 +114,9 @@ class Login extends Component {
           alertDisplay: "",
           alertText: "En intern feil oppstod, vennligst forsøk igjen senere"
         });
+      // Utføres alltid uavhengig av andre resultater
       }).finally( () => {
-        // Utføres alltid til slutt, gjør Logg inn knappen tilgjengelig igjen
+        // Gjør Logg inn knappen tilgjengelig igjen om bruker ikke er autentisert over
         if(!this.state.authenticated) {
           this.setState({
             loginDisabled: false,
@@ -107,42 +126,49 @@ class Login extends Component {
       });
   };
 
+  // Utføres om bruker trykker på "Tilbakestill passord" i del for Glemt passord
   handleForgot = () => {
+    // Slår midlertidig av "Tilbakestill passord"-knappen
     this.setState({
       forgotBtnDisabled: true
     });
 
+    // Sørger for at eposten er fyllt inn
     if(this.state.forgotEmail !== "") {
       // Epost validering med regex
       if (/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i.test(this.state.forgotEmail)) {
-        // Axios API
+        // Axios POST request
         axios
-        .post(process.env.REACT_APP_APIURL + "/forgotPassword", {epost : this.state.forgotEmail})
-        .then(res => {
-          if(res.data.status == "success") {
+          // Henter API URL fra .env og utfører en POST request med dataen fra objektet over
+          // Axios serialiserer objektet til JSON selv
+          .post(process.env.REACT_APP_APIURL + "/forgotPassword", {epost : this.state.forgotEmail})
+          // Utføres ved mottatt resultat
+          .then(res => {
+            if(res.data.status == "success") {
+              this.setState({
+                forgotAlertDisplay: "",
+                forgotAlertText: "Om e-posten er registrert hos oss vil du motta en lenke for tilbakestilling snart",
+                forgotAlertSeverity: "success"
+              });
+            } else {
+              // Feil oppstod, viser meldingen
+              this.setState({
+                forgotAlertDisplay: "",
+                forgotAlertText: res.data.message
+              });
+            }
+          })
+          .catch(err => {
+            // En feil oppstod ved oppkobling til server
             this.setState({
               forgotAlertDisplay: "",
-              forgotAlertText: "Om e-posten er registrert hos oss vil du motta en lenke for tilbakestilling snart",
-              forgotAlertSeverity: "success"
+              forgotAlertText: "En intern feil oppstod, vennligst forsøk igjen senere"
             });
-          } else {
-            // Feil oppstod, viser meldingen
+          // Utføres alltid uavhengig av andre resultater
+          }).finally( () => {
+            // Gjør "Tilbakestill passord"-knappen tilgjengelig igjen
             this.setState({
-              forgotAlertDisplay: "",
-              forgotAlertText: res.data.message
-            });
-          }
-        })
-        .catch(err => {
-          // En feil oppstod ved oppkobling til server
-          this.setState({
-            forgotAlertDisplay: "",
-            forgotAlertText: "En intern feil oppstod, vennligst forsøk igjen senere"
-          });
-        }).finally( () => {
-          // Utføres alltid til slutt, gjør Tilbakestill knappen tilgjengelig igjen
-          this.setState({
-            forgotBtnDisabled: false
+              forgotBtnDisabled: false
           });
         });
       } else {
@@ -163,6 +189,7 @@ class Login extends Component {
     }
   };
 
+  // Utføres når bruker gjør en handling i input-feltet for "Glemt passord"
   onForgotChange = e => {
     this.setState({
       forgotEmail: e.target.value,
@@ -172,49 +199,63 @@ class Login extends Component {
     });
   };
 
+  // Utføres når bruker trykker på knappen "Glemt passord"
   handleClickForgot = () => {
     this.setState({
       forgotDisplay: true
     });
   };
 
+  // Utføres når bruker trykker utenfor dialogen for "Glemt passord", eller når bruker trykker på knapp "Avbryt" i "Glemt passord"
   handleCloseForgot = () => {
     this.setState({
       forgotDisplay: false
     });
   };
 
+  // Utføres når bruker trykker på knapp "Ny bruker"
   gotoRegister = () => {
+    // Navigerer til /register/
     this.props.history.push('/register/');
   };
 
+  // Utføres når alle komponentene er lastet inn og er det siste steget i mounting-fasen
   componentDidMount() {
-    // Check if the user is already authenticated
+    // Henter authtoken-cookie
     const token = CookieService.get("authtoken");
 
-    AuthService.isAuthenticated(token).then(res => {
+    if(token !== undefined) {
+      // Om token eksisterer sjekker vi mot serveren om brukeren har en gyldig token
+      AuthService.isAuthenticated(token).then(res => {
+        this.setState({
+          authenticated : res,
+          loading: false
+        });
+      });
+    } else {
       this.setState({
-        authenticated : res,
+        authenticated : false,
         loading: false
       });
-    });
+    }
   };
 
   render() {
     const {loading, authenticated} = this.state;
 
+    // Om vi er i loading fasen (Før mottatt data fra API) vises det et Loading ikon
     if(loading) {
       return(
-        <main id="loading">
-          <Loader/>
-        </main>
+        <section id="loading">
+          <Loader />
+        </section>
       );
     }
     
     if(!loading && !authenticated) {
-      // Brukeren er foreløpig ikke innlogget, viser login-side
+      // Når loading fasen er komplett og bruker ikke er innlogget, vis innholdet på Login-siden
       return (
-        <main id="main_login">
+        <section id="section_login">
           <section id="section_logo_login">
             <img src={usnlogo} alt="USN logo" />
           </section>
@@ -249,7 +290,7 @@ class Login extends Component {
               <Button id="dialog_glemt_btn" disabled={this.state.forgotBtnDisabled} onClick={this.handleForgot} color="primary">Tilbakestill passord</Button>
             </DialogActions>
           </Dialog>
-        </main>
+        </section>
       );
     } else {
       return (
