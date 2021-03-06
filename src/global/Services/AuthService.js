@@ -19,9 +19,6 @@ class AuthService {
         );
 
         return returnVal;
-
-        // Returner alltid false ved autentisering om problemer oppstår over
-        //return false;
     }
 }
 
