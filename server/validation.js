@@ -4,7 +4,6 @@ const Joi = require('joi');
 // Register validation
 const registerValidation = (data) => {
     const validation_schema = Joi.object({
-        personnr: Joi.string().alphanum().min(11).max(11).required(),
         status: Joi.number().required(),
         fnavn: Joi.string().alphanum().required(),
         enavn: Joi.string().alphanum().required(),
