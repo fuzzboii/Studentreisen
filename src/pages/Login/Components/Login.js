@@ -112,15 +112,12 @@ class Login extends Component {
       forgotBtnDisabled: true
     });
 
-    // Henter eposten brukeren har oppgitt
-    const epost = document.getElementById("dialog_glemt_epost").value;
-
-    if(epost !== "") {
+    if(this.state.forgotEmail !== "") {
       // Epost validering med regex
-      if (/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i.test(epost)) {
+      if (/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i.test(this.state.forgotEmail)) {
         // Axios API
         axios
-        .post(process.env.REACT_APP_APIURL + "/forgotPassword", {epost})
+        .post(process.env.REACT_APP_APIURL + "/forgotPassword", {epost : this.state.forgotEmail})
         .then(res => {
           if(res.data.status == "success") {
             this.setState({
@@ -166,8 +163,9 @@ class Login extends Component {
     }
   };
 
-  removeDialogAlert = () => {
+  onForgotChange = e => {
     this.setState({
+      forgotEmail: e.target.value,
       forgotAlertDisplay: "none",
       forgotAlertText: "",
       forgotAlertSeverity: "error"
@@ -244,7 +242,7 @@ class Login extends Component {
               <Alert id="alert_dialog_glemt" className="fade_in" style={{display: this.state.forgotAlertDisplay}} severity={this.state.forgotAlertSeverity}>
                 {this.state.forgotAlertText}
               </Alert>
-              <TextField autoFocus id="dialog_glemt_epost" margin="dense" onChange={this.removeDialogAlert} label="E-post" type="email" fullWidth />
+              <TextField autoFocus margin="dense" value={this.state.forgotEmail} onChange={this.onForgotChange} label="E-post" type="email" fullWidth />
             </DialogContent>
             <DialogActions>
               <Button onClick={this.handleCloseForgot} color="primary">Avbryt</Button>
