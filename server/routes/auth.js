@@ -93,7 +93,7 @@ router.get('/login', async (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
-    if(req.body.email !== undefined & req.body.pwd !== undefined) {
+    if(req.body.email !== undefined & req.body.pwd !== undefined & req.body.remember !== undefined) {
         const validation = loginValidation(req.body);
         
         if(validation.error) {

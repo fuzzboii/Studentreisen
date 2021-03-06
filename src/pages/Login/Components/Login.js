@@ -8,7 +8,8 @@ import usnlogo from '../../../assets/usn.png';
 class Login extends Component {
   state = {
     email: "",
-    pwd: ""
+    pwd: "",
+    remember: false
   };
 
   alert = {
@@ -40,6 +41,12 @@ class Login extends Component {
     this.alert.display = "none";
     this.alert.text = "";
   };
+
+  onRememberChange = e => {
+    this.setState({
+      remember: e.target.checked
+    });
+  };
   
   handleLogin = e => {
     e.preventDefault();
@@ -52,7 +59,8 @@ class Login extends Component {
 
     const data = {
       email: this.state.email,
-      pwd: this.state.pwd
+      pwd: this.state.pwd,
+      remember: this.state.remember
     };
 
     axios
@@ -175,7 +183,7 @@ class Login extends Component {
             <InputLabel>Passord</InputLabel>
             <Input className="form_input_login" required={true} value={this.state.password} onKeyUp={this.onSubmit} onChange={this.onPasswordChange} variant="outlined" type="password" />
           </FormControl>
-          <FormControlLabel id="form_huskmeg" control={<Checkbox color="primary" />} label="Husk meg" labelPlacement="end" />
+          <FormControlLabel id="form_huskmeg" control={<Checkbox value={this.state.remember} onChange={this.onRememberChange} color="primary" />} label="Husk meg" labelPlacement="end" />
           <Button onClick={this.handleClickForgot} id="form_glemt_login" variant="outlined">Glemt Passord</Button>
           <Button onClick={this.gotoRegister} variant="outlined">Ny bruker</Button>
           <Button type="submit" id="form_btn_login" variant="contained">Logg inn</Button>
