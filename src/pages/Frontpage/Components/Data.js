@@ -5,7 +5,7 @@ export const homeObjOne = {
     lightText: true,
     lightTextDesc: true,
     headline: "Studentreisen",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce hendrerit augue nec lorem rutrum, aliquam viverra arcu auctor.",
+    description: "Hvor du kan kartlegge dine muligheter underveis i ditt studieløp på Universitetet i Sørøst-Norge.",
 }
 
 //Services section
