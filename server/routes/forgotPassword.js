@@ -3,6 +3,7 @@ const { emailValidation } = require('../validation');
 const mysql = require('mysql');
 const router = require('express').Router();
 const crypto = require('crypto'); 
+const nodemailer = require('nodemailer');
 
 router.get('/forgotPassword', async (req, res) => {
     res.send(404);
@@ -50,8 +51,34 @@ router.post('/forgotPassword', async (req, res) => {
                             if (error) {
                                 return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                             }
+                            
+                            const mailTransporter = nodemailer.createTransport({
+                                service: 'gmail',
+                                auth: {
+                                    user: process.env.EMAIL_ADDRESS,
+                                    pass: process.env.EMAIL_PASSWORD
+                                }
+                            });
 
-                            return res.json({ "status" : "success", "message" : "ok" });
+                            const mailOptions = {
+                                from: 'usnstudentreisen@gmail.com',
+                                to: selResults[0].email,
+                                subject: 'Glemt passord - Studentreisen',
+                                text: 'Hei!\n\nDu har mottatt denne eposten fordi du har bedt om å tilbakestille passordet ditt hos Studentreisen, om du ikke har bedt om dette kan du trygt ignorere denne eposten.\n\n' +
+                                        'Vennligst trykk på lenken under for å fortsette med å endre passordet ditt.\n' + 
+                                        'http://localhost:3000/reset/' + buf.toString("hex") + "\n\n" + 
+                                        'Mvh\nStudentreisen'
+                            };
+
+                            mailTransporter.sendMail(mailOptions, (err, mailResponse) => {
+                                if(err) {
+                                    return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                                } else {
+                                    return res.json({ "status" : "success", "message" : "ok" });
+                                }
+                            });
+
+
                         });
                         
                     });
