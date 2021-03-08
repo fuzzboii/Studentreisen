@@ -2,6 +2,9 @@ footer {
     align-items: center;
 }
 
+/* Cookie law dialog
+----------------------------- */
+
 .react-cookie-law-dialog {
     display: inline-block;
     position: fixed;
@@ -18,4 +21,88 @@ footer {
 
 .react-cookie-law-manage-btn {
     border-radius: 0.2em;
+}
+
+/* Footer container
+----------------------------- */
+
+.footer-container {
+    background-color: #3bafa2;
+    padding-top: 2em;
+    padding-bottom: 2em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .links-section {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .footer-link {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 1em;
+    width: 9em;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .footer-link h2 {
+    margin-bottom: 0.5em;
+    color: #ffff;
+  }
+
+  
+  .footer-link a {
+    color: #ffff;
+    text-decoration: none;
+    margin-bottom: 0.5em;
+  }
+  
+  .footer-link a:hover {
+    color: lightgray;
+    transition: 0.4s ease-out;
+  }
+  
+  .copyright-section {
+    color: rgb(255, 255, 255);
+    margin-bottom: 1em;
+    margin-top: 1em;
+  }
+
+
+/* Media queries
+----------------------------- */
+/* Større mobiler */
+@media screen and (min-width: 370px) {
+}
+
+/* Tab */
+@media screen and (min-width: 720px) {
+    .links-section {
+        flex-direction: row;
+      }
+    
+
+}
+
+/* Laptop / Liten skjerm,, 720p */
+@media only screen and (min-width: 1280px) {
+
+}
+
+/* Medium skjerm, 1080p */
+@media screen and (min-width: 1920px) {
+
+}
+
+/* Stor skjerm, 1440p */
+@media screen and (min-width: 2560px) {
 }

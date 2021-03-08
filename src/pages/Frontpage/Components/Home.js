@@ -5,11 +5,12 @@ import {homeObjOne} from './Data'
 import {homeObjTwo} from './Data'
 import Services from './Services'
 
+
 function Home() {
     return (
         <>
             <HeroSection {...homeObjOne} />
-            <Services {...homeObjTwo} /> 
+            <Services {...homeObjTwo} />
             
         </>
     )

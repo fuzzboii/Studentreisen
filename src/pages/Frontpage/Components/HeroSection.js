@@ -14,7 +14,7 @@ function HeroSection({
             <div 
                 className={lightBg ? 'home_hero-section' : 'home_hero-section darkBg'}
             >
-                <div className="container">
+                <div className="hero-container">
                     <div className="row home_hero-row"
                     style={{display: 'flex', flexDirection: imgStart === 'start' ? 'row-reverse' : 'row'}}
                     >
@@ -26,7 +26,7 @@ function HeroSection({
                                 >
                                     {description}
                                 </p>
-                                <Link to="/Registrer" style={{ textDecoration: 'none' }}>
+                                <Link to="/Register" style={{ textDecoration: 'none' }}>
                                     <Button className='button' variant="contained" color="default">Sett i gang reisen</Button>
                                 </Link>
                             </div>
