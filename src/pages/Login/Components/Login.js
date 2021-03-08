@@ -19,7 +19,7 @@ class Login extends Component {
     super(props)
     // Login-spesifikke states, delt opp i før-visning autentisering, login, alert og glemt passord
     this.state = {loading : true, authenticated : false, 
-                  email : "", pwd : "", remember : false, loginDisabled : false, loginText : "Logg inn",
+                  email : "", pwd : "", remember : false, loginDisabled : false, loginText : "Logg inn", loginOpacity: "1",
                   alertDisplay : "none", alertText : "",
                   forgotEmail : "", forgotDisplay : false, forgotBtnDisabled : false, forgotAlertDisplay : "none", forgotAlertText : "", forgotAlertSeverity : "error"}
   }
@@ -57,7 +57,8 @@ class Login extends Component {
     // Slår midlertidig av "Logg inn"-knappen og endrer teksten til "Vennligst vent"
     this.setState({
       loginDisabled: true,
-      loginText: "Vennligst vent"
+      loginText: "Vennligst vent",
+      loginOpacity: "0.6"
     });
 
     // Definerer objektet med dataen vi sender til server
@@ -120,7 +121,8 @@ class Login extends Component {
         if(!this.state.authenticated) {
           this.setState({
             loginDisabled: false,
-            loginText: "Logg inn"
+            loginText: "Logg inn",
+            loginOpacity: "1"
           });
         }
       });
@@ -255,7 +257,7 @@ class Login extends Component {
     if(!loading && !authenticated) {
       // Når loading fasen er komplett og bruker ikke er innlogget, vis innholdet på Login-siden
       return (
-        <section id="section_login">
+        <main id="main_login">
           <section id="section_logo_login">
             <img src={usnlogo} alt="USN logo" />
           </section>
@@ -274,7 +276,7 @@ class Login extends Component {
             <FormControlLabel id="form_huskmeg" control={<Checkbox value={this.state.remember} onChange={this.onRememberChange} color="primary" />} label="Husk meg" labelPlacement="end" />
             <Button onClick={this.handleClickForgot} id="form_glemt_login" variant="outlined">Glemt Passord</Button>
             <Button onClick={this.gotoRegister} variant="outlined">Ny bruker</Button>
-            <Button type="submit" id="form_btn_login" disabled={this.state.loginDisabled} variant="contained">{this.state.loginText}</Button>
+            <Button type="submit" id="form_btn_login" disabled={this.state.loginDisabled} style={{opacity: this.state.loginOpacity}} variant="contained">{this.state.loginText}</Button>
           </form>
           <Dialog open={this.state.forgotDisplay} onClose={this.handleCloseForgot} aria-labelledby="dialog_glemt_tittel">
             <DialogTitle id="dialog_glemt_tittel">Glemt passord</DialogTitle>
@@ -290,7 +292,7 @@ class Login extends Component {
               <Button id="dialog_glemt_btn" disabled={this.state.forgotBtnDisabled} onClick={this.handleForgot} color="primary">Tilbakestill passord</Button>
             </DialogActions>
           </Dialog>
-        </section>
+        </main>
       );
     } else {
       return (
