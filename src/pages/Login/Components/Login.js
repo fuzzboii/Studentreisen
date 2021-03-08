@@ -257,7 +257,7 @@ class Login extends Component {
     if(!loading && !authenticated) {
       // Når loading fasen er komplett og bruker ikke er innlogget, vis innholdet på Login-siden
       return (
-        <section id="section_login">
+        <main id="main_login">
           <section id="section_logo_login">
             <img src={usnlogo} alt="USN logo" />
           </section>
@@ -292,7 +292,7 @@ class Login extends Component {
               <Button id="dialog_glemt_btn" disabled={this.state.forgotBtnDisabled} onClick={this.handleForgot} color="primary">Tilbakestill passord</Button>
             </DialogActions>
           </Dialog>
-        </section>
+        </main>
       );
     } else {
       return (
