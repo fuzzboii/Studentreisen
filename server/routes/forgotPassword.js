@@ -29,27 +29,32 @@ router.post('/forgotPassword', async (req, res) => {
         } else {
             // Check if the email exists in the database
 
-            let checkQuery = "SELECT email FROM bruker WHERE email = ?";
+            let checkQuery = "SELECT brukerid, email FROM bruker WHERE email = ?";
             let checkQueryFormat = mysql.format(checkQuery, [req.body.epost]);
 
-            connection.query(checkQueryFormat, (error, results) => {
+            connection.query(checkQueryFormat, (error, selResults) => {
                 if (error) {
                     return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                 }
 
-                if(results[0] !== undefined) {
-                    /*
-                    TODO: Avventer korrekt DB
-
+                if(selResults[0] !== undefined) {
                     crypto.randomBytes(20, (err, buf) => {
                         if(err) {
                             return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                         }
+
+                        let insertTokenQuery = "INSERT INTO glemtpassord_token(gjelderfor, token, utlopsdato) VALUES(?, ?, NOW() + INTERVAL 3 HOUR)";
+                        let insertTokenQueryFormat = mysql.format(insertTokenQuery, [selResults[0].brukerid, buf.toString("hex")]);
+
+                        connection.query(insertTokenQueryFormat, (error, insResults) => {
+                            if (error) {
+                                return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                            }
+
+                            return res.json({ "status" : "success", "message" : "ok" });
+                        });
                         
-                        res.json({ "status" : "success", "message" : "ok" });
-                        console.log(buf.toString("hex"));
-                    }); */
-                    return res.json({ "status" : "success", "message" : "ok" });
+                    });
                 } else {
                     // Eposten eksisterer ikke, men viser fremdeles nøytral melding om at alt annet har gått
                     return res.json({ "status" : "success", "message" : "ok" });
