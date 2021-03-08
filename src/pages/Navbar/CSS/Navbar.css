@@ -36,32 +36,13 @@
   
   .nav-menu {
     display: grid;
-    grid-template-columns: repeat(5, auto);
+    grid-template-columns: repeat(4, auto);
     grid-gap: 5vw;
     list-style: none;
     text-align: center;
     width: 100%;
     justify-content: center;
     margin-right: 2rem;
-  }
-  
-  .nav-item {
-    height: 80px;
-  }
-  
-  .nav-links {
-    color: #fff;
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    padding: 0.5rem 1rem;
-    height: 100%;
-    font-size: 1.5rem;
-  }
-  
-  .nav-links:hover {
-    color: lightgray;
-    transition: all 0.2s ease-out;
   }
   
   .fa-bars {
@@ -91,8 +72,13 @@
     padding: 0.5rem 1rem;
   }
 
-  .logout-btn {
-    padding: 0.5rem, 1rem;
+  .nav-item {
+    color: #fff;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    height: 100%;
     font-size: 1.5rem;
   }
   
@@ -107,9 +93,7 @@
       width: 100vw;
       height: 60vh;
       position: absolute;
-      top: -100vh;  /* Skyver elementene av små skjermer. Hacky? Kode fra tutorial. Nødvendig for å få rett transition, og derfor ikke display:none? */
-      left: 0;
-      opacity: 1;
+      visibility: none;
       transition:  all 0.5s ease-out;
     }
   
@@ -120,6 +104,7 @@
       opacity: 1;
       transition: all 0.5s ease-out;
       z-index: 1;
+      visibility: none;
     }
   
     .nav-links {
@@ -165,8 +150,6 @@
     }
   
     .nav-links-mobile:hover {
-      background-color: lightgray;
-      color: #242424;
       border-radius: 0;
     }
     
