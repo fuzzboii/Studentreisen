@@ -79,9 +79,12 @@ function Navbar() {
     
     const classes = useStyles();
 
+    const expand = () => document.getElementById("bar").style.paddingBottom = "60vh";
+    const shrink = () => document.getElementById("bar").style.paddingBottom = "0vh";
+
     return (
         <>
-          <nav className='navbar'>
+          <nav className='navbar' id="bar">
             <div className='navbar-container'>
               <Link 
                 to="/" 
@@ -90,7 +93,9 @@ function Navbar() {
                 <img className="navbar-logo-png" src={favicon} alt="USN" />
               </Link>
               <div className='menu-icon' onClick={handleClick}>
-                <i className={click? 'fas fa-times' : 'fas fa-bars'} />
+                <i className={click? 'fas fa-times' : 'fas fa-bars'} 
+                  onClick={click? shrink : expand}>
+                </i>
               </div>
               
               <div className={click ? 'nav-menu active' : 'nav-menu'}>
