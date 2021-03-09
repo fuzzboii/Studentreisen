@@ -49,16 +49,6 @@
     color: #fff;
   }
   
-  .nav-links-mobile {
-    color: #fff;
-    align-items: center;
-    text-decoration: none;
-    padding: 0.5rem 1rem;
-    height: 100%;
-    font-size: 1.5rem;
-    visibility: collapse;
-  }
-  
   .menu-icon {
     display: none;
   }
@@ -83,10 +73,6 @@
   }
   
   @media screen and (max-width: 960px) {
-    .NavbarItems {
-      position: relative;
-    }
-  
     .nav-menu {
       display: flex;
       flex-direction: column;
@@ -106,21 +92,7 @@
       z-index: 1;
       visibility: visible;
     }
-  
-    .nav-links {
-      text-align: center;
-      padding: 0.5rem;
-      width: 100%;
-      display: table;
-      height: 5vh;
-    }
-  
-    .nav-links:hover {
-      background-color: lightgray;
-      color: #242424;
-      border-radius: 0;
-    }
-  
+
     .navbar-logo {
       position: absolute;
       left: 0;
@@ -139,19 +111,6 @@
     .fa-times {
       color: #fff;
       font-size: 2rem;
-    }
-  
-    .nav-links-mobile {
-      text-align: center;
-      padding: 0.5rem;
-      width: 100%;
-      display: table;
-      height: 6vh;
-      visibility: visible;
-    }
-  
-    .nav-links-mobile:hover {
-      border-radius: 0;
     }
     
     .fa-user {

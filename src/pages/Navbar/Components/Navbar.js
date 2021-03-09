@@ -17,8 +17,10 @@ function Navbar() {
     const showButton = () => {
         if(window.innerWidth <= 960) {
             setButton(false);
+            document.getElementById("loggBtnMobil").style.visibility = "visible";
         } else {
             setButton(true);
+            document.getElementById("loggBtnMobil").style.visibility = "collapse";
         }
     };
 
@@ -59,6 +61,19 @@ function Navbar() {
         padding: '0.5rem 1rem',
         display: 'flex',
         height: '100%'
+      },
+
+      loggbtnmobil: {
+        color: '#fff',
+        fontSize: '1.5rem',
+        padding: '0.5rem 1rem',
+        display: 'flex',
+        height: '100%',
+        visibility: 'collapse'
+      },
+
+      menu: {
+
       }
     });
     
@@ -79,28 +94,40 @@ function Navbar() {
               </div>
               
               <div className={click ? 'nav-menu active' : 'nav-menu'}>
-                  <Button
-                    className={classes.navbtn}>
-                    Logg ut
-                  </Button>
+                <Button
+                  className={classes.loggbtnmobil}
+                  id='loggBtnMobil'>
+                  Logg ut
+                </Button>
 
                 <Button 
                   className={classes.navbtn} 
                   aria-controls="simple-menu" 
                   aria-haspopup="true" 
                   onClick={handleClickAnchorKurs}>
-                Kurs
+                  Kurs
                 </Button>
                 <Menu
-                id="kurs-menu" 
-                anchorEl={anchorKurs}
-                keepMounted
-                open={Boolean(anchorKurs)}
-                onClose={handleCloseKurs}
-                >
-                <MenuItem onClick={handleCloseKurs}>Nyheter</MenuItem>
-                <MenuItem onClick={handleCloseKurs}>Favoritter</MenuItem>
-                <MenuItem onClick={handleCloseKurs}>Arkiv</MenuItem>
+                  id="kurs-menu"
+                  classname={classes.menu}
+                  anchorEl={anchorKurs}
+                  keepMounted
+                  open={Boolean(anchorKurs)}
+                  onClose={handleCloseKurs}
+                  getContentAnchorEl={null}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                  }}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                  }}>
+
+                  <MenuItem onClick={handleCloseKurs}>Nyheter</MenuItem>
+                  <MenuItem onClick={handleCloseKurs}>Favoritter</MenuItem>
+                  <MenuItem onClick={handleCloseKurs}>Arkiv</MenuItem>
+
                 </Menu>
 
                 <Button 
@@ -112,14 +139,25 @@ function Navbar() {
                 Seminarer
                 </Button>
                 <Menu
-                id="seminarer-menu"
-                anchorEl={anchorSeminarer}
-                keepMounted
-                open={Boolean(anchorSeminarer)}
-                onClose={handleCloseSeminarer}>
-                <MenuItem onClick={handleCloseSeminarer}>Nyheter</MenuItem>
-                <MenuItem onClick={handleCloseSeminarer}>Favoritter</MenuItem>
-                <MenuItem onClick={handleCloseSeminarer}>Arkiv</MenuItem>
+                  id="seminarer-menu"
+                  anchorEl={anchorSeminarer}
+                  keepMounted
+                  open={Boolean(anchorSeminarer)}
+                  onClose={handleCloseSeminarer}
+                  getContentAnchorEl={null}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                  }}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                  }}>
+
+                  <MenuItem onClick={handleCloseSeminarer}>Nyheter</MenuItem>
+                  <MenuItem onClick={handleCloseSeminarer}>Favoritter</MenuItem>
+                  <MenuItem onClick={handleCloseSeminarer}>Arkiv</MenuItem>
+
                 </Menu>
     
                 <Button
@@ -128,13 +166,11 @@ function Navbar() {
                 </Button>
               </div>
               
-              <Link
-                to="/"
-                className="nav-item"
-                onClick={closeMobileMenu}
+              <Button
+                className={classes.loggbtn}
               >
                 <i className="far fa-user" />
-              </Link>
+              </Button>
               {button && <Button className={classes.loggbtn} >LOGG UT</Button> }
             </div> 
           </nav>
