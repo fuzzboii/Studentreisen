@@ -51,12 +51,12 @@
   
   .nav-links-mobile {
     color: #fff;
-    display: none;
     align-items: center;
     text-decoration: none;
     padding: 0.5rem 1rem;
     height: 100%;
     font-size: 1.5rem;
+    visibility: collapse;
   }
   
   .menu-icon {
@@ -72,7 +72,7 @@
     padding: 0.5rem 1rem;
   }
 
-  .nav-item {
+  .navbar-container {
     color: #fff;
     display: flex;
     align-items: center;
@@ -93,18 +93,18 @@
       width: 100vw;
       height: 60vh;
       position: absolute;
-      visibility: none;
-      transition:  all 0.5s ease-out;
+      visibility: collapse;
+      /* transition: all 0.5s ease-out; */
     }
   
     .nav-menu.active {
       background: #4646a5;
-      top: 60px;
+      top: 80px;
       left: 0;
       opacity: 1;
-      transition: all 0.5s ease-out;
+      transition: all 0.1s;
       z-index: 1;
-      visibility: none;
+      visibility: visible;
     }
   
     .nav-links {
@@ -147,6 +147,7 @@
       width: 100%;
       display: table;
       height: 6vh;
+      visibility: visible;
     }
   
     .nav-links-mobile:hover {
