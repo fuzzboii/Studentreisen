@@ -60,7 +60,8 @@ class Reset extends Component {
         // Definerer objektet med dataen vi sender til server
         const data = {
             password: this.state.password,
-            password2: this.state.password2
+            password2: this.state.password2,
+            token: this.state.token
         };
     
         // Axios POST request
