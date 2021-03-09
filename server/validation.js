@@ -48,7 +48,19 @@ const hexValidation = (data) => {
     return validation_schema.validate(data);
 }
 
+// Password validation
+const pwValidation = (data) => {
+    const validation_schema = Joi.object({
+        password: Joi.string().required(),
+        password2: Joi.string().required()
+    });
+
+    // Return the result of the validation
+    return validation_schema.validate(data);
+}
+
 module.exports.registerValidation = registerValidation;
 module.exports.loginValidation = loginValidation;
 module.exports.emailValidation = emailValidation;
 module.exports.hexValidation = hexValidation;
+module.exports.pwValidation = pwValidation;
