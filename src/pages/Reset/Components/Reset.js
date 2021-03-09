@@ -1,5 +1,6 @@
 // React-spesifikt
 import { Component } from "react";
+import { useHistory } from 'react-router';
 
 // 3rd-party Packages
 import { Button, FormControl, InputLabel, Input } from '@material-ui/core';
@@ -19,7 +20,7 @@ class Reset extends Component {
     this.state = {loading : true, verified : false, 
                     password : "", password2 : "", resetDisabled : false, resetText : "Oppdater passord", resetOpacity: "1",
                     token : window.location.pathname.substring(7),
-                    alertDisplay : "none", alertText : ""}
+                    alertDisplay : "none", alertText : "", alertSeverity : "error"}
   }
 
   // Utføres når bruker gjør en handling i input-feltet for Passord
@@ -49,7 +50,10 @@ class Reset extends Component {
     this.setState({
         resetDisabled: true,
         resetText: "Vennligst vent",
-        resetOpacity: "0.6"
+        resetOpacity: "0.6",
+        alertDisplay: "none",
+        alertText : "",
+        alertSeverity: "error"
     });
 
     if(this.state.password == this.state.password2) {
@@ -67,8 +71,16 @@ class Reset extends Component {
           // Utføres ved mottatt resultat
           .then(res => {
             if(res.data.status == "success") {
-                // Passordet har blitt oppdatert, sender til login
+                // Passordet har blitt oppdatert, sender til login  
+                this.setState({
+                    alertDisplay: "",
+                    alertText: "Passordet har blitt oppdatert, du blir sendt til side for innlogging om må sekunder",
+                    alertSeverity: "success"
+                });
 
+                setTimeout(() => {
+                    this.props.history.push('/login');
+                }, 5000);
             } else {
                 // Feil oppstod ved endring av passord
                 this.setState({
@@ -145,7 +157,7 @@ class Reset extends Component {
           <section id="section_logo_reset">
             <img src={usnlogo} alt="USN logo" />
           </section>
-          <Alert id="alert_reset" className="fade_in" style={{display: this.state.alertDisplay}} variant="outlined" severity="error">
+          <Alert id="alert_reset" className="fade_in" style={{display: this.state.alertDisplay}} variant="outlined" severity={this.state.alertSeverity}>
             {this.state.alertText}
           </Alert>
           <form id="form_reset" onSubmit={this.handleReset}>
