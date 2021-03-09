@@ -177,9 +177,15 @@ class Reset extends Component {
     } else {
         return (
             // Ugyldig eller ikke-eksisterende token 
-            <div>
-                <h1>Ingen tilgang</h1>
-            </div>
+            <main id="main_reset">
+                <section id="section_logo_reset">
+                <img src={usnlogo} alt="USN logo" />
+                </section>
+                <section id="section_no_access">
+                    <h1>Du kan ikke se denne siden</h1>
+                    <p>Om du mener dette ikke stemmer kan du kontakte support på <a href="mailto:support@studentreisen.no">support@studentreisen.no</a></p>
+                </section>
+            </main>
         );
     }
   }
