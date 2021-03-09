@@ -80,8 +80,7 @@ function Navbar() {
               
               <div className={click ? 'nav-menu active' : 'nav-menu'}>
                   <Button
-                    className='nav-links-mobile'
-                  >
+                    className={classes.navbtn}>
                     Logg ut
                   </Button>
 
