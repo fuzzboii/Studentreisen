@@ -38,6 +38,17 @@ const emailValidation = (data) => {
     return validation_schema.validate(data);
 }
 
+// Hex validation
+const hexValidation = (data) => {
+    const validation_schema = Joi.object({
+        token: Joi.string().length(40).hex()
+    });
+
+    // Return the result of the validation
+    return validation_schema.validate(data);
+}
+
 module.exports.registerValidation = registerValidation;
 module.exports.loginValidation = loginValidation;
 module.exports.emailValidation = emailValidation;
+module.exports.hexValidation = hexValidation;
