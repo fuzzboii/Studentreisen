@@ -147,7 +147,7 @@ router.post('/resetPassword', async (req, res) => {
 
                             connection.query(deleteQueryFormat, (error, delGPResults) => {
                                 if (error) {
-                                    console.log("En feil oppstod ved oppdatering av passord for bruker: " + error.errno + ", " + error.sqlMessage)
+                                    console.log("En feil oppstod ved sletting av glemt passord tokens for en bruker: " + error.errno + ", " + error.sqlMessage)
                                     return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                                 }
                                 
@@ -158,7 +158,7 @@ router.post('/resetPassword', async (req, res) => {
 
                                     connection.query(deleteLoginQueryFormat, (error, delLResults) => {
                                         if (error) {
-                                            console.log("En feil oppstod ved oppdatering av passord for bruker: " + error.errno + ", " + error.sqlMessage)
+                                            console.log("En feil oppstod ved sletting av login tokens for en bruker: " + error.errno + ", " + error.sqlMessage)
                                             return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                                         }
                                         
