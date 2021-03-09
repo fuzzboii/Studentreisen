@@ -8,7 +8,6 @@ import axios from 'axios';
 
 // Studentreisen-assets og komponenter
 import Loader from '../../../global/Components/Loader';
-import CookieService from '../../../global/Services/CookieService';
 import AuthService from '../../../global/Services/AuthService';
 import '../CSS/Reset.css';
 import usnlogo from '../../../assets/usn.png';
@@ -16,7 +15,7 @@ import usnlogo from '../../../assets/usn.png';
 class Reset extends Component {
   constructor(props) {
     super(props)
-    // Login-spesifikke states, delt opp i før-visning autentisering, login, alert og glemt passord
+    // Reset-spesifikke states, delt opp i før-visning verifisering, reset, token og alert
     this.state = {loading : true, verified : false, 
                     password : "", password2 : "", resetDisabled : false, resetText : "Oppdater passord", resetOpacity: "1",
                     token : window.location.pathname.substring(7),
@@ -41,12 +40,12 @@ class Reset extends Component {
     });
   };
   
-  // Utføres når bruker trykker på "Logg inn" eller trykker på Enter i ett av input-feltene
+  // Utføres når bruker trykker på "Oppdater passord" eller trykker på Enter i ett av input-feltene
   handleReset = e => {
     // Stopper siden fra å laste inn på nytt
     e.preventDefault();
 
-    // Slår midlertidig av "Logg inn"-knappen og endrer teksten til "Vennligst vent"
+    // Slår midlertidig av "Oppdater passord"-knappen og endrer teksten til "Vennligst vent"
     this.setState({
         resetDisabled: true,
         resetText: "Vennligst vent",
@@ -164,8 +163,7 @@ class Reset extends Component {
       );
     } else {
         return (
-            // Brukeren er allerede innlogget, går til forsiden
-            //<Redirect to={{pathname: "/"}} />
+            // Ugyldig eller ikke-eksisterende token 
             <div>
                 <h1>Ingen tilgang</h1>
             </div>
