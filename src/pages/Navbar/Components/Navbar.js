@@ -166,11 +166,9 @@ function Navbar() {
                 </Button>
               </div>
               
-              <Button
-                className={classes.loggbtn}
-              >
+              <Link>
                 <i className="far fa-user" />
-              </Button>
+              </Link>
               {button && <Button className={classes.loggbtn} >LOGG UT</Button> }
             </div> 
           </nav>
