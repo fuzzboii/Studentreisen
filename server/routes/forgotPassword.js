@@ -93,4 +93,17 @@ router.post('/forgotPassword', async (req, res) => {
     }
 });
 
+
+router.get('/resetPassword', async (req, res) => {
+    res.send(404);
+});
+
+router.post('/resetPassword', async (req, res) => {
+    if(req.body.password !== undefined && req.body.password2 !== undefined) {
+        return res.json({"status" : "success", "message" : "Heh"});
+    } else {
+        return res.status(400).json({"status" : "error", "message" : "Ikke tilstrekkelig data"});
+    }
+});
+
 module.exports = router;
