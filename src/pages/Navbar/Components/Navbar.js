@@ -60,7 +60,7 @@ function Navbar() {
         fontSize: '1rem',
         padding: '0.5rem 1rem',
         display: 'flex',
-        height: '100%'
+        minWidth: '7rem'
       },
 
       loggbtnmobil: {
@@ -114,7 +114,7 @@ function Navbar() {
                 </Button>
                 <Menu
                   id="kurs-menu"
-                  classname={classes.menu}
+                  className={classes.menu}
                   anchorEl={anchorKurs}
                   keepMounted
                   open={Boolean(anchorKurs)}
@@ -171,7 +171,8 @@ function Navbar() {
                 </Button>
               </div>
               
-              <Link>
+              <Link
+                to="/">
                 <i className="far fa-user" />
               </Link>
               {button && <Button className={classes.loggbtn} >LOGG UT</Button> }

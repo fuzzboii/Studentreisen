@@ -28,8 +28,8 @@ footer {
 
 .footer-container {
     background-color: #3bafa2;
-    padding-top: 2em;
-    padding-bottom: 2em;
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
     display: flex;
     flex-direction: column;
     justify-content: center;
