@@ -22,7 +22,7 @@ class Reset extends Component {
                     password : "", password2 : "", resetDisabled : false, resetText : "Oppdater passord", resetOpacity: "1",
                     token : window.location.pathname.substring(7),
                     alertDisplay : "none", alertText : "", alertSeverity : "error"}
-  }
+    };
 
     // Utføres når bruker gjør en handling i input-feltet for Passord
     onPasswordChange = e => {
@@ -141,8 +141,8 @@ class Reset extends Component {
     render() {
         const {loading, verified} = this.state;
 
-        // Om vi er i loading fasen (Før mottatt data fra API) vises det et Loading ikon
         if(loading) {
+            // Om vi er i loading fasen (Før mottatt data fra API) vises det et Loading ikon
             return(
                 <section id="loading">
                     <Loader />
@@ -184,7 +184,7 @@ class Reset extends Component {
                 </main>
             );
         }
-    }
+    };
 }
 
 export default Reset;
