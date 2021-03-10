@@ -1,7 +1,6 @@
 .navbar {
     background: #4646a5;
     height: 80px;
-    display: flex;
     justify-content: flex-start;
     align-items: center;
     font-size: 1.2rem;
@@ -36,7 +35,7 @@
   
   .nav-menu {
     display: grid;
-    grid-template-columns: repeat(5, auto);
+    grid-template-columns: repeat(4, auto);
     grid-gap: 5vw;
     list-style: none;
     text-align: center;
@@ -45,37 +44,8 @@
     margin-right: 2rem;
   }
   
-  .nav-item {
-    height: 80px;
-  }
-  
-  .nav-links {
-    color: #fff;
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    padding: 0.5rem 1rem;
-    height: 100%;
-    font-size: 1.5rem;
-  }
-  
-  .nav-links:hover {
-    color: lightgray;
-    transition: all 0.2s ease-out;
-  }
-  
   .fa-bars {
     color: #fff;
-  }
-  
-  .nav-links-mobile {
-    color: #fff;
-    display: none;
-    align-items: center;
-    text-decoration: none;
-    padding: 0.5rem 1rem;
-    height: 100%;
-    font-size: 1.5rem;
   }
   
   .menu-icon {
@@ -91,54 +61,45 @@
     padding: 0.5rem 1rem;
   }
 
-  .logout-btn {
-    padding: 0.5rem, 1rem;
+  .navbar-container {
+    color: #fff;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    height: 100%;
     font-size: 1.5rem;
   }
   
   @media screen and (max-width: 960px) {
-    .NavbarItems {
+    .navbar {
       position: relative;
     }
-  
+
     .nav-menu {
       display: flex;
       flex-direction: column;
-      width: 100vw;
+      width: 100%;
       height: 60vh;
       position: absolute;
-      top: -100vh;  /* Skyver elementene av små skjermer. Hacky? Kode fra tutorial. Nødvendig for å få rett transition, og derfor ikke display:none? */
-      left: 0;
-      opacity: 1;
-      transition:  all 0.5s ease-out;
+      visibility: collapse;
+      /* transition: all 0.5s ease; */
     }
   
     .nav-menu.active {
       background: #4646a5;
-      top: 60px;
+      top: 80px;
       left: 0;
       opacity: 1;
-      transition: all 0.5s ease-out;
       z-index: 1;
+      visibility: visible;
+      /* transition: all 0.5s ease; */
     }
-  
-    .nav-links {
-      text-align: center;
-      padding: 0.5rem;
-      width: 100%;
-      display: table;
-      height: 5vh;
-    }
-  
-    .nav-links:hover {
-      background-color: lightgray;
-      color: #242424;
-      border-radius: 0;
-    }
-  
+
     .navbar-logo {
       position: absolute;
       left: 0;
+      z-index: 2;
     }
   
     .menu-icon {
@@ -154,20 +115,6 @@
     .fa-times {
       color: #fff;
       font-size: 2rem;
-    }
-  
-    .nav-links-mobile {
-      text-align: center;
-      padding: 0.5rem;
-      width: 100%;
-      display: table;
-      height: 6vh;
-    }
-  
-    .nav-links-mobile:hover {
-      background-color: lightgray;
-      color: #242424;
-      border-radius: 0;
     }
     
     .fa-user {
