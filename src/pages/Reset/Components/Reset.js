@@ -1,6 +1,5 @@
 // React-spesifikt
 import { Component } from "react";
-import { useHistory } from 'react-router';
 
 // 3rd-party Packages
 import { Button, FormControl, InputLabel, Input } from '@material-ui/core';
@@ -176,12 +175,7 @@ class Reset extends Component {
         } else {
             return (
                 // Ugyldig eller ikke-eksisterende token 
-                <main id="main_reset">
-                    <section id="section_logo_reset">
-                        <img src={usnlogo} alt="USN logo" />
-                    </section>
-                    <NoAccess />
-                </main>
+                <NoAccess />
             );
         }
     };
