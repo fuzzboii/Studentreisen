@@ -145,42 +145,42 @@ class Reset extends Component {
 
     // Om vi er i loading fasen (Før mottatt data fra API) vises det et Loading ikon
     if(loading) {
-      return(
-        <section id="loading">
-          <Loader />
-        </section>
-      );
+        return(
+            <section id="loading">
+                <Loader />
+            </section>
+        );
     }
     
     if(!loading && verified) {
-      // Når loading fasen er komplett og token har blitt verifisert, vis side for resetting av passord
-      return (
-        <main id="main_reset">
-          <section id="section_logo_reset">
-            <img src={usnlogo} alt="USN logo" />
-          </section>
-          <Alert id="alert_reset" className="fade_in" style={{display: this.state.alertDisplay}} variant="outlined" severity={this.state.alertSeverity}>
-            {this.state.alertText}
-          </Alert>
-          <form id="form_reset" onSubmit={this.handleReset}>
-            <FormControl id="form_email_reset">
-              <InputLabel>Passord</InputLabel>
-              <Input className="form_input_reset" required={true} value={this.state.password} onKeyUp={this.onSubmit} onChange={this.onPasswordChange} autoComplete="current-password" variant="outlined" type="password" autoFocus={true} />
-            </FormControl>
-            <FormControl id="form_password_reset">
-              <InputLabel>Bekreft passord</InputLabel>
-              <Input className="form_input_reset" required={true} value={this.state.password2} onKeyUp={this.onSubmit} onChange={this.onPassword2Change} autoComplete="current-password" variant="outlined" type="password" />
-            </FormControl>
-            <Button type="submit" id="form_btn_reset" disabled={this.state.resetDisabled} style={{opacity: this.state.resetOpacity}} variant="contained">{this.state.resetText}</Button>
-          </form>
-        </main>
-      );
+        // Når loading fasen er komplett og token har blitt verifisert, vis side for resetting av passord
+        return (
+            <main id="main_reset">
+                <section id="section_logo_reset">
+                    <img src={usnlogo} alt="USN logo" />
+                </section>
+                <Alert id="alert_reset" className="fade_in" style={{display: this.state.alertDisplay}} variant="outlined" severity={this.state.alertSeverity}>
+                    {this.state.alertText}
+                </Alert>
+                <form id="form_reset" onSubmit={this.handleReset}>
+                    <FormControl id="form_email_reset">
+                        <InputLabel>Passord</InputLabel>
+                        <Input className="form_input_reset" required={true} value={this.state.password} onKeyUp={this.onSubmit} onChange={this.onPasswordChange} autoComplete="current-password" variant="outlined" type="password" autoFocus={true} />
+                    </FormControl>
+                    <FormControl id="form_password_reset">
+                        <InputLabel>Bekreft passord</InputLabel>
+                        <Input className="form_input_reset" required={true} value={this.state.password2} onKeyUp={this.onSubmit} onChange={this.onPassword2Change} autoComplete="current-password" variant="outlined" type="password" />
+                    </FormControl>
+                    <Button type="submit" id="form_btn_reset" disabled={this.state.resetDisabled} style={{opacity: this.state.resetOpacity}} variant="contained">{this.state.resetText}</Button>
+                </form>
+            </main>
+        );
     } else {
         return (
             // Ugyldig eller ikke-eksisterende token 
             <main id="main_reset">
                 <section id="section_logo_reset">
-                <img src={usnlogo} alt="USN logo" />
+                    <img src={usnlogo} alt="USN logo" />
                 </section>
                 <NoAccess />
             </main>
