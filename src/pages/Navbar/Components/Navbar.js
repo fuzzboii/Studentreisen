@@ -60,7 +60,6 @@ function Navbar() {
         fontSize: '1rem',
         padding: '0.5rem 1rem',
         display: 'flex',
-        height: '100%',
         minWidth: '7rem'
       },
 
