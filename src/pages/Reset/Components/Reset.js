@@ -9,6 +9,7 @@ import axios from 'axios';
 
 // Studentreisen-assets og komponenter
 import Loader from '../../../global/Components/Loader';
+import NoAccess from '../../../global/Components/NoAccess';
 import AuthService from '../../../global/Services/AuthService';
 import '../CSS/Reset.css';
 import usnlogo from '../../../assets/usn.png';
@@ -181,10 +182,7 @@ class Reset extends Component {
                 <section id="section_logo_reset">
                 <img src={usnlogo} alt="USN logo" />
                 </section>
-                <section id="section_no_access">
-                    <h1>Du kan ikke se denne siden</h1>
-                    <p>Om du mener dette ikke stemmer kan du kontakte support på <a href="mailto:support@studentreisen.no">support@studentreisen.no</a></p>
-                </section>
+                <NoAccess />
             </main>
         );
     }
