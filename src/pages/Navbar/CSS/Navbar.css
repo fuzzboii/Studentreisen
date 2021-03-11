@@ -110,6 +110,7 @@
       transform: translate( -100%, 60%);
       font-size: 2rem;
       cursor: pointer;
+      margin-right: 1rem;
     }
   
     .fa-times {
@@ -123,5 +124,19 @@
       font-size: 2rem;
       top: 1.5rem;
       right: 6rem;
+    }
+
+    @media screen and (max-width : 320px) {
+      .menu-icon {
+        margin-right: 0rem;
+      }
+
+      .fa-user {
+        right: 3.25rem;
+      }
+
+      .navbar-logo {
+        margin-left: 0px;
+      }
     }
   }
