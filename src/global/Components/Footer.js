@@ -2,6 +2,7 @@ import { CookieBanner } from '@palmabit/react-cookie-law';
 import '../CSS/Footer.css';
 import { Link } from 'react-router-dom';
 
+//Footer som viser et cookie banner dersom du er på siden første gang, og en footer som viser lenker man ikke benytter for ofte.
 function Footer() {
   return (
     <footer>
@@ -27,6 +28,7 @@ function Footer() {
           onAcceptStatistics = {() => {}}
           onAcceptMarketing = {() => {}}
       />
+      
       <div className='footer-container'>
         <div className='links-section'>
             <div className='footer-link'>
