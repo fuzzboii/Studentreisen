@@ -15,7 +15,7 @@ function Navbar() {
     const closeMobileMenu = () => setClick(false);
 
     const showButton = () => {
-        if(window.innerWidth <= 960) {
+        if(window.innerWidth <= 1280) {
             setButton(false);
             document.getElementById("loggBtnMobil").style.visibility = "visible";
         } else {
@@ -27,6 +27,9 @@ function Navbar() {
     useEffect( () => {
       showButton();
     }, []); 
+
+    const expand = () => document.getElementById("bar").style.paddingBottom = "60vh";
+    const shrink = () => document.getElementById("bar").style.paddingBottom = "0vh";
 
     window.addEventListener('resize', showButton);
 
@@ -57,10 +60,11 @@ function Navbar() {
 
       loggbtn: {
         color: '#fff',
-        fontSize: '1rem',
+        fontSize: '1.5rem',
         padding: '0.5rem 1rem',
-        display: 'flex',
-        minWidth: '7rem'
+        display: 'grid',
+        minWidth: '7rem',
+        transform: 'translate(45vw)',
       },
 
       loggbtnmobil: {
@@ -78,9 +82,6 @@ function Navbar() {
     });
     
     const classes = useStyles();
-
-    const expand = () => document.getElementById("bar").style.paddingBottom = "60vh";
-    const shrink = () => document.getElementById("bar").style.paddingBottom = "0vh";
 
     return (
         <>
@@ -172,10 +173,10 @@ function Navbar() {
               </div>
               
               <Link
-                to="/">
+                to='/Profile'>
                 <i className="far fa-user" />
               </Link>
-              {button && <Button className={classes.loggbtn} >LOGG UT</Button> }
+              {button && <Button className={classes.loggbtn} > LOGG UT </Button> }
             </div> 
           </nav>
         </>
