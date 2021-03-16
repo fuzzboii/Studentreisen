@@ -1,0 +1,32 @@
+main {
+    display: flex;
+    flex-direction: column;
+}
+
+#tools_indicator {
+    margin-top: 0.5em; margin-bottom: 0.5em;
+    text-align: center;
+}
+
+.tools_indicator_btn, .tools_indicator_btn_active {
+    padding-left: 1.5em; padding-right: 1.5em; 
+    padding-top: 0.4em; padding-bottom: 0.4em;
+    margin-left: 0.4em; margin-right: 0.4em;
+    border: 0;
+}
+
+.tools_indicator_btn {
+    background-color: #DDDDDD;
+}
+
+.tools_indicator_btn_active {
+    background-color: #9DACD4;
+}
+
+.div_tools section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 2em;
+}
