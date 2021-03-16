@@ -165,7 +165,8 @@ router.post('/resetPassword', async (req, res) => {
                                         if(delLResults.affectedRows > 0) {
                                             return res.json({ "status" : "success", "message" : "OK" });
                                         } else {
-                                            return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                                            // Ingen aktive login tokens funnet, sender fremdeles OK til bruker
+                                            return res.json({ "status" : "success", "message" : "OK" });
                                         }
                                     });
                                 } else {
