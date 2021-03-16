@@ -30,12 +30,10 @@ router.post('/getAllUserData', async (req, res) => {
                     }
                 });
             } else {
-                console.log("Checked token, no access");
                 return res.status(403).send();
             }
         });
     } else {
-        console.log("No access");
         return res.status(403).send();
     }
 });
