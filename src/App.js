@@ -5,6 +5,7 @@ import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 import Login from './pages/Login/Components/Login';
 import Register from './pages/Register/Components/Register';
 import Reset from './pages/Reset/Components/Reset';
+import Profile from './pages/Profile/Components/Profile';
 import Home from './pages/Frontpage/Components/Home';
 import Navbar from './pages/Navbar/Components/Navbar';
 import Footer from './global/Components/Footer';
@@ -23,6 +24,7 @@ function App() {
           <Route path = "/register" component = {Register} />
           <Route path = "/reset" component = {Reset} />
           <Route path = "/tools" component = {Tools} />
+          <Route path = "/profile" component = {Profile} />
         </Switch>
       <Footer />
     </Router>

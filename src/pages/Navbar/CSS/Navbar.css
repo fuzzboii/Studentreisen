@@ -4,17 +4,20 @@
     justify-content: flex-start;
     align-items: center;
     font-size: 1.2rem;
-    position: sticky;
+    position: relative;
     top: 0;
     z-index: 999;
   }
   
   .navbar-container {
+    color: #fff;
     display: flex;
     justify-content: center;
     align-items: center;
+    text-decoration: none;
     height: 80px;
     width: 95vw;
+    font-size: 1.5rem;
   }
   
   .navbar-logo {
@@ -47,95 +50,98 @@
   .fa-bars {
     color: #fff;
   }
+
+  .fa-times {
+    color: #fff;
+    font-size: 2rem;
+  }
+
+  .fa-user {
+    color: #fff;
+    display:block;
+    align-items: center;
+    position: absolute;
+    height: 100%;
+    font-size: 2rem;
+    padding: 0.5rem 1rem;
+    right: 3.25rem;
+    top: 1.5rem;
+  }
+
+  .nav-menu {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 60vh;
+    position: absolute;
+    visibility: collapse;
+    /* transition: all 0.5s ease; */
+  }
+
+  .nav-menu.active {
+    background: #4646a5;
+    top: 80px;
+    left: 0;
+    opacity: 1;
+    z-index: 1;
+    visibility: visible;
+    /* transition: all 0.5s ease; */
+  }
+
+  .navbar-logo {
+    position: absolute;
+    left: 0;
+    z-index: 2;
+    margin-left: 0px;
+  }
+
+  .menu-icon {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate( -100%, 60%);
+    font-size: 2rem;
+    cursor: pointer;
+  }
+
+  /* Media queries
+----------------------------- */
+/* Større mobiler */
+@media screen and (min-width: 370px) {
+}
+
+/* Tab */
+@media screen and (min-width: 720px) {
+}
+
+/* Laptop / Liten skjerm,, 720p */
+@media only screen and (min-width: 1280px) {
+  .navbar {
+    position: sticky;
+  }
+  
+  .nav-menu {
+    display: grid;
+    visibility: visible;
+    height: auto;
+  }
   
   .menu-icon {
     display: none;
   }
 
   .fa-user {
-    color: #fff;
-    display:flex;
-    align-items: center;
-    height: 100%;
-    font-size: 1.5rem;
-    padding: 0.5rem 1rem;
+    padding: 0rem 1.5rem;
+    transform: translate(-7vw);
   }
+}
 
-  .navbar-container {
-    color: #fff;
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    height: 100%;
-    font-size: 1.5rem;
-  }
-  
-  @media screen and (max-width: 960px) {
-    .navbar {
-      position: relative;
-    }
+/* Medium skjerm, 1080p */
+@media screen and (min-width: 1920px) {
 
-    .nav-menu {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-      height: 60vh;
-      position: absolute;
-      visibility: collapse;
-      /* transition: all 0.5s ease; */
-    }
-  
-    .nav-menu.active {
-      background: #4646a5;
-      top: 80px;
-      left: 0;
-      opacity: 1;
-      z-index: 1;
-      visibility: visible;
-      /* transition: all 0.5s ease; */
-    }
+}
 
-    .navbar-logo {
-      position: absolute;
-      left: 0;
-      z-index: 2;
-    }
-  
-    .menu-icon {
-      display: block;
-      position: absolute;
-      top: 0;
-      right: 0;
-      transform: translate( -100%, 60%);
-      font-size: 2rem;
-      cursor: pointer;
-      margin-right: 1rem;
-    }
-  
-    .fa-times {
-      color: #fff;
-      font-size: 2rem;
-    }
-    
-    .fa-user {
-      display: block;
-      position: absolute;
-      font-size: 2rem;
-      top: 1.5rem;
-      right: 6rem;
-    }
-
-    @media screen and (max-width : 320px) {
-      .menu-icon {
-        margin-right: 0rem;
-      }
-
-      .fa-user {
-        right: 3.25rem;
-      }
-
-      .navbar-logo {
-        margin-left: 0px;
-      }
-    }
-  }
+/* Stor skjerm, 1440p */
+@media screen and (min-width: 2560px) {
+}
