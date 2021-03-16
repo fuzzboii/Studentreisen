@@ -1,9 +1,7 @@
 // React-spesifikt
-import React, { Component } from "react";
+import React from "react";
 
 // 3rd-party Packages
-import { Button, FormControl, InputLabel, Input, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Checkbox, FormControlLabel } from '@material-ui/core';
-import { Search as SearchIcon, PersonOutlineOutlined as PersonOutlineIcon, MailOutline as MailOutlineIcon } from '@material-ui/icons';
 import { useTable, usePagination } from 'react-table'
 
 // Studentreisen-assets og komponenter
@@ -23,8 +21,10 @@ const GetAllData = () => {
         .post(process.env.REACT_APP_APIURL + "/tools/getAllUserData", token)
         // Utføres ved mottatt resultat
         .then(res => {
-            allData = res.data.results;
-            allDataFetched = true;
+            if(res.data.results) {
+                allData = res.data.results;
+                allDataFetched = true;
+            }
         }).catch(err => {
 
         }).finally(() => {
