@@ -1,22 +1,22 @@
 const dotenv = require("dotenv");
 const express = require("express");
 
-// Import Routes
+// Importerer routes vi bruker
 const authRoute = require('./routes/auth');
 const forgotPasswordRoute = require('./routes/forgotPassword');
 const verificationRoute = require('./routes/verification');
 const courseRoute = require('./routes/courses');
 const toolsRoute = require('./routes/tools');
 
-// We can after this call environment variables in .env
+// Gjør at vi kan kalle variabler fra .env
 dotenv.config();
 
 const app = express();
 
-// Middlewares
+// Mellomvare
 app.use(express.json());
 
-// Temporary header to allow localhost:3000 as an origin, likely will be changed to "https://studentreisen.no:80" or similar
+// Midlertidig header for å tillate tilkoblinger fra localhost:3000, vil sannsynligvis bli endret til studentreisen.no ved senere tidspunkt
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
   res.header(
@@ -26,8 +26,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// Route Middlewares
-// Everything in these routes will now have the following prefix
+// Route Mellomvare
+// Alle her vil ha følgende prefiks
 app.use('/api/v1/auth', authRoute);
 app.use('/api/v1', forgotPasswordRoute);
 app.use('/api/v1/verify', verificationRoute);
@@ -36,5 +36,5 @@ app.use('/api/v1/tools', toolsRoute);
 
 
 app.listen(process.env.PORT, () => {
-    console.log("Server is running")
+    console.log("Serveren kjører")
 });
