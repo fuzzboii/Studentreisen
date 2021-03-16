@@ -1,4 +1,4 @@
-// Validation
+// Validering
 const Joi = require('joi');
 
 // Register validation
@@ -16,7 +16,7 @@ const registerValidation = (data) => {
     return validation_schema.validate(data);
 }
 
-// Login validation
+// Login validering
 const loginValidation = (data) => {
     const validation_schema = Joi.object({
         email: Joi.string().email({ minDomainSegments: 2 }).required(),
@@ -24,38 +24,38 @@ const loginValidation = (data) => {
         remember: Joi.boolean().required()
     });
 
-    // Data validation before we allow the user to login
+    // Validerer dataen i forhold til skjemaet og returnerer svaret
     return validation_schema.validate(data);
 }
 
-// Email validation 
+// E-post validering 
 const emailValidation = (data) => {
     const validation_schema = Joi.object({
         epost: Joi.string().email({ minDomainSegments: 2 }).required()
     });
 
-    // Return the result of the validation
+    // Validerer dataen i forhold til skjemaet og returnerer svaret
     return validation_schema.validate(data);
 }
 
-// Hex validation
+// Hex validering
 const hexValidation = (data) => {
     const validation_schema = Joi.object({
         token: Joi.string().length(40).hex()
     });
 
-    // Return the result of the validation
+    // Validerer dataen i forhold til skjemaet og returnerer svaret
     return validation_schema.validate(data);
 }
 
-// Password validation
+// Password validering
 const pwValidation = (data) => {
     const validation_schema = Joi.object({
         password: Joi.string().required(),
         password2: Joi.string().required()
     });
 
-    // Return the result of the validation
+    // Validerer dataen i forhold til skjemaet og returnerer svaret
     return validation_schema.validate(data);
 }
 
