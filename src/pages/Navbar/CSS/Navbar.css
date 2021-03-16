@@ -3,7 +3,7 @@
     height: 80px;
     justify-content: flex-start;
     align-items: center;
-    font-size: 1.2rem;
+    font-size: 1.2em;
     position: relative;
     top: 0;
     z-index: 999;
@@ -23,7 +23,6 @@
   .navbar-logo {
     color: #fff;
     justify-self: start;
-    margin-left: 20px;
     cursor: pointer;
     text-decoration: none;
     display: flex;
@@ -33,7 +32,7 @@
 
   .navbar-logo-png {
     height: 4.5rem;
-    margin-left: 20px;
+    margin-left: 2vw;
   }
   
   .nav-menu {
@@ -108,15 +107,15 @@
   /* Media queries
 ----------------------------- */
 /* Større mobiler */
-@media screen and (min-width: 370px) {
+@media screen and (min-width: 375px) {
 }
 
 /* Tab */
-@media screen and (min-width: 720px) {
+@media screen and (min-width: 768px) {
 }
 
 /* Laptop / Liten skjerm,, 720p */
-@media only screen and (min-width: 1280px) {
+@media only screen and (min-width: 1024px) {
   .navbar {
     position: sticky;
   }
