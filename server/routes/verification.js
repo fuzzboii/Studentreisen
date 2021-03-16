@@ -16,10 +16,10 @@ router.post('/auth', async (req, res) => {
         const validation = emailValidation({epost : decryptedToken.toString(cryptojs.enc.Utf8)});
         
         if(validation.error) {
-            // Validation error for the decrypted email, assume the token is invalid
+            // Validering feilet for den dekrypterte e-posten, antar token er ugyldig
             return res.json({ "verified" : "false"});
         } else {
-            // Check if the token is still valid
+            // Sjekk om token fremdeles er gyldig
             let checkQuery = "SELECT gjelderfor FROM login_token WHERE gjelderfor in (SELECT brukerid as gjelderfor FROM bruker WHERE email = ?) AND token = ? AND utlopsdato > NOW();";
             let checkQueryFormat = mysql.format(checkQuery, [decryptedToken.toString(cryptojs.enc.Utf8), req.body.token]);
 
@@ -29,15 +29,13 @@ router.post('/auth', async (req, res) => {
                     return res.json({ "verified" : "false"});
                 }
                 if(results[0] !== undefined) {
-                    // Token was found and is not currently expired
+                    // Token funnet og har ikke utløpt
                     return res.json({ "verified" : "true"});
                 } else {
-                    // Token was not found
+                    // Token ikke funnet
                     return res.json({ "verified" : "false"});
                 }
             });
-
-
         }
     } else {
         return res.json({ "verified" : "false"});
@@ -53,10 +51,10 @@ router.post('/token', async (req, res) => {
         const validation = hexValidation({token : req.body.token});
         
         if(validation.error) {
-            // Validation error for the token
+            // Validering feilet for token
             return res.json({ "verified" : "false"});
         } else {
-            // Check if the token is still valid
+            // Sjekk om token fremdeles er gyldig
             let checkQuery = "SELECT gjelderfor FROM glemtpassord_token WHERE token = ? AND utlopsdato > NOW()";
             let checkQueryFormat = mysql.format(checkQuery, [req.body.token]);
 
@@ -66,15 +64,13 @@ router.post('/token', async (req, res) => {
                     return res.json({ "verified" : "false"});
                 }
                 if(results[0] !== undefined) {
-                    // Token was found and is not currently expired
+                    // Token funnet og har ikke utløpt
                     return res.json({ "verified" : "true"});
                 } else {
-                    // Token was not found
+                    // Token ble ikke funnet
                     return res.json({ "verified" : "false"});
                 }
             });
-
-
         }
     } else {
         return res.json({ "verified" : "false"});

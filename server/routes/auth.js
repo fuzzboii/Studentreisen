@@ -19,7 +19,7 @@ Order
 */
 
 router.get('/register', async (req, res) => {
-    res.status(404);
+    res.status(404).send();
 });
 
 router.post('/register', async (req, res) => {
@@ -88,7 +88,7 @@ Order
 */
 
 router.get('/login', async (req, res) => {
-    res.status(404);
+    res.status(404).send();;
 });
 
 router.post('/login', async (req, res) => {
@@ -96,46 +96,49 @@ router.post('/login', async (req, res) => {
         const validation = loginValidation(req.body);
         
         if(validation.error) {
-            // If the validation failed we send back an error message containing information provided by joi
-            // Email validation
+            // Om validering feilet sender vi tilbake en feilmelding med informasjon gitt ut av Joi
+            
+            // E-post validering
             if(validation.error.details[0].path[0] == "email") {
                 if(validation.error.details[0].type == "string.empty") {
-                    // The email field is empty
+                    // E-post feltet er tomt
                     return res.json({ "status" : "error", "message" : "E-post er ikke fylt inn" });
                 } else if(validation.error.details[0].type == "string.email") {
-                    // Invalid email entered
+                    // E-posten er ikke en gyldig e-post
                     return res.json({ "status" : "error", "message" : "E-post adressen er ugyldig" });
                 } else if(validation.error.details[0].type == "any.required") {
-                    // A required field is not present
+                    // E-post feltet er ikke tilstede i forespørselen
                     return res.json({ "status" : "error", "message" : "Ett eller flere felt mangler" });
                 }
-            // Password validation (Don't check if it's valid according to the password rules, just if it's filled in and of the correct type)
+
+            // Passord-validering, sjekker ikke om det er tilstrekkelig i følge reglene, dette gjøres ved registrering
             } else if(validation.error.details[0].path[0] == "pwd") {
                 if(validation.error.details[0].type == "string.empty") {
-                    // The email field is empty
+                    // Passord-feltet er tomt
                     return res.json({ "status" : "error", "message" : "Passordet er ikke fylt inn" });
                 } else if(validation.error.details[0].type == "any.required") {
-                    // A required field is not present
+                    // Passord-feltet er ikke tilstede i forespørselen
                     return res.json({ "status" : "error", "message" : "Ett eller flere felt mangler" });
                 }
-            // Remember validation
+
+            // "Husk meg" validering
             } else if(validation.error.details[0].path[0] == "remember") {
                 if(validation.error.details[0].type == "any.required") {
-                    // A required field is not present
+                    // "Husk meg" feltet er ikke tilstede i forespørselen
                     return res.json({ "status" : "error", "message" : "Ett eller flere felt mangler" });
                 }
             }
 
-            // An uncaught validation error, send the full message
+            // Et ukjent validerings-problem oppstod, sender fulle meldingen til bruker
             return res.json({ "status" : "error", "message" : validation.error.details[0].message });
         } else {
-            // Check if the PIN or email already exists
+            // Henter brukerinfo utifra oppgitt e-post
             let checkQuery = "SELECT brukerid, email, pwd FROM bruker WHERE email = ?";
             let checkQueryFormat = mysql.format(checkQuery, [req.body.email]);
 
             connection.query(checkQueryFormat, (error, results) => {
                 if (error) {
-                    console.log("An error occurred while checking for matches while logging in, details: " + error.errno + ", " + error.sqlMessage)
+                    console.log("En feil oppstod under sjekking av brukerinfo ved innlogging, detaljer: " + error.errno + ", " + error.sqlMessage)
                     return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                 }
 
@@ -143,32 +146,32 @@ router.post('/login', async (req, res) => {
                     const validatePass = bcrypt.compareSync(req.body.pwd, results[0].pwd);
                     
                     if(validatePass) {
-                        // User authenticated
+                        // Bruker autentisert
 
-                        // Alter the expiry date depending on the "Remember me" option
+                        // Endrer utløpsdatoen utifra "Husk meg"-feltet
                         let date = new Date();
 
                         if(req.body.remember) {
-                            // Remember the user for 72 hours
+                            // Husk brukeren i 72 timer
                             date.setTime(date.getTime() + ((60 * 72) * 60 * 1000));
                         } else {
-                            // Remember the user for 3 hours
+                            // Husk brukeren i 3 timer
                             date.setTime(date.getTime() + ((60 * 3) * 60 * 1000));
                         }
 
-                        // Create and assign a token
+                        // Opprett en token utifra e-posten til brukeren
                         const token = cryptojs.AES.encrypt(results[0].email, process.env.TOKEN_SECRET);
 
-                        // Add the token to the database
+                        // Legg til nye token i databasen med utløpsdato ovenfor
                         let insertQuery = "INSERT INTO login_token(gjelderfor, token, utlopsdato) VALUES(?, ?, ?)";
                         let insertQueryFormat = mysql.format(insertQuery, [results[0].brukerid, token.toString(), date]);
                 
                         connection.query(insertQueryFormat, (error, results) => {
                             if (error) {
-                                console.log("An error occurred while adding a token to a user, details: " + error.errno + ", " + error.sqlMessage)
+                                console.log("En feil oppstod under oppretting av login_token for en bruker, detaljer: " + error.errno + ", " + error.sqlMessage)
                                 return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                             }
-                            // Returning the number of affected rows to indicate the insert went OK
+
                             if(results.affectedRows > 0) {
                                 return res.json({"status" : "success", "message" : "OK", "authtoken" : token.toString()});
                             } else {
@@ -176,11 +179,11 @@ router.post('/login', async (req, res) => {
                             }
                         });
                     } else {
-                        // Wrong password
+                        // Feil passord
                         res.json({ "status" : "error", "message" : "Feil brukernavn eller passord" });
                     }
                 } else {
-                    // Wrong email
+                    // Feil e-post
                     return res.json({ "status" : "error", "message" : "Feil brukernavn eller passord"});
                 }
             });

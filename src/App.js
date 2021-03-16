@@ -9,6 +9,7 @@ import Profile from './pages/Profile/Components/Profile';
 import Home from './pages/Frontpage/Components/Home';
 import Navbar from './pages/Navbar/Components/Navbar';
 import Footer from './global/Components/Footer';
+import Tools from './pages/Tools/Components/Tools';
 import Course from './pages/Coursepage/Components/Course';
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
           <Route path = "/course" component = {Course} />
           <Route path = "/register" component = {Register} />
           <Route path = "/reset" component = {Reset} />
+          <Route path = "/tools" component = {Tools} />
           <Route path = "/profile" component = {Profile} />
         </Switch>
       <Footer />

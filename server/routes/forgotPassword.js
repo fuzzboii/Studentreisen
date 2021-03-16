@@ -15,33 +15,38 @@ router.post('/forgotPassword', async (req, res) => {
         const validation = emailValidation(req.body);
         
         if(validation.error) {
-            // If the validation failed we send back an error message containing information provided by joi
+            // Om valideringen feiler sender vi tilbake en feilmelding utifra informasjonen utgitt av Joi
             if(validation.error.details[0].path[0] == "epost") {
                 if(validation.error.details[0].type == "string.empty") {
-                    // The email field is empty
+                    // E-post feltet er tomt
                     return res.json({ "status" : "error", "message" : "E-post er ikke fylt inn" });
                 } else if(validation.error.details[0].type == "string.email") {
-                    // Invalid email entered
+                    // E-posten oppgitt er ugyldig
                     return res.json({ "status" : "error", "message" : "E-post adressen er ugyldig" });
+                } else if(validation.error.details[0].type == "any.required") {
+                    // E-post feltet er ikke tilstede i forespørselen
+                    return res.json({ "status" : "error", "message" : "Ett eller flere felt mangler" });
                 }
             }
 
-            // An uncaught validation error, send the full message
+            // Et ukjent validerings-problem oppstod, sender fulle meldingen til bruker
             return res.json({ "status" : "error", "message" : validation.error.details[0].message });
         } else {
-            // Check if the email exists in the database
-
+            // Sjekk om e-posten eksisterer i databasen
             let checkQuery = "SELECT brukerid, email FROM bruker WHERE email = ?";
             let checkQueryFormat = mysql.format(checkQuery, [req.body.epost]);
 
             connection.query(checkQueryFormat, (error, selResults) => {
                 if (error) {
+                    console.log("En feil oppstod ved henting av brukerinfo, detaljer: " + error.errno + ", " + error.sqlMessage)
                     return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                 }
 
                 if(selResults[0] !== undefined) {
+                    // En e-post ble funnet, genererer en Hex kode som brukes til å identifisere bruker ved tilbakestilling
                     crypto.randomBytes(20, (err, buf) => {
                         if(err) {
+                            console.log("En feil oppstod ved generering glemtpassord_token, detaljer: " + err)
                             return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                         }
 
@@ -50,9 +55,11 @@ router.post('/forgotPassword', async (req, res) => {
 
                         connection.query(insertTokenQueryFormat, (error, insResults) => {
                             if (error) {
+                                console.log("En feil oppstod ved oppretting av glemtpassord_token, detaljer: " + error.errno + ", " + error.sqlMessage)
                                 return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                             }
                             
+                            // Oppretter tilkobling mot Gmail
                             const mailTransporter = nodemailer.createTransport({
                                 service: 'gmail',
                                 auth: {
@@ -61,6 +68,7 @@ router.post('/forgotPassword', async (req, res) => {
                                 }
                             });
 
+                            // Oppretter e-posten som sendes til bruker
                             const mailOptions = {
                                 from: 'usnstudentreisen@gmail.com',
                                 to: selResults[0].email,
@@ -71,8 +79,10 @@ router.post('/forgotPassword', async (req, res) => {
                                         'Mvh\nStudentreisen'
                             };
 
+                            // Sender e-posten
                             mailTransporter.sendMail(mailOptions, (err, mailResponse) => {
                                 if(err) {
+                                    console.log("En feil oppstod ved utsendelse av e-post, detaljer: " + err)
                                     return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                                 } else {
                                     return res.json({ "status" : "success", "message" : "ok" });
@@ -104,16 +114,16 @@ router.post('/resetPassword', async (req, res) => {
         const validation = pwValidation({password: req.body.password, password2: req.body.password2});
         
         if(validation.error) {
-            // If the validation failed we send back an error message containing information provided by joi
+            // Om valideringen feiler sender vi tilbake en feilmelding utifra informasjonen utgitt av Joi
             if(validation.error.details[0].type == "string.empty") {
-                // The email field is empty
+                // Ett av feltene er ikke fylt inn
                 return res.json({ "status" : "error", "message" : "Et av feltene er ikke fylt inn" });
             } else if(validation.error.details[0].type == "any.required") {
-                // A required field is not present
+                // Ett av feltene er ikke tilstede i forespørselen
                 return res.json({ "status" : "error", "message" : "Et eller flere felt mangler" });
             }
 
-            // An uncaught validation error, send the full message
+            // Et ukjent validerings-problem oppstod, sender fulle meldingen til bruker
             return res.json({ "status" : "error", "message" : validation.error.details[0].message });
         } else {
             // Passord OK, hasher og henter brukerid
@@ -165,7 +175,8 @@ router.post('/resetPassword', async (req, res) => {
                                         if(delLResults.affectedRows > 0) {
                                             return res.json({ "status" : "success", "message" : "OK" });
                                         } else {
-                                            return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                                            // Ingen aktive login tokens funnet, sender fremdeles OK til bruker
+                                            return res.json({ "status" : "success", "message" : "OK" });
                                         }
                                     });
                                 } else {

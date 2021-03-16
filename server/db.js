@@ -13,13 +13,15 @@ try {
     });
     
     connection.connect((error) => {
-        if (error) throw error;
-        console.log('Connection to the database established');
+        if (!error) {
+            console.log('Tilkoblet databasen');
+        } else {
+            console.log("En feil oppstod ved tilkobling mot databasen: " + error.code);
+        }
     });
 
 } catch (error) {
-    console.log("An error occurred while connecting to the database");
-    console.log(error);
+    console.log("En feil oppstod ved tilkobling mot databasen: " + error.code);
 }
 
 
