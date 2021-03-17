@@ -56,7 +56,7 @@ class Reset extends Component {
             alertSeverity: "error"
         });
 
-        if(this.state.password == this.state.password2) {
+        if(this.state.password === this.state.password2) {
             // Definerer objektet med dataen vi sender til server
             const data = {
                 password: this.state.password,
