@@ -1,26 +1,49 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import '../CSS/Navbar.css';
-import favicon from '../../../assets/usn.png';
+
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import Button from "@material-ui/core/Button";
 import { makeStyles } from '@material-ui/core/styles';
 
+import '../CSS/Navbar.css';
+import favicon from '../../../assets/usn.png';
+import CookieService from '../../../global/Services/CookieService';
+import AuthService from '../../../global/Services/AuthService';
+
 function Navbar() {
     const [click, setClick] = useState(false);
     const [button, setButton] = useState(true);
+    const [auth, setAuth] = useState(false);
+
+    // Henter authtoken-cookie
+    const token = CookieService.get("authtoken");
+
+    if(token !== undefined) {
+      // Om token eksisterer sjekker vi mot serveren om brukeren har en gyldig token
+      AuthService.isAuthenticated(token).then(res => {
+        if(!res) {
+        // Sletter authtoken om token eksisterer lokalt men ikke er gyldig på server
+        CookieService.remove("authtoken");
+        }
+        setAuth(res);
+      });
+    }
     
     const handleClick = () => setClick(!click);
     const closeMobileMenu = () => setClick(false);
 
     const showButton = () => {
-        if(window.innerWidth <= 1024) {
+        if(window.innerWidth <= 960) {
             setButton(false);
-            document.getElementById("loggBtnMobil").style.visibility = "visible";
+            if (auth) {
+              document.getElementById("loggBtnMobil").style.visibility = "visible";
+            }
         } else {
             setButton(true);
-            document.getElementById("loggBtnMobil").style.visibility = "collapse";
+            if (auth) {
+              document.getElementById("loggBtnMobil").style.visibility = "collapse";
+            }
         }
     };
 
@@ -57,7 +80,7 @@ function Navbar() {
         fontSize: '1.5rem',
         padding: '0.5rem 1rem',
         display: 'flex',
-        height: '100%',
+        height: '100%'
       },
 
       loggbtn: {
@@ -66,7 +89,17 @@ function Navbar() {
         padding: '0.5rem 1rem',
         display: 'grid',
         minWidth: '7rem',
-        transform: 'translate(45vw)',
+        transform: 'translate(45vw)'
+      },
+
+      loggbtnNoAuth: {
+        color: '#fff',
+        fontSize: '1.5rem',
+        padding: '0.5rem 1rem',
+        display: 'grid',
+        minWidth: '7rem',
+        transform: 'translate(30vw)',
+        textDecoration: 'none'
       },
 
       loggbtnmobil: {
@@ -76,10 +109,6 @@ function Navbar() {
         display: 'flex',
         height: '100%',
         visibility: 'collapse'
-      },
-
-      menu: {
-
       }
     });
     
@@ -95,13 +124,15 @@ function Navbar() {
                 onClick={closeMobileMenu}>
                 <img className="navbar-logo-png" src={favicon} alt="USN" />
               </Link>
+              {auth && 
               <div className='menu-icon' onClick={handleClick}>
                 <i className={click? 'fas fa-times' : 'fas fa-bars'} 
                   onClick={click? shrink : expand}>
                 </i>
               </div>
+              }
               
-              <div className={click ? 'nav-menu active' : 'nav-menu'}>
+              {auth && <div className={click ? 'nav-menu active' : 'nav-menu'}>
                 <Button
                   className={classes.loggbtnmobil}
                   id='loggBtnMobil'>
@@ -172,14 +203,16 @@ function Navbar() {
                   className={classes.navbtn}>
                   CV
                 </Button>
-              </div>
+              </div> }
               
-              <Link
+              {auth && <Link
                 to='/Profile'>
                 <i className="far fa-user" />
-              </Link>
-              {button && <Button className={classes.loggbtn} > LOGG UT </Button> }
-            </div> 
+              </Link> }
+              {button && auth && <Button onClick={CookieService.remove("authtoken")} className={classes.loggbtn} > LOGG UT </Button> }
+              {button && !auth && <Link className={classes.loggbtnNoAuth} > REGISTRER </Link> }
+              {!auth && <Link to='/Login' className={classes.loggbtnNoAuth} > LOGG INN </Link> }
+            </div>
           </nav>
         </>
       );

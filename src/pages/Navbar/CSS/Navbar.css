@@ -115,7 +115,7 @@
 }
 
 /* Laptop / Liten skjerm,, 720p */
-@media only screen and (min-width: 1024px) {
+@media only screen and (min-width: 960px) {
   .navbar {
     position: sticky;
   }
