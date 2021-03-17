@@ -132,7 +132,7 @@ router.post('/register', async (req, res) => {
 
                                 // Legg til nye token i databasen med utløpsdato ovenfor
                                 let insertQuery = "INSERT INTO login_token(gjelderfor, token, utlopsdato) VALUES(?, ?, ?)";
-                                let insertQueryFormat = mysql.format(insertQuery, [results[0].insertId, token.toString(), date]);
+                                let insertQueryFormat = mysql.format(insertQuery, [results.insertId, token.toString(), date]);
                         
                                 connection.query(insertQueryFormat, (error, results) => {
                                     if (error) {
