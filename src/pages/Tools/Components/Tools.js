@@ -38,22 +38,22 @@ class Tools extends Component {
         const token = CookieService.get("authtoken");
 
         if(token !== undefined) {
-        // Om token eksisterer sjekker vi mot serveren om brukeren har en gyldig token
-        AuthService.isAuthenticated(token).then(res => {
-            if(!res) {
-            // Sletter authtoken om token eksisterer lokalt men ikke er gyldig på server
-            CookieService.remove("authtoken");
-            }
-            this.setState({
-            authenticated : res,
-            loading: false
+            // Om token eksisterer sjekker vi mot serveren om brukeren har en gyldig token
+            AuthService.isAuthenticated(token).then(res => {
+                if(!res) {
+                    // Sletter authtoken om token eksisterer lokalt men ikke er gyldig på server
+                    CookieService.remove("authtoken");
+                }
+                this.setState({
+                    authenticated : res,
+                    loading: false
+                });
             });
-        });
         } else {
-        this.setState({
-            authenticated : false,
-            loading: false
-        });
+            this.setState({
+                authenticated : false,
+                loading: false
+            });
         }
     }
 
