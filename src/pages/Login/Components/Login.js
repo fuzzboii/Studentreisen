@@ -115,8 +115,9 @@ class Login extends Component {
           alertDisplay: "",
           alertText: "En intern feil oppstod, vennligst forsøk igjen senere"
         });
+      })
       // Utføres alltid uavhengig av andre resultater
-      }).finally( () => {
+      .finally( () => {
         // Gjør Logg inn knappen tilgjengelig igjen om bruker ikke er autentisert over
         if(!this.state.authenticated) {
           this.setState({
@@ -166,8 +167,9 @@ class Login extends Component {
               forgotAlertDisplay: "",
               forgotAlertText: "En intern feil oppstod, vennligst forsøk igjen senere"
             });
+          })
           // Utføres alltid uavhengig av andre resultater
-          }).finally( () => {
+          .finally( () => {
             // Gjør "Tilbakestill passord"-knappen tilgjengelig igjen
             this.setState({
               forgotBtnDisabled: false
