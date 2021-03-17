@@ -15,7 +15,7 @@ function Navbar() {
     const closeMobileMenu = () => setClick(false);
 
     const showButton = () => {
-        if(window.innerWidth <= 1280) {
+        if(window.innerWidth <= 1024) {
             setButton(false);
             document.getElementById("loggBtnMobil").style.visibility = "visible";
         } else {
@@ -31,6 +31,8 @@ function Navbar() {
     const expand = () => document.getElementById("bar").style.paddingBottom = "60vh";
     const shrink = () => document.getElementById("bar").style.paddingBottom = "0vh";
 
+    window.addEventListener('resize', closeMobileMenu);
+    window.addEventListener('resize', shrink);
     window.addEventListener('resize', showButton);
 
     const [anchorKurs, setAnchorKurs] = React.useState(null);
