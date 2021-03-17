@@ -33,6 +33,7 @@ function Navbar() {
     const handleClick = () => setClick(!click);
     const closeMobileMenu = () => setClick(false);
 
+    // Testing på om en "LOGG UT"-knapp skal vises i navbar eller i meny
     const showButton = () => {
         if(window.innerWidth <= 960) {
             setButton(false);
@@ -51,13 +52,16 @@ function Navbar() {
       showButton();
     }, []); 
 
+    // Legger til eller fjerner padding under navbar, for å skyve innholdet under nedover. //
     const expand = () => document.getElementById("bar").style.paddingBottom = "60vh";
     const shrink = () => document.getElementById("bar").style.paddingBottom = "0vh";
 
+    // Lytt etter resizing og juster deretter
     window.addEventListener('resize', closeMobileMenu);
     window.addEventListener('resize', shrink);
     window.addEventListener('resize', showButton);
 
+    // Håndtering av klikk på meny-knapper
     const [anchorKurs, setAnchorKurs] = React.useState(null);
     const handleClickAnchorKurs = event => {
     setAnchorKurs(event.currentTarget);
@@ -65,7 +69,6 @@ function Navbar() {
     const handleCloseKurs = () => {
     setAnchorKurs(null);
     };
-
     const [anchorSeminarer, setAnchorSeminarer] = React.useState(null);
     const handleClickAnchorSeminarer = event => {
     setAnchorSeminarer(event.currentTarget);
@@ -74,6 +77,7 @@ function Navbar() {
     setAnchorSeminarer(null);
     };
 
+    // Styling av Material UI-elementer
     const useStyles = makeStyles({
       navbtn: {
         color: '#fff',
@@ -111,7 +115,6 @@ function Navbar() {
         visibility: 'collapse'
       }
     });
-    
     const classes = useStyles();
 
     return (
@@ -124,6 +127,7 @@ function Navbar() {
                 onClick={closeMobileMenu}>
                 <img className="navbar-logo-png" src={favicon} alt="USN" />
               </Link>
+              {/* Første av en serie tester i 'navbar-container' på om bruker er innlogget */}
               {auth && 
               <div className='menu-icon' onClick={handleClick}>
                 <i className={click? 'fas fa-times' : 'fas fa-bars'} 
