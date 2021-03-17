@@ -1,19 +1,47 @@
 // Validering
 const Joi = require('joi');
+const JoiPwd = require('joi-password-complexity');
 
-// Register validation
+// Register validering
 const registerValidation = (data) => {
     const validation_schema = Joi.object({
-        status: Joi.number().required(),
-        fnavn: Joi.string().alphanum().required(),
-        enavn: Joi.string().alphanum().required(),
-        telefon: Joi.string().alphanum().required(),
         email: Joi.string().email({ minDomainSegments: 2 }).required(),
-        pwd: Joi.string().required()
+        fnavn: Joi.string().required().min(1).max(25),
+        enavn: Joi.string().required().min(1).max(50),
+        password: Joi.required(),
+        password2: Joi.required()
     });
 
-    // Data validation before we continue creating the user
+    // Validerer dataen i forhold til skjemaet og returnerer svaret
     return validation_schema.validate(data);
+}
+
+const passwordValidation = (data) => {
+    const validation_schema = Joi.object({
+        password: Joi.string().required(),
+        password2: Joi.string().required()
+    });
+
+    // Validerer dataen i forhold til skjemaet
+    var validation = validation_schema.validate(data);
+
+    if(validation.error) {
+        // Hvis ett av feltene ikke er tilstede eller er av feil type
+        return validation;
+    }
+
+    const passComplexity = {
+        min: 8,
+        max: 250,
+        lowerCase: 1,
+        upperCase: 1,
+        numeric: 1,
+        symbol: 0,
+        requirementCount: 3,
+    };
+
+    // Validerer dataen i forhold til skjemaet og returnerer svaret
+    return JoiPwd(passComplexity, "Password").validate(data.password);
 }
 
 // Login validering
@@ -48,19 +76,8 @@ const hexValidation = (data) => {
     return validation_schema.validate(data);
 }
 
-// Password validering
-const pwValidation = (data) => {
-    const validation_schema = Joi.object({
-        password: Joi.string().required(),
-        password2: Joi.string().required()
-    });
-
-    // Validerer dataen i forhold til skjemaet og returnerer svaret
-    return validation_schema.validate(data);
-}
-
 module.exports.registerValidation = registerValidation;
+module.exports.passwordValidation = passwordValidation;
 module.exports.loginValidation = loginValidation;
 module.exports.emailValidation = emailValidation;
 module.exports.hexValidation = hexValidation;
-module.exports.pwValidation = pwValidation;
