@@ -10,7 +10,7 @@ import axios from "axios";
 import CookieService from '../../../global/Services/CookieService';
 
 
-const GetAllData = () => {
+function GetAllData() {
     const token = {
         token: CookieService.get("authtoken")
     }
