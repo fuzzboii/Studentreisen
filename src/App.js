@@ -10,7 +10,7 @@ import Home from './pages/Frontpage/Components/Home';
 import Navbar from './pages/Navbar/Components/Navbar';
 import Footer from './global/Components/Footer';
 import Tools from './pages/Tools/Components/Tools';
-import Course from './pages/Coursepage/Components/Course';
+import Course from './pages/Coursepage/Components/Overview';
 import Seminar from './pages/Seminar/Components/Seminar';
 
 function App() {
@@ -21,7 +21,7 @@ function App() {
         <Switch>
           <Route path = "/" exact component = {Home} />
           <Route path = "/login" component = {Login} />
-          <Route path = "/course" component = {Course} />
+          <Route path = "/courseOverview" component = {Course} />
           <Route path = "/register" component = {Register} />
           <Route path = "/reset" component = {Reset} />
           <Route path = "/tools" component = {Tools} />
