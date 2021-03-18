@@ -11,6 +11,7 @@ import Navbar from './pages/Navbar/Components/Navbar';
 import Footer from './global/Components/Footer';
 import Tools from './pages/Tools/Components/Tools';
 import Course from './pages/Coursepage/Components/Overview';
+import Seminar from './pages/Seminar/Components/Seminar';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path = "/reset" component = {Reset} />
           <Route path = "/tools" component = {Tools} />
           <Route path = "/profile" component = {Profile} />
+          <Route path = "/seminar" component = {Seminar} />
         </Switch>
       <Footer />
     </Router>
