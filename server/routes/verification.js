@@ -17,28 +17,28 @@ router.post('/auth', async (req, res) => {
         
         if(validation.error) {
             // Validering feilet for den dekrypterte e-posten, antar token er ugyldig
-            return res.json({ "verified" : "false"});
+            return res.json({ "authenticated" : false});
         } else {
             // Sjekk om token fremdeles er gyldig
-            let checkQuery = "SELECT gjelderfor FROM login_token WHERE gjelderfor in (SELECT brukerid as gjelderfor FROM bruker WHERE email = ?) AND token = ? AND utlopsdato > NOW();";
+            let checkQuery = "SELECT gjelderfor, niva FROM login_token, bruker WHERE gjelderfor in (SELECT brukerid as gjelderfor FROM bruker WHERE email = ?) AND gjelderfor = brukerid AND token = ? AND utlopsdato > NOW();";
             let checkQueryFormat = mysql.format(checkQuery, [decryptedToken.toString(cryptojs.enc.Utf8), req.body.token]);
 
             connection.query(checkQueryFormat, (error, results) => {
                 if (error) {
                     console.log("An error occurred while checking for matches while authenticating, details: " + error.errno + ", " + error.sqlMessage)
-                    return res.json({ "verified" : "false"});
+                    return res.json({ "authenticated" : "false"});
                 }
                 if(results[0] !== undefined) {
                     // Token funnet og har ikke utløpt
-                    return res.json({ "verified" : "true"});
+                    return res.json({ "authenticated" : true, "usertype" : results[0].niva });
                 } else {
                     // Token ikke funnet
-                    return res.json({ "verified" : "false"});
+                    return res.json({ "authenticated" : false});
                 }
             });
         }
     } else {
-        return res.json({ "verified" : "false"});
+        return res.json({ "authenticated" : false});
     }
 });
 

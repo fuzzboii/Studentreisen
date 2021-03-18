@@ -56,18 +56,7 @@ function Profile() {
                     <h3 className='profile-subitem' > Innstilling 3 </h3>
                     <Button className={classes.profileButton}> Endre </Button>
                 </div>
-
-                <div className='profile-item' >
-                    <h2 className='profile-subheader' > Erfaringer </h2>
-                    <h3 className='profile-subitem' > Hva tenker vi her? </h3>
-                    <Button className={classes.profileButton}> Endre </Button>
-                </div>
-
-                <div className='profile-item' >
-                    <h2 className='profile-subheader' > CV </h2>
-                    <Button className={classes.profileButton}> Rediger </Button>
-                    <Button className={classes.profileButton}> Last ned </Button>
-                </div>
+                
             </div>
 
         </div>
