@@ -13,7 +13,7 @@ import NoAccess from '../../../global/Components/NoAccess';
 import CookieService from '../../../global/Services/CookieService';
 import AuthService from '../../../global/Services/AuthService';
 
-class Tools extends Component {
+class Tools extends Component { 
     constructor(props) {
         super(props);
         
