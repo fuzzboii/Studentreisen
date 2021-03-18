@@ -1,5 +1,5 @@
 const { connection } = require('../db');
-const { emailValidation, pwValidation } = require('../validation');
+const { emailValidation, passwordValidation } = require('../validation');
 const mysql = require('mysql');
 const router = require('express').Router();
 const bcrypt = require('bcryptjs');
@@ -111,7 +111,7 @@ router.get('/resetPassword', async (req, res) => {
 
 router.post('/resetPassword', async (req, res) => {
     if(req.body.password !== undefined && req.body.password2 !== undefined && req.body.token !== undefined) {
-        const validation = pwValidation({password: req.body.password, password2: req.body.password2});
+        const validation = passwordValidation({password: req.body.password, password2: req.body.password2});
         
         if(validation.error) {
             // Om valideringen feiler sender vi tilbake en feilmelding utifra informasjonen utgitt av Joi
@@ -121,7 +121,19 @@ router.post('/resetPassword', async (req, res) => {
             } else if(validation.error.details[0].type == "any.required") {
                 // Ett av feltene er ikke tilstede i forespørselen
                 return res.json({ "status" : "error", "message" : "Et eller flere felt mangler" });
-            }
+            } else if(validation.error.details[0].type == "passwordComplexity.tooShort") {
+                // Ett av feltene er ikke tilstede i forespørselen
+                return res.json({ "status" : "error", "message" : "Passordet må være minimum 8 tegn langt med 1 liten bokstav, 1 stor bokstav og 1 tall" });
+            } else if(validation.error.details[0].type == "passwordComplexity.tooLong") {
+                // Ett av feltene er ikke tilstede i forespørselen
+                return res.json({ "status" : "error", "message" : "Passordet kan ikke være over 250 tegn" });
+            } else if(validation.error.details[0].type == "passwordComplexity.uppercase") {
+                // Ett av feltene er ikke tilstede i forespørselen
+                return res.json({ "status" : "error", "message" : "Passordet må være minimum 8 tegn langt med 1 liten bokstav, 1 stor bokstav og 1 tall" });
+            } else if(validation.error.details[0].type == "passwordComplexity.numeric") {
+                // Ett av feltene er ikke tilstede i forespørselen
+                return res.json({ "status" : "error", "message" : "Passordet må være minimum 8 tegn langt med 1 liten bokstav, 1 stor bokstav og 1 tall" });
+            } 
 
             // Et ukjent validerings-problem oppstod, sender fulle meldingen til bruker
             return res.json({ "status" : "error", "message" : validation.error.details[0].message });

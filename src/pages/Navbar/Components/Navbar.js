@@ -22,11 +22,12 @@ function Navbar() {
     if(token !== undefined) {
       // Om token eksisterer sjekker vi mot serveren om brukeren har en gyldig token
       AuthService.isAuthenticated(token).then(res => {
-        if(!res) {
-        // Sletter authtoken om token eksisterer lokalt men ikke er gyldig på server
-        CookieService.remove("authtoken");
+        if(!res.authenticated) {
+          // Sletter authtoken om token eksisterer lokalt men ikke er gyldig på server
+          CookieService.remove("authtoken");
+        } else {
+          setAuth(res.authenticated);
         }
-        setAuth(res);
       });
     }
     

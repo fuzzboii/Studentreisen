@@ -1,50 +1,174 @@
-import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
-import { Button, FormControl, InputLabel, Input } from '@material-ui/core';
+// React-spesifikt
 import { Component } from "react";
 import { Redirect } from "react-router-dom";
-import axios from 'axios';
-import '../CSS/Register.css';
-import usnlogo from '../../../assets/usn.png';
-import { useState } from "react";
 
+// 3rd-party Packages
+import { Button, FormControl, InputLabel, Input } from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
+import axios from 'axios';
+
+// Studentreisen-assets og komponenter
 import Loader from '../../../global/Components/Loader';
 import CookieService from '../../../global/Services/CookieService';
 import AuthService from '../../../global/Services/AuthService';
+import '../CSS/Register.css';
+import usnlogo from '../../../assets/usn.png';
 
 class Register extends Component {
   constructor(props) {
     super(props)
-    // Login-spesifikke states, delt opp i før-visning autentisering, login, alert og glemt passord
+    // Login-spesifikke states, delt opp i før-visning autentisering, register, alert
     this.state = {loading : true, authenticated : false, 
-                  email : "", pwd : "", remember : false, loginDisabled : false, loginText : "Logg inn", loginOpacity: "1",
-                  alertDisplay : "none", alertText : "",
-                  forgotEmail : "", forgotDisplay : false, forgotBtnDisabled : false, forgotAlertDisplay : "none", forgotAlertText : "", forgotAlertSeverity : "error"}
+                  email : "", fnavn : "", enavn : "", pwd : "", pwd2 : "", registerDisabled : false, registerText : "Registrer bruker", registerOpacity: "1",
+                  alertDisplay : "none", alertText : "", alertSeverity : "error"}
   }
-  handleRegister = e => {
-  // Stopper siden fra å laste inn på nytt
-  e.preventDefault();
 
-  // Slår midlertidig av "Registrer"-knappen og endrer teksten til "Vennligst vent"
-  this.setState({
-    registerDisabled: true,
-    registerText: "Vennligst vent",
-    registerOpacity: "0.6"
-  });
 
-  // Definerer objektet med dataen vi sender til server
-  const data = {
-    email: this.state.email,
-    pwd: this.state.pwd,
-    fname: this.state.fname,
-    ename: this.state.ename,
-    tel: this.state.telefon
+  // Utføres når bruker gjør en handling i input-feltet for e-post
+  onEmailChange = e => {
+    this.setState({
+      email: e.target.value,
+      alertDisplay: "none",
+      alertText: ""
+    });
   };
 
-  // Axios POST request
-  axios
-    // Henter API URL fra .env og utfører en POST request med dataen fra objektet over
-    // Axios serialiserer objektet til JSON selv
-    .post(process.env.REACT_APP_APIURL + "/auth/register", data)
+  // Utføres når bruker gjør en handling i input-feltet for fornavn
+  onFnavnChange = e => {
+    this.setState({
+      fnavn: e.target.value,
+      alertDisplay: "none",
+      alertText: ""
+    });
+  };
+
+  // Utføres når bruker gjør en handling i input-feltet for etternavn
+  onEnavnChange = e => {
+    this.setState({
+      enavn: e.target.value,
+      alertDisplay: "none",
+      alertText: ""
+    });
+  };
+
+  // Utføres når bruker gjør en handling i input-feltet for passord
+  onPwdChange = e => {
+    this.setState({
+      pwd: e.target.value,
+      alertDisplay: "none",
+      alertText: ""
+    });
+  };
+
+  // Utføres når bruker gjør en handling i input-feltet for bekreft passord
+  onPwd2Change = e => {
+    this.setState({
+      pwd2: e.target.value,
+      alertDisplay: "none",
+      alertText: ""
+    });
+  };
+
+  handleRegister = e => {
+    // Stopper siden fra å laste inn på nytt
+    e.preventDefault();
+
+    // Slår midlertidig av "Registrer"-knappen og endrer teksten til "Vennligst vent"
+    this.setState({
+      registerDisabled: true,
+      registerText: "Vennligst vent",
+      registerOpacity: "0.6"
+    });
+
+    // Sjekker om passordene er like
+    if(this.state.pwd === this.state.pwd2) {
+      // Definerer objektet med dataen vi sender til server
+      const data = {
+        email: this.state.email,
+        password: this.state.pwd,
+        password2: this.state.pwd2,
+        fnavn: this.state.fnavn,
+        enavn: this.state.enavn
+      };
+
+      var loggedin = false;
+
+      // Axios POST request
+      axios
+        // Henter API URL fra .env og utfører en POST request med dataen fra objektet over
+        // Axios serialiserer objektet til JSON selv
+        .post(process.env.REACT_APP_APIURL + "/auth/register", data)
+        // Utføres ved mottatt resultat
+        .then(res => {
+          if(res.data.message === "OK") {
+            // Mottok OK fra server
+            loggedin = true;
+            if(res.data.authtoken) {
+              // Mottok også authtoken, sender bruker til forsiden med cookie satt
+              let date = new Date();
+              date.setTime(date.getTime() + ((60 * 3) * 60 * 1000));
+
+              const options = { path: "/", expires: date };
+              CookieService.set('authtoken', res.data.authtoken, options);
+              
+              // Brukeren har blitt opprettet, sender til forsiden  
+              this.setState({
+                alertDisplay: "",
+                alertText: "Brukeren har blitt opprettet og du er nå innlogget, du blir sendt til forsiden om få sekunder",
+                alertSeverity: "success"
+              });
+
+              setTimeout(() => {
+                this.props.history.push('/');
+              }, 5000);
+            } else {
+              // Brukeren ble opprettet, men mottok ikke en authtoken, sender til login
+              this.setState({
+                alertDisplay: "",
+                alertText: "Brukeren har blitt opprettet, du blir sendt til side for innlogging om få sekunder",
+                alertSeverity: "success"
+              });
+
+              setTimeout(() => {
+                this.props.history.push('/login');
+              }, 5000);
+            }
+          } else {
+              // Feil oppstod ved registrering av ny bruker, viser meldingen
+              this.setState({
+                alertDisplay: "",
+                alertText: res.data.message
+              });
+          }
+        })
+        .catch(err => {
+          // En feil oppstod ved oppkobling til server
+          this.setState({
+            alertDisplay: "",
+            alertText: "En intern feil oppstod, vennligst forsøk igjen senere"
+          });
+        })
+        // Utføres alltid uavhengig av andre resultater
+        .finally(() => {
+          // Gjør Registrer bruker knappen tilgjengelig igjen om bruker ikke er registrert over
+          if(!loggedin) {
+            this.setState({
+              registerDisabled: false,
+              registerText: "Registrer bruker",
+              registerOpacity: "1"
+            });
+          }
+        });
+    } else {
+      // Brukeren har oppgitt ulike passord
+      this.setState({
+        alertDisplay: "",
+        alertText: "Passordene er ikke like",
+        registerDisabled: false,
+        registerText: "Registrer bruker",
+        registerOpacity: "1"
+      });
+    }
   };
 
 
@@ -78,7 +202,7 @@ class Register extends Component {
 
     // Om vi er i loading fasen (Før mottatt data fra API) vises det et Loading ikon
     if(loading) {
-      return(
+      return (
         <section id="loading">
           <Loader />
         </section>
@@ -86,41 +210,34 @@ class Register extends Component {
     }
     
     if(!loading && !authenticated) {
-      return(
+      return (
         <main id="main_register">
           <section id="section_logo_register">
             <img src={usnlogo} alt="USN logo" />
           </section>
-          <form id="form_login">
-            <FormControl id="form_email_register" onSubmit={this.handleRegister}>
+          <Alert id="alert_register" className="fade_in" style={{display: this.state.alertDisplay}} variant="outlined" severity={this.state.alertSeverity}>
+            {this.state.alertText}
+          </Alert>
+          <form id="form_register" onSubmit={this.handleRegister}>
+            <FormControl id="form_email_register">
               <InputLabel>E-post</InputLabel>
-              <Input type="email" onChange={this.setEmail} value={this.state.email} onKeyUp={this.onSubmit} className="form_input_register" required={true} autoFocus={true} variant="outlined" />
-            </FormControl>
-            <FormControl id="form_status_register">
-              <label for="status">Velg studiestatus:</label>
-              <select name="status" id="status">
-                <option value="Årsstudium">Årsstudium</option>
-                <option value="Bachelorstudent">Bachelorstudent</option>
-                <option value="Mastergradstudent">Mastergradstudent</option>
-                <option value="Doktorgradstudent">Doktorgradstudent</option>
-                <option value="Uteksaminert">Uteksaminert</option>
-              </select>
-            </FormControl>  
+              <Input type="email" onChange={this.onEmailChange} value={this.state.email} onKeyUp={this.onSubmit} className="form_input_register" required={true} autoFocus={true} variant="outlined" />
+            </FormControl> 
             <FormControl id="form_fnavn_register">
               <InputLabel>Fornavn</InputLabel>
-              <Input type="fname" onChange={this.setFname} value={this.state.fname} onKeyUp={this.onSubmit} className="form_input_register" required={true} variant="outlined" />
+              <Input type="string" onChange={this.onFnavnChange} value={this.state.fname} onKeyUp={this.onSubmit} className="form_input_register" required={true} variant="outlined" />
             </FormControl>
             <FormControl id="form_enavn_register">
               <InputLabel>Etternavn</InputLabel>
-              <Input type="ename" onChange={this.setEname} value={this.state.ename} onKeyUp={this.onSubmit} className="form_input_register" required={true} variant="outlined" />
+              <Input type="string" onChange={this.onEnavnChange} value={this.state.ename} onKeyUp={this.onSubmit} className="form_input_register" required={true} variant="outlined" />
             </FormControl>
-            <FormControl id="form_tlf_register">
-              <InputLabel>Telefonnummer</InputLabel>
-              <Input type="tel" onChange={this.setTelefon} value={this.state.telefon} onKeyUp={this.onSubmit} className="form_input_register" required={true} variant="outlined" />
-            </FormControl> 
             <FormControl id="form_password_register">
               <InputLabel>Passord</InputLabel>
-              <Input type="password" onChange={this.setPassword} value={this.state.pwd} onKeyUp={this.onSubmit} className="form_input_register" required={true} variant="outlined" />
+              <Input type="password" onChange={this.onPwdChange} value={this.state.pwd} onKeyUp={this.onSubmit} className="form_input_register" required={true} variant="outlined" />
+            </FormControl>  
+            <FormControl id="form_password_register">
+              <InputLabel>Bekreft Passord</InputLabel>
+              <Input type="password" onChange={this.onPwd2Change} value={this.state.pwd2} onKeyUp={this.onSubmit} className="form_input_register" required={true} variant="outlined" />
             </FormControl>  
             <Button type="submit" id="form_btn_register" disabled={this.state.registerDisabled} style={{opacity: this.state.registerOpacity}} variant="contained">{this.state.registerText}</Button>  
           </form>

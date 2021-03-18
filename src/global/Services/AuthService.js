@@ -3,18 +3,18 @@ import axios from 'axios';
 
 class AuthService {
     async isAuthenticated(token) {
-        let returnVal = false;
+        let returnVal = {authenticated : false, usertype : 1};
         await axios
             .post(process.env.REACT_APP_APIURL + "/verify/auth", {token})
             .then(res => {
-                if(res.data.verified === "true") {
+                if(res.data.authenticated === true) {
                     // Bruker er autentisert
-                    returnVal = true;
+                    returnVal = {authenticated : true, usertype : res.data.usertype};
                 }
             })
             .catch(err => {
                 // En feil oppstod ved oppkobling til server
-                return false;
+                return returnVal;
             }
         );
 

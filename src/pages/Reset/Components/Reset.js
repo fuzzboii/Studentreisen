@@ -56,7 +56,7 @@ class Reset extends Component {
             alertSeverity: "error"
         });
 
-        if(this.state.password == this.state.password2) {
+        if(this.state.password === this.state.password2) {
             // Definerer objektet med dataen vi sender til server
             const data = {
                 password: this.state.password,
@@ -75,7 +75,7 @@ class Reset extends Component {
                         // Passordet har blitt oppdatert, sender til login  
                         this.setState({
                             alertDisplay: "",
-                            alertText: "Passordet har blitt oppdatert, du blir sendt til side for innlogging om må sekunder",
+                            alertText: "Passordet har blitt oppdatert, du blir sendt til side for innlogging om få sekunder",
                             alertSeverity: "success"
                         });
 
