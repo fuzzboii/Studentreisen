@@ -215,7 +215,7 @@ function Navbar() {
                 <i className="far fa-user" />
               </Link> }
               {button && auth && <Button className={classes.loggbtn} > LOGG UT </Button> }
-              {button && !auth && <Link className={classes.loggbtnNoAuth} > REGISTRER </Link> }
+              {button && !auth && <Link to='/Register' className={classes.loggbtnNoAuth} > REGISTRER </Link> }
               {!auth && <Link to='/Login' className={classes.loggbtnNoAuth} > LOGG INN </Link> }
             </div>
           </nav>
