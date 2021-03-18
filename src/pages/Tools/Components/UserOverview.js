@@ -205,13 +205,13 @@ function TableOverview({ columns, data, fetchData, fetching, pageAmount: control
                 {'>>'}
                 </button>{' '}
                 <span>
-                Page{' '}
+                Side{' '}
                 <strong>
-                    {pageIndex + 1} of {pageOptions.length}
+                    {pageIndex + 1} av {pageOptions.length}
                 </strong>{' '}
                 </span>
                 <span>
-                | Go to page:{' '}
+                | Gå til side:{' '}
                 <input
                     type="number"
                     defaultValue={pageIndex + 1}
@@ -230,7 +230,7 @@ function TableOverview({ columns, data, fetchData, fetching, pageAmount: control
                 >
                 {[10, 20, 30, 40, 50].map(pageSize => (
                     <option key={pageSize} value={pageSize}>
-                    Show {pageSize}
+                    Vis {pageSize}
                     </option>
                 ))}
                 </select>
