@@ -2,7 +2,7 @@
 import React from "react";
 
 // 3rd-party Packages
-import { useTable, usePagination } from 'react-table'
+
 
 // Studentreisen-assets og komponenter
 import '../CSS/UserOverview.css';
