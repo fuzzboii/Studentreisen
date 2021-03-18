@@ -19,6 +19,7 @@ function Navbar() {
     // Henter authtoken-cookie
     const token = CookieService.get("authtoken");
 
+    const authorize = () => {
     if(token !== undefined) {
       // Om token eksisterer sjekker vi mot serveren om brukeren har en gyldig token
       AuthService.isAuthenticated(token).then(res => {
@@ -30,6 +31,7 @@ function Navbar() {
         }
       });
     }
+  };
     
     const handleClick = () => setClick(!click);
     const closeMobileMenu = () => setClick(false);
@@ -51,6 +53,7 @@ function Navbar() {
 
     useEffect( () => {
       showButton();
+      authorize();
     }, []); 
 
     // Legger til eller fjerner padding under navbar, for å skyve innholdet under nedover. //
