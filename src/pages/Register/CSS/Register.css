@@ -40,7 +40,7 @@
     box-sizing: border-box;
 }
 
-#form_email_register, #form_password_register, #form_fnavn_register, #form_lnavn_register {
+#form_email_register, #form_password_register, #form_fnavn_register, #form_enavn_register {
     width: 100%;
     margin-top: 1em;
 }

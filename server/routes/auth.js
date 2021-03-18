@@ -2,18 +2,16 @@ const { connection } = require('../db');
 const mysql = require('mysql');
 const bcrypt = require('bcryptjs');
 const cryptojs = require('crypto-js');
-const { registerValidation, loginValidation } = require('../validation');
+const { registerValidation, loginValidation, passwordValidation } = require('../validation');
 
 const router = require('express').Router();
 
 /*
 Order
 {
-    "status": "",
+    "email": "",
     "fnavn": "",
     "enavn": "",
-    "telefon": "",
-    "email": "",
     "pwd": ""
 }
 */
@@ -23,58 +21,145 @@ router.get('/register', async (req, res) => {
 });
 
 router.post('/register', async (req, res) => {
-    if(req.body.status !== undefined & req.body.fnavn !== undefined & req.body.enavn !== undefined & req.body.telefon !== undefined & req.body.email !== undefined & req.body.pwd !== undefined) {
+    if(req.body.email !== undefined && req.body.fnavn !== undefined && req.body.enavn !== undefined && req.body.password !== undefined && req.body.password2 !== undefined) {
         const validation = registerValidation(req.body);
         
         if(validation.error) {
-            // If the validation failed we send back an error message containing information provided by joi
-            return res.status(400).json({ "status" : "error", "message" : validation.error.details[0].message });
-        } else {
-            try {
-                // Hash the password
-                const salt = await bcrypt.genSalt(10);
-                const hashedPW = await bcrypt.hash(req.body.pwd, salt);
+            // Om validering feilet sender vi tilbake en feilmelding med informasjon gitt ut av Joi
+            
+            // E-post validering
+            if(validation.error.details[0].path[0] == "email") {
+                if(validation.error.details[0].type == "string.empty") {
+                    // E-post feltet er tomt
+                    return res.json({ "status" : "error", "message" : "E-post er ikke fylt inn" });
+                } else if(validation.error.details[0].type == "string.email") {
+                    // E-posten er ikke en gyldig e-post
+                    return res.json({ "status" : "error", "message" : "E-post adressen er ugyldig" });
+                } else if(validation.error.details[0].type == "any.required") {
+                    // E-post feltet er ikke tilstede i forespørselen
+                    return res.json({ "status" : "error", "message" : "Ett eller flere felt mangler" });
+                }
 
-                // Check if the PIN or email already exists
+            // Fornavn validering
+            } else if(validation.error.details[0].path[0] == "fnavn") {
+                if(validation.error.details[0].type == "string.empty") {
+                    // Passord-feltet er tomt
+                    return res.json({ "status" : "error", "message" : "Fornavn er ikke fylt inn" });
+                } else if(validation.error.details[0].type == "any.required") {
+                    // Passord-feltet er ikke tilstede i forespørselen
+                    return res.json({ "status" : "error", "message" : "Ett eller flere felt mangler" });
+                }
+
+            // Etternavn validering
+            } else if(validation.error.details[0].path[0] == "enavn") {
+                if(validation.error.details[0].type == "string.empty") {
+                    // Passord-feltet er tomt
+                    return res.json({ "status" : "error", "message" : "Etternavn er ikke fylt inn" });
+                } else if(validation.error.details[0].type == "any.required") {
+                    // Passord-feltet er ikke tilstede i forespørselen
+                    return res.json({ "status" : "error", "message" : "Ett eller flere felt mangler" });
+                }
+            }
+
+            // Et ukjent validerings-problem oppstod, sender fulle meldingen til bruker
+            return res.json({ "status" : "error", "message" : validation.error.details[0].message });
+        } else {
+            const pwdValidation = passwordValidation({password: req.body.password, password2: req.body.password2});
+            if(pwdValidation.error) {
+                // Om valideringen feiler sender vi tilbake en feilmelding utifra informasjonen utgitt av Joi
+                if(pwdValidation.error.details[0].type == "string.empty") {
+                    // Ett av feltene er ikke fylt inn
+                    return res.json({ "status" : "error", "message" : "Et av feltene er ikke fylt inn" });
+                } else if(pwdValidation.error.details[0].type == "any.required") {
+                    // Ett av feltene er ikke tilstede i forespørselen
+                    return res.json({ "status" : "error", "message" : "Et eller flere felt mangler" });
+                } else if(pwdValidation.error.details[0].type == "passwordComplexity.tooShort") {
+                    // Ett av feltene er ikke tilstede i forespørselen
+                    return res.json({ "status" : "error", "message" : "Passordet må være minimum 8 tegn langt med 1 liten bokstav, 1 stor bokstav og 1 tall" });
+                } else if(pwdValidation.error.details[0].type == "passwordComplexity.tooLong") {
+                    // Ett av feltene er ikke tilstede i forespørselen
+                    return res.json({ "status" : "error", "message" : "Passordet kan ikke være over 250 tegn" });
+                } else if(pwdValidation.error.details[0].type == "passwordComplexity.uppercase") {
+                    // Ett av feltene er ikke tilstede i forespørselen
+                    return res.json({ "status" : "error", "message" : "Passordet må være minimum 8 tegn langt med 1 liten bokstav, 1 stor bokstav og 1 tall" });
+                } else if(pwdValidation.error.details[0].type == "passwordComplexity.numeric") {
+                    // Ett av feltene er ikke tilstede i forespørselen
+                    return res.json({ "status" : "error", "message" : "Passordet må være minimum 8 tegn langt med 1 liten bokstav, 1 stor bokstav og 1 tall" });
+                } 
+
+                // Et ukjent validerings-problem oppstod, sender fulle meldingen til bruker
+                return res.json({ "status" : "error", "message" : pwdValidation.error.details[0].message });
+            }
+            
+            try {
+                // Salter og hasher passordet
+                const salt = await bcrypt.genSalt(10);
+                const hashedPW = await bcrypt.hash(req.body.password, salt);
+
+                // Sjekker om e-posten allerede eksisterer
                 let checkQuery = "SELECT email FROM bruker WHERE email = ?";
                 let checkQueryFormat = mysql.format(checkQuery, [req.body.email]);
     
                 connection.query(checkQueryFormat, (error, results) => {
                     if (error) {
-                        console.log("An error occurred while checking for previously existing users, details: " + error.errno + ", " + error.sqlMessage)
+                        console.log("En feil oppstod ved henting av e-post under registrering, detaljer: " + error.errno + ", " + error.sqlMessage)
                         return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                     }
     
                     if(results.length > 0) {
-                        return res.status(400).json({"status" : "error", "message" : "Denne brukeren eksisterer allerede"});
+                        return res.json({"status" : "error", "message" : "En bruker med denne e-posten eksisterer allerede"});
                     } else {
 
-                        // Add the user
-                        let insertQuery = "INSERT INTO bruker(niva, statusid, fnavn, enavn, telefon, email, pwd) VALUES(?, ?, ?, ?, ?, ?, ?)";
-                        let insertQueryFormat = mysql.format(insertQuery, [3, req.body.status, req.body.fnavn, req.body.enavn, req.body.telefon, req.body.email, hashedPW]);
+                        // Legg til brukeren
+                        let insertQuery = "INSERT INTO bruker(niva, fnavn, enavn, email, pwd) VALUES(?, ?, ?, ?, ?)";
+                        let insertQueryFormat = mysql.format(insertQuery, [process.env.ACCESS_STUDENT, req.body.fnavn, req.body.enavn, req.body.email.toLowerCase(), hashedPW]);
                 
                         connection.query(insertQueryFormat, (error, results) => {
                             if (error) {
-                                console.log("An error occurred while user was creating an account, details: " + error.errno + ", " + error.sqlMessage)
+                                console.log("En feil oppstod under registrering av ny bruker, detaljer: " + error.errno + ", " + error.sqlMessage)
                                 return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                             }
-                            // Returning the number of affected rows to indicate the insert went OK
+                            
                             if(results.affectedRows > 0) {
-                                res.status(200).json({"status" : "success", "message" : "Bruker opprettet"});
+                                // Bruker opprettet
+
+                                // Endrer utløpsdatoen utifra "Husk meg"-feltet
+                                let date = new Date();
+                                date.setTime(date.getTime() + ((60 * 3) * 60 * 1000));
+
+                                // Opprett en token utifra e-posten til brukeren
+                                const token = cryptojs.AES.encrypt(req.body.email.toLowerCase(), process.env.TOKEN_SECRET);
+
+                                // Legg til nye token i databasen med utløpsdato ovenfor
+                                let insertQuery = "INSERT INTO login_token(gjelderfor, token, utlopsdato) VALUES(?, ?, ?)";
+                                let insertQueryFormat = mysql.format(insertQuery, [results.insertId, token.toString(), date]);
+                        
+                                connection.query(insertQueryFormat, (error, results) => {
+                                    if (error) {
+                                        console.log("En feil oppstod under oppretting av login_token for en ny bruker, detaljer: " + error.errno + ", " + error.sqlMessage)
+                                        return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                                    }
+
+                                    if(results.affectedRows > 0) {
+                                        return res.json({"status" : "success", "message" : "OK", "authtoken" : token.toString()});
+                                    } else {
+                                        return res.json({"status" : "success", "message" : "OK"});
+                                    }
+                                });
                             } else {
-                                res.status(400).json({"status" : "error", "message" : "En feil oppstod under oppretting av brukeren"});
+                                return res.json({"status" : "error", "message" : "En feil oppstod under oppretting av brukeren, vennligst forsøk igjen senere"});
                             }
                         });
                     }
                 });
             } catch (error) {
-                // An error occurred while registering the new user
-                res.status(400).json({"status" : "error", "message" : "En feil oppstod under oppretting av brukeren"});
+                // En feil oppstod under registreringen
+                return res.json({"status" : "error", "message" : "En feil oppstod under oppretting av brukeren, vennligst forsøk igjen senere"});
             }
         }
 
     } else {
-        res.status(400).json({"status" : "error", "message" : "Ikke tilstrekkelig data"});
+        return res.json({"status" : "error", "message" : "Ikke tilstrekkelig data"});
     }
 });
 
