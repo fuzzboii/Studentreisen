@@ -7,7 +7,7 @@ class Overview extends Component {
 
     render() {
         return (
-            <div className="overview">
+            <div className="content-overview">
                 <h1>Kurs</h1>
                 <CourseProvider>
                    <CourseList/>
