@@ -1,0 +1,45 @@
+.content-seminar {
+
+}
+
+.seminar-list {
+    display: grid;
+}
+
+.seminarBox {
+    
+}
+
+.seminarBox-content {
+}
+
+
+/* Media queries
+----------------------------- */
+/* Større mobiler */
+@media screen and (min-width: 370px) {
+
+}
+
+/* Tab */
+@media screen and (min-width: 720px) {
+    .seminar-list {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* Laptop / Liten skjerm,, 720p */
+@media only screen and (min-width: 1280px) {
+    .seminar-list {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+}
+
+/* Medium skjerm, 1080p */
+@media screen and (min-width: 1920px) {
+
+}
+
+/* Stor skjerm, 1440p */
+@media screen and (min-width: 2560px) {
+}
