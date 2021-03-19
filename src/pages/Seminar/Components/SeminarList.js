@@ -7,7 +7,7 @@ const SeminarList = () => {
     const [seminars, setSeminars] = useContext(SeminarContext);
 
     return (
-        <div>
+        <div className="seminar-list" >
             {seminars.map(seminar => (
                 <Seminar seminarid={seminar.seminarid} bildeid={seminar.bildeid} navn={seminar.navn} arrangor={seminar.arrangor} adresse={seminar.adresse} oppstart={seminar.oppstart} varighet={seminar.varighet} beskrivelse={seminar.beskrivelse} tilgjengelighet={seminar.tilgjengelighet} />
             ))}
