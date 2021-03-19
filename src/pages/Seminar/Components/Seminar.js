@@ -1,26 +1,19 @@
-// React-spesifikt
-import { Component } from "react";
+import React from "react";
 
-// 3rd-party Packages
+const Seminar = (props) => {
+    return (
+        <div className="seminarBox">
+            <p>{props.seminarid}</p>
+            <p>{props.bildeid}</p>
+            <p>{props.navn}</p>
+            <p>{props.arrangor}</p>
+            <p>{props.adresse}</p>
+            <p>{props.oppstart}</p>
+            <p>{props.varighet}</p>
+            <p>{props.beskrivelse}</p>
+            <p>{props.tilgjengelighet}</p>
+        </div>
+    );
+};
 
-// Studentreisen-assets og komponenter
-import '../CSS/Seminar.css';
-import SeminarOverview from './SeminarOverview';
-
-class Seminar extends Component {
-
-    render() {
-        return(
-        <main>
-            <div className="div_seminar">
-                <SeminarOverview />
-            </div>
-
-        </main>
-        )
-    }    
-}   
-
-
-
-export default Seminar; 
+export default Seminar;

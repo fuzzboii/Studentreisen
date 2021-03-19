@@ -122,7 +122,7 @@ function UserOverview() {
     )
 }
 
-// 
+//Flytte i en fil? 
 function TableOverview({ columns, data, fetchData, fetching, pageAmount: controlledPageCount }) {
     const {
         getTableProps,
