@@ -11,7 +11,7 @@ import Navbar from './pages/Navbar/Components/Navbar';
 import Footer from './global/Components/Footer';
 import Tools from './pages/Tools/Components/Tools';
 import Course from './pages/Coursepage/Components/Overview';
-import Seminar from './pages/Seminar/Components/Seminar';
+import Seminar from './pages/Seminar/Components/SeminarOverview';
 
 function App() {
   return (
