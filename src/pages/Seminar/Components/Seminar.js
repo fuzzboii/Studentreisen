@@ -11,13 +11,16 @@ class Seminar extends Component {
 
     render() {
         return(
-        <div>
-            <h1>Seminar</h1>
+        <main>
+            <div className="div_seminar">
+                <SeminarOverview />
+            </div>
 
-        </div>
+        </main>
         )
     }    
 }   
+
 
 
 export default Seminar; 
