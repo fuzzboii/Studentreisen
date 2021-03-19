@@ -14,7 +14,7 @@ export const SeminarProvider = props => {
             
         //const apiURL = "http://localhost:5000/api/v1/seminar/getAllSeminarData";
         
-        const res = await axios.get("http://localhost:5000/api/v1/seminar/getAllSeminarData");
+        const res = await axios.get(process.env.REACT_APP_APIURL + "/seminar/getAllSeminarData");
         console.log(res.data);
         setSeminars(res.data);
 

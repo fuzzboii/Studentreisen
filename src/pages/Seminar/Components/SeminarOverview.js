@@ -7,7 +7,7 @@ class SeminarOverview extends Component {
 
     render() {
         return (
-            <div className="seminaroverview">
+            <div className="content-seminar">
                 <h1>Seminar</h1>
                 <SeminarProvider>
                    <SeminarList/>
