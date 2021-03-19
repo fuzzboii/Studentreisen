@@ -1,16 +1,18 @@
-import { Component } from "react";
+import { Component } from 'react';
+import {CourseProvider} from './CourseContext';
+import CourseList from './CourseList';
 
 
 class Overview extends Component {
-    constructor(props) {
-        super(props);
-    };
-    
+
     render() {
-        return(
-        <div>
-            <h1>Kurs</h1>
-        </div>
+        return (
+            <div className="overview">
+                <h1>Kurs</h1>
+                <CourseProvider>
+                   <CourseList/>
+                </CourseProvider>
+            </div>
         );
     }    
 }   
