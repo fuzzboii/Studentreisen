@@ -33,4 +33,9 @@ function GetAllData() {
 let allData = GetAllData();
 let allDataFetched = false;
 
+
+
+
+
+
 export default SeminarOverview;
