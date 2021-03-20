@@ -1,7 +1,6 @@
 import React, { useState, useContext } from 'react';
 import Course from './Course';
 import { CourseContext } from './CourseContext';
-import '../CSS/coursepage.css'; 
 
 const CourseList = () => {
     const [courses, setCourses] = useContext(CourseContext);
