@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import {CourseProvider} from './CourseContext';
 import CourseList from './CourseList';
-import {MyButton} from '../Styles/apistyles';
+import '../Styles/courseStyles.css';
 
 class Overview extends Component {
 
@@ -9,8 +9,6 @@ class Overview extends Component {
         return (
             <div className="content-overview">
                 <h1>Kurs</h1>
-                
-                <MyButton>Jeg er en knapp</MyButton>
 
                 <CourseProvider>
                    <CourseList/>

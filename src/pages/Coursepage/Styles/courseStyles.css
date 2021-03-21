@@ -1,7 +1,100 @@
-div {
-    border: solid 1px black;
-    border-radius: 10px;
-    padding: 1em;
-    margin:2em;
-    width: 50%;
+
+.course-section {
+    background-color: rgb(247, 244, 244);
+    max-width: 29em;
+    margin-bottom: 1em;
+    border-radius: 3px; 
+}
+
+.undervisningsspråk {
+    margin-top: 0.5em;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.course-sectionTop {
+    border-bottom: solid rgb(221, 220, 220) 1px;
+
+}
+.kursnavn {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0;
+    color: #4646a5;
+}
+
+.kursinfo{
+    display: grid;
+    grid-template-columns: auto 3em 1em;
+}
+
+.kursinfo p {
+    margin-top: 0.2em;
+    margin-bottom: 0em;
+    padding-top: 0.2em;
+    padding-bottom: 0.4em;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.kursbeskrivelse {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+   -webkit-line-clamp: 3; /* number of lines to show */
+   -webkit-box-orient: vertical;
+}
+
+.course-section:hover {
+    box-shadow: 0.1px 1px 0px 1px rgba(0, 0, 0, 0.2);
+    transition-property: color;
+    transition-duration: 0.2s;
+    transition-timing-function: ease;
+    transition-delay: 0s;
+    cursor: pointer;
+}
+
+.iconBox {
+    display: 
+}
+
+.beskrivelse {
+    width: 35em;
+    overflow: hidden;
+    text-overflow: ellipsis; 
+    white-space: nowrap; 
+}
+
+.course-list {
+    display: grid;
+    flex-wrap: wrap;
+}
+/* Media queries
+----------------------------- */
+/* Større mobiler */
+@media screen and (min-width: 370px) {
+
+}
+
+/* Tab */
+@media screen and (min-width: 720px) {
+  
+}
+
+/* Laptop / Liten skjerm,, 720p */
+@media only screen and (min-width: 1280px) {
+    .course-list {
+        grid-template-columns: 30em 30em;
+    }
+}
+
+/* Medium skjerm, 1080p */
+@media screen and (min-width: 1920px) {
+    
+
+}
+
+/* Stor skjerm, 1440p */
+@media screen and (min-width: 2560px) {
 }

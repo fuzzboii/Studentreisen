@@ -1,34 +1,29 @@
 import React from "react";
-import { MyButton, MyCard, MyCardActions, MyCardActionArea, MyCardContent, MyCardMedia, MyTypography } from '../Styles/apistyles';
+import { MyCard, MyCardContent, MyContainer } from '../Styles/apistyles';
+import LanguageIcon from '@material-ui/icons/Language';
+import '../Styles/courseStyles.css';
 
 const Course = (props) => {
 
     return (
-        <MyCard>
-            <MyCardActionArea>
-                <MyCardMedia/>
+        <div className="course-section">
                 <MyCardContent>
-                    <MyTypography gutterBottom variant="h5" component="h2">
-                        Lizard
-          </MyTypography>
-                    <MyTypography variant="body2" color="textSecondary" component="p">
-                        Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging
-                        across all continents except Antarctica
-          </MyTypography>
+                    <div className="course-sectionTop">             
+                        <p className="kursnavn">{props.navn}</p>
+                        <div className="kursinfo">
+                            <p>{props.emnekode}</p>
+                            <p>{props.semester}</p>
+                            <p>{props.studiepoeng}</p>
+                        </div>
+                    </div>
+                    <div className="iconBox">
+                        <LanguageIcon/>
+                        <p className="undervisningsspråk">Undervisningsspråk: {props.språk}</p>
+                    </div>
                 </MyCardContent>
-            </MyCardActionArea>
-            <MyCardActions>
-                <MyButton size="small" color="primary">
-                    Share
-                    </MyButton>
-                <MyButton size="small" color="primary">
-                    Learn More
-                </MyButton>
-            </MyCardActions>
-        </MyCard>
-
-
+        </div>
     );
 };
 
 export default Course;
+/*<p className="kursbeskrivelse">{props.beskrivelse}</p> */
