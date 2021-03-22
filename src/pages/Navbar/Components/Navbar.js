@@ -41,13 +41,17 @@ function Navbar() {
         if(window.innerWidth <= 960) {
             setButton(false);
             if (auth) {
+              try {
               document.getElementById("loggBtnMobil").style.visibility = "visible";
+              } catch (TypeError) {}
 
             }
         } else {
             setButton(true);
             if (auth) {
+              try {
               document.getElementById("loggBtnMobil").style.visibility = "collapse";
+            } catch (TypeError) {}
             }
         }
     };
