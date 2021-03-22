@@ -1,15 +1,26 @@
 import React from "react";
-//import { SeminarButton, SeminarCard, SeminarCardActions, SeminarCardActionArea, SeminarCardContent, SeminarCardMedia, SeminarTypography } from '../CSS/apistylesSeminar';
-import { SeminarCardActions, SeminarButton, SeminarAccordion, SeminarAccordionSummary, SeminarAccordionDetails, SeminarExpandMoreIcon } from '../CSS/apistylesSeminar';
+
+import { SeminarCard, SeminarCardActionArea, SeminarCardContent, SeminarCardMedia, SeminarTypography, SeminarCardActions, SeminarButton, SeminarAccordion, SeminarAccordionSummary, SeminarAccordionDetails, SeminarExpandMoreIcon } from '../CSS/apistylesSeminar';
 import '../CSS/Seminar.css'; 
 import moment from 'moment';
 import 'moment/locale/nb';
 
 
 const Seminar = (props) => {
-    
-    return (
-        <div className="Seminar-Accordation">
+    const [width, setWidth] = React.useState(window.innerWidth);
+    const breakpoint = 720;
+    React.useEffect(() => {
+        const handleResizeWindow = () => setWidth(window.innerWidth);
+
+        window.addEventListener("resize", handleResizeWindow);
+        return () => {
+        window.removeEventListener("resize", handleResizeWindow);
+        };
+    }, []);
+
+    if (width < breakpoint) {
+        return (
+            <div className="Seminar-Accordation">
             <SeminarAccordion>
                 <SeminarAccordionSummary expandIcon={<SeminarExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
                         <div className="Seminar-Oppstart">{moment.locale('nb'), moment(props.oppstart).format("MMM DD YYYY")}</div>
@@ -28,9 +39,38 @@ const Seminar = (props) => {
                     </SeminarCardActions>
                 </SeminarAccordionDetails>
             </SeminarAccordion>
-        </div>
+            </div>
         );
-    }
+        }
+        return (
+            <div className="Seminar-Cards">
+            <SeminarCard>
+                <SeminarCardActionArea>
+                    <SeminarCardMedia/>
+                    <SeminarCardContent className="Seminar-CardContent">
+                        <SeminarTypography gutterBottom variant="h5" component="h2">
+                            <p>{props.navn}</p>
+                        </SeminarTypography>
+                        <SeminarTypography variant="body2" color="textSecondary" component="p">
+                            <p>{props.oppstart}</p>
+                            <p>{props.varighet}</p>
+                            <p>{props.beskrivelse}</p>
+                            <p>{props.arrangor}</p>
+                            <p>{props.adresse}</p>
+                            <p>{props.tilgjengelighet}</p>
+                        </SeminarTypography>
+                    </SeminarCardContent>
+                </SeminarCardActionArea>
+                <SeminarCardActions className="Seminar-CardActions">
+                    <SeminarButton className="Seminar-buttonPaameld" size="small" color="primary">
+                        Påmeld
+                    </SeminarButton>
+                </SeminarCardActions>
+            </SeminarCard>
+            </div>
+        );
+}
+            
 /*
     return (
         <SeminarCard>
