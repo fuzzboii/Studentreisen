@@ -24,8 +24,14 @@
   border-top: 1px solid black;
 }
 
+/* ID */
 #table_useroverview thead tr th:nth-child(1) {
   width: 3em;
+}
+
+/* Telefon */
+#table_useroverview thead tr th:nth-child(4) {
+  width: 7em;
 }
 
 #table_useroverview tr td:nth-child(1) {
