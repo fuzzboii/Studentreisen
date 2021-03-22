@@ -17,6 +17,7 @@
 .Seminar-Cards {
     display: flex;
     flex-direction: column;
+    
 }
 
 
@@ -31,7 +32,7 @@
     font-size: 0.2em;
 }
 
-.Seminar-Oppstart {
+.Seminar-OppstartVarighet {
     font-size: 13px;
 }
 
@@ -54,7 +55,29 @@
     margin: 1em;
 }
 
+.Seminar-NavnDesktop{
+    font-size: 1em;
+}
 
+.Seminar-OppstartDesktop, .Seminar-VarighetDesktop {
+    margin: 0;
+}
+
+.Seminar-ArrangorDesktop, .Seminar-BeskrivelseDesktop, .Seminar-AdresseDesktop {
+    margin: 0;
+    font-size: 13;
+}
+
+.Seminar-ArrangorHeading, .Seminar-BeskrivelseHeading, .Seminar-StedHeading{
+    margin-bottom: 0;
+    font-size: 13px;
+}
+
+.Seminar-DateDesktop {
+    margin-left: 1em;
+    display: inline-block;
+    
+}
 
 
 
@@ -66,31 +89,28 @@
 
 }
 
-/* Tab */
-@media screen and (min-width: 720px) {
+/* Tab (pro) */
+@media screen and (min-width: 1024px) {
     .seminar-list {
         grid-template-columns: 1fr 1fr;
         justify-items: center;
     }
 }
 
-/* Tab Pro */
-@media screen and (min-width: 1024px) {
-    .seminar-list {
-        grid-template-columns: 1fr 1fr 1fr;
-    }
-}
 
 /* Laptop / Liten skjerm,, 720p */
 @media only screen and (min-width: 1280px) {
     .seminar-list {
-        grid-template-columns: 1fr 1fr 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr
     }
+    
 }
 
 /* Medium skjerm, 1080p */
 @media screen and (min-width: 1920px) {
-
+    .seminar-list {
+        grid-template-columns: 1fr 1fr 1fr 1fr
+    }
 }
 
 /* Stor skjerm, 1440p */
