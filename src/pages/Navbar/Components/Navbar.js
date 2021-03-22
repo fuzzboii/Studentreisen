@@ -20,19 +20,19 @@ function Navbar() {
     const token = CookieService.get("authtoken");
 
     const authorize = () => {
-    if(token !== undefined) {
-      // Om token eksisterer sjekker vi mot serveren om brukeren har en gyldig token
-      AuthService.isAuthenticated(token).then(res => {
-        if(!res.authenticated) {
-          // Sletter authtoken om token eksisterer lokalt men ikke er gyldig på server
-          CookieService.remove("authtoken");
-        } else {
-          setAuth(res.authenticated);
-        }
-      });
-    }
-  };
-    
+      if(token !== undefined) {
+        // Om token eksisterer sjekker vi mot serveren om brukeren har en gyldig token
+        AuthService.isAuthenticated(token).then(res => {
+          if(!res.authenticated) {
+            // Sletter authtoken om token eksisterer lokalt men ikke er gyldig på server
+            CookieService.remove("authtoken");
+          } else {
+            setAuth(true);
+          }
+        });
+      }
+    };
+      
     const handleClick = () => setClick(!click);
     const closeMobileMenu = () => setClick(false);
 
@@ -41,12 +41,17 @@ function Navbar() {
         if(window.innerWidth <= 960) {
             setButton(false);
             if (auth) {
-              document.getElementById("loggBtnMobil").style.visibility = "visible";
+              // Lagt i try-catch fordi 'auth'-status ikke oppdateres korrekt ATM //
+              try {
+                document.getElementById("loggBtnMobil").style.visibility = "visible";
+              } catch (TypeError) {}
             }
         } else {
             setButton(true);
             if (auth) {
-              document.getElementById("loggBtnMobil").style.visibility = "collapse";
+              try {
+                document.getElementById("loggBtnMobil").style.visibility = "collapse";
+              } catch (TypeError) {}
             }
         }
     };
@@ -121,9 +126,16 @@ function Navbar() {
     });
     const classes = useStyles();
 
+    const loggUt = () => {
+      shrink();
+      closeMobileMenu();
+      CookieService.remove("authtoken");
+      setAuth(false);
+    }
+
     return (
         <>
-          <nav className='navbar' id="bar">
+          <nav className='navbar' id="bar" >
             <div className='navbar-container'>
               <Link 
                 to="/" 
@@ -217,9 +229,9 @@ function Navbar() {
                 to='/Profile'>
                 <i className="far fa-user" />
               </Link> }
-              {button && auth && <Button className={classes.loggbtn} > LOGG UT </Button> }
+              {button && auth && <Button onClick={loggUt} className={classes.loggbtn} > LOGG UT </Button> }
               {button && !auth && <Link to='/Register' className={classes.loggbtnNoAuth} > REGISTRER </Link> }
-              {!auth && <Link to='/Login' className={classes.loggbtnNoAuth} > LOGG INN </Link> }
+              {!auth && <Link to='/Login' onClick={authorize} className={classes.loggbtnNoAuth} > LOGG INN </Link> }
             </div>
           </nav>
         </>
