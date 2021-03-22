@@ -1,13 +1,13 @@
 
-//import { styled } from '@material-ui/core/styles';
-//import Button from '@material-ui/core/Button';
-//import Container from '@material-ui/core/Container';
-//import Card from '@material-ui/core/Card';
-//import CardActionArea from '@material-ui/core/CardActionArea';
-//import CardActions from '@material-ui/core/CardActions';
-//import CardContent from '@material-ui/core/CardContent';
-//import CardMedia from '@material-ui/core/CardMedia';
-//import Typography from '@material-ui/core/Typography';
+
+
+import Container from '@material-ui/core/Container';
+import Card from '@material-ui/core/Card';
+import CardActionArea from '@material-ui/core/CardActionArea';
+
+import CardContent from '@material-ui/core/CardContent';
+import CardMedia from '@material-ui/core/CardMedia';
+import Typography from '@material-ui/core/Typography';
 
 
 import { styled } from '@material-ui/core/styles';
@@ -26,7 +26,7 @@ export const SeminarAccordion = styled(Accordion)({
 });
 
 export const SeminarAccordionSummary = styled(AccordionSummary)({
-    
+
 });
 
 export const SeminarAccordionDetails = styled(AccordionDetails)({
@@ -44,7 +44,7 @@ export const SeminarCardActions = styled(CardActions)({
 });
 
 export const SeminarButton = styled(Button)({
-    
+
 });
 
 
@@ -53,43 +53,34 @@ export const SeminarButton = styled(Button)({
 
 //Card
 
-// export const SeminarButton = styled(Button)({
+export const SeminarContainer = styled(Container)({
+    border: 'solid 1px black',
+    borderRadius: '10px',
+    padding: '1em',
+    margin: '2em',
+    width: '50%',
+});
 
-// });
+export const SeminarCard = styled(Card)({
+    maxWidth: 345,
+});
+
+export const SeminarCardActionArea = styled(CardActionArea)({
+
+});
 
 
-// export const SeminarContainer = styled(Container)({
-//     border: 'solid 1px black',
-//     borderRadius: '10px',
-//     padding: '1em',
-//     margin: '2em',
-//     width: '50%',
-// });
+export const SeminarCardContent = styled(CardContent)({
 
-// export const SeminarCard = styled(Card)({
-//     maxWidth: 345,
-// });
+});
 
-// export const SeminarCardActionArea = styled(CardActionArea)({
+export const SeminarCardMedia = styled(CardMedia)({
+    component: "img",
+    alt: "Contemplative Reptile",
+    height: "140",
+});
 
-// });
+export const SeminarTypography = styled(Typography)({
 
-// export const SeminarCardActions = styled(CardActions)({
-//     justifyContent: "flex-end",
-
-// });
-
-// export const SeminarCardContent = styled(CardContent)({
-
-// });
-
-// export const SeminarCardMedia = styled(CardMedia)({
-//     component: "img",
-//     alt: "Contemplative Reptile",
-//     height: "140",
-// });
-
-// export const SeminarTypography = styled(Typography)({
-
-//});
+});
 

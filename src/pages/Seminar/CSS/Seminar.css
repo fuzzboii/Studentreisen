@@ -16,6 +16,7 @@
 
 .Seminar-CardActions {
     justify-content: flex-end;
+    background-color: blue;
 }
 
 .Seminar-Oppstart {
@@ -46,6 +47,16 @@
     font-size: 0.2em;
 }
 
+.Seminar-Cards {
+    display: flex;
+    margin: 1em;
+}
+
+.Seminar-CardContent {
+    background-color: red;
+
+}
+
 
 
 /* Media queries
@@ -59,13 +70,21 @@
 @media screen and (min-width: 720px) {
     .seminar-list {
         grid-template-columns: 1fr 1fr;
+        justify-items: center;
+    }
+}
+
+/* Tab Pro */
+@media screen and (min-width: 1024px) {
+    .seminar-list {
+        grid-template-columns: 1fr 1fr 1fr;
     }
 }
 
 /* Laptop / Liten skjerm,, 720p */
 @media only screen and (min-width: 1280px) {
     .seminar-list {
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
     }
 }
 
@@ -76,4 +95,7 @@
 
 /* Stor skjerm, 1440p */
 @media screen and (min-width: 2560px) {
+    .seminar-list {
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    }
 }
