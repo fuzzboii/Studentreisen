@@ -4,6 +4,7 @@ import { Component } from "react";
 
 // 3rd-party Packages
 import ReactSwipe from 'react-swipe';
+import { Tabs, Tab } from '@material-ui/core';
 
 // Studentreisen-assets og komponenter
 import UserOverview from './UserOverview';
@@ -71,57 +72,13 @@ class Tools extends Component {
         }
         
         if(!loading && authenticated && usertype === 4) {
-            if(this.state.windowWidth < 960) {
-                return (
-                    <SwipeWAdmin />
-                )
-            } else {
-                if(this.state.activeTool == 0) {
-                    return (
-                        <UserOverview />
-                    )
-                } else if(this.state.activeTool == 1) {
-                    return (
-                        <main>
-                            <div>
-                                <h1>Kursoversikt</h1>
-                            </div>
-                        </main>
-                    )
-                } else if(this.state.activeTool == 2) {
-                    return (
-                        <main>
-                            <div>
-                                <h1>Seminaroversikt</h1>
-                            </div>
-                        </main>
-                    )
-                }
-            }
-        } else if(!loading && authenticated) {
-            if(this.state.windowWidth < 960) {
-                return (
-                    <Swipe />
-                )
-            } else {
-                if(this.state.activeTool == 0) {
-                    return (
-                        <main>
-                            <div>
-                                <h1>Kursoversikt</h1>
-                            </div>
-                        </main>
-                    )
-                } else if(this.state.activeTool == 1) {
-                    return (
-                        <main>
-                            <div>
-                                <h1>Seminaroversikt</h1>
-                            </div>
-                        </main>
-                    )
-                }
-            }
+            return (
+                <SwipeWAdmin />
+            )
+        } else if(!loading && authenticated && (usertype === 3 || usertype === 2)) {
+            return (
+                <Swipe />
+            )
         } else {
             return (
                 // Ugyldig eller ikke-eksisterende token 
@@ -133,38 +90,28 @@ class Tools extends Component {
 
 
 const Swipe = () => {
+    let reactSwipeEl;
     const [position, setPosition] = useState(0);
   
     const swipeOptions = useMemo(() => ({
         continuous: false,
-        transitionEnd(e) {
+        callback(e) {
             setPosition(e)
         }
     }), []);
-
-    const changeActiveIndicator = () => {
-        switch(position) {
-            case 0: 
-                return (
-                    <section id="tools_indicator">
-                        <button className="tools_indicator_btn_active" variant="outlined" />
-                        <button className="tools_indicator_btn" variant="outlined" />
-                    </section>
-                )
-            case 1: 
-                return (
-                    <section id="tools_indicator">
-                        <button className="tools_indicator_btn" variant="outlined" />
-                        <button className="tools_indicator_btn_active" variant="outlined" />
-                    </section>
-                )
-        }
-    }
+  
+    const handleTabChange = (e, newIndex) => {
+        setPosition(newIndex);
+        reactSwipeEl.slide(newIndex);
+    };
   
     return (
         <main>
-            {changeActiveIndicator()}
-            <ReactSwipe id="swipe_tools" swipeOptions={swipeOptions}>
+            <Tabs value={position} onChange={handleTabChange} centered>
+                <Tab label="Kursoversikt"/>
+                <Tab label="Seminaroversikt"/>
+            </Tabs>
+            <ReactSwipe id="swipe_tools" swipeOptions={swipeOptions} ref={el => (reactSwipeEl = el)}>
                 <div className="div_tools">
                     <section>
                         <h1>Kursoversikt</h1>
@@ -181,48 +128,29 @@ const Swipe = () => {
 };
 
 const SwipeWAdmin = () => {
+    let swiper;
     const [position, setPosition] = useState(0);
   
     const swipeOptions = useMemo(() => ({
         continuous: false,
-        transitionEnd(e) {
+        callback(e) {
             setPosition(e)
         }
     }), []);
-
-    const changeActiveIndicator = () => {
-        switch(position) {
-            case 0: 
-                return (
-                    <section id="tools_indicator">
-                        <button className="tools_indicator_btn_active" variant="outlined" />
-                        <button className="tools_indicator_btn" variant="outlined" />
-                        <button className="tools_indicator_btn" variant="outlined" />
-                    </section>
-                )
-            case 1: 
-                return (
-                    <section id="tools_indicator">
-                        <button className="tools_indicator_btn" variant="outlined" />
-                        <button className="tools_indicator_btn_active" variant="outlined" />
-                        <button className="tools_indicator_btn" variant="outlined" />
-                    </section>
-                )
-            case 2: 
-                return (
-                    <section id="tools_indicator">
-                        <button className="tools_indicator_btn" variant="outlined" />
-                        <button className="tools_indicator_btn" variant="outlined" />
-                        <button className="tools_indicator_btn_active" variant="outlined" />
-                    </section>
-                )
-        }
-    }
+  
+    const handleTabChange = (e, newIndex) => {
+        setPosition(newIndex);
+        swiper.slide(newIndex);
+    };
   
     return (
         <main>
-            {changeActiveIndicator()}
-            <ReactSwipe id="swipe_tools" swipeOptions={swipeOptions}>
+            <Tabs value={position} onChange={handleTabChange} centered>
+                <Tab label="Brukeroversikt"/>
+                <Tab label="Kursoversikt"/>
+                <Tab label="Seminaroversikt"/>
+            </Tabs>
+            <ReactSwipe id="swipe_tools" swipeOptions={swipeOptions} ref={listener => (swiper = listener)}>
                 <div className="div_tools">
                     <UserOverview />
                 </div>

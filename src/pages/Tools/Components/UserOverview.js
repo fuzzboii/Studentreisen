@@ -3,6 +3,8 @@ import React from "react";
 
 // 3rd-party Packages
 import { useTable, usePagination } from 'react-table'
+import { FirstPage, LastPage, NavigateNext, NavigateBefore } from '@material-ui/icons';
+import { Select, MenuItem, Input, Button } from '@material-ui/core';
 
 // Studentreisen-assets og komponenter
 import '../CSS/UserOverview.css';
@@ -10,7 +12,7 @@ import axios from "axios";
 import CookieService from '../../../global/Services/CookieService';
 
 
-function GetAllData() {
+function PrefetchData() {
     const token = {
         token: CookieService.get("authtoken")
     }
@@ -25,15 +27,15 @@ function GetAllData() {
                 allData = res.data.results;
                 allDataFetched = true;
             }
-        }).catch(err => {
-
-        }).finally(() => {
-
         });
+        
+
+    return (
+        <UserOverview/>
+    )
 }
 
-
-let allData = GetAllData();
+let allData;
 let allDataFetched = false;
 
 function UserOverview() {
@@ -139,7 +141,7 @@ function TableOverview({ columns, data, fetchData, fetching, pageAmount: control
         previousPage,
         setPageSize,
         state: { pageIndex, pageSize },
-    } = useTable({columns, data, initialState: { pageIndex: 0 }, manualPagination: true, pageCount: controlledPageCount},
+    } = useTable({columns, data, initialState: { pageIndex: 0, hiddenColumns : ["telefon", "email"] }, manualPagination: true, pageCount: controlledPageCount},
         usePagination);
     
     React.useEffect(() => {
@@ -158,11 +160,7 @@ function TableOverview({ columns, data, fetchData, fetching, pageAmount: control
                         <th {...column.getHeaderProps()}>
                         {column.render('Header')}
                         <span>
-                            {column.isSorted
-                            ? column.isSortedDesc
-                                ? ' 🔽'
-                                : ' 🔼'
-                            : ''}
+                            {column.isSorted ? column.isSortedDesc ? ' 🔽' : ' 🔼' : ''}
                         </span>
                         </th>
                     ))}
@@ -181,63 +179,40 @@ function TableOverview({ columns, data, fetchData, fetching, pageAmount: control
                     )
                 })}
                 <tr>
-                    {fetching ? (
-                        <td colSpan="10000">Laster...</td>
-                    ) : (
-                        <td colSpan="10000">
-                            Viser {page.length} av ~{controlledPageCount * pageSize} resultater
-                        </td>
-                    )}
+                    {fetching ? (<td colSpan="10000">Laster...</td>) : (<></>)}
                 </tr>
                 </tbody>
             </table>
-            <div className="pagination">
-                <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
-                {'<<'}
-                </button>{' '}
-                <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-                {'<'}
-                </button>{' '}
-                <button onClick={() => nextPage()} disabled={!canNextPage}>
-                {'>'}
-                </button>{' '}
-                <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
-                {'>>'}
-                </button>{' '}
-                <span>
-                Side{' '}
-                <strong>
-                    {pageIndex + 1} av {pageOptions.length}
-                </strong>{' '}
-                </span>
-                <span>
-                | Gå til side:{' '}
-                <input
-                    type="number"
-                    defaultValue={pageIndex + 1}
-                    onChange={e => {
-                    const page = e.target.value ? Number(e.target.value) - 1 : 0
-                    gotoPage(page)
-                    }}
-                    style={{ width: '100px' }}
-                />
-                </span>{' '}
-                <select
-                value={pageSize}
-                onChange={e => {
-                    setPageSize(Number(e.target.value))
-                }}
-                >
-                {[10, 20, 30, 40, 50].map(pageSize => (
-                    <option key={pageSize} value={pageSize}>
-                    Vis {pageSize}
-                    </option>
-                ))}
-                </select>
+            <div id="table_pagination_useroverview">
+                <section id="table_pagination_left_useroverview">
+                    <Button variant="contained" onClick={() => gotoPage(0)} disabled={!canPreviousPage}><FirstPage/></Button>
+                    <Button variant="contained" onClick={() => previousPage()} disabled={!canPreviousPage}><NavigateBefore/></Button>
+                    <Button variant="contained" onClick={() => nextPage()} disabled={!canNextPage}><NavigateNext/></Button>
+                    <Button variant="contained" onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}><LastPage/></Button>
+                    <p>Side {pageIndex + 1} av {pageOptions.length}</p>
+                </section> 
+                <section id="table_pagination_right_useroverview">
+                    <Input id="table_pagination_right_input_useroverview" type="number" defaultValue={pageIndex + 1}
+                        onChange={e => {
+                            const page = e.target.value ? Number(e.target.value) - 1 : 0
+                            gotoPage(page)
+                        }}
+                    />
+                    <Select value={pageSize} 
+                        onChange={e => {
+                            setPageSize(Number(e.target.value))
+                        }}>
+                        <MenuItem value="10">Vis 10</MenuItem>
+                        <MenuItem value="20">Vis 20</MenuItem>
+                        <MenuItem value="30">Vis 30</MenuItem>
+                        <MenuItem value="40">Vis 40</MenuItem>
+                        <MenuItem value="50">Vis 50</MenuItem>
+                    </Select>
+                </section>
             </div>
         </section>
         </>
     );
 };
 
-export default UserOverview;
+export default PrefetchData;
