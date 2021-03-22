@@ -1,0 +1,79 @@
+.content-seminar {
+
+}
+
+.seminar-list {
+    display: grid;
+}
+
+.seminarBox {
+    place-self: center;
+}
+
+.seminarBox-content {
+    
+}
+
+.Seminar-CardActions {
+    justify-content: flex-end;
+}
+
+.Seminar-Oppstart {
+    font-size: 13px;
+}
+
+.Seminar-Navn {
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.Seminar-beskrivelse {
+    font-size: 16px;
+}
+
+.Seminar-AccordationDetails {
+    flex-direction: column;
+}
+
+
+.Seminar-Accordation {
+    margin: 3px;
+    
+}
+
+.MuiAccordionSummary-content {
+    flex-direction: column;
+    font-size: 0.2em;
+}
+
+
+
+/* Media queries
+----------------------------- */
+/* Større mobiler */
+@media screen and (min-width: 370px) {
+
+}
+
+/* Tab */
+@media screen and (min-width: 720px) {
+    .seminar-list {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* Laptop / Liten skjerm,, 720p */
+@media only screen and (min-width: 1280px) {
+    .seminar-list {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+}
+
+/* Medium skjerm, 1080p */
+@media screen and (min-width: 1920px) {
+
+}
+
+/* Stor skjerm, 1440p */
+@media screen and (min-width: 2560px) {
+}

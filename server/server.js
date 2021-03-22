@@ -7,7 +7,7 @@ const forgotPasswordRoute = require('./routes/forgotPassword');
 const verificationRoute = require('./routes/verification');
 const courseRoute = require('./routes/courses');
 const toolsRoute = require('./routes/tools');
-const seminarRoute = require('./routes/seminar');
+const seminarRoute = require('./routes/seminars');
 
 // Gjør at vi kan kalle variabler fra .env
 dotenv.config();

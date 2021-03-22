@@ -1,16 +1,21 @@
-import { Component } from "react";
-
+import { Component } from 'react';
+import {CourseProvider} from './CourseContext';
+import CourseList from './CourseList';
+import {MyButton} from '../Styles/apistyles';
 
 class Overview extends Component {
-    constructor(props) {
-        super(props);
-    };
-    
+
     render() {
-        return(
-        <div>
-            <h1>Kurs</h1>
-        </div>
+        return (
+            <div className="content-overview">
+                <h1>Kurs</h1>
+                
+                <MyButton>Jeg er en knapp</MyButton>
+
+                <CourseProvider>
+                   <CourseList/>
+                </CourseProvider>
+            </div>
         );
     }    
 }   

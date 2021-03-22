@@ -11,7 +11,7 @@ import Navbar from './pages/Navbar/Components/Navbar';
 import Footer from './global/Components/Footer';
 import Tools from './pages/Tools/Components/Tools';
 import Course from './pages/Coursepage/Components/Overview';
-import Seminar from './pages/Seminar/Components/Seminar';
+import Seminar from './pages/Seminar/Components/SeminarOverview';
 
 function App() {
   return (
@@ -21,7 +21,7 @@ function App() {
         <Switch>
           <Route path = "/" exact component = {Home} />
           <Route path = "/login" component = {Login} />
-          <Route path = "/courseOverview" component = {Course} />
+          <Route path = "/course" component = {Course} />
           <Route path = "/register" component = {Register} />
           <Route path = "/reset" component = {Reset} />
           <Route path = "/tools" component = {Tools} />
