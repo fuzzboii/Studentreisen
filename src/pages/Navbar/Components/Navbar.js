@@ -41,24 +41,24 @@ function Navbar() {
         if(window.innerWidth <= 960) {
             setButton(false);
             if (auth) {
-              // Lagt i try-catch fordi 'auth'-status ikke oppdateres korrekt ATM //
               try {
-                document.getElementById("loggBtnMobil").style.visibility = "visible";
+              document.getElementById("loggBtnMobil").style.visibility = "visible";
               } catch (TypeError) {}
+
             }
         } else {
             setButton(true);
             if (auth) {
               try {
-                document.getElementById("loggBtnMobil").style.visibility = "collapse";
-              } catch (TypeError) {}
+              document.getElementById("loggBtnMobil").style.visibility = "collapse";
+            } catch (TypeError) {}
             }
         }
     };
 
     useEffect( () => {
-      showButton();
       authorize();
+      showButton();
     }, []); 
 
     // Legger til eller fjerner padding under navbar, for å skyve innholdet under nedover. //
