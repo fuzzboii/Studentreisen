@@ -47,39 +47,24 @@ function UserOverview() {
     const columns = React.useMemo(() => 
         [
             {
-                Header: "ID",
-                columns: [
-                    {
-                        Header: "#",
-                        accessor: "brukerid"
-                    }
-                ]
+                Header: "#",
+                accessor: "brukerid"
             },
             {
-                Header: "Brukerinfo",
-                columns: [
-                    {
-                        Header: "Fornavn",
-                        accessor: "fnavn"
-                    },
-                    {
-                        Header: "Etternavn",
-                        accessor: "enavn"
-                    }
-                ]
+                Header: "Fornavn",
+                accessor: "fnavn"
             },
             {
-                Header: "Ekstra info",
-                columns: [
-                    {
-                        Header: "Telefon",
-                        accessor: "telefon"
-                    },
-                    {
-                        Header: "E-post",
-                        accessor: "email"
-                    }
-                ]
+                Header: "Etternavn",
+                accessor: "enavn"
+            },
+            {
+                Header: "Telefon",
+                accessor: "telefon"
+            },
+            {
+                Header: "E-post",
+                accessor: "email"
             }
         ], []
     );
@@ -141,7 +126,7 @@ function TableOverview({ columns, data, fetchData, fetching, pageAmount: control
         previousPage,
         setPageSize,
         state: { pageIndex, pageSize },
-    } = useTable({columns, data, initialState: { pageIndex: 0, hiddenColumns : ["telefon", "email"] }, manualPagination: true, pageCount: controlledPageCount},
+    } = useTable({columns, data, initialState: { pageIndex: 0 }, manualPagination: true, pageCount: controlledPageCount},
         usePagination);
     
     React.useEffect(() => {

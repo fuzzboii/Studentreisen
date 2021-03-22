@@ -58,6 +58,12 @@
   padding: 0.2em;
 }
 
+/* Ved innlastning (Mobile view), ikke vis ekstra info felt */
+#table_useroverview thead tr th:nth-last-child(-n+2), #table_useroverview tbody tr td:nth-last-child(-n+2) {
+  display: none;
+}
+
+
 #table_pagination_useroverview {
   margin-top: 0.4em;
 }
@@ -77,4 +83,26 @@
 
 #table_pagination_right_input_useroverview {
   max-width: 4em;
+}
+
+/* Media queries
+----------------------------- */
+
+/* Tab */
+@media screen and (min-width: 720px) {
+    
+  /* Ved innlastning (Mobile view), ikke vis ekstra info felt */
+  #table_useroverview thead tr th:nth-last-child(2), #table_useroverview tbody tr td:nth-last-child(2) {
+    display: table-cell;
+  }
+}
+
+/* Tablet */
+@media screen and (min-width: 1024px) {
+    
+  /* Ved innlastning (Mobile view), ikke vis ekstra info felt */
+  #table_useroverview thead tr th:nth-last-child(-n+2), #table_useroverview tbody tr td:nth-last-child(-n+2) {
+    display: table-cell;
+  }
+
 }
