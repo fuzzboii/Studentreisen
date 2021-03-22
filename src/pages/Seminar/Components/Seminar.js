@@ -20,11 +20,13 @@ const Seminar = (props) => {
 
     if (width < breakpoint) {
         return (
-            <div className="Seminar-Accordation">
+            <div className="Seminar-Mobile">
             <SeminarAccordion>
-                <SeminarAccordionSummary expandIcon={<SeminarExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
+                <SeminarAccordionSummary expandIcon={<SeminarExpandMoreIcon />} aria-controls="panel1a-content" id="Seminar-AccordionSummary">
+                    <div className="Seminar-HeaderContent">
                         <div className="Seminar-Oppstart">{moment.locale('nb'), moment(props.oppstart).format("MMM DD YYYY")}</div>
                         <div className="Seminar-Navn">{props.navn}</div>   
+                    </div>
                 </SeminarAccordionSummary>
                 <SeminarAccordionDetails className="Seminar-AccordationDetails">
                     <div className="Seminar-beskrivelse">{props.beskrivelse}</div>
@@ -43,8 +45,8 @@ const Seminar = (props) => {
         );
         }
         return (
-            <div className="Seminar-Cards">
-            <SeminarCard>
+            <div className="Seminar-Desktop">
+            <SeminarCard className="Seminar-Cards">
                 <SeminarCardActionArea>
                     <SeminarCardMedia/>
                     <SeminarCardContent className="Seminar-CardContent">
@@ -70,40 +72,6 @@ const Seminar = (props) => {
             </div>
         );
 }
-            
-/*
-    return (
-        <SeminarCard>
-            <SeminarCardActionArea>
-                <SeminarCardMedia/>
-                <SeminarCardContent>
-                    <SeminarTypography gutterBottom variant="h5" component="h2">
-                        <p>{props.navn}</p>
-                    </SeminarTypography>
-                    <SeminarTypography variant="body2" color="textSecondary" component="p">
-                        <p>{props.oppstart}</p>
-                        <p>{props.varighet}</p>
-                        <p>{props.beskrivelse}</p>
-                        <p>{props.arrangor}</p>
-                        <p>{props.adresse}</p>
-                        <p>{props.tilgjengelighet}</p>
-                    </SeminarTypography>
-                </SeminarCardContent>
-            </SeminarCardActionArea>
-            <SeminarCardActions>
-                <SeminarButton size="small" color="primary">
-                    Rediger
-                    </SeminarButton>
-                <SeminarButton size="small" color="primary">
-                    Påmeld
-                </SeminarButton>
-            </SeminarCardActions>
-        </SeminarCard>
-
-
-    );
-};
-*/
 
 
 export default Seminar;
