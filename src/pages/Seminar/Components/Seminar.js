@@ -18,10 +18,13 @@ const Seminar = (props) => {
                 <SeminarAccordionDetails className="Seminar-AccordationDetails">
                     <div className="Seminar-beskrivelse">{props.beskrivelse}</div>
                     <SeminarCardActions className="Seminar-CardActions">
-
                         <SeminarButton className="Seminar-buttonPaameld" size="small" color="primary">
                         Påmeld
                         </SeminarButton>
+                        <SeminarButton className="Seminar-buttonLes" size="small" color="default">
+                        Les mer..
+                        </SeminarButton>
+
                     </SeminarCardActions>
                 </SeminarAccordionDetails>
             </SeminarAccordion>
