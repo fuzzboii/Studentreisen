@@ -7,7 +7,7 @@ router.get('/getAllSeminarData', async (req, res) => {
     try{
         // let checkQuery = "SELECT * FROM Seminar";
         // let checkQueryFormat = mysql.format(checkQuery);
-        connection.query('SELECT * FROM Seminar', (error, results) => {
+        connection.query('SELECT * FROM Seminar WHERE tilgjengelighet = true', (error, results) => {
             res.send(results);
         });
 

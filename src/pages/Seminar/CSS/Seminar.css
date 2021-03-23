@@ -7,6 +7,15 @@
     place-self: center;
 }
 
+/* Seminar overskrift */
+.SeminarHeading {
+    display: grid;
+    margin-left: 0.1em;
+}
+
+.content-seminar {
+
+}
 
 /* Accordation and Cards*/
 .Seminar-CardActions {
@@ -92,30 +101,57 @@
 /* Tab (pro) */
 @media screen and (min-width: 1024px) {
     .seminar-list {
-        grid-template-columns: 1fr 1fr;
-        justify-items: center;
+        grid-template-columns: 400px 400px;
+        justify-content: center;
     }
+
+    .content-seminar {
+        padding-left: 2%;
+        padding-right: 2%;
+    }
+
+    .SeminarHeading {
+        grid-column-start: 1;
+        grid-column-end: 3;
+    }
+
 }
 
 
 /* Laptop / Liten skjerm,, 720p */
 @media only screen and (min-width: 1280px) {
     .seminar-list {
-        grid-template-columns: 1fr 1fr 1fr
+        grid-template-columns: 400px 400px 400px;
+        justify-content: center;
     }
+
+    .SeminarHeading {
+        grid-column-start: 1;
+        grid-column-end: 4;
+        margin-left: 0.5em;
+    }
+
     
 }
 
 /* Medium skjerm, 1080p */
 @media screen and (min-width: 1920px) {
     .seminar-list {
-        grid-template-columns: 1fr 1fr 1fr 1fr
+        grid-template-columns: 400px 400px 400px;
+        justify-content: center;
     }
+
 }
 
 /* Stor skjerm, 1440p */
 @media screen and (min-width: 2560px) {
     .seminar-list {
-        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+        grid-template-columns: 400px 400px 400px 400px;
+        justify-content: center;
+    }
+
+    .SeminarHeading {
+        grid-column-start: 1;
+        grid-column-end: 5;
     }
 }
