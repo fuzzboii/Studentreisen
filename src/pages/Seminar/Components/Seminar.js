@@ -54,8 +54,8 @@ const Seminar = (props) => {
             <SeminarCard className="Seminar-Cards">
                 <SeminarCardActionArea>
                     <SeminarCardMedia
-                        image="../../../assets/usn.png'"
-                        title="Contemplative Reptile"
+                        image=""
+                        title=""
                     />
                     <SeminarCardContent className="Seminar-CardContent">
                         <SeminarTypography gutterBottom variant="h5" component="h2">
