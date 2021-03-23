@@ -1,5 +1,6 @@
 const { connection } = require('../db');
 const mysql = require('mysql');
+const nodemailer = require('nodemailer');
 
 const verifyAuth = (token) => {
     return new Promise(function(resolve, reject){
@@ -44,4 +45,44 @@ const verifyAuth = (token) => {
     });
 }
 
+const sendEmail = (recipient, subject, body) => {
+    return new Promise(function(resolve, reject){
+        try {
+            if(recipient !== undefined && subject !== undefined && body !== undefined) {
+                // Oppretter tilkobling mot Gmail
+                const mailTransporter = nodemailer.createTransport({
+                    service: 'gmail',
+                    auth: {
+                        user: process.env.EMAIL_ADDRESS,
+                        pass: process.env.EMAIL_PASSWORD
+                    }
+                });
+
+                // Oppretter e-posten som sendes til bruker
+                const mailOptions = {
+                    from: 'usnstudentreisen@gmail.com',
+                    to: recipient,
+                    subject: subject,
+                    text: body
+                };
+
+                // Sender e-posten
+                mailTransporter.sendMail(mailOptions, (err, mailResponse) => {
+                    if(err) {
+                        console.log("En feil oppstod ved utsendelse av e-post, detaljer: " + err)
+                        resolve("En feil oppstod ved sending av e-post")
+                    } else {
+                        resolve("Sendt")
+                    }
+                });
+            } else {
+                resolve("En eller flere av de obligatoriske feltene er ikke med")
+            }
+        } catch(e) {
+            reject(e);
+        }
+    });
+}
+
 module.exports.verifyAuth = verifyAuth;
+module.exports.sendEmail = sendEmail;
