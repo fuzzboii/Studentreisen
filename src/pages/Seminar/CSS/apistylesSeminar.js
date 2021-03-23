@@ -54,6 +54,7 @@ export const SeminarContainer = styled(Container)({
 
 export const SeminarCard = styled(Card)({
     maxWidth: 345,
+    minWidth: 345,
 });
 
 export const SeminarCardActionArea = styled(CardActionArea)({
@@ -66,9 +67,7 @@ export const SeminarCardContent = styled(CardContent)({
 });
 
 export const SeminarCardMedia = styled(CardMedia)({
-    component: "img",
-    alt: "Contemplative Reptile",
-    height: "140",
+    height: 140,
 });
 
 export const SeminarTypography = styled(Typography)({

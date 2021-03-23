@@ -13,6 +13,7 @@ import CookieService from '../../../global/Services/CookieService';
 import AuthService from '../../../global/Services/AuthService';
 import '../CSS/Login.css';
 import usnlogo from '../../../assets/usn.png';
+import Navbar from "../../../global/Components/Navbar";
 
 class Login extends Component {
   constructor(props) {
