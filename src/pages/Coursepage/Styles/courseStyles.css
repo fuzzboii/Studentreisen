@@ -3,10 +3,10 @@
 }
 
 .boxlink {
-    color: #90a546;
-    width: auto;
+    
     
  }
+
 
 .course-section {
     background-color: rgb(247, 244, 244);    
@@ -96,19 +96,25 @@
 
 /* Tab */
 @media screen and (min-width: 720px) {
+
+    .content-overview {
+        display: flex;
+        justify-content: center;
+    }
     .course-list {
-        grid-template-columns: 30em 30em;
-                 margin: 0em 0em 0em 5em;
+        grid-template-columns: auto auto ;
+        
     }
     .boxlink {
-        margin: 0em 0em 0em 5em; 
-        width: 20em;
+        
+        
      }
 
     .course-section {
         background-color: rgb(247, 244, 244);
         max-width: 29em;
         margin-bottom: 1em;
+        margin-right: 1em;
         border-radius: 3px; 
     }
 
@@ -118,8 +124,6 @@
 
 /* Laptop / Liten skjerm,, 720p */
 @media only screen and (min-width: 1280px) {
-    
-    
     
     .course-section:hover {
         background-color: #0000d81a;
