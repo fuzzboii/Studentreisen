@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import './App.css';
-import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
+import {BrowserRouter as Router, Switch, Route, useLocation} from 'react-router-dom';
 
 import Footer from './global/Components/Footer';
 import Navbar from './global/Components/Navbar';
@@ -23,6 +23,10 @@ function App() {
   // Henter authtoken-cookie
   const token = CookieService.get("authtoken");
 
+  // Lar oss kjøre useEffect ved endring av location, i tillegg til state.
+  // Oppfører seg ikke helt som forventet
+  const location = useLocation();
+
   const authorize = () => {
     if(token !== undefined) {
       // Om token eksisterer sjekker vi mot serveren om brukeren har en gyldig token
@@ -39,11 +43,10 @@ function App() {
   // Setter start-tilstand på auth, og re-rendrer ved endringer
   useEffect( () => {
     authorize();
-  });
+  }, [location]);
 
   return (
     <>
-    <Router>
       <Navbar auth={auth} />
         <Switch>
           <Route path = "/" exact component = {Home} />
@@ -56,7 +59,6 @@ function App() {
           <Route path = "/seminar" component = {Seminar} />
         </Switch>
       <Footer />
-    </Router>
     </>
   );
 }
