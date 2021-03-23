@@ -4,12 +4,12 @@ import LanguageIcon from '@material-ui/icons/Language';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import SchoolIcon from '@material-ui/icons/School';
 import Box from '@material-ui/core/Box';
-import '../Styles/courseStyles.css';
+
 
 const Course = (props) => {
 
     return (
-      
+
             <Box className='course-section' boxShadow={1}>
                 <MyCardContent>
                     <div className="course-sectionTop">             
