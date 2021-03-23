@@ -7,6 +7,7 @@ import axios from "axios";
 import { FormControl, InputLabel, Input } from '@material-ui/core';
 
 // Studentreisen-assets og komponenter
+import '../CSS/UserOverview.css';
 import CookieService from '../../../global/Services/CookieService';
 import ValidationService from '../../../global/Services/ValidationService';
 
@@ -144,10 +145,10 @@ function UserOverview(props) {
                     //dataUpdate[index] = newData;
                     //setData([...dataUpdate]);
 
-                    //resolve("lol");
-                    reject("lol2");
+                    //reject();
+                    resolve();
                 }, 1000);
-            }).then((val) => console.log("eh? " + val)),
+            }),
         onRowDelete: oldData =>
             new Promise((resolve, reject) => {
                 console.log("Slett");
@@ -164,9 +165,9 @@ function UserOverview(props) {
     }
 
     return (
-        <div style={{ maxWidth: "100%" }}>
+        <section id="section_useroverview">
           <MaterialTable columns={columns} data={brukere} localization={localization} editable={editable} title="Brukeroversikt" />
-        </div>
+        </section>
     );
 }
 
