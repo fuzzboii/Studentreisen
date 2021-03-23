@@ -4,7 +4,7 @@ const mysql = require('mysql');
 const router = require('express').Router();
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto'); 
-const nodemailer = require('nodemailer');
+const { sendEmail } = require('../global/CommonFunctions');
 
 router.get('/forgotPassword', async (req, res) => {
     res.send(404);
@@ -58,38 +58,15 @@ router.post('/forgotPassword', async (req, res) => {
                                 console.log("En feil oppstod ved oppretting av glemtpassord_token, detaljer: " + error.errno + ", " + error.sqlMessage)
                                 return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                             }
-                            
-                            // Oppretter tilkobling mot Gmail
-                            const mailTransporter = nodemailer.createTransport({
-                                service: 'gmail',
-                                auth: {
-                                    user: process.env.EMAIL_ADDRESS,
-                                    pass: process.env.EMAIL_PASSWORD
-                                }
+                            const subject = 'Glemt passord - Studentreisen';
+                            const body =  'Hei!\n\nDu har mottatt denne eposten fordi du har bedt om å tilbakestille passordet ditt hos Studentreisen, om du ikke har bedt om dette kan du trygt ignorere denne eposten.\n\n' +
+                                    'Vennligst trykk på lenken under for å fortsette med å endre passordet ditt.\n' + 
+                                    'http://localhost:3000/reset/' + buf.toString("hex") + "\n\n" + 
+                                    'Mvh\nStudentreisen';
+                           
+                            sendEmail(selResults[0].email, subject, body).then(function(response) {
+                                return res.json({ "status" : "success", "message" : "ok" });
                             });
-
-                            // Oppretter e-posten som sendes til bruker
-                            const mailOptions = {
-                                from: 'usnstudentreisen@gmail.com',
-                                to: selResults[0].email,
-                                subject: 'Glemt passord - Studentreisen',
-                                text: 'Hei!\n\nDu har mottatt denne eposten fordi du har bedt om å tilbakestille passordet ditt hos Studentreisen, om du ikke har bedt om dette kan du trygt ignorere denne eposten.\n\n' +
-                                        'Vennligst trykk på lenken under for å fortsette med å endre passordet ditt.\n' + 
-                                        'http://localhost:3000/reset/' + buf.toString("hex") + "\n\n" + 
-                                        'Mvh\nStudentreisen'
-                            };
-
-                            // Sender e-posten
-                            mailTransporter.sendMail(mailOptions, (err, mailResponse) => {
-                                if(err) {
-                                    console.log("En feil oppstod ved utsendelse av e-post, detaljer: " + err)
-                                    return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
-                                } else {
-                                    return res.json({ "status" : "success", "message" : "ok" });
-                                }
-                            });
-
-
                         });
                         
                     });

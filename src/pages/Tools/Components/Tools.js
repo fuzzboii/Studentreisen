@@ -101,7 +101,7 @@ const Swipe = () => {
                 <Tab label="Kurs"/>
                 <Tab label="Seminar"/>
             </Tabs>
-            <ReactSwipe id="swipe_tools" swipeOptions={swipeOptions} ref={el => (swiper = el)}>
+            <ReactSwipe swipeOptions={swipeOptions} ref={el => (swiper = el)}>
                 <div className="div_tools">
                     <section>
                         <h1>Kursoversikt</h1>
@@ -140,7 +140,7 @@ const SwipeWAdmin = () => {
                 <Tab label="Kurs"/>
                 <Tab label="Seminar"/>
             </Tabs>
-            <ReactSwipe id="swipe_tools" swipeOptions={swipeOptions} ref={listener => (swiper = listener)}>
+            <ReactSwipe swipeOptions={swipeOptions} ref={listener => (swiper = listener)}>
                 <div className="div_tools">
                     <UserOverview />
                 </div>

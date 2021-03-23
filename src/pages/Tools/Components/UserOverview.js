@@ -1,203 +1,174 @@
-// React-spesifikt
 import React from "react";
 
 // 3rd-party Packages
-import { useTable, usePagination } from 'react-table'
-import { FirstPage, LastPage, NavigateNext, NavigateBefore } from '@material-ui/icons';
-import { Select, MenuItem, Input, Button } from '@material-ui/core';
+import MaterialTable from "material-table";
+import axios from "axios";
+
+import { FormControl, InputLabel, Input } from '@material-ui/core';
 
 // Studentreisen-assets og komponenter
 import '../CSS/UserOverview.css';
-import axios from "axios";
 import CookieService from '../../../global/Services/CookieService';
+import ValidationService from '../../../global/Services/ValidationService';
 
-
-function PrefetchData() {
+function UserOverview(props) {
+    let [brukere, setBrukere] = React.useState([]);
+    
     const token = {
         token: CookieService.get("authtoken")
     }
-    // Axios POST request
-    axios
-        // Henter API URL fra .env og utfører en POST request med dataen fra objektet over
-        // Axios serialiserer objektet til JSON selv
-        .post(process.env.REACT_APP_APIURL + "/tools/getAllUserData", token)
-        // Utføres ved mottatt resultat
-        .then(res => {
-            if(res.data.results) {
-                allData = res.data.results;
-                allDataFetched = true;
-            }
-        });
-        
 
-    return (
-        <UserOverview/>
-    )
-}
-
-let allData;
-let allDataFetched = false;
-
-function UserOverview() {
-    const [data, setData] = React.useState([]);
-    const [fetching, setFetching] = React.useState(false);
-    const [pageAmount, setPageAmount] = React.useState(0);
-    const fetchIDReference = React.useRef(0);
-
-    const columns = React.useMemo(() => 
-        [
-            {
-                Header: "#",
-                accessor: "brukerid"
-            },
-            {
-                Header: "Fornavn",
-                accessor: "fnavn"
-            },
-            {
-                Header: "Etternavn",
-                accessor: "enavn"
-            },
-            {
-                Header: "Telefon",
-                accessor: "telefon"
-            },
-            {
-                Header: "E-post",
-                accessor: "email"
-            }
-        ], []
-    );
-
-    const fetchData = React.useCallback(({ pageSize, pageIndex }) => {
-        const fetchID = ++fetchIDReference.current;
-
-        setFetching(true);
-        
-        const continueFetchingData = () => {
-            if(fetchID === fetchIDReference.current ) {
-                const startRow = pageSize * pageIndex;
-                const endRow = startRow + pageSize;
+    if(token !== undefined && Object.getOwnPropertyNames(brukere).length == 1) {
+        axios
+            // Henter API URL fra .env og utfører en POST request med dataen fra objektet over
+            // Axios serialiserer objektet til JSON selv
+            .post(process.env.REACT_APP_APIURL + "/tools/getAllUserData", token)
+            // Utføres ved mottatt resultat
+            .then(res => {
+                if(res.data.results) {
+                    setBrukere(res.data.results);
+                }
+            });
+    }
     
-                setData(allData.slice(startRow, endRow));
-    
-                setPageAmount(Math.ceil(allData.length / pageSize));
-    
-                setFetching(false);
-            }
+    const columns = [
+        { title: "#", field: "brukerid", type: "numeric", editable: 'never' },
+        { title: "Fornavn", field: "fnavn", 
+            editComponent: props => ( 
+                <FormControl>
+                    <InputLabel>Fornavn</InputLabel>
+                    <Input variant="outlined" autoFocus={true} margin="dense" value={props.value} onChange={e => props.onChange(e.target.value)} />
+                </FormControl>
+            ) 
+        },
+        { title: "Etternavn", field: "enavn", 
+            editComponent: props => (
+                <FormControl>
+                    <InputLabel>Etternavn</InputLabel> 
+                    <Input variant="outlined" margin="dense" value={props.value} onChange={e => props.onChange(e.target.value)} />
+                </FormControl>
+            )  
+        },
+        { title: "Brukertype", field: "niva", lookup: { 1: 'Student', 2: 'Underviser', 3: 'Emneansvarlig', 4: 'Administrator' } 
+        },
+        { title: "Telefon", field: "telefon", type: "numeric", editable: 'never' },
+        { title: "E-post", field: "email", 
+        editComponent: props => ( 
+            <FormControl>
+                <InputLabel>E-post</InputLabel> 
+                <Input type="email" variant="outlined" margin="dense" value={props.value} onChange={e => props.onChange(e.target.value)} />
+            </FormControl> 
+            )  
         }
-
-        const checkAllData = () => {
-            if(allDataFetched) {
-                continueFetchingData();
-            } else { 
-                setTimeout(checkAllData, 50);
-            }
-        }
-
-        checkAllData();
-    }, []);
-
-    return (
-        <TableOverview
-            columns={columns}
-            data={data}
-            fetchData={fetchData}
-            fetching={fetching}
-            pageAmount={pageAmount}
-        />
-    )
-}
-
-//Flytte i en fil? 
-function TableOverview({ columns, data, fetchData, fetching, pageAmount: controlledPageCount }) {
-    const {
-        getTableProps,
-        getTableBodyProps,
-        headerGroups,
-        prepareRow,
-        page,
-        canPreviousPage,
-        canNextPage,
-        pageOptions,
-        pageCount,
-        gotoPage,
-        nextPage,
-        previousPage,
-        setPageSize,
-        state: { pageIndex, pageSize },
-    } = useTable({columns, data, initialState: { pageIndex: 0 }, manualPagination: true, pageCount: controlledPageCount},
-        usePagination);
+    ];
     
-    React.useEffect(() => {
-        fetchData({ pageIndex, pageSize })
-    }, [fetchData, pageIndex, pageSize]);
+    const localization = {
+        pagination: {
+            labelDisplayedRows: "{from}-{to} av {count}",
+            labelRowsSelect: "brukere",
+            labelRowsPerPage: "Brukere per side:",
+            firstAriaLabel: "Første side", 
+            firstTooltip: "Første side", 
+            previousAriaLabel: "Forrige side",
+            previousTooltip: "Forrige side",
+            nextAriaLabel: "Neste side",
+            nextTooltip: "Neste side",
+            lastAriaLabel: "Siste side",
+            lastTooltip: "Siste side",
+        },
+        header: {
+            actions: "Valg"
+        },
+        body: {
+            addTooltip: "Legg til ny bruker",
+            deleteTooltip: "Slett bruker",
+            editTooltip: "Rediger bruker",
+            emptyDataSourceMessage: "Ingen brukere å vise",
+            filterRow: {
+                filterTooltip: "Filter"
+            },
+            editRow: {
+                deleteText: "Er du sikker på at du ønsker å slette denne brukeren?",
+                cancelTooltip: "Avbryt",
+                saveTooltip: "Godkjenn"
+            }
+        },
+        toolbar: {
+            searchTooltip: "Søk",
+            searchPlaceholder: "Søk"
+        }
+    }
+
+    const editable = {
+        isEditable: bruker => bruker.niva !== 4, // Administrator skal ikke kunne endres
+        isEditHidden: bruker => bruker.niva === 4,
+        isDeletable: bruker => bruker.niva === 1, // Kun Studenter skal kunne slettes
+        isDeleteHidden: bruker => bruker.niva !== 1,
+        onRowAddCancelled: bruker => console.log('Row adding cancelled'),
+        onRowUpdateCancelled: bruker => console.log('Row editing cancelled'),
+        onRowAdd: nyBruker =>
+            new Promise((resolve, reject) => {
+                // Sjekk om feltene er OK, enkel test på brukertype, e-post og at alle feltene er tilstede
+                if(ValidationService.validateUser(nyBruker)) {
+                    try {
+                        axios
+                            .post(process.env.REACT_APP_APIURL + "/tools/newUser", {bruker : nyBruker, token : token.token})
+                            // Utføres ved mottatt resultat
+                            .then(res => {
+                                if(res.data.success) {
+                                    setBrukere([...brukere, nyBruker]);
+                                    resolve();
+                                } else {
+                                    reject();
+                                }
+                            }).catch(e => {
+                                reject();
+                            });
+                    } catch(e) {
+                        reject();
+                    }
+                } else {
+                    reject();
+                }
+            }),
+        onRowUpdate: (newData, oldData) =>
+            new Promise((resolve, reject) => {
+                console.log("Oppdater");
+                console.log(newData);
+                console.log(oldData);
+
+
+
+                setTimeout(() => {
+                    //const dataUpdate = [...data];
+                    //const index = oldData.tableData.id;
+                    //dataUpdate[index] = newData;
+                    //setData([...dataUpdate]);
+
+                    //reject();
+                    resolve();
+                }, 1000);
+            }),
+        onRowDelete: oldData =>
+            new Promise((resolve, reject) => {
+                console.log("Slett");
+                console.log(oldData);
+                setTimeout(() => {
+                    //const dataDelete = [...data];
+                    //const index = oldData.tableData.id;
+                    //dataDelete.splice(index, 1);
+                    //setData([...dataDelete]);
+
+                    resolve();
+                }, 1000);
+            })
+    }
 
     return (
-        <>
         <section id="section_useroverview">
-            <h1>Brukeroversikt</h1>
-            <table {...getTableProps()} id="table_useroverview">
-                <thead>
-                {headerGroups.map(headerGroup => (
-                    <tr {...headerGroup.getHeaderGroupProps()}>
-                    {headerGroup.headers.map(column => (
-                        <th {...column.getHeaderProps()}>
-                        {column.render('Header')}
-                        <span>
-                            {column.isSorted ? column.isSortedDesc ? ' 🔽' : ' 🔼' : ''}
-                        </span>
-                        </th>
-                    ))}
-                    </tr>
-                ))}
-                </thead>
-                <tbody {...getTableBodyProps()}>
-                {page.map((row, i) => {
-                    prepareRow(row)
-                    return (
-                    <tr {...row.getRowProps()}>
-                        {row.cells.map(cell => {
-                        return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                        })}
-                    </tr>
-                    )
-                })}
-                <tr>
-                    {fetching ? (<td colSpan="10000">Laster...</td>) : (<></>)}
-                </tr>
-                </tbody>
-            </table>
-            <div id="table_pagination_useroverview">
-                <section id="table_pagination_left_useroverview">
-                    <Button variant="contained" onClick={() => gotoPage(0)} disabled={!canPreviousPage}><FirstPage/></Button>
-                    <Button variant="contained" onClick={() => previousPage()} disabled={!canPreviousPage}><NavigateBefore/></Button>
-                    <Button variant="contained" onClick={() => nextPage()} disabled={!canNextPage}><NavigateNext/></Button>
-                    <Button variant="contained" onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}><LastPage/></Button>
-                    <p>Side {pageIndex + 1} av {pageOptions.length}</p>
-                </section> 
-                <section id="table_pagination_right_useroverview">
-                    <Input id="table_pagination_right_input_useroverview" type="number" defaultValue={pageIndex + 1}
-                        onChange={e => {
-                            const page = e.target.value ? Number(e.target.value) - 1 : 0
-                            gotoPage(page)
-                        }}
-                    />
-                    <Select value={pageSize} 
-                        onChange={e => {
-                            setPageSize(Number(e.target.value))
-                        }}>
-                        <MenuItem value="10">Vis 10</MenuItem>
-                        <MenuItem value="20">Vis 20</MenuItem>
-                        <MenuItem value="30">Vis 30</MenuItem>
-                        <MenuItem value="40">Vis 40</MenuItem>
-                        <MenuItem value="50">Vis 50</MenuItem>
-                    </Select>
-                </section>
-            </div>
+          <MaterialTable columns={columns} data={brukere} localization={localization} editable={editable} title="Brukeroversikt" />
         </section>
-        </>
     );
-};
+}
 
-export default PrefetchData;
+export default UserOverview;
