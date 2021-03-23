@@ -1,27 +1,38 @@
 import React from "react";
-import { MyCard, MyCardContent, MyContainer } from '../Styles/apistyles';
+import { MyCardContent } from '../Styles/apistyles';
 import LanguageIcon from '@material-ui/icons/Language';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import SchoolIcon from '@material-ui/icons/School';
+import Box from '@material-ui/core/Box';
 import '../Styles/courseStyles.css';
 
 const Course = (props) => {
 
     return (
-        <div className="course-section">
+      
+            <Box className='course-section' boxShadow={1}>
                 <MyCardContent>
                     <div className="course-sectionTop">             
                         <p className="kursnavn">{props.navn}</p>
                         <div className="kursinfo">
                             <p>{props.emnekode}</p>
-                            <p>{props.semester}</p>
-                            <p>{props.studiepoeng}</p>
+                            <div className="iconBox">
+                                <CalendarTodayIcon className="language-icon2" fontSize="inherit"/>
+                                <p>{props.semester}</p>
+                            </div>
+                            <div className="iconBox">
+                                <SchoolIcon className="language-icon2" fontSize="inherit"/>
+                                <p>{props.studiepoeng}</p>
+                            </div>
                         </div>
                     </div>
                     <div className="iconBox">
-                        <LanguageIcon/>
-                        <p className="undervisningsspråk">Undervisningsspråk: {props.språk}</p>
+                        <LanguageIcon className="language-icon" fontSize="inherit"/>
+                        <p className="undervisningsspråk">{props.språk}</p>
                     </div>
                 </MyCardContent>
-        </div>
+            </Box>
+        
     );
 };
 

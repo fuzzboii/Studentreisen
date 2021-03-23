@@ -11,6 +11,7 @@ class Overview extends Component {
                 <h1>Kurs</h1>
 
                 <CourseProvider>
+                    <div className="boxlink"></div>
                    <CourseList/>
                 </CourseProvider>
             </div>
