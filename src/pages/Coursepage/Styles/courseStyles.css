@@ -100,6 +100,10 @@
         grid-template-columns: 30em 30em;
                  margin: 0em 0em 0em 5em;
     }
+    .boxlink {
+        margin: 0em 0em 0em 5em; 
+        width: 20em;
+     }
 
     .course-section {
         background-color: rgb(247, 244, 244);
@@ -114,10 +118,7 @@
 
 /* Laptop / Liten skjerm,, 720p */
 @media only screen and (min-width: 1280px) {
-    .boxlink {
-        margin: 0em 0em 0em 5em; 
-        width: 20em;
-     }
+    
     
     
     .course-section:hover {
