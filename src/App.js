@@ -12,6 +12,7 @@ import Profile from './pages/Profile/Components/Profile';
 import Home from './pages/Frontpage/Components/Home';
 import Tools from './pages/Tools/Components/Tools';
 import Course from './pages/Coursepage/Components/Overview';
+import CourseDetail from './pages/Coursepage/Components/CourseDetail';
 import Seminar from './pages/Seminar/Components/SeminarOverview';
 
 import CookieService from './global/Services/CookieService';
@@ -51,7 +52,8 @@ function App() {
         <Switch>
           <Route path = "/" exact component = {Home} />
           <Route path = "/login" component = {Login} />
-          <Route path = "/course" component = {Course} />
+          <Route path = "/course" exact component = {Course} />
+          <Route path = "/course/:id" component = {CourseDetail} />
           <Route path = "/register" component = {Register} />
           <Route path = "/reset" component = {Reset} />
           <Route path = "/tools" component = {Tools} />

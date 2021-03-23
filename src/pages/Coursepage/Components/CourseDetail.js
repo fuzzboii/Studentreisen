@@ -1,9 +1,6 @@
-// React-spesifikt
-import { Component } from 'react';
-import {CourseProvider} from './CourseContext';
+import { useState, useEffect, useContext, Component } from 'react';
 
 // Studentreisen-assets og komponenter
-import CourseNav from './CourseNav';
 import '../Styles/courseStyles.css';
 import Loader from '../../../global/Components/Loader';
 import NoAccess from '../../../global/Components/NoAccess';
@@ -11,7 +8,7 @@ import CookieService from '../../../global/Services/CookieService';
 import AuthService from '../../../global/Services/AuthService';
 
 
-class Overview extends Component {
+class CourseDetail extends Component {
     constructor(props) {
         super(props);
         
@@ -60,10 +57,8 @@ class Overview extends Component {
         
         if(!loading && authenticated && (usertype === 4 || usertype === 3 || usertype === 2 || usertype === 1 )) {
             return (            
-                <div className="content-overview">
-                    <CourseProvider>
-                        <CourseNav/>
-                    </CourseProvider>
+                <div>
+                    
                 </div>
             );
         } else {
@@ -72,8 +67,10 @@ class Overview extends Component {
                 <NoAccess />
             );
         }
-    }    
-}   
+    }  
+}
+
+export default CourseDetail;
 
 
-export default Overview; 
+

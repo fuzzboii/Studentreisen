@@ -6,7 +6,11 @@
     
     
  }
-
+ 
+ .link {
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+  }
 
 .course-section {
     background-color: rgb(247, 244, 244);    
