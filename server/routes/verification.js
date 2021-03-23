@@ -26,7 +26,7 @@ router.post('/auth', async (req, res) => {
             connection.query(checkQueryFormat, (error, results) => {
                 if (error) {
                     console.log("An error occurred while checking for matches while authenticating, details: " + error.errno + ", " + error.sqlMessage)
-                    return res.json({ "authenticated" : "false"});
+                    return res.json({ "authenticated" : false});
                 }
                 if(results[0] !== undefined) {
                     // Token funnet og har ikke utløpt

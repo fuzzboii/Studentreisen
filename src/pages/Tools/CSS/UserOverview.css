@@ -1,6 +1,7 @@
 #section_useroverview {
-    max-width: 95%;
-    margin-left: auto; margin-right: auto;
+  width: 95%;
+  max-width: 95%;
+  margin-left: auto; margin-right: auto;
 }
 
 #section_useroverview h1 {
@@ -8,14 +9,33 @@
   margin-bottom: 0.5em;
 }
 
+#table_useroverview {
+  table-layout: fixed;
+  width: 100%;
+}
+
 #th_id_useroverview {
-    width: 3em;
+  width: 3em;
 }
 
 #table_useroverview thead tr th {
   background-color: rgb(136, 157, 184);
   color: white;
   border-top: 1px solid black;
+}
+
+/* ID */
+#table_useroverview thead tr th:nth-child(1) {
+  width: 3em;
+}
+
+/* Telefon */
+#table_useroverview thead tr th:nth-child(4) {
+  width: 7em;
+}
+
+#table_useroverview tr td:nth-child(1) {
+  text-align: center;
 }
 
 #table_useroverview tr:nth-child(odd) {
@@ -29,11 +49,66 @@
   color: white;
 }
 
+#table_useroverview tbody tr:nth-child(odd):hover {
+  cursor: pointer;
+  filter: brightness(0.8);
+}
+
+#table_useroverview tbody tr:nth-child(even):hover {
+  cursor: pointer;
+  filter: brightness(1.2);
+}
+
 #table_useroverview tbody td {
   word-break: break-word;
   padding: 0.2em;
 }
 
-.td_id_useroverview {
-    text-align: center;
+/* Ved innlastning (Mobile view), ikke vis ekstra info felt */
+#table_useroverview thead tr th:nth-last-child(-n+2), #table_useroverview tbody tr td:nth-last-child(-n+2) {
+  display: none;
+}
+
+
+#table_pagination_useroverview {
+  margin-top: 0.4em;
+}
+
+#table_pagination_left_useroverview, #table_pagination_left_useroverview p, #table_pagination_right_useroverview {
+  display: inline-block;
+}
+
+#table_pagination_left_useroverview button, #table_pagination_left_useroverview p, #table_pagination_right_useroverview button {
+  margin: 0.2em;
+  vertical-align: middle;
+}
+
+#table_pagination_right_useroverview {
+  float: right;
+}
+
+#table_pagination_right_input_useroverview {
+  max-width: 4em;
+}
+
+/* Media queries
+----------------------------- */
+
+/* Tab */
+@media screen and (min-width: 720px) {
+    
+  /* Ved innlastning (Mobile view), ikke vis ekstra info felt */
+  #table_useroverview thead tr th:nth-last-child(2), #table_useroverview tbody tr td:nth-last-child(2) {
+    display: table-cell;
+  }
+}
+
+/* Tablet */
+@media screen and (min-width: 1024px) {
+    
+  /* Ved innlastning (Mobile view), ikke vis ekstra info felt */
+  #table_useroverview thead tr th:nth-last-child(-n+2), #table_useroverview tbody tr td:nth-last-child(-n+2) {
+    display: table-cell;
+  }
+
 }
