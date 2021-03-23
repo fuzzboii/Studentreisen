@@ -7,32 +7,16 @@ import Button from "@material-ui/core/Button";
 import { makeStyles } from '@material-ui/core/styles';
 
 import '../CSS/Navbar.css';
-import favicon from '../../../assets/usn.png';
-import CookieService from '../../../global/Services/CookieService';
-import AuthService from '../../../global/Services/AuthService';
+import favicon from '../../assets/usn.png';
+import CookieService from '../Services/CookieService';
+import AuthService from '../Services/AuthService';
 
-function Navbar() {
+function Navbar(props) {
     const [click, setClick] = useState(false);
     const [button, setButton] = useState(true);
+    // Prop som mottas fra App, viser til om bruker er inn-/utlogget
     const [auth, setAuth] = useState(false);
-
-    // Henter authtoken-cookie
-    const token = CookieService.get("authtoken");
-
-    const authorize = () => {
-    if(token !== undefined) {
-      // Om token eksisterer sjekker vi mot serveren om brukeren har en gyldig token
-      AuthService.isAuthenticated(token).then(res => {
-        if(!res.authenticated) {
-          // Sletter authtoken om token eksisterer lokalt men ikke er gyldig på server
-          CookieService.remove("authtoken");
-        } else {
-          setAuth(res.authenticated);
-        }
-      });
-    }
-  };
-    
+ 
     const handleClick = () => setClick(!click);
     const closeMobileMenu = () => setClick(false);
 
@@ -41,20 +25,27 @@ function Navbar() {
         if(window.innerWidth <= 960) {
             setButton(false);
             if (auth) {
-              document.getElementById("loggBtnMobil").style.visibility = "visible";
+              // TODO: Reiser TypeError hvis brukeren logger ut, og så resizer til under 960px vidde
+              // selv om authorize() burde kjøre før denne metoden, og dermed (burde) sette 'auth' til false
+              try {
+                document.getElementById("loggBtnMobil").style.visibility = "visible";
+              } catch (TypeError) {}
+
             }
         } else {
             setButton(true);
             if (auth) {
-              document.getElementById("loggBtnMobil").style.visibility = "collapse";
+              try {
+                document.getElementById("loggBtnMobil").style.visibility = "collapse";
+            } catch (TypeError) {}
             }
         }
     };
 
     useEffect( () => {
+      setAuth(props.auth);
       showButton();
-      authorize();
-    }, []); 
+    }, [props]); 
 
     // Legger til eller fjerner padding under navbar, for å skyve innholdet under nedover. //
     const expand = () => document.getElementById("bar").style.paddingBottom = "60vh";
@@ -121,9 +112,16 @@ function Navbar() {
     });
     const classes = useStyles();
 
+    const loggUt = () => {
+      shrink();
+      closeMobileMenu();
+      CookieService.remove("authtoken");
+      setAuth(false);
+    }
+
     return (
         <>
-          <nav className='navbar' id="bar">
+          <nav className='navbar' id="bar" >
             <div className='navbar-container'>
               <Link 
                 to="/" 
@@ -217,7 +215,7 @@ function Navbar() {
                 to='/Profile'>
                 <i className="far fa-user" />
               </Link> }
-              {button && auth && <Button className={classes.loggbtn} > LOGG UT </Button> }
+              {button && auth && <Button onClick={loggUt} className={classes.loggbtn} > LOGG UT </Button> }
               {button && !auth && <Link to='/Register' className={classes.loggbtnNoAuth} > REGISTRER </Link> }
               {!auth && <Link to='/Login' className={classes.loggbtnNoAuth} > LOGG INN </Link> }
             </div>

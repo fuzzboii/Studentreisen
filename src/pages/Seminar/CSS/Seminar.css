@@ -1,17 +1,94 @@
-.content-seminar {
-
-}
-
+/* Seminar GRID and positioning grid elements */
 .seminar-list {
     display: grid;
 }
 
 .seminarBox {
+    place-self: center;
+}
+
+/* Seminar overskrift */
+.SeminarHeading {
+    display: grid;
+    margin-left: 0.1em;
+}
+
+.content-seminar {
+
+}
+
+/* Accordation and Cards*/
+.Seminar-CardActions {
+    justify-content: flex-end;
+    margin-top: auto;
+}
+
+.Seminar-Cards {
+    display: flex;
+    flex-direction: column;
     
 }
 
-.seminarBox-content {
+
+/* Accordation */
+.Seminar-Mobile {
+    margin: 3px;
+    
 }
+
+.Seminar-HeaderContent {
+    flex-direction: column;
+    font-size: 0.2em;
+}
+
+.Seminar-OppstartVarighet {
+    font-size: 13px;
+}
+
+.Seminar-Navn {
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.Seminar-AccordationDetails {
+    flex-direction: column;
+}
+
+.Seminar-beskrivelse {
+    font-size: 16px;
+}
+
+/* Cards */
+.Seminar-Desktop {
+    display: flex;
+    margin: 1em;
+}
+
+.Seminar-NavnDesktop{
+    font-size: 1em;
+}
+
+.Seminar-OppstartDesktop, .Seminar-VarighetDesktop {
+    margin: 0;
+}
+
+.Seminar-ArrangorDesktop, .Seminar-BeskrivelseDesktop, .Seminar-AdresseDesktop {
+    margin: 0;
+    font-size: 13;
+}
+
+.Seminar-ArrangorHeading, .Seminar-BeskrivelseHeading, .Seminar-StedHeading{
+    margin-bottom: 0;
+    font-size: 13px;
+}
+
+.Seminar-DateDesktop {
+    margin-left: 1em;
+    display: inline-block;
+    
+}
+
+
 
 
 /* Media queries
@@ -21,25 +98,60 @@
 
 }
 
-/* Tab */
-@media screen and (min-width: 720px) {
+/* Tab (pro) */
+@media screen and (min-width: 1024px) {
     .seminar-list {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 400px 400px;
+        justify-content: center;
     }
+
+    .content-seminar {
+        padding-left: 2%;
+        padding-right: 2%;
+    }
+
+    .SeminarHeading {
+        grid-column-start: 1;
+        grid-column-end: 3;
+    }
+
 }
+
 
 /* Laptop / Liten skjerm,, 720p */
 @media only screen and (min-width: 1280px) {
     .seminar-list {
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: 400px 400px 400px;
+        justify-content: center;
     }
+
+    .SeminarHeading {
+        grid-column-start: 1;
+        grid-column-end: 4;
+        margin-left: 0.5em;
+    }
+
+    
 }
 
 /* Medium skjerm, 1080p */
 @media screen and (min-width: 1920px) {
+    .seminar-list {
+        grid-template-columns: 400px 400px 400px;
+        justify-content: center;
+    }
 
 }
 
 /* Stor skjerm, 1440p */
 @media screen and (min-width: 2560px) {
+    .seminar-list {
+        grid-template-columns: 400px 400px 400px 400px;
+        justify-content: center;
+    }
+
+    .SeminarHeading {
+        grid-column-start: 1;
+        grid-column-end: 5;
+    }
 }
