@@ -67,11 +67,7 @@ export const SeminarCardContent = styled(CardContent)({
 });
 
 export const SeminarCardMedia = styled(CardMedia)({
-    component: "img",
-    alt: "Contemplative Reptile",
-    height: "140",
-    image: "/static/images/cards/contemplative-reptile.jpg",
-    title: "Contemplative Reptile",
+    height: 140,
 });
 
 export const SeminarTypography = styled(Typography)({

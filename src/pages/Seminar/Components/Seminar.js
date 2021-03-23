@@ -53,7 +53,10 @@ const Seminar = (props) => {
             <div className="Seminar-Desktop">
             <SeminarCard className="Seminar-Cards">
                 <SeminarCardActionArea>
-                    <SeminarCardMedia />
+                    <SeminarCardMedia
+                        image="../../../assets/usn.png'"
+                        title="Contemplative Reptile"
+                    />
                     <SeminarCardContent className="Seminar-CardContent">
                         <SeminarTypography gutterBottom variant="h5" component="h2">
                             <h2 className="Seminar-NavnDesktop">{props.navn}</h2>
