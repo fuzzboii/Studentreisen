@@ -21,20 +21,10 @@ class Tools extends Component {
         this.state = {
             loading : true, authenticated : false, usertype : 1,
             windowWidth : 0,
-            activeTool : 0,
         }
     }
 
-    handleWindowResize() {
-        this.setState({
-            windowWidth: window.innerWidth
-        })
-    }
-
     componentDidMount() {
-        this.handleWindowResize();
-        window.addEventListener('resize', this.handleWindowResize.bind(this));
-
         // Henter authtoken-cookie
         const token = CookieService.get("authtoken");
 
@@ -90,7 +80,7 @@ class Tools extends Component {
 
 
 const Swipe = () => {
-    let reactSwipeEl;
+    let swiper;
     const [position, setPosition] = useState(0);
   
     const swipeOptions = useMemo(() => ({
@@ -102,16 +92,16 @@ const Swipe = () => {
   
     const handleTabChange = (e, newIndex) => {
         setPosition(newIndex);
-        reactSwipeEl.slide(newIndex);
+        swiper.slide(newIndex);
     };
   
     return (
         <main>
             <Tabs value={position} onChange={handleTabChange} centered>
-                <Tab label="Kursoversikt"/>
-                <Tab label="Seminaroversikt"/>
+                <Tab label="Kurs"/>
+                <Tab label="Seminar"/>
             </Tabs>
-            <ReactSwipe id="swipe_tools" swipeOptions={swipeOptions} ref={el => (reactSwipeEl = el)}>
+            <ReactSwipe id="swipe_tools" swipeOptions={swipeOptions} ref={el => (swiper = el)}>
                 <div className="div_tools">
                     <section>
                         <h1>Kursoversikt</h1>
@@ -146,9 +136,9 @@ const SwipeWAdmin = () => {
     return (
         <main>
             <Tabs value={position} onChange={handleTabChange} centered>
-                <Tab label="Brukeroversikt"/>
-                <Tab label="Kursoversikt"/>
-                <Tab label="Seminaroversikt"/>
+                <Tab label="Brukere"/>
+                <Tab label="Kurs"/>
+                <Tab label="Seminar"/>
             </Tabs>
             <ReactSwipe id="swipe_tools" swipeOptions={swipeOptions} ref={listener => (swiper = listener)}>
                 <div className="div_tools">
