@@ -89,18 +89,24 @@ function Profile() {
                 </div>
 
                 <div className='profile-item' >
-                    <h2 className='profile-subheader' > Konto </h2>
-                    <div className='profile-setting'>
-                        <h3 className='profile-subitem' > Innstilling 1 </h3>
-                        <Switch color='primary' />
-                    </div>
-                    <div className='profile-setting'>
-                        <h3 className='profile-subitem' > Innstilling 2 </h3>
-                        <Switch color='primary' />
-                    </div>
-                    <div className='profile-setting'>
-                        <h3 className='profile-subitem' > Innstilling 3 </h3>
-                        <Switch color='primary' />
+                    <h2 className='profile-subheader' > Interesser </h2>
+                    <div className='interesser' >
+                    <Button className={classes.profileButton}> Helse- og sosialfag </Button>
+                    <Button className={classes.profileButton}> Historie og idéhistorie </Button>
+                    <Button className={classes.profileButton}> Idrett, kroppsøving og friluftsliv </Button>
+                    {/* <Button> IT, informatikk og informasjonssystemer </Button>
+                    <Button> Jus </Button>
+                    <Button> Kunst, håndverk og musikk </Button>
+                    <Button> Lærer og lektorutdanning </Button>
+                    <Button> Maritime studier </Button>
+                    <Button> Matematikk, naturfag og miljøfag </Button>
+                    <Button> Medier, kommunikasjon og markedsføring </Button>
+                    <Button> Optometri </Button>
+                    <Button> Pedagogiske fag </Button>
+                    <Button> Samfunnsvitenskap og kulturstudier </Button>
+                    <Button> Språk og litteratur </Button>
+                    <Button> Teknologi, ingeniør og lysdesign </Button>
+                    <Button> Økonomi, ledelse og innovasjon </Button> */}
                     </div>
                 </div>
                 
