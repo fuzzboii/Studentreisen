@@ -16,6 +16,7 @@ function Navbar(props) {
     const [button, setButton] = useState(true);
     // Prop som mottas fra App, viser til om bruker er inn-/utlogget
     const [auth, setAuth] = useState(false);
+    const [type, setType] = useState(false);
  
     const handleClick = () => setClick(!click);
     const closeMobileMenu = () => setClick(false);
@@ -44,6 +45,7 @@ function Navbar(props) {
 
     useEffect( () => {
       setAuth(props.auth);
+      setType(props.type);
       showButton();
     }, [props]); 
 
@@ -209,6 +211,14 @@ function Navbar(props) {
                   className={classes.navbtn}>
                   CV
                 </Button>
+                {type == 4 && 
+                  <Button 
+                    className={classes.navbtn}
+                    component={Link} 
+                    to='/Tools' >
+                      Admin
+                  </Button>
+                }
               </div> }
               
               {auth && <Link

@@ -19,6 +19,7 @@ import AuthService from './global/Services/AuthService';
 
 function App() {
   const [auth, setAuth] = useState(false);
+  const [type, setType] = useState(null);
 
   // Henter authtoken-cookie
   const token = CookieService.get("authtoken");
@@ -36,6 +37,7 @@ function App() {
           CookieService.remove("authtoken");
         } 
         setAuth(res.authenticated);
+        setType(res.usertype);
       });
     } else {
       setAuth(false);
@@ -49,7 +51,7 @@ function App() {
 
   return (
     <>
-      <Navbar auth={auth} />
+      <Navbar auth={auth} type={type} />
         <Switch>
           <Route path = "/" exact component = {Home} />
           <Route path = "/login" component = {Login} />
