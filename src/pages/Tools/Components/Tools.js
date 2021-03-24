@@ -67,7 +67,7 @@ function Tools(props) {
                     <SeminarOverview />
                 </div>
             </main>
-        }{!props.loading && props.auth && (props.type === 1) &&
+        }{!props.loading && ((props.auth && (props.type === 1)) || !props.auth) &&
             // Ugyldig eller ikke-eksisterende token 
             <NoAccess />
         }
