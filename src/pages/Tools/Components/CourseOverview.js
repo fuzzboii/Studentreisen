@@ -80,7 +80,7 @@ function CourseOverview(props) {
                         }
                     },
                     {
-                        icon: 'add',
+                        icon: 'add_box',
                         tooltip: 'Nytt kurs',
                         isFreeAction: true,
                         onClick: () => {

@@ -80,7 +80,7 @@ function SeminarOverview(props) {
                         }
                     },
                     {
-                        icon: 'add',
+                        icon: 'add_box',
                         tooltip: 'Nytt seminar',
                         isFreeAction: true,
                         onClick: () => {
