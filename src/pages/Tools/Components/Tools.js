@@ -1,5 +1,5 @@
 // React-spesifikt
-import React, {useState, useMemo, useEffect} from 'react'
+import React, {useState, useMemo} from 'react'
 
 // 3rd-party Packages
 import ReactSwipe from 'react-swipe';
@@ -15,18 +15,9 @@ import '../CSS/Tools.css';
 
 
 function Tools(props) {
-    const [auth, setAuth] = useState(false);
-    const [type, setType] = useState(null);
-    const [loading, setLoading] = useState(true);
     const [position, setPosition] = useState(0);
+
     let swiper;
-    
-    useEffect(() => {
-        setAuth(props.auth);
-        setType(props.type);
-        setLoading(false);
-    }, [props]);
-  
     const swipeOptions = useMemo(() => ({
         continuous: false,
         callback(e) {
@@ -39,16 +30,16 @@ function Tools(props) {
         swiper.slide(newIndex);
     };
 
-    return(
+    return (
         <>
-        {loading &&
+        {props.loading &&
             // Om vi er i loading fasen (Før mottatt data fra API) vises det et Loading ikon
             <section id="loading">
                 <Loader />
             </section>
         }
         
-        {!loading && auth && type === 4 &&
+        {!props.loading && props.auth && props.type === 4 &&
             <main>
                 <Tabs value={position} onChange={handleTabChange} centered>
                     <Tab label="Brukere"/>
@@ -67,7 +58,7 @@ function Tools(props) {
                     </div>
                 </ReactSwipe>
             </main>
-        }{!loading && auth && (type === 3 || type === 2) &&
+        }{!props.loading && props.auth && (props.type === 3 || props.type === 2) &&
             <main>
                 <Tabs value={0} centered>
                     <Tab label="Seminar"/>
@@ -76,7 +67,7 @@ function Tools(props) {
                     <SeminarOverview />
                 </div>
             </main>
-        }{!loading && auth && (type === 1) &&
+        }{!props.loading && props.auth && (props.type === 1) &&
             // Ugyldig eller ikke-eksisterende token 
             <NoAccess />
         }

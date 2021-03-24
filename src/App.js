@@ -20,6 +20,7 @@ import AuthService from './global/Services/AuthService';
 function App() {
   const [auth, setAuth] = useState(false);
   const [type, setType] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   // Henter authtoken-cookie
   const token = CookieService.get("authtoken");
@@ -38,9 +39,11 @@ function App() {
         } 
         setAuth(res.authenticated);
         setType(res.usertype);
+        setLoading(false);
       });
     } else {
       setAuth(false);
+      setLoading(false);
     }
   };
 
@@ -59,7 +62,7 @@ function App() {
           <Route path = "/register" component = {Register} />
           <Route path = "/reset" component = {Reset} />
           <Route path = "/tools" render={(props) => (
-              <Tools {...props} auth={auth} type={type} />
+              <Tools {...props} auth={auth} type={type} loading={loading} />
             )}
           />
           <Route path = "/profile" component = {Profile} />
