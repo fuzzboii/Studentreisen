@@ -86,7 +86,7 @@ function Navbar(props) {
         color: '#fff',
         fontSize: '1.5rem',
         padding: '0.5rem 1rem',
-        display: 'grid',
+        display: 'flex',
         minWidth: '7rem',
         transform: 'translate(45vw)'
       },
@@ -95,10 +95,11 @@ function Navbar(props) {
         color: '#fff',
         fontSize: '1.5rem',
         padding: '0.5rem 1rem',
-        display: 'grid',
+        display: 'flex',
         minWidth: '7rem',
         transform: 'translate(30vw)',
-        textDecoration: 'none'
+        textDecoration: 'none',
+        marginRight: 'auto'
       },
 
       loggbtnmobil: {
@@ -211,6 +212,7 @@ function Navbar(props) {
                 </Button>
               </div> }
               
+
               {auth && <Link
                 to='/Profile'>
                 <i className="far fa-user" />
