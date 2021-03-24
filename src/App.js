@@ -58,7 +58,10 @@ function App() {
           <Route path = "/course" component = {Course} />
           <Route path = "/register" component = {Register} />
           <Route path = "/reset" component = {Reset} />
-          <Route path = "/tools" component = {Tools} />
+          <Route path = "/tools" render={(props) => (
+              <Tools {...props} auth={auth} type={type} />
+            )}
+          />
           <Route path = "/profile" component = {Profile} />
           <Route path = "/seminar" component = {Seminar} />
         </Switch>
