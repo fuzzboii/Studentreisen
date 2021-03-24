@@ -32,40 +32,13 @@ function UserOverview(props) {
     
     const columns = [
         { title: "#", field: "brukerid", type: "numeric", editable: 'never' },
-        { title: "Fornavn", field: "fnavn", 
-            editComponent: props => ( 
-                <FormControl>
-                    <InputLabel>Fornavn *</InputLabel>
-                    <Input variant="outlined" autoFocus={true} margin="dense" value={props.value} onChange={e => props.onChange(e.target.value)} />
-                </FormControl>
-            ) 
+        { title: "Fornavn", field: "fnavn", validate: rowData => rowData.fnavn === '' ? { isValid: false, helperText: 'Fornavn kan ikke være tomt' } : true },
+        { title: "Etternavn", field: "enavn", validate: rowData => rowData.enavn === '' ? { isValid: false, helperText: 'Etternavn kan ikke være tomt' } : true },
+        { title: "Brukertype", field: "niva", lookup: { 1: 'Student', 2: 'Underviser', 3: 'Emneansvarlig', 4: 'Administrator', 
+            validate: rowData => rowData.niva === 1 || rowData.niva === 2 || rowData.niva === 3 || rowData.niva === 4 ? { isValid: false, helperText: 'Brukertype er ikke gyldig' } : true }, 
         },
-        { title: "Etternavn", field: "enavn", 
-            editComponent: props => (
-                <FormControl>
-                    <InputLabel>Etternavn *</InputLabel> 
-                    <Input variant="outlined" margin="dense" value={props.value} onChange={e => props.onChange(e.target.value)} />
-                </FormControl>
-            )  
-        },
-        { title: "Brukertype", field: "niva", lookup: { 1: 'Student', 2: 'Underviser', 3: 'Emneansvarlig', 4: 'Administrator' } 
-        },
-        { title: "Telefon", field: "telefon", type: "numeric", 
-            editComponent: props => ( 
-                <FormControl>
-                    <InputLabel>Telefon</InputLabel> 
-                    <Input type="tel" variant="outlined" margin="dense" value={props.value} onChange={e => props.onChange(e.target.value)} />
-                </FormControl> 
-            )   
-        },
-        { title: "E-post", field: "email", 
-            editComponent: props => ( 
-                <FormControl>
-                    <InputLabel>E-post *</InputLabel> 
-                    <Input type="email" variant="outlined" margin="dense" value={props.value} onChange={e => props.onChange(e.target.value)} />
-                </FormControl> 
-            )  
-        }
+        { title: "Telefon", field: "telefon" },
+        { title: "E-post", field: "email", validate: rowData => /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(rowData.email) ? true : { isValid: false, helperText: 'E-post er ikke gyldig' } },
     ];
     
     const localization = {
