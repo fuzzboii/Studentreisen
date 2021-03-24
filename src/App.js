@@ -62,7 +62,7 @@ function App() {
           <Route path = "/course" component = {Course} />
           <Route path = "/register" component = {Register} />
           <Route path = "/reset" component = {Reset} />
-          <Route path = "/tools" render={(props) => (
+          <Route path = "/tools" render={() => (
               <Tools auth={auth} type={type} loading={loading} />
             )}
           />
