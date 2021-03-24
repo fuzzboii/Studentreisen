@@ -6,6 +6,7 @@ const { verifyAuth, sendEmail } = require('../global/CommonFunctions');
 
 const router = require('express').Router();
 
+// Bruker
 router.post('/getAllUserData', async (req, res) => {
     if(req.body !== undefined && req.body.token !== undefined) {
         verifyAuth(req.body.token).then(function(response) {
@@ -238,6 +239,77 @@ router.post('/deleteUser', async (req, res) => {
         } else {
             return res.status(403).send();
         }
+    } else {
+        return res.status(403).send();
+    }
+});
+
+// Kurs
+router.post('/getAllCourseData', async (req, res) => {
+    if(req.body !== undefined && req.body.token !== undefined) {
+        verifyAuth(req.body.token).then(function(response) {
+            if(response.authenticated) {
+                // Kun Administrator skal kunne se oversikten
+                if(response.usertype.toString() === process.env.ACCESS_ADMINISTRATOR) {
+                    let getDataQuery = "SELECT emnekode, navn, beskrivelse, språk, semester, studiepoeng, lenke FROM kurs";
+                    let getDataQueryFormat = mysql.format(getDataQuery);
+
+                    connection.query(getDataQueryFormat, (error, results) => {
+                        if (error) {
+                            console.log("En feil oppstod ved henting av all kursdata: " + error.errno + ", " + error.sqlMessage)
+                            return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                        }   
+                        
+                        if(results[0] !== undefined) {
+                            return res.json({results});
+                        }
+                    });
+                } else {
+                    // Bruker har ikke tilgang, loggfører
+                    console.log("En innlogget bruker uten riktige tilganger har forsøkt å se kursoversikten, brukerens ID: " + results[0].brukerid)
+                    return res.json({ "status" : "error", "message" : "Ingen tilgang, om feilen fortsetter, forsøk å logg ut og inn igjen" });
+                }
+            } else {
+                return res.json({ "status" : "error", "message" : "Ingen tilgang, om feilen fortsetter, forsøk å logg ut og inn igjen" });
+            }
+        });
+    } else {
+        return res.status(403).send();
+    }
+});
+
+// Seminar
+router.post('/getAllSeminarData', async (req, res) => {
+    if(req.body !== undefined && req.body.token !== undefined) {
+        verifyAuth(req.body.token).then(function(response) {
+            if(response.authenticated) {
+                // Kun Emneansvarlig / Administratorere skal kunne se hele oversikten, undervisere skal kunne se egne seminar
+                if(response.usertype.toString() === process.env.ACCESS_COORDINATOR || response.usertype.toString() === process.env.ACCESS_ADMINISTRATOR) {
+                    let getDataQuery = "SELECT seminarid, navn, arrangor, adresse, oppstart, varighet, beskrivelse, tilgjengelighet FROM seminar";
+                    let getDataQueryFormat = mysql.format(getDataQuery);
+
+                    connection.query(getDataQueryFormat, (error, results) => {
+                        if (error) {
+                            console.log("En feil oppstod ved henting av all kursdata: " + error.errno + ", " + error.sqlMessage)
+                            return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                        }   
+                        
+                        if(results[0] !== undefined) {
+                            return res.json({results});
+                        }
+                    });
+                } else if(response.usertype.toString() === process.env.ACCESS_LECTURER) {
+                    // Hent alle kurs for underviseren
+                    
+                } else {
+                    // Bruker har ikke tilgang, loggfører
+                    console.log("En innlogget bruker uten riktige tilganger har forsøkt å se kursoversikten, brukerens ID: " + results[0].brukerid)
+                    return res.json({ "status" : "error", "message" : "Ingen tilgang, om feilen fortsetter, forsøk å logg ut og inn igjen" });
+                }
+            } else {
+                return res.json({ "status" : "error", "message" : "Ingen tilgang, om feilen fortsetter, forsøk å logg ut og inn igjen" });
+            }
+        });
     } else {
         return res.status(403).send();
     }
