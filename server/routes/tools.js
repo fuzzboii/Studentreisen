@@ -128,7 +128,6 @@ router.post('/updateUser', async (req, res) => {
         if(validation.error) {
             return res.json({success: false});
         }
-        console.log(req.body.nyBruker);
 
         verifyAuth(req.body.token).then(function(response) {
             if(response.authenticated) {
@@ -171,6 +170,74 @@ router.post('/updateUser', async (req, res) => {
             }
         })
 
+    } else {
+        return res.status(403).send();
+    }
+});
+
+
+router.post('/deleteUser', async (req, res) => {
+    if(req.body.bruker !== undefined && req.body.token !== undefined) {
+        if(req.body.bruker.niva !== undefined && req.body.bruker.niva.toString() !== process.env.ACCESS_ADMINISTRATOR) {
+            verifyAuth(req.body.token).then(function(response) {
+                if(response.authenticated) {
+                    // Kun Administrator skal kunne slette en bruker
+                    if(response.usertype.toString() === process.env.ACCESS_ADMINISTRATOR) {
+                        try {
+                            // Sletter alle koblinger som er "tillatt" å slette
+                            let deleteLoginQuery = "DELETE FROM login_token WHERE gjelderfor = ?";
+                            let deleteLoginQueryFormat = mysql.format(deleteLoginQuery, [req.body.bruker.brukerid]);
+                        
+                            // Sletter kobling
+                            connection.query(deleteLoginQueryFormat, (error, results) => {
+                                if (error) {
+                                    console.log("En feil oppstod under sletting av alle koblinger til en eksisterende bruker, detaljer: " + error.errno + ", " + error.sqlMessage)
+                                    return res.json({success: false});
+                                }
+
+                                // Sletter alle koblinger som er "tillatt" å slette
+                                let deleteGPQuery = "DELETE FROM glemtpassord_token WHERE gjelderfor = ?";
+                                let deleteGPQueryFormat = mysql.format(deleteGPQuery, [req.body.bruker.brukerid]);
+                            
+                                // Sletter kobling
+                                connection.query(deleteGPQueryFormat, (error, results) => {
+                                    if (error) {
+                                        console.log("En feil oppstod under sletting av alle koblinger til en eksisterende bruker, detaljer: " + error.errno + ", " + error.sqlMessage)
+                                        return res.json({success: false});
+                                    }
+                                
+                                    let deleteQuery = "DELETE FROM bruker WHERE brukerid = ? AND fnavn = ? AND enavn = ? AND email = ?";
+                                    let deleteQueryFormat = mysql.format(deleteQuery, [req.body.bruker.brukerid, req.body.bruker.fnavn, req.body.bruker.enavn, req.body.bruker.email.toLowerCase()]);
+                                
+                                    // Endre brukeren
+                                    connection.query(deleteQueryFormat, (error, results) => {
+                                        if (error) {
+                                            console.log("En feil oppstod under sletting av eksisterende bruker, detaljer: " + error.errno + ", " + error.sqlMessage)
+                                            return res.json({success: false});
+                                        }
+                                        
+                                        if(results.affectedRows > 0) {
+                                            // Bruker slettet
+                                            return res.json({success: true});
+                                        } else {
+                                            return res.json({success: false});
+                                        }
+                                    });
+                                });
+                            });
+                        } catch(e) {
+                            return res.json({success: false});
+                        }
+                    } else {
+                        return res.json({success: false});
+                    }
+                } else {
+                    return res.json({success: false});
+                }
+            })
+        } else {
+            return res.status(403).send();
+        }
     } else {
         return res.status(403).send();
     }

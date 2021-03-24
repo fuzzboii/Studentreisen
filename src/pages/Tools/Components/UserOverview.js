@@ -135,53 +135,67 @@ function UserOverview(props) {
                 } else {
                     reject();
                 }
-            }),
+            }
+        ),
         onRowUpdate: (nyBruker, gammelBruker) =>
-        new Promise((resolve, reject) => {
-            if(nyBruker.fnavn === gammelBruker.fnavn && nyBruker.enavn === gammelBruker.enavn && nyBruker.email === gammelBruker.email && nyBruker.telefon === gammelBruker.telefon && nyBruker.niva.toString() === gammelBruker.niva.toString()) {
-                resolve();
-            } else {
-                // Sjekk om feltene er OK, enkel test på brukertype, e-post og at alle feltene er tilstede
-                if(ValidationService.validateUser(nyBruker)) {
-                    try {
-                        axios
-                            .post(process.env.REACT_APP_APIURL + "/tools/updateUser", {nyBruker : nyBruker, gammelBruker : gammelBruker, token : token.token})
-                            // Utføres ved mottatt resultat
-                            .then(res => {
-                                if(res.data.success) {
-                                    const oppdatertBrukere = [...brukere];
-                                    const index = gammelBruker.tableData.id;
-                                    oppdatertBrukere[index] = nyBruker;
-                                    setBrukere([...oppdatertBrukere]);
-    
-                                    resolve();
-                                } else {
+            new Promise((resolve, reject) => {
+                if(nyBruker.fnavn === gammelBruker.fnavn && nyBruker.enavn === gammelBruker.enavn && nyBruker.email === gammelBruker.email && nyBruker.telefon === gammelBruker.telefon && nyBruker.niva.toString() === gammelBruker.niva.toString()) {
+                    resolve();
+                } else {
+                    // Sjekk om feltene er OK, enkel test på brukertype, e-post og at alle feltene er tilstede
+                    if(ValidationService.validateUser(nyBruker)) {
+                        try {
+                            axios
+                                .post(process.env.REACT_APP_APIURL + "/tools/updateUser", {nyBruker : nyBruker, gammelBruker : gammelBruker, token : token.token})
+                                // Utføres ved mottatt resultat
+                                .then(res => {
+                                    if(res.data.success) {
+                                        const oppdatertBrukere = [...brukere];
+                                        const index = gammelBruker.tableData.id;
+                                        oppdatertBrukere[index] = nyBruker;
+                                        setBrukere([...oppdatertBrukere]);
+        
+                                        resolve();
+                                    } else {
+                                        reject();
+                                    }
+                                }).catch(e => {
                                     reject();
-                                }
-                            }).catch(e => {
-                                reject();
-                            });
-                    } catch(e) {
+                                });
+                        } catch(e) {
+                            reject();
+                        }
+                    } else {
                         reject();
                     }
-                } else {
+                }
+            }
+        ),
+        onRowDelete: bruker =>
+            new Promise((resolve, reject) => {
+                try {
+                    axios
+                        .post(process.env.REACT_APP_APIURL + "/tools/deleteUser", {bruker : bruker, token : token.token})
+                        // Utføres ved mottatt resultat
+                        .then(res => {
+                            if(res.data.success) {
+                                const oppdatertBrukere = [...brukere];
+                                const index = bruker.tableData.id;
+                                oppdatertBrukere.splice(index, 1);
+                                setBrukere([...oppdatertBrukere]);
+
+                                resolve();
+                            } else {
+                                reject();
+                            }
+                        }).catch(e => {
+                            reject();
+                        });
+                } catch(e) {
                     reject();
                 }
             }
-        }),
-        onRowDelete: oldData =>
-            new Promise((resolve, reject) => {
-                console.log("Slett");
-                console.log(oldData);
-                setTimeout(() => {
-                    //const dataDelete = [...data];
-                    //const index = oldData.tableData.id;
-                    //dataDelete.splice(index, 1);
-                    //setData([...dataDelete]);
-
-                    resolve();
-                }, 1000);
-            })
+        )
     }
 
     return (
