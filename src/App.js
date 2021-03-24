@@ -63,7 +63,7 @@ function App() {
           <Route path = "/register" component = {Register} />
           <Route path = "/reset" component = {Reset} />
           <Route path = "/tools" render={(props) => (
-              <Tools {...props} auth={auth} type={type} loading={loading} />
+              <Tools auth={auth} type={type} loading={loading} />
             )}
           />
           <Route path = "/profile" component = {Profile} />
