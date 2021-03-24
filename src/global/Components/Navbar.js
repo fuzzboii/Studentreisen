@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-import Menu from '@material-ui/core/Menu'
-import MenuItem from '@material-ui/core/MenuItem'
 import Button from "@material-ui/core/Button";
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -15,7 +13,7 @@ function Navbar(props) {
     const [button, setButton] = useState(true);
     // Prop som mottas fra App, viser til om bruker er inn-/utlogget
     const [auth, setAuth] = useState(false);
-    const [type, setType] = useState(false);
+    const [type, setType] = useState(null);
  
     const handleClick = () => setClick(!click);
     const closeMobileMenu = () => setClick(false);
@@ -152,12 +150,12 @@ function Navbar(props) {
                 >
                   CV
                 </Button>
-                {type == 4 && 
+                {type >= 2 && 
                   <Button 
                     className={classes.navbtn}
                     component={Link} 
                     to='/Tools' >
-                      Admin
+                      Verktøy
                   </Button>
                 }
               </div> }
