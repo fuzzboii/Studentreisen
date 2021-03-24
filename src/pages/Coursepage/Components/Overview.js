@@ -4,6 +4,7 @@ import {CourseProvider} from './CourseContext';
 
 // Studentreisen-assets og komponenter
 import CourseNav from './CourseNav';
+
 import '../Styles/courseStyles.css';
 import Loader from '../../../global/Components/Loader';
 import NoAccess from '../../../global/Components/NoAccess';
@@ -16,8 +17,7 @@ class Overview extends Component {
         super(props);
         
         this.state = {
-            loading : true, authenticated : false, usertype : 1,
-            windowWidth : 0,
+            loading : true, authenticated : false, 
         }
     }
 
@@ -34,7 +34,6 @@ class Overview extends Component {
                 }
                 this.setState({
                     authenticated : res.authenticated,
-                    usertype : res.usertype,
                     loading: false
                 });
             });
@@ -58,7 +57,7 @@ class Overview extends Component {
             );
         }
         
-        if(!loading && authenticated && (usertype === 4 || usertype === 3 || usertype === 2 || usertype === 1 )) {
+        if(!loading && authenticated) {
             return (            
                 <div className="content-overview">
                     <CourseProvider>

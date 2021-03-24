@@ -1,4 +1,7 @@
-import { useState, useEffect, useContext, Component } from 'react';
+import { useState, useEffect, useContext, Component} from 'react';
+import {useLocation, useParams} from 'react-router-dom';
+import { CourseContext } from './CourseContext';
+import axios from 'axios';
 
 // Studentreisen-assets og komponenter
 import '../Styles/courseStyles.css';
@@ -8,67 +11,39 @@ import CookieService from '../../../global/Services/CookieService';
 import AuthService from '../../../global/Services/AuthService';
 
 
-class CourseDetail extends Component {
-    constructor(props) {
-        super(props);
-        
-        this.state = {
-            loading : true, authenticated : false, usertype : 1,
-            windowWidth : 0,
-        }
-    }
+const CourseDetail = () => {
 
-    componentDidMount() {
-        // Henter authtoken-cookie
-        const token = CookieService.get("authtoken");
+    useEffect(() => {
+        fetchData();
+    },[]);
 
-        if(token !== undefined) {
-            // Om token eksisterer sjekker vi mot serveren om brukeren har en gyldig token
-            AuthService.isAuthenticated(token).then(res => {
-                if(!res.authenticated) {
-                    // Sletter authtoken om token eksisterer lokalt men ikke er gyldig på server
-                    CookieService.remove("authtoken");
-                }
-                this.setState({
-                    authenticated : res.authenticated,
-                    usertype : res.usertype,
-                    loading: false
-                });
-            });
-        } else {
-            this.setState({
-                authenticated : false,
-                loading: false
-            });
-        }
-    }
+    let { emnekode } = useParams();
+    const [courses, setCourses] = useState([]);
 
-    render() {
-        const {loading, authenticated, usertype} = this.state;
-
-        if(loading) {
-            // Om vi er i loading fasen (Før mottatt data fra API) vises det et Loading ikon
-            return(
-                <section id="loading">
-                    <Loader />
-                </section>
-            );
-        }
-        
-        if(!loading && authenticated && (usertype === 4 || usertype === 3 || usertype === 2 || usertype === 1 )) {
-            return (            
-                <div>
+    const fetchData = async () => {
                     
-                </div>
-            );
-        } else {
-            return (
-                // Ugyldig eller ikke-eksisterende token 
-                <NoAccess />
-            );
-        }
-    }  
-}
+        const res = await axios.get(process.env.REACT_APP_APIURL + "/course/");
+        console.log(res.data);
+        setCourses(res.data);
+
+    };
+        return(
+            <div>
+            {courses.map(course => { if(emnekode === course.emnekode)           
+                return <div>
+                            <p>{course.emnekode}</p>
+                            <p>{course.navn}</p>
+                            <p>{course.beskrivelse}</p>
+                            <p>{course.språk}</p>
+                            <p>{course.semester}</p>
+                            <p>{course.studiepoeng}</p>
+                            <p>{course.lenke}</p>
+                        </div>
+            })}
+        </div>
+        );
+
+};
 
 export default CourseDetail;
 

@@ -53,7 +53,7 @@ function App() {
           <Route path = "/" exact component = {Home} />
           <Route path = "/login" component = {Login} />
           <Route path = "/course" exact component = {Course} />
-          <Route path = "/course/:id" component = {CourseDetail} />
+          <Route path = "/course/:emnekode" component = {CourseDetail} />
           <Route path = "/register" component = {Register} />
           <Route path = "/reset" component = {Reset} />
           <Route path = "/tools" component = {Tools} />
