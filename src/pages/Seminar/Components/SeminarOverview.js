@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import {SeminarProvider} from './SeminarContext';
-import SeminarList from './SeminarList';
+import SeminarNav from './SeminarNav';
 import '../CSS/Seminar.css'; 
 
 class SeminarOverview extends Component {
@@ -9,7 +9,7 @@ class SeminarOverview extends Component {
         return (
             <div className="content-seminar">
                 <SeminarProvider>
-                   <SeminarList/>
+                  <SeminarNav/>
                 </SeminarProvider>
             </div>
         );

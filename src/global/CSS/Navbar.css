@@ -57,7 +57,7 @@
 
   .fa-user {
     color: #fff;
-    display:block;
+    display:flex;
     align-items: center;
     position: absolute;
     font-size: 2rem;

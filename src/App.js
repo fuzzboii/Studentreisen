@@ -37,6 +37,8 @@ function App() {
         } 
         setAuth(res.authenticated);
       });
+    } else {
+      setAuth(false);
     }
   };
 
