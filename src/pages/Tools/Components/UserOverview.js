@@ -7,7 +7,6 @@ import axios from "axios";
 import { FormControl, InputLabel, Input } from '@material-ui/core';
 
 // Studentreisen-assets og komponenter
-import '../CSS/UserOverview.css';
 import CookieService from '../../../global/Services/CookieService';
 import ValidationService from '../../../global/Services/ValidationService';
 
@@ -199,7 +198,7 @@ function UserOverview(props) {
     }
 
     return (
-        <section id="section_useroverview">
+        <section id="section_overview">
           <MaterialTable columns={columns} data={brukere} localization={localization} editable={editable} title="Brukeroversikt" />
         </section>
     );

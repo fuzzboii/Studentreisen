@@ -32,3 +32,19 @@ main {
 .div_tools {
     margin-bottom: 2em;
 }
+
+#section_overview {
+    margin-top: 2em;
+    margin-left: auto; margin-right: auto;
+  }
+  
+  
+  /* Media queries
+  ----------------------------- */
+  
+  /* Laptop / Liten skjerm,, 720p */
+  @media screen and (min-width: 1280px) {
+      #section_overview {
+        width: 80em;
+      }
+  }
