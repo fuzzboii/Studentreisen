@@ -19,7 +19,7 @@ import AuthService from './global/Services/AuthService';
 
 function App() {
   const [auth, setAuth] = useState(false);
-  const [type, setType] = useState(null);
+  const [type, setType] = useState(1);
   const [loading, setLoading] = useState(true);
 
   // Henter authtoken-cookie
@@ -33,12 +33,13 @@ function App() {
     if(token !== undefined) {
       // Om token eksisterer sjekker vi mot serveren om brukeren har en gyldig token
       AuthService.isAuthenticated(token).then(res => {
-        if(!res) {
+        if(!res.authenticated) {
           // Sletter authtoken om token eksisterer lokalt men ikke er gyldig på server
           CookieService.remove("authtoken");
-        } 
+        } else {
+          setType(res.usertype);
+        }
         setAuth(res.authenticated);
-        setType(res.usertype);
         setLoading(false);
       });
     } else {
