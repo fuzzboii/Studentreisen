@@ -85,7 +85,7 @@ router.post('/newUser', async (req, res) => {
                                         sendEmail(req.body.bruker.email, subject, body);
 
                                         // Legg til brukeren
-                                        let insertQuery = "INSERT INTO bruker(niva, fnavn, enavn, email, pwd) VALUES(?, ?, ?, ?, ?)";
+                                        let insertQuery = "INSERT INTO bruker(niva, fnavn, enavn, email, pwd, pwd_temp) VALUES(?, ?, ?, ?, ?, 1)";
                                         let insertQueryFormat = mysql.format(insertQuery, [req.body.bruker.niva, req.body.bruker.fnavn, req.body.bruker.enavn, req.body.bruker.email.toLowerCase(), hashedPW]);
                                 
                                         connection.query(insertQueryFormat, (error, results) => {
