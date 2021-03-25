@@ -130,7 +130,7 @@ router.post('/resetPassword', async (req, res) => {
 
                 if(results[0] !== undefined) {
                     // Fant token, fremdeles gyldig, oppdaterer databasen
-                    let insertQuery = "UPDATE bruker SET pwd = ? WHERE brukerid = ?";
+                    let insertQuery = "UPDATE bruker SET pwd = ?, pwd_temp = 0 WHERE brukerid = ?";
                     let insertQueryFormat = mysql.format(insertQuery, [hashedPW, results[0].gjelderfor]);
 
                     connection.query(insertQueryFormat, (error, updResults) => {
