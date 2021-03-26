@@ -34,13 +34,12 @@ const SeminarFullforte = (props) => {
                     <h3 className="Seminar-ArrangorHeading">Arrangør</h3>
                     <p className="Seminar-Arrangor">{props.arrangor}</p>
                     <SeminarCardActions className="Seminar-CardActions">
-                        <SeminarButton className="Seminar-buttonPaameld" size="small" color="primary">
-                        Påmeld
-                        </SeminarButton>
                         <SeminarButton className="Seminar-buttonLes" size="small" color="default">
                         Les mer..
+                        </SeminarButton>                        
+                        <SeminarButton disabled>
+                        Fullført
                         </SeminarButton>
-
                     </SeminarCardActions>
                 </SeminarAccordionDetails>
             </SeminarAccordion>
