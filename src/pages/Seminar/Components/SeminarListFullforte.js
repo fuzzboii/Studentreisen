@@ -1,10 +1,10 @@
 import React, { useState, useContext } from 'react';
 import Seminar from './Seminar';
-import { SeminarContext } from './SeminarContext';
+import { SeminarFullfortContext } from './SeminarContext';
 import '../CSS/Seminar.css'; 
 
 const SeminarListFullforte = () => {
-    const [seminars, setSeminars] = useContext(SeminarContext);
+    const [seminars, setSeminars] = useContext(SeminarFullfortContext);
 
     return (
         <div className="seminar-list" >
