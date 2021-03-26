@@ -1,10 +1,16 @@
 import { useState, useEffect, useContext, Component} from 'react';
 import {useLocation, useParams} from 'react-router-dom';
-import { CourseContext } from './CourseContext';
 import { MyCardContent } from '../Styles/apistyles';
 
 import axios from 'axios';
 import Box from '@material-ui/core/Box';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import LanguageIcon from '@material-ui/icons/Language';
+import SchoolIcon from '@material-ui/icons/School';
+import Button from '@material-ui/core/Button';
+
+
+
 
 // Studentreisen-assets og komponenter
 import '../Styles/courseStyles.css';
@@ -36,14 +42,29 @@ const CourseDetail = () => {
                     return <Box className="box-detail" boxShadow={3}>
                                 <MyCardContent>
                                     <div className="courseHeader">
-                                        <p>{course.navn}</p>
-                                        <p>{course.emnekode}</p>
+                                        <p className="kursnavn">{course.navn}</p>
+                                        <div className="kursinfo-tekst">
+                                            <p>{course.emnekode}</p>
+                                            <div className="iconBox">
+                                                <LanguageIcon className="language-icon" fontSize="inherit"/>
+                                                <p className="undervisningsspråk">{course.språk}</p>
+                                            </div>
+                                            <div className="iconBox">
+                                                <CalendarTodayIcon className="language-icon2" fontSize="inherit"/>
+                                                <p>{course.semester}</p>
+                                            </div>
+                                            <div className="iconBox">
+                                                <SchoolIcon className="language-icon2" fontSize="inherit"/>
+                                                <p>{course.studiepoeng}</p>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <p>{course.beskrivelse}</p>
-                                    <p>{course.språk}</p>
-                                    <p>{course.semester}</p>
-                                    <p>{course.studiepoeng}</p>
-                                    <p>{course.lenke}</p>
+                                    <div className="courseBody">
+                                        <h3>Sammendrag</h3>
+                                        <p>{course.beskrivelse}</p>
+                                    </div>
+                                    <Button variant="outlined" color="primary" className="courseButton" href={course.lenke}>Gå til kursets hjemmeside</Button>
+
                                 </MyCardContent>
                             </Box>
                         

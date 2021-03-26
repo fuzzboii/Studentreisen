@@ -2,6 +2,18 @@
     border-bottom: 1px solid black;
 }
 
+.courseButton {
+    width: 100%;
+}
+
+
+.courseBody  {
+    margin-bottom: 1em;
+}
+.courseBody h3 {
+    margin: 0;
+}
+
  .link {
     color: rgb(0, 0, 0);
     text-decoration: none;
@@ -10,7 +22,7 @@
 .course-section {
     background-color: rgb(247, 244, 244);    
     margin-bottom: 1em;
-    
+
 }
 
 .course-detail {
@@ -21,6 +33,7 @@
 }
 
 .box-detail {
+    background-color: rgb(234, 240, 255);
 }
 
 
@@ -54,6 +67,21 @@
     padding-bottom: 0.4em;
     font-weight: 600;
     font-size: 14px;
+}
+
+.kursinfo-tekst p {
+    margin-top: 0.2em;
+    margin-bottom: 0.5em;
+    padding-top: 0.2em;
+    padding-bottom: 0.4em;
+    font-weight: 600;
+    font-size: 14px;
+}
+.kursinfo-tekst {
+    display: flex;
+    justify-content:space-between;
+ 
+
 }
 
 .kursbeskrivelse {
@@ -131,6 +159,18 @@
         width: 50%;
     }
 
+    .courseHeader {
+        border-bottom: 1px solid black;
+    }
+
+    .courseBody {
+        background-color: white;
+        border: 0.5px solid rgb(206, 206, 206);
+        margin-top: 1em;
+        border-radius: 3px;
+        padding: 1em;
+    }
+
     
   
 }
@@ -145,6 +185,20 @@
         cursor: pointer;
         opacity: 1;
     }
+    .courseButton {
+        width: auto;
+        background-color: rgb(234, 240, 255);
+        border: 2px solid #3bafa2;
+        border-radius: 3px;
+        color: #3bafa2;
+        padding: 1em;
+        font-size: 16px;
+        font-weight: 500;
+        transition: 0.3s;
+    }
+    
+   
+    
 }
 
 /* Medium skjerm, 1080p */
