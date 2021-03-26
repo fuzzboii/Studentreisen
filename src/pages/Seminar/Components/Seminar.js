@@ -54,7 +54,11 @@ const Seminar = (props) => {
             <SeminarCard className="Seminar-Cards">
                 <SeminarCardActionArea>
                     <SeminarCardMedia
-                        src="%PUBLIC_URL%/uploaded/test1.png" />
+                        image={"/uploaded/" + props.plassering} />
+                        
+
+                        
+                        
                         
                     
                     <SeminarCardContent className="Seminar-CardContent">

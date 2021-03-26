@@ -5,9 +5,8 @@ const router = require('express').Router();
 
 router.get('/getAllSeminarData', async (req, res) => {
     try{
-        // let checkQuery = "SELECT * FROM Seminar";
-        // let checkQueryFormat = mysql.format(checkQuery);
-        connection.query('SELECT seminarid, seminar.bildeid, navn, arrangor, adresse, oppstart, varighet, beskrivelse, tilgjengelighet, plassering FROM Seminar, Bilde WHERE tilgjengelighet = true and Seminar.bildeid = Bilde.bildeid;', (error, results) => {
+
+        connection.query('SELECT seminarid, seminar.bildeid, navn, arrangor, adresse, oppstart, varighet, beskrivelse, tilgjengelighet, plassering FROM Seminar, Bilde WHERE tilgjengelighet = true and varighet > CURRENT_DATE() and Seminar.bildeid = Bilde.bildeid;', (error, results) => {
             res.send(results);
         });
 
@@ -17,18 +16,21 @@ router.get('/getAllSeminarData', async (req, res) => {
 
     });
 
-    /* 
-    Order
-    {
-        "bildeid": "",
-        "arrangor": "",
-        "adresse": "",
-        "oppstart": "",
-        "varighet": "",
-        "beskrivelse": ""
-        "tilgjengelighet": ""
+router.get('/getAllSeminarFullfortData', async (req, res) => {
+    try{
+
+        connection.query('SELECT seminarid, seminar.bildeid, navn, arrangor, adresse, oppstart, varighet, beskrivelse, tilgjengelighet, plassering FROM Seminar, Bilde WHERE tilgjengelighet = true and varighet < CURRENT_DATE() and Seminar.bildeid = Bilde.bildeid;', (error, results) => {
+            res.send(results);
+        });
+
+    }catch(err) {
+        res.json({message:err});
     }
-    */
+
+    });    
+
+
+
 
     router.post('/', async (req, res) => {
         if(req.body.emnekode !== undefined && req.body.navn !== undefined && req.body.beskrivelse !== undefined && req.body.semester !== undefined

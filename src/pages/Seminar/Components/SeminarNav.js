@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import SeminarListKommende from './SeminarListKommende';
 import SeminarListFullforte from './SeminarListFullforte';
 
-import {AppBar, Tabs, Tab, Typography, Box} from '@material-ui/core';
+import {Tabs, Tab} from '@material-ui/core';
 
 
 function TabPanel(props) {
