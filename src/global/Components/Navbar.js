@@ -1,21 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-import Menu from '@material-ui/core/Menu'
-import MenuItem from '@material-ui/core/MenuItem'
 import Button from "@material-ui/core/Button";
 import { makeStyles } from '@material-ui/core/styles';
 
 import '../CSS/Navbar.css';
 import favicon from '../../assets/usn.png';
 import CookieService from '../Services/CookieService';
-import AuthService from '../Services/AuthService';
 
 function Navbar(props) {
     const [click, setClick] = useState(false);
     const [button, setButton] = useState(true);
     // Prop som mottas fra App, viser til om bruker er inn-/utlogget
     const [auth, setAuth] = useState(false);
+    const [type, setType] = useState(null);
  
     const handleClick = () => setClick(!click);
     const closeMobileMenu = () => setClick(false);
@@ -44,6 +42,7 @@ function Navbar(props) {
 
     useEffect( () => {
       setAuth(props.auth);
+      setType(props.type);
       showButton();
     }, [props]); 
 
@@ -55,22 +54,6 @@ function Navbar(props) {
     window.addEventListener('resize', closeMobileMenu);
     window.addEventListener('resize', shrink);
     window.addEventListener('resize', showButton);
-
-    // Håndtering av klikk på meny-knapper
-    const [anchorKurs, setAnchorKurs] = React.useState(null);
-    const handleClickAnchorKurs = event => {
-    setAnchorKurs(event.currentTarget);
-    };
-    const handleCloseKurs = () => {
-    setAnchorKurs(null);
-    };
-    const [anchorSeminarer, setAnchorSeminarer] = React.useState(null);
-    const handleClickAnchorSeminarer = event => {
-    setAnchorSeminarer(event.currentTarget);
-    };
-    const handleCloseSeminarer = () => {
-    setAnchorSeminarer(null);
-    };
 
     // Styling av Material UI-elementer
     const useStyles = makeStyles({
@@ -147,68 +130,34 @@ function Navbar(props) {
 
                 <Button 
                   className={classes.navbtn} 
-                  aria-controls="simple-menu" 
-                  aria-haspopup="true" 
-                  onClick={handleClickAnchorKurs}>
+                  component={Link} 
+                  to='/Course'>
                   Kurs
                 </Button>
-                <Menu
-                  id="kurs-menu"
-                  className={classes.menu}
-                  anchorEl={anchorKurs}
-                  keepMounted
-                  open={Boolean(anchorKurs)}
-                  onClose={handleCloseKurs}
-                  getContentAnchorEl={null}
-                  anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'center',
-                  }}
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'center',
-                  }}>
-
-                  <MenuItem onClick={handleCloseKurs}>Nyheter</MenuItem>
-                  <MenuItem onClick={handleCloseKurs}>Favoritter</MenuItem>
-                  <MenuItem onClick={handleCloseKurs}>Arkiv</MenuItem>
-
-                </Menu>
 
                 <Button 
                   className={classes.navbtn} 
-                  aria-controls="simple-menu" 
-                  aria-haspopup="true" 
-                  onClick={handleClickAnchorSeminarer}
+                  component={Link}
+                  to='/Seminar'
                 >
                 Seminarer
                 </Button>
-                <Menu
-                  id="seminarer-menu"
-                  anchorEl={anchorSeminarer}
-                  keepMounted
-                  open={Boolean(anchorSeminarer)}
-                  onClose={handleCloseSeminarer}
-                  getContentAnchorEl={null}
-                  anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'center',
-                  }}
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'center',
-                  }}>
-
-                  <MenuItem onClick={handleCloseSeminarer}>Nyheter</MenuItem>
-                  <MenuItem onClick={handleCloseSeminarer}>Favoritter</MenuItem>
-                  <MenuItem onClick={handleCloseSeminarer}>Arkiv</MenuItem>
-
-                </Menu>
     
                 <Button
-                  className={classes.navbtn}>
+                  className={classes.navbtn}
+                  component={Link}
+                  to='/CV'
+                >
                   CV
                 </Button>
+                {type >= 2 && 
+                  <Button 
+                    className={classes.navbtn}
+                    component={Link} 
+                    to='/Tools' >
+                      Verktøy
+                  </Button>
+                }
               </div> }
               
               {auth && <Link

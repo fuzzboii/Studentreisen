@@ -1,6 +1,5 @@
 // React-spesifikt
 import React, {useState, useMemo} from 'react'
-import { Component } from "react";
 
 // 3rd-party Packages
 import ReactSwipe from 'react-swipe';
@@ -8,155 +7,72 @@ import { Tabs, Tab } from '@material-ui/core';
 
 // Studentreisen-assets og komponenter
 import UserOverview from './UserOverview';
-import '../CSS/Tools.css';
+import CourseOverview from './CourseOverview';
+import SeminarOverview from './SeminarOverview';
 import Loader from '../../../global/Components/Loader';
 import NoAccess from '../../../global/Components/NoAccess';
-import CookieService from '../../../global/Services/CookieService';
-import AuthService from '../../../global/Services/AuthService';
+import '../CSS/Tools.css';
 
-class Tools extends Component { 
-    constructor(props) {
-        super(props);
-        
-        this.state = {
-            loading : true, authenticated : false, usertype : 1,
-            windowWidth : 0,
+
+function Tools(props) {
+    const [position, setPosition] = useState(0);
+
+    let swiper;
+    const swipeOptions = useMemo(() => ({
+        continuous: false,
+        callback(e) {
+            setPosition(e)
         }
-    }
+    }), []);
+  
+    const handleTabChange = (e, newIndex) => {
+        setPosition(newIndex);
+        swiper.slide(newIndex);
+    };
 
-    componentDidMount() {
-        // Henter authtoken-cookie
-        const token = CookieService.get("authtoken");
-
-        if(token !== undefined) {
-            // Om token eksisterer sjekker vi mot serveren om brukeren har en gyldig token
-            AuthService.isAuthenticated(token).then(res => {
-                if(!res.authenticated) {
-                    // Sletter authtoken om token eksisterer lokalt men ikke er gyldig på server
-                    CookieService.remove("authtoken");
-                }
-                this.setState({
-                    authenticated : res.authenticated,
-                    usertype : res.usertype,
-                    loading: false
-                });
-            });
-        } else {
-            this.setState({
-                authenticated : false,
-                loading: false
-            });
-        }
-    }
-
-    render() {
-        const {loading, authenticated, usertype} = this.state;
-
-        if(loading) {
+    return (
+        <>
+        {props.loading &&
             // Om vi er i loading fasen (Før mottatt data fra API) vises det et Loading ikon
-            return(
-                <section id="loading">
-                    <Loader />
-                </section>
-            );
+            <section id="loading">
+                <Loader />
+            </section>
         }
         
-        if(!loading && authenticated && usertype === 4) {
-            return (
-                <SwipeWAdmin />
-            )
-        } else if(!loading && authenticated && (usertype === 3 || usertype === 2)) {
-            return (
-                <Swipe />
-            )
-        } else {
-            return (
-                // Ugyldig eller ikke-eksisterende token 
-                <NoAccess />
-            );
+        {!props.loading && props.auth && props.type === 4 &&
+            <main>
+                <Tabs value={position} onChange={handleTabChange} centered>
+                    <Tab label="Brukere"/>
+                    <Tab label="Kurs"/>
+                    <Tab label="Seminar"/>
+                </Tabs>
+                <ReactSwipe swipeOptions={swipeOptions} ref={listener => (swiper = listener)}>
+                    <div className="div_tools">
+                        <UserOverview />
+                    </div>
+                    <div className="div_tools">
+                        <CourseOverview />
+                    </div>
+                    <div className="div_tools">
+                        <SeminarOverview />
+                    </div>
+                </ReactSwipe>
+            </main>
+        }{!props.loading && props.auth && (props.type === 3 || props.type === 2) &&
+            <main>
+                <Tabs value={0} centered>
+                    <Tab label="Seminar"/>
+                </Tabs>
+                <div className="div_tools">
+                    <SeminarOverview />
+                </div>
+            </main>
+        }{!props.loading && ((props.auth && (props.type === 1)) || !props.auth) &&
+            // Ugyldig eller ikke-eksisterende token 
+            <NoAccess />
         }
-    }
+        </>
+    );
 }
-
-
-const Swipe = () => {
-    let swiper;
-    const [position, setPosition] = useState(0);
-  
-    const swipeOptions = useMemo(() => ({
-        continuous: false,
-        callback(e) {
-            setPosition(e)
-        }
-    }), []);
-  
-    const handleTabChange = (e, newIndex) => {
-        setPosition(newIndex);
-        swiper.slide(newIndex);
-    };
-  
-    return (
-        <main>
-            <Tabs value={position} onChange={handleTabChange} centered>
-                <Tab label="Kurs"/>
-                <Tab label="Seminar"/>
-            </Tabs>
-            <ReactSwipe swipeOptions={swipeOptions} ref={el => (swiper = el)}>
-                <div className="div_tools">
-                    <section>
-                        <h1>Kursoversikt</h1>
-                    </section>
-                </div>
-                <div className="div_tools">
-                    <section>
-                        <h1>Seminaroversikt</h1>
-                    </section>
-                </div>
-            </ReactSwipe>
-        </main>
-    );
-};
-
-const SwipeWAdmin = () => {
-    let swiper;
-    const [position, setPosition] = useState(0);
-  
-    const swipeOptions = useMemo(() => ({
-        continuous: false,
-        callback(e) {
-            setPosition(e)
-        }
-    }), []);
-  
-    const handleTabChange = (e, newIndex) => {
-        setPosition(newIndex);
-        swiper.slide(newIndex);
-    };
-  
-    return (
-        <main>
-            <Tabs value={position} onChange={handleTabChange} centered>
-                <Tab label="Brukere"/>
-                <Tab label="Kurs"/>
-                <Tab label="Seminar"/>
-            </Tabs>
-            <ReactSwipe swipeOptions={swipeOptions} ref={listener => (swiper = listener)}>
-                <div className="div_tools">
-                    <UserOverview />
-                </div>
-                <div className="div_tools">
-                    <section>
-                        <h1>Kursoversikt</h1>
-                    </section>
-                </div>
-                <div className="div_tools">
-                    <section>
-                        <h1>Seminaroversikt</h1>
-                    </section>
-                </div>
-            </ReactSwipe>
-        </main>
-    );
-};
 
 export default Tools;

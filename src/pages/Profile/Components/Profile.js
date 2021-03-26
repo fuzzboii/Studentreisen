@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import '../CSS/Profile.css';
+import { Redirect } from "react-router-dom";
+
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import { Button, FilledInput, Switch } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+
+import '../CSS/Profile.css';
 import CookieService from '../../../global/Services/CookieService';
 import AuthService from '../../../global/Services/AuthService';
 
@@ -15,16 +18,17 @@ function Profile() {
         const token = CookieService.get("authtoken");
         
         if(token !== undefined) {
-          // Om token eksisterer sjekker vi mot serveren om brukeren har en gyldig token
-          AuthService.isAuthenticated(token).then(res => {
-            if(!res.authenticated) {
-              // Sletter authtoken om token eksisterer lokalt men ikke er gyldig på server
-              CookieService.remove("authtoken");
-            } else {
-              setAuth(true);
-            }
-          });
-        }
+            // Om token eksisterer sjekker vi mot serveren om brukeren har en gyldig token
+            AuthService.isAuthenticated(token).then(res => {
+              if(!res) {
+                // Sletter authtoken om token eksisterer lokalt men ikke er gyldig på server
+                CookieService.remove("authtoken");
+              }
+              setAuth(res.authenticated);
+            });
+          } else {
+            setAuth(false);
+          }
       };
       
 
@@ -85,28 +89,38 @@ function Profile() {
                 </div>
 
                 <div className='profile-item' >
-                    <h2 className='profile-subheader' > Konto </h2>
-                    <div className='profile-setting'>
-                        <h3 className='profile-subitem' > Innstilling 1 </h3>
-                        <Switch color='primary' />
-                    </div>
-                    <div className='profile-setting'>
-                        <h3 className='profile-subitem' > Innstilling 2 </h3>
-                        <Switch color='primary' />
-                    </div>
-                    <div className='profile-setting'>
-                        <h3 className='profile-subitem' > Innstilling 3 </h3>
-                        <Switch color='primary' />
+                    <h2 className='profile-subheader' > Interesser </h2>
+                    <div className='interesser' >
+                    <Button className={classes.profileButton}> Helse- og sosialfag </Button>
+                    <Button className={classes.profileButton}> Historie og idéhistorie </Button>
+                    <Button className={classes.profileButton}> Idrett, kroppsøving og friluftsliv </Button>
+                    {/* <Button> IT, informatikk og informasjonssystemer </Button>
+                    <Button> Jus </Button>
+                    <Button> Kunst, håndverk og musikk </Button>
+                    <Button> Lærer og lektorutdanning </Button>
+                    <Button> Maritime studier </Button>
+                    <Button> Matematikk, naturfag og miljøfag </Button>
+                    <Button> Medier, kommunikasjon og markedsføring </Button>
+                    <Button> Optometri </Button>
+                    <Button> Pedagogiske fag </Button>
+                    <Button> Samfunnsvitenskap og kulturstudier </Button>
+                    <Button> Språk og litteratur </Button>
+                    <Button> Teknologi, ingeniør og lysdesign </Button>
+                    <Button> Økonomi, ledelse og innovasjon </Button> */}
                     </div>
                 </div>
                 
             </div>
 
         </div>
-    )} else {
+    );
+    } else {
         return (
-            <h1> Du er ikke innlogget. Har du gått deg vill? </h1>
-        )}
+            // Brukeren er ikke innlogget, omdiriger
+            // <Redirect to={{pathname: "/"}} />
+            null
+        );
+    }
 }
 
 export default Profile

@@ -7,7 +7,6 @@ import axios from "axios";
 import { FormControl, InputLabel, Input } from '@material-ui/core';
 
 // Studentreisen-assets og komponenter
-import '../CSS/UserOverview.css';
 import CookieService from '../../../global/Services/CookieService';
 import ValidationService from '../../../global/Services/ValidationService';
 
@@ -33,33 +32,13 @@ function UserOverview(props) {
     
     const columns = [
         { title: "#", field: "brukerid", type: "numeric", editable: 'never' },
-        { title: "Fornavn", field: "fnavn", 
-            editComponent: props => ( 
-                <FormControl>
-                    <InputLabel>Fornavn</InputLabel>
-                    <Input variant="outlined" autoFocus={true} margin="dense" value={props.value} onChange={e => props.onChange(e.target.value)} />
-                </FormControl>
-            ) 
+        { title: "Fornavn", field: "fnavn", validate: rowData => rowData.fnavn === '' ? { isValid: false, helperText: 'Fornavn kan ikke være tomt' } : true },
+        { title: "Etternavn", field: "enavn", validate: rowData => rowData.enavn === '' ? { isValid: false, helperText: 'Etternavn kan ikke være tomt' } : true },
+        { title: "Brukertype", field: "niva", lookup: { 1: 'Student', 2: 'Underviser', 3: 'Emneansvarlig', 4: 'Administrator', 
+            validate: rowData => rowData.niva === 1 || rowData.niva === 2 || rowData.niva === 3 || rowData.niva === 4 ? { isValid: false, helperText: 'Brukertype er ikke gyldig' } : true }, 
         },
-        { title: "Etternavn", field: "enavn", 
-            editComponent: props => (
-                <FormControl>
-                    <InputLabel>Etternavn</InputLabel> 
-                    <Input variant="outlined" margin="dense" value={props.value} onChange={e => props.onChange(e.target.value)} />
-                </FormControl>
-            )  
-        },
-        { title: "Brukertype", field: "niva", lookup: { 1: 'Student', 2: 'Underviser', 3: 'Emneansvarlig', 4: 'Administrator' } 
-        },
-        { title: "Telefon", field: "telefon", type: "numeric", editable: 'never' },
-        { title: "E-post", field: "email", 
-        editComponent: props => ( 
-            <FormControl>
-                <InputLabel>E-post</InputLabel> 
-                <Input type="email" variant="outlined" margin="dense" value={props.value} onChange={e => props.onChange(e.target.value)} />
-            </FormControl> 
-            )  
-        }
+        { title: "Telefon", field: "telefon" },
+        { title: "E-post", field: "email", validate: rowData => /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(rowData.email) ? true : { isValid: false, helperText: 'E-post er ikke gyldig' } },
     ];
     
     const localization = {
@@ -104,8 +83,6 @@ function UserOverview(props) {
         isEditHidden: bruker => bruker.niva === 4,
         isDeletable: bruker => bruker.niva === 1, // Kun Studenter skal kunne slettes
         isDeleteHidden: bruker => bruker.niva !== 1,
-        onRowAddCancelled: bruker => console.log('Row adding cancelled'),
-        onRowUpdateCancelled: bruker => console.log('Row editing cancelled'),
         onRowAdd: nyBruker =>
             new Promise((resolve, reject) => {
                 // Sjekk om feltene er OK, enkel test på brukertype, e-post og at alle feltene er tilstede
@@ -130,42 +107,71 @@ function UserOverview(props) {
                 } else {
                     reject();
                 }
-            }),
-        onRowUpdate: (newData, oldData) =>
+            }
+        ),
+        onRowUpdate: (nyBruker, gammelBruker) =>
             new Promise((resolve, reject) => {
-                console.log("Oppdater");
-                console.log(newData);
-                console.log(oldData);
-
-
-
-                setTimeout(() => {
-                    //const dataUpdate = [...data];
-                    //const index = oldData.tableData.id;
-                    //dataUpdate[index] = newData;
-                    //setData([...dataUpdate]);
-
-                    //reject();
+                if(nyBruker.fnavn === gammelBruker.fnavn && nyBruker.enavn === gammelBruker.enavn && nyBruker.email === gammelBruker.email && nyBruker.telefon === gammelBruker.telefon && nyBruker.niva.toString() === gammelBruker.niva.toString()) {
                     resolve();
-                }, 1000);
-            }),
-        onRowDelete: oldData =>
+                } else {
+                    // Sjekk om feltene er OK, enkel test på brukertype, e-post og at alle feltene er tilstede
+                    if(ValidationService.validateUser(nyBruker)) {
+                        try {
+                            axios
+                                .post(process.env.REACT_APP_APIURL + "/tools/updateUser", {nyBruker : nyBruker, gammelBruker : gammelBruker, token : token.token})
+                                // Utføres ved mottatt resultat
+                                .then(res => {
+                                    if(res.data.success) {
+                                        const oppdatertBrukere = [...brukere];
+                                        const index = gammelBruker.tableData.id;
+                                        oppdatertBrukere[index] = nyBruker;
+                                        setBrukere([...oppdatertBrukere]);
+        
+                                        resolve();
+                                    } else {
+                                        reject();
+                                    }
+                                }).catch(e => {
+                                    reject();
+                                });
+                        } catch(e) {
+                            reject();
+                        }
+                    } else {
+                        reject();
+                    }
+                }
+            }
+        ),
+        onRowDelete: bruker =>
             new Promise((resolve, reject) => {
-                console.log("Slett");
-                console.log(oldData);
-                setTimeout(() => {
-                    //const dataDelete = [...data];
-                    //const index = oldData.tableData.id;
-                    //dataDelete.splice(index, 1);
-                    //setData([...dataDelete]);
+                try {
+                    axios
+                        .post(process.env.REACT_APP_APIURL + "/tools/deleteUser", {bruker : bruker, token : token.token})
+                        // Utføres ved mottatt resultat
+                        .then(res => {
+                            if(res.data.success) {
+                                const oppdatertBrukere = [...brukere];
+                                const index = bruker.tableData.id;
+                                oppdatertBrukere.splice(index, 1);
+                                setBrukere([...oppdatertBrukere]);
 
-                    resolve();
-                }, 1000);
-            })
+                                resolve();
+                            } else {
+                                reject();
+                            }
+                        }).catch(e => {
+                            reject();
+                        });
+                } catch(e) {
+                    reject();
+                }
+            }
+        )
     }
 
     return (
-        <section id="section_useroverview">
+        <section id="section_overview">
           <MaterialTable columns={columns} data={brukere} localization={localization} editable={editable} title="Brukeroversikt" />
         </section>
     );
