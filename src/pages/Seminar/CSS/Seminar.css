@@ -114,6 +114,7 @@
     .SeminarHeading {
         grid-column-start: 1;
         grid-column-end: 3;
+        margin-left: 0.8em;
     }
 
 }
@@ -129,7 +130,6 @@
     .SeminarHeading {
         grid-column-start: 1;
         grid-column-end: 4;
-        margin-left: 0.5em;
     }
 
     

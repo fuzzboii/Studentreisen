@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import Seminar from './Seminar';
+import SeminarFullforte from './SeminarFullforte';
 import { SeminarFullfortContext } from './SeminarContext';
 import '../CSS/Seminar.css'; 
 
@@ -8,9 +8,9 @@ const SeminarListFullforte = () => {
 
     return (
         <div className="seminar-list" >
-            <h1 className="SeminarHeading">Fullførte</h1>
+            <h1 className="SeminarHeading">Fullførte seminarer</h1>
             {seminars.map(seminar => (
-                <Seminar seminarid={seminar.seminarid} bildeid={seminar.bildeid} navn={seminar.navn} arrangor={seminar.arrangor} adresse={seminar.adresse} oppstart={seminar.oppstart} varighet={seminar.varighet} beskrivelse={seminar.beskrivelse} tilgjengelighet={seminar.tilgjengelighet} plassering={seminar.plassering} />
+                <SeminarFullforte seminarid={seminar.seminarid} bildeid={seminar.bildeid} navn={seminar.navn} arrangor={seminar.arrangor} adresse={seminar.adresse} oppstart={seminar.oppstart} varighet={seminar.varighet} beskrivelse={seminar.beskrivelse} tilgjengelighet={seminar.tilgjengelighet} plassering={seminar.plassering} />
             ))}
         </div>
     );

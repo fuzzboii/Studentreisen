@@ -5,7 +5,7 @@ import moment from 'moment';
 import 'moment/locale/nb';
 import DateRangeIcon from '@material-ui/icons/DateRange';
 
-const Seminar = (props) => {
+const SeminarKommende = (props) => {
     const [width, setWidth] = React.useState(window.innerWidth);
     const breakpoint = 1023;
     React.useEffect(() => {
@@ -54,12 +54,6 @@ const Seminar = (props) => {
                 <SeminarCardActionArea>
                     <SeminarCardMedia
                         image={"/uploaded/" + props.plassering} />
-                        
-
-                        
-                        
-                        
-                    
                     <SeminarCardContent className="Seminar-CardContent">
                         <SeminarTypography gutterBottom variant="h5" component="h2">
                             <h2 className="Seminar-NavnDesktop">{props.navn}</h2>
@@ -91,4 +85,4 @@ const Seminar = (props) => {
 }
 
 
-export default Seminar;
+export default SeminarKommende;
