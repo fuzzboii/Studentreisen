@@ -1,12 +1,7 @@
-
-.course-list {
+.courseHeader {
+    border-bottom: 1px solid black;
 }
 
-.boxlink {
-    
-    
- }
- 
  .link {
     color: rgb(0, 0, 0);
     text-decoration: none;
@@ -16,6 +11,16 @@
     background-color: rgb(247, 244, 244);    
     margin-bottom: 1em;
     
+}
+
+.course-detail {
+    display: flex;
+    justify-content: center;
+    padding: 1em;
+
+}
+
+.box-detail {
 }
 
 
@@ -120,6 +125,10 @@
         margin-bottom: 1em;
         margin-right: 1em;
         border-radius: 3px; 
+    }
+
+    .box-detail {
+        width: 50%;
     }
 
     

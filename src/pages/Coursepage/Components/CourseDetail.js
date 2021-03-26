@@ -1,7 +1,10 @@
 import { useState, useEffect, useContext, Component} from 'react';
 import {useLocation, useParams} from 'react-router-dom';
 import { CourseContext } from './CourseContext';
+import { MyCardContent } from '../Styles/apistyles';
+
 import axios from 'axios';
+import Box from '@material-ui/core/Box';
 
 // Studentreisen-assets og komponenter
 import '../Styles/courseStyles.css';
@@ -28,19 +31,24 @@ const CourseDetail = () => {
 
     };
         return(
-            <div>
+            <div className="course-detail">
             {courses.map(course => { if(emnekode === course.emnekode)           
-                return <div>
-                            <p>{course.emnekode}</p>
-                            <p>{course.navn}</p>
-                            <p>{course.beskrivelse}</p>
-                            <p>{course.språk}</p>
-                            <p>{course.semester}</p>
-                            <p>{course.studiepoeng}</p>
-                            <p>{course.lenke}</p>
-                        </div>
+                    return <Box className="box-detail" boxShadow={3}>
+                                <MyCardContent>
+                                    <div className="courseHeader">
+                                        <p>{course.navn}</p>
+                                        <p>{course.emnekode}</p>
+                                    </div>
+                                    <p>{course.beskrivelse}</p>
+                                    <p>{course.språk}</p>
+                                    <p>{course.semester}</p>
+                                    <p>{course.studiepoeng}</p>
+                                    <p>{course.lenke}</p>
+                                </MyCardContent>
+                            </Box>
+                        
             })}
-        </div>
+            </div>
         );
 
 };
