@@ -1,5 +1,4 @@
 import React from "react";
-
 import { SeminarCard, SeminarCardActionArea, SeminarCardContent, SeminarCardMedia, SeminarTypography, SeminarCardActions, SeminarButton, SeminarAccordion, SeminarAccordionSummary, SeminarAccordionDetails, SeminarExpandMoreIcon } from '../CSS/apistylesSeminar';
 import '../CSS/Seminar.css'; 
 import moment from 'moment';

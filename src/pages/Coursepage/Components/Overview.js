@@ -1,10 +1,6 @@
-// React-spesifikt
 import { Component } from 'react';
 import {CourseProvider} from './CourseContext';
-
-// Studentreisen-assets og komponenter
 import CourseNav from './CourseNav';
-
 import '../Styles/courseStyles.css';
 import Loader from '../../../global/Components/Loader';
 import NoAccess from '../../../global/Components/NoAccess';

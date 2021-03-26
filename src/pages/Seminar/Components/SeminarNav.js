@@ -1,7 +1,6 @@
 import React, {useState} from "react";
 import SeminarListKommende from './SeminarListKommende';
 import SeminarListFullforte from './SeminarListFullforte';
-
 import {Tabs, Tab} from '@material-ui/core';
 
 

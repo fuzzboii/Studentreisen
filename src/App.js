@@ -13,7 +13,7 @@ import Home from './pages/Frontpage/Components/Home';
 import Tools from './pages/Tools/Components/Tools';
 import Course from './pages/Coursepage/Components/Overview';
 import CourseDetail from './pages/Coursepage/Components/CourseDetail';
-import Seminar from './pages/Seminar/Components/SeminarOverview';
+import Seminar from './pages/Seminar/Components/OverviewSeminar';
 
 import CookieService from './global/Services/CookieService';
 import AuthService from './global/Services/AuthService';
