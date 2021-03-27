@@ -72,8 +72,8 @@ const SeminarFullforte = (props) => {
                     </SeminarCardContent>
                 </SeminarCardActionArea>
                 <SeminarCardActions className="Seminar-CardActions">
-                    <SeminarButton className="Seminar-buttonPaameld" size="small" color="primary">
-                        Påmeld
+                    <SeminarButton disabled>
+                        Fullført
                     </SeminarButton>
                 </SeminarCardActions>
             </SeminarCard>
