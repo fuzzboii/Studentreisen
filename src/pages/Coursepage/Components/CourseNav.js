@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import CourseList from './CourseList';
-
+import ModuleList from './ModuleList';
 import {AppBar, Tabs, Tab, Typography, Box} from '@material-ui/core';
 
 
@@ -25,16 +25,23 @@ const CourseNav = () => {
     }
 
     return (
-        <div className="boxlink">     
-            <Tabs value={position} indicatorColor="primary" textColor="primary" onChange={handleChange}>
-                <Tab className="" label="Kurs" />
-                <Tab className="" label="Kursmodul" />
-            </Tabs>   
+        <div>  
+            <div className="BorderBox"> 
+              <Tabs className="tab" value={position} indicatorColor="primary" textColor="primary" onChange={handleChange} >
+                  <Tab className="tabKurs" label="Kurs" />
+                  <Tab className="tabKursmodul" label="Kursmodul" />
+              </Tabs>   
+            </div>  
             <TabPanel value={position} index={0}>
+              <div className="content-overview">
                 <CourseList/>
+              </div>
             </TabPanel>
+            
             <TabPanel value={position} index={1}>
-                <CourseList/>
+              <div>
+                <ModuleList/>
+              </div>
             </TabPanel>   
         </div>
 

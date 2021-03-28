@@ -51,7 +51,7 @@ const CourseDetail = (props) => {
                         return <Box className="box-detail" boxShadow={3}>
                                     <MyCardContent>
                                         <div className="courseHeader">
-                                            <p className="kursnavn">{course.navn}</p>
+                                            <h1 className="overskriftKurs">{course.navn}</h1>
                                             <div className="kursinfo-tekst">
                                                 <p>{course.emnekode}</p>
                                                 <div className="iconBox">
@@ -69,7 +69,7 @@ const CourseDetail = (props) => {
                                             </div>
                                         </div>
                                         <div className="courseBody">
-                                            <h3>Sammendrag</h3>
+                                            <h2>Sammendrag</h2>
                                             <p>{course.beskrivelse}</p>
                                         </div>
                                         <Button variant="outlined" color="primary" className="courseButton" href={course.lenke}>Gå til kursets hjemmeside</Button>

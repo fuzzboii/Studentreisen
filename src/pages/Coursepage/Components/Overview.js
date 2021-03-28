@@ -2,6 +2,7 @@ import { Component } from 'react';
 import {CourseProvider, ModuleProvider} from './CourseContext';
 import CourseNav from './CourseNav';
 import '../Styles/courseStyles.css';
+import '../Styles/moduleStyles.css';
 import Loader from '../../../global/Components/Loader';
 import NoAccess from '../../../global/Components/NoAccess';
 import CookieService from '../../../global/Services/CookieService';
@@ -55,7 +56,7 @@ class Overview extends Component {
         
         if(!loading && authenticated) {
             return (            
-                <div className="content-overview">
+                <div>
                     <ModuleProvider>
                     <CourseProvider>
                         <CourseNav/>

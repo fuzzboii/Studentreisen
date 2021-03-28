@@ -13,6 +13,7 @@ import Home from './pages/Frontpage/Components/Home';
 import Tools from './pages/Tools/Components/Tools';
 import Course from './pages/Coursepage/Components/Overview';
 import CourseDetail from './pages/Coursepage/Components/CourseDetail';
+import ModuleDetail from './pages/Coursepage/Components/ModuleDetail';
 import Seminar from './pages/Seminar/Components/OverviewSeminar';
 
 import CookieService from './global/Services/CookieService';
@@ -63,6 +64,9 @@ function App() {
           <Route path = "/course" exact component = {Course} />
           <Route path = "/course/:emnekode" render = {() =>(
             <CourseDetail auth={auth} loading={loading} />
+          )}/>
+          <Route path = "/course/:modulkode" render = {() =>(
+            <ModuleDetail auth={auth} loading={loading} />
           )}/>
           <Route path = "/register" component = {Register} />
           <Route path = "/reset" component = {Reset} />
