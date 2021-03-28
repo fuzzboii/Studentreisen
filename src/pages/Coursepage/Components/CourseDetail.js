@@ -20,7 +20,7 @@ import CookieService from '../../../global/Services/CookieService';
 import AuthService from '../../../global/Services/AuthService';
 
 
-const CourseDetail = () => {
+const CourseDetail = (props) => {
 
     useEffect(() => {
         fetchData();
@@ -36,45 +36,54 @@ const CourseDetail = () => {
         setCourses(res.data);
 
     };
-        return(
-            <div className="course-detail">
-            {courses.map(course => { if(emnekode === course.emnekode)           
-                    return <Box className="box-detail" boxShadow={3}>
-                                <MyCardContent>
-                                    <div className="courseHeader">
-                                        <p className="kursnavn">{course.navn}</p>
-                                        <div className="kursinfo-tekst">
-                                            <p>{course.emnekode}</p>
-                                            <div className="iconBox">
-                                                <LanguageIcon className="language-icon" fontSize="inherit"/>
-                                                <p className="undervisningsspråk">{course.språk}</p>
-                                            </div>
-                                            <div className="iconBox">
-                                                <CalendarTodayIcon className="language-icon2" fontSize="inherit"/>
-                                                <p>{course.semester}</p>
-                                            </div>
-                                            <div className="iconBox">
-                                                <SchoolIcon className="language-icon2" fontSize="inherit"/>
-                                                <p>{course.studiepoeng}</p>
+        
+    return(
+        <>
+        {props.loading &&
+            // Om vi er i loading fasen (Før mottatt data fra API) vises det et Loading ikon
+            <section id="loading">
+                <Loader />
+            </section>
+        }
+        {!props.loading && props.auth &&
+                <div className="course-detail">
+                {courses.map(course => { if(emnekode === course.emnekode)           
+                        return <Box className="box-detail" boxShadow={3}>
+                                    <MyCardContent>
+                                        <div className="courseHeader">
+                                            <p className="kursnavn">{course.navn}</p>
+                                            <div className="kursinfo-tekst">
+                                                <p>{course.emnekode}</p>
+                                                <div className="iconBox">
+                                                    <LanguageIcon className="language-icon" fontSize="inherit"/>
+                                                    <p className="undervisningsspråk">{course.språk}</p>
+                                                </div>
+                                                <div className="iconBox">
+                                                    <CalendarTodayIcon className="language-icon2" fontSize="inherit"/>
+                                                    <p>{course.semester}</p>
+                                                </div>
+                                                <div className="iconBox">
+                                                    <SchoolIcon className="language-icon2" fontSize="inherit"/>
+                                                    <p>{course.studiepoeng}</p>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div className="courseBody">
-                                        <h3>Sammendrag</h3>
-                                        <p>{course.beskrivelse}</p>
-                                    </div>
-                                    <Button variant="outlined" color="primary" className="courseButton" href={course.lenke}>Gå til kursets hjemmeside</Button>
-
-                                </MyCardContent>
-                            </Box>
-                        
-            })}
-            </div>
-        );
-
-};
+                                        <div className="courseBody">
+                                            <h3>Sammendrag</h3>
+                                            <p>{course.beskrivelse}</p>
+                                        </div>
+                                        <Button variant="outlined" color="primary" className="courseButton" href={course.lenke}>Gå til kursets hjemmeside</Button>
+                                    </MyCardContent>
+                                </Box>         
+                })}
+                </div>
+        
+        }{!props.loading && !props.auth &&
+                // Ugyldig eller ikke-eksisterende token 
+                <NoAccess />
+        }
+        </>
+    );  
+}
 
 export default CourseDetail;
-
-
-

@@ -5,8 +5,6 @@ const router = require('express').Router();
 
 router.get('/', async (req, res) => {
     try{
-        // let checkQuery = "SELECT * FROM Kurs";
-        // let checkQueryFormat = mysql.format(checkQuery);
         connection.query('SELECT * FROM Kurs', (error, results) => {
             res.send(results);
         });
@@ -16,6 +14,18 @@ router.get('/', async (req, res) => {
     }
 
     });
+
+    router.get('/module', async (req, res) => {
+        try{
+            connection.query('SELECT modulkode, studiestatus.beskrivelse AS studietype, navn, modul.beskrivelse, lenke FROM modul, studiestatus WHERE modul.statusid = studiestatus.statusid', (error, results) => {
+                res.send(results);
+            });
+    
+        }catch(err) {
+            res.json({message:err});
+        }
+    
+        });
 
     /* 
     Order

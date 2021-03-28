@@ -34,7 +34,7 @@ const CourseNav = () => {
                 <CourseList/>
             </TabPanel>
             <TabPanel value={position} index={1}>
-                Item Two
+                <CourseList/>
             </TabPanel>   
         </div>
 

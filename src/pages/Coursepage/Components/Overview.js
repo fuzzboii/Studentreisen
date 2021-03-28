@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import {CourseProvider} from './CourseContext';
+import {CourseProvider, ModuleProvider} from './CourseContext';
 import CourseNav from './CourseNav';
 import '../Styles/courseStyles.css';
 import Loader from '../../../global/Components/Loader';
@@ -56,9 +56,11 @@ class Overview extends Component {
         if(!loading && authenticated) {
             return (            
                 <div className="content-overview">
+                    <ModuleProvider>
                     <CourseProvider>
                         <CourseNav/>
                     </CourseProvider>
+                    </ModuleProvider>
                 </div>
             );
         } else {

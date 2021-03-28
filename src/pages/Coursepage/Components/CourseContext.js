@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, {useState, createContext, useEffect} from 'react';
 
 export const CourseContext = createContext();
+export const ModuleContext = createContext();
 
 export const CourseProvider = props => {
     useEffect(() => {
@@ -11,9 +12,7 @@ export const CourseProvider = props => {
     const [courses, setCourses] = useState([]);
 
     const fetchData = async () => {
-            
-        //const apiURL = "http://localhost:5000/api/v1/course/";
-        
+
         const res = await axios.get(process.env.REACT_APP_APIURL + "/course/");
         console.log(res.data);
         setCourses(res.data);
@@ -24,6 +23,29 @@ export const CourseProvider = props => {
         <CourseContext.Provider value={[courses, setCourses]}>
             {props.children}
         </CourseContext.Provider>
+
+    );
+}
+
+export const ModuleProvider = props => {
+    useEffect(() => {
+        fetchData();
+    },[]);
+
+    const [modules, setModules] = useState([]);
+
+    const fetchData = async () => {
+                    
+        const res = await axios.get(process.env.REACT_APP_APIURL + "/course/module");
+        console.log(res.data);
+        setModules(res.data);
+
+    };
+
+    return (
+        <ModuleContext.Provider value={[modules, setModules]}>
+            {props.children}
+        </ModuleContext.Provider>
 
     );
 }
