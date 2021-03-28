@@ -44,7 +44,6 @@ export const SeminarButton = styled(Button)({
 
 });
 
-
 export const SeminarContainer = styled(Container)({
     border: 'solid 1px black',
     borderRadius: '10px',

@@ -39,12 +39,16 @@ const SeminarDetailsFullforte = () => {
                                     <h1 className="SeminarDetailsNavn">{seminar.navn}</h1>
                                 </div>
                                 <div className="SeminarDetails-Buttons">
-                                    <Button className="SeminarDetailsButtonSlett" size="small" variant="outlined" disabled>
-                                    Fullført
-                                    </Button>
-                                    <Button className="SeminarDetailsButtonSlett" size="small" variant="outlined" color="secondary" startIcon={<DeleteIcon />}>
-                                    Slett
-                                    </Button>
+                                    <div className="SeminarDetails-ButtonPameldWrapper">
+                                        <Button className="SeminarDetailsButtonPameld" size="small" variant="outlined" disabled>
+                                        Fullført
+                                        </Button>
+                                    </div>
+                                    <div className="SeminarDetails-ButtonSlettWrapper">
+                                        <Button className="SeminarDetailsButtonSlett" size="small" variant="outlined" color="secondary" startIcon={<DeleteIcon />}>
+                                        Slett
+                                        </Button>
+                                    </div>
                                 </div>
                             </div>
 

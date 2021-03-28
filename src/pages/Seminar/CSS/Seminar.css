@@ -1,5 +1,10 @@
 /* Seminar overview
 ----------------------------- */
+/* Seminar Link */
+.Seminar-Link {
+    text-decoration: none;
+}
+
 /* Seminar GRID and positioning grid elements */
 .seminar-list {
     display: grid;
@@ -168,22 +173,42 @@
 .SeminarDetails-Buttons {
     margin-top: 1em;
     margin-bottom: 1em;
+    display: flex;
+    flex-direction: row;
 }
 
-.SeminarDetails-Buttons {
-
-
+.SeminarDetails-ButtonPameldWrapper {
+    margin-right: 0em;
 }
 
-.SeminarDetailsButtonRediger {
-    margin-right: 10px;
+.SeminarDetails-ButtonRedigerWrapper {
+    margin-right: 0em;
 }
+
+.SeminarDetails-ButtonSlettWrapper {
+    margin-right: 0em;
+}
+
 
 
 /* Media queries
 ----------------------------- */
 /* Større mobiler */
-@media screen and (min-width: 370px) {
+@media screen and (min-width: 320px) {
+    .SeminarDetails-ButtonPameldWrapper {
+        margin-right: 0.5em;
+    }
+    
+    .SeminarDetails-ButtonRedigerWrapper {
+        margin-right: 0.5em;
+    }
+    
+    .SeminarDetails-ButtonSlettWrapper {
+        margin-right: 0.5em;
+    }
+}
+/* Tab */
+@media screen and (min-width: 720px) {
 
 }
 
@@ -209,6 +234,8 @@
         grid-column-end: 3;
         margin-left: 0.8em;
     }
+
+
 
 }
 
@@ -259,10 +286,6 @@
     }
 
     .SeminarDetailsNavn {
-
-    }
-
-    .SeminarDetails-Buttons {
 
     }
 

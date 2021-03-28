@@ -39,15 +39,21 @@ const SeminarDetailsKommende = () => {
                                     <h1 className="SeminarDetailsNavn">{seminar.navn}</h1>
                                 </div>
                                 <div className="SeminarDetails-Buttons">
-                                    <Button className="SeminarDetailsButtonRediger" size="small" variant="contained" color="primary"        >
-                                    Påmeld
-                                    </Button>
-                                    <Button className="SeminarDetailsButtonRediger" size="small" variant="outlined" color="primary" startIcon={<EditIcon />}>
-                                    Rediger
-                                    </Button>
-                                    <Button className="SeminarDetailsButtonSlett" size="small" variant="outlined" color="secondary" startIcon={<DeleteIcon />}>
-                                    Slett
-                                    </Button>
+                                    <div className="SeminarDetails-ButtonPameldWrapper">
+                                        <Button className="SeminarDetailsButtonPameld" size="small" variant="contained" color="primary"        >
+                                        Påmeld
+                                        </Button>
+                                    </div>
+                                        <div className="SeminarDetails-ButtonRedigerWrapper">
+                                        <Button className="SeminarDetailsButtonRediger" size="small" variant="outlined" color="primary" startIcon={<EditIcon />}>
+                                        Rediger
+                                        </Button>
+                                    </div>
+                                    <div className="SeminarDetails-ButtonSlettWrapper">
+                                        <Button className="SeminarDetailsButtonSlett" size="small" variant="outlined" color="secondary" startIcon={<DeleteIcon />}>
+                                        Slett
+                                        </Button>
+                                    </div>
                                 </div>
                             </div>
 
