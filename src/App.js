@@ -15,6 +15,8 @@ import Course from './pages/Coursepage/Components/Overview';
 import CourseDetail from './pages/Coursepage/Components/CourseDetail';
 import ModuleDetail from './pages/Coursepage/Components/ModuleDetail';
 import Seminar from './pages/Seminar/Components/OverviewSeminar';
+import SeminarDetailsKommende from './pages/Seminar/Components/SeminarDetailsKommende';
+import SeminarDetailsFullforte from './pages/Seminar/Components/SeminarDetailsFullforte';
 
 import CookieService from './global/Services/CookieService';
 import AuthService from './global/Services/AuthService';
@@ -75,7 +77,9 @@ function App() {
             )}
           />
           <Route path = "/profile" component = {Profile} />
-          <Route path = "/seminar" component = {Seminar} />
+          <Route path = "/seminar" exact component = {Seminar} />
+          <Route path = "/seminarkommende/:seminarid" component = {SeminarDetailsKommende} />
+          <Route path = "/seminarfullforte/:seminarid" component = {SeminarDetailsFullforte} />
         </Switch>
       <Footer />
     </>
