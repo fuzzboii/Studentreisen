@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect } from "react-router-dom";
+import axios from 'axios';
 
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import { Button, FilledInput, Switch } from '@material-ui/core';
@@ -10,8 +11,10 @@ import CookieService from '../../../global/Services/CookieService';
 import AuthService from '../../../global/Services/AuthService';
 
 function Profile() {
-
     const [auth, setAuth] = useState(false);
+    // Array for alle interesser //
+    const [fagfelt, setFagfelt] = useState([]);
+    const [bruker, setBruker] = useState([]);
 
     const authorize = () => {
         // Henter authtoken-cookie
@@ -53,13 +56,27 @@ function Profile() {
 
     useEffect( () => {
         authorize();
+        fetchBruker();
+        fetchFagfelt();
     }, []);
 
     /* Placeholder variabler */
-    const fnavn = 'Ola';
-    const enavn = 'Nordmann';
-    const tlf = '123 45 678';
-    const epost = '123456@usn.no';
+    const fnavn = bruker.fnavn;
+    const enavn = bruker.enavn;
+    const tlf = bruker.telefon;
+    const epost = bruker.epost;
+
+    /* Hent fagfelt fra DB */
+    const fetchFagfelt = async () => {
+        const res = await axios.get(process.env.REACT_APP_APIURL + "/profile/getFagfelt");
+        setFagfelt(res.data);
+    }
+
+    /* Hent brukerdata fra DB */
+    const fetchBruker = async () => {
+        const res = await axios.get(process.env.REACT_APP_APIURL + "/profile/getBruker");
+        setBruker(res.data);
+    }
 
     if (auth) {
     return (
@@ -74,9 +91,11 @@ function Profile() {
                 <div className='profile-item' >
                     <h2 className='profile-subheader' > Personalia </h2>
                     <FilledInput
+                        disabled="true"
                         defaultValue={fnavn}
                     />
                     <FilledInput
+                        disabled="true"
                         defaultValue={enavn}
                     />
                     <FilledInput
@@ -85,28 +104,26 @@ function Profile() {
                     <FilledInput
                         defaultValue={epost}
                     />
-                    <Button className={classes.profileButton}> Endre </Button>
+                    <Button 
+                        disabled="true"
+                        className={classes.profileButton}> 
+                        Endre 
+                    </Button>
                 </div>
 
                 <div className='profile-item' >
                     <h2 className='profile-subheader' > Interesser </h2>
                     <div className='interesser' >
-                    <Button className={classes.profileButton}> Helse- og sosialfag </Button>
-                    <Button className={classes.profileButton}> Historie og idéhistorie </Button>
-                    <Button className={classes.profileButton}> Idrett, kroppsøving og friluftsliv </Button>
-                    {/* <Button> IT, informatikk og informasjonssystemer </Button>
-                    <Button> Jus </Button>
-                    <Button> Kunst, håndverk og musikk </Button>
-                    <Button> Lærer og lektorutdanning </Button>
-                    <Button> Maritime studier </Button>
-                    <Button> Matematikk, naturfag og miljøfag </Button>
-                    <Button> Medier, kommunikasjon og markedsføring </Button>
-                    <Button> Optometri </Button>
-                    <Button> Pedagogiske fag </Button>
-                    <Button> Samfunnsvitenskap og kulturstudier </Button>
-                    <Button> Språk og litteratur </Button>
-                    <Button> Teknologi, ingeniør og lysdesign </Button>
-                    <Button> Økonomi, ledelse og innovasjon </Button> */}
+                        {/* Prøver å se om fetchFagfelt virker. Tilsynelatende ikke... */}
+                        {/* Denne biten fungerer på samme måte som en provider, uten behovet for flere dokumenter */}
+                        {fagfelt.map(fagfelt => (               
+                            <Button>TEST</Button>
+                        ))}
+                        <Button 
+                            disabled="true" 
+                            className={classes.profileButton}> 
+                            Endre 
+                        </Button>
                     </div>
                 </div>
                 
