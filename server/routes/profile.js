@@ -16,7 +16,8 @@ router.get('/getFagfelt', async (req, res) => {
 
 router.get('/getBruker', async (req, res) => {
     try{
-        connection.query('SELECT fnavn, enavn, telefon, epost FROM bruker WHERE brukerid = 1', (error, results) => {
+        // TODO: Jokernoter inn faktiske brukerid //
+        connection.query("SELECT fnavn, enavn, telefon, email FROM bruker WHERE brukerid='1'", (error, results) => {
             res.send(results);
         });
 

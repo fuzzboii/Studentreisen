@@ -14,7 +14,11 @@ function Profile() {
     const [auth, setAuth] = useState(false);
     // Array for alle interesser //
     const [fagfelt, setFagfelt] = useState([]);
-    const [bruker, setBruker] = useState([]);
+    // Variabler for personalia
+    const [fnavn, setFnavn] = useState();
+    const [enavn, setEnavn] = useState();
+    const [telefon, setTelefon] = useState();
+    const [email, setEmail] = useState();
 
     const authorize = () => {
         // Henter authtoken-cookie
@@ -48,7 +52,11 @@ function Profile() {
             color: '#fff',
             backgroundColor: '#4646a5',
             margin: '4vw',
-            alignSelf: 'flex-end'
+            alignSelf: 'flex-end',
+        },
+
+        fagfeltButton: {
+            
         }
     });
     
@@ -60,12 +68,6 @@ function Profile() {
         fetchFagfelt();
     }, []);
 
-    /* Placeholder variabler */
-    const fnavn = bruker.fnavn;
-    const enavn = bruker.enavn;
-    const tlf = bruker.telefon;
-    const epost = bruker.epost;
-
     /* Hent fagfelt fra DB */
     const fetchFagfelt = async () => {
         const res = await axios.get(process.env.REACT_APP_APIURL + "/profile/getFagfelt");
@@ -75,7 +77,10 @@ function Profile() {
     /* Hent brukerdata fra DB */
     const fetchBruker = async () => {
         const res = await axios.get(process.env.REACT_APP_APIURL + "/profile/getBruker");
-        setBruker(res.data);
+        setFnavn(res.data.fnavn);
+        setEnavn(res.data.enavn);
+        setTelefon(res.data.telefon);
+        setEmail(res.data.email);
     }
 
     if (auth) {
@@ -99,10 +104,10 @@ function Profile() {
                         defaultValue={enavn}
                     />
                     <FilledInput
-                        defaultValue={tlf}
+                        defaultValue={telefon}
                     />
                     <FilledInput
-                        defaultValue={epost}
+                        defaultValue={email}
                     />
                     <Button 
                         disabled="true"
@@ -114,10 +119,9 @@ function Profile() {
                 <div className='profile-item' >
                     <h2 className='profile-subheader' > Interesser </h2>
                     <div className='interesser' >
-                        {/* Prøver å se om fetchFagfelt virker. Tilsynelatende ikke... */}
                         {/* Denne biten fungerer på samme måte som en provider, uten behovet for flere dokumenter */}
                         {fagfelt.map(fagfelt => (               
-                            <Button>TEST</Button>
+                            <Button className={classes.fagfeltButton} >{fagfelt.beskrivelse}</Button>
                         ))}
                         <Button 
                             disabled="true" 
