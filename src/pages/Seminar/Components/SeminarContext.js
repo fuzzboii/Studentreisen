@@ -47,7 +47,7 @@ export const SeminarFullfortProvider = props => {
 
     const fetchData = async () => {
             
-        //const apiURL = "http://localhost:5000/api/v1/seminar/getAllSeminarData";
+        //const apiURL = "http://localhost:5000/api/v1/seminar/getAllFullfortSeminarData";
         
         const res = await axios.get(process.env.REACT_APP_APIURL + "/seminar/getAllSeminarFullfortData");
         console.log(res.data);

@@ -1,15 +1,14 @@
 import React from "react";
 import { MyCardContent } from '../Styles/apistyles';
 import LanguageIcon from '@material-ui/icons/Language';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import SchoolIcon from '@material-ui/icons/School';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import Box from '@material-ui/core/Box';
 
 
 const Course = (props) => {
 
     return (
-
             <Box className='course-section' boxShadow={1}>
                 <MyCardContent>
                     <div className="course-sectionTop">             

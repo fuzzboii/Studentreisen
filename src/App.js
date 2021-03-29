@@ -12,7 +12,11 @@ import Profile from './pages/Profile/Components/Profile';
 import Home from './pages/Frontpage/Components/Home';
 import Tools from './pages/Tools/Components/Tools';
 import Course from './pages/Coursepage/Components/Overview';
-import Seminar from './pages/Seminar/Components/SeminarOverview';
+import CourseDetail from './pages/Coursepage/Components/CourseDetail';
+import ModuleDetail from './pages/Coursepage/Components/ModuleDetail';
+import Seminar from './pages/Seminar/Components/OverviewSeminar';
+import SeminarDetailsKommende from './pages/Seminar/Components/SeminarDetailsKommende';
+import SeminarDetailsFullforte from './pages/Seminar/Components/SeminarDetailsFullforte';
 
 import CookieService from './global/Services/CookieService';
 import AuthService from './global/Services/AuthService';
@@ -59,7 +63,13 @@ function App() {
         <Switch>
           <Route path = "/" exact component = {Home} />
           <Route path = "/login" component = {Login} />
-          <Route path = "/course" component = {Course} />
+          <Route path = "/course" exact component = {Course} />
+          <Route path = "/course/:emnekode" render = {() =>(
+            <CourseDetail auth={auth} loading={loading} />
+          )}/>
+          <Route path = "/course/:modulkode" render = {() =>(
+            <ModuleDetail auth={auth} loading={loading} />
+          )}/>
           <Route path = "/register" component = {Register} />
           <Route path = "/reset" component = {Reset} />
           <Route path = "/tools" render={() => (
@@ -67,7 +77,9 @@ function App() {
             )}
           />
           <Route path = "/profile" component = {Profile} />
-          <Route path = "/seminar" component = {Seminar} />
+          <Route path = "/seminar" exact component = {Seminar} />
+          <Route path = "/seminarkommende/:seminarid" component = {SeminarDetailsKommende} />
+          <Route path = "/seminarfullforte/:seminarid" component = {SeminarDetailsFullforte} />
         </Switch>
       <Footer />
     </>

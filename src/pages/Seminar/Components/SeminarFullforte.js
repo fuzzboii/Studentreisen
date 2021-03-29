@@ -1,12 +1,11 @@
 import React from "react";
-
 import { SeminarCard, SeminarCardActionArea, SeminarCardContent, SeminarCardMedia, SeminarTypography, SeminarCardActions, SeminarButton, SeminarAccordion, SeminarAccordionSummary, SeminarAccordionDetails, SeminarExpandMoreIcon } from '../CSS/apistylesSeminar';
 import '../CSS/Seminar.css'; 
 import moment from 'moment';
 import 'moment/locale/nb';
 import DateRangeIcon from '@material-ui/icons/DateRange';
 
-const Seminar = (props) => {
+const SeminarFullforte = (props) => {
     const [width, setWidth] = React.useState(window.innerWidth);
     const breakpoint = 1023;
     React.useEffect(() => {
@@ -35,13 +34,12 @@ const Seminar = (props) => {
                     <h3 className="Seminar-ArrangorHeading">Arrangør</h3>
                     <p className="Seminar-Arrangor">{props.arrangor}</p>
                     <SeminarCardActions className="Seminar-CardActions">
-                        <SeminarButton className="Seminar-buttonPaameld" size="small" color="primary">
-                        Påmeld
-                        </SeminarButton>
                         <SeminarButton className="Seminar-buttonLes" size="small" color="default">
                         Les mer..
+                        </SeminarButton>                        
+                        <SeminarButton disabled>
+                        Fullført
                         </SeminarButton>
-
                     </SeminarCardActions>
                 </SeminarAccordionDetails>
             </SeminarAccordion>
@@ -55,34 +53,27 @@ const Seminar = (props) => {
                 <SeminarCardActionArea>
                     <SeminarCardMedia
                         image={"/uploaded/" + props.plassering} />
-                        
-
-                        
-                        
-                        
-                    
                     <SeminarCardContent className="Seminar-CardContent">
-                        <SeminarTypography gutterBottom variant="h5" component="h2">
+                        <div className="Seminar-CardHeading">
                             <h2 className="Seminar-NavnDesktop">{props.navn}</h2>
-                        </SeminarTypography>
-                        <SeminarTypography variant="body2" color="textSecondary" component="p">
-                     
+                        </div>
+                        <div className="Seminar-CardDetails">
                             <DateRangeIcon className="DateIcon"/>
                             <div className="Seminar-DateDesktop">
-                                <p className="Seminar-OppstartDesktop">{moment.locale('nb'), moment(props.oppstart).format("MMM DD YYYY, hh:mm")} - </p>
-                                <p className="Seminar-VarighetDesktop">{moment.locale('nb'), moment(props.varighet).format("MMM DD YYYY")}</p>                                
+                                <div className="Seminar-OppstartDesktop">{moment.locale('nb'), moment(props.oppstart).format("MMM DD YYYY, hh:mm")} - </div>
+                                <div className="Seminar-VarighetDesktop">{moment.locale('nb'), moment(props.varighet).format("MMM DD YYYY")}</div>                                
                             </div>
                             
                             <h3 className="Seminar-StedHeading">Sted</h3>
                             <p className="Seminar-AdresseDesktop">{props.adresse}</p>
                             <h3 className="Seminar-ArrangorHeading">Arrangør</h3>
                             <p className="Seminar-ArrangorDesktop">{props.arrangor}</p>
-                        </SeminarTypography>
+                        </div>
                     </SeminarCardContent>
                 </SeminarCardActionArea>
                 <SeminarCardActions className="Seminar-CardActions">
-                    <SeminarButton className="Seminar-buttonPaameld" size="small" color="primary">
-                        Påmeld
+                    <SeminarButton disabled>
+                        Fullført
                     </SeminarButton>
                 </SeminarCardActions>
             </SeminarCard>
@@ -92,4 +83,4 @@ const Seminar = (props) => {
 }
 
 
-export default Seminar;
+export default SeminarFullforte;

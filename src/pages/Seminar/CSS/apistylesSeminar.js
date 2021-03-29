@@ -17,7 +17,7 @@ import Button from '@material-ui/core/Button';
 
 
 
-//Seminar Cards and Accordation
+
 export const SeminarAccordion = styled(Accordion)({
 
 });
@@ -73,4 +73,5 @@ export const SeminarCardMedia = styled(CardMedia)({
 export const SeminarTypography = styled(Typography)({
 
 });
+
 
