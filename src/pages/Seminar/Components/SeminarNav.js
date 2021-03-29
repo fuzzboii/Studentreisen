@@ -1,8 +1,10 @@
+// React spesifikt
 import React, {useState} from "react";
+// 3rd-party Packages
+import {Tabs, Tab} from '@material-ui/core';
+// Studentreisen-assets og komponenter
 import SeminarListKommende from './SeminarListKommende';
 import SeminarListFullforte from './SeminarListFullforte';
-import {Tabs, Tab} from '@material-ui/core';
-
 
 function TabPanel(props) {
   const { children, value, index } = props;

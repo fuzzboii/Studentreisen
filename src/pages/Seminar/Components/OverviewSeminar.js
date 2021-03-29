@@ -1,11 +1,15 @@
+// React spesifikt
 import { Component } from 'react';
-import {SeminarProvider, SeminarFullfortProvider} from './SeminarContext';
-import SeminarNav from './SeminarNav';
+// 3rd-party Packages
+
+// Studentreisen-assets og komponenter
 import '../CSS/Seminar.css';
 import Loader from '../../../global/Components/Loader';
 import NoAccess from '../../../global/Components/NoAccess';
 import CookieService from '../../../global/Services/CookieService';
 import AuthService from '../../../global/Services/AuthService'; 
+import SeminarNav from './SeminarNav';
+import {SeminarProvider, SeminarFullfortProvider} from './SeminarContext';
 
 class OverviewSeminar extends Component {
     constructor(props) {
