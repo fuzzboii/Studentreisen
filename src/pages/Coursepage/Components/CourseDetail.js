@@ -8,6 +8,10 @@ import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import LanguageIcon from '@material-ui/icons/Language';
 import SchoolIcon from '@material-ui/icons/School';
 import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
+import Breadcrumbs from '@material-ui/core/Breadcrumbs';
+import Link from '@material-ui/core/Link';
+
 
 
 
@@ -19,6 +23,11 @@ import NoAccess from '../../../global/Components/NoAccess';
 import CookieService from '../../../global/Services/CookieService';
 import AuthService from '../../../global/Services/AuthService';
 
+
+function handleClick(event) {
+    event.preventDefault();
+    console.info('You clicked a breadcrumb.');
+  }
 
 const CourseDetail = (props) => {
 
@@ -50,6 +59,12 @@ const CourseDetail = (props) => {
                 {courses.map(course => { if(emnekode === course.emnekode)           
                         return <Box className="box-detail" boxShadow={3}>
                                     <MyCardContent>
+                                        <Breadcrumbs aria-label="breadcrumb">
+                                            <Link color="inherit" href="/course">
+                                                Kurs
+                                            </Link>
+                                            <Typography color="textPrimary">Spesifikk</Typography>
+                                        </Breadcrumbs>
                                         <div className="courseHeader">
                                             <h1 className="overskriftKurs">{course.navn}</h1>
                                             <div className="kursinfo-tekst">
@@ -72,7 +87,9 @@ const CourseDetail = (props) => {
                                             <h2>Sammendrag</h2>
                                             <p>{course.beskrivelse}</p>
                                         </div>
-                                        <Button variant="outlined" color="primary" className="courseButton" href={course.lenke}>Gå til kursets hjemmeside</Button>
+                                        <div className="buttonWrap">
+                                            <Button className="courseButton" variant="outlined" color="primary" href={course.lenke}>Gå til kursets hjemmeside</Button>
+                                        </div>
                                     </MyCardContent>
                                 </Box>         
                 })}

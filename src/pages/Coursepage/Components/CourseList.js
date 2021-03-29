@@ -1,10 +1,7 @@
-import React, { useState, useContext} from 'react';
 import {Link} from 'react-router-dom';
 import Course from './Course';
-import { CourseContext } from './CourseContext';
 
-const CourseList = () => {
-    const [courses, setCourses] = useContext(CourseContext);
+const CourseList = ({courses}) => { 
 
     return (
         <div className="course-list">
