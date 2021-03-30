@@ -9,13 +9,22 @@ import { makeStyles } from '@material-ui/core/styles';
 import '../CSS/Profile.css';
 import CookieService from '../../../global/Services/CookieService';
 import AuthService from '../../../global/Services/AuthService';
+import { waitFor } from '@testing-library/dom';
 
 function Profile() {
+    // State for loading
+    const [loading, setLoading] = useState(true);
+    // Autentiseringsstatus
     const [auth, setAuth] = useState(false);
     // Array for alle interesser //
     const [fagfelt, setFagfelt] = useState([]);
-    // Variabler for personalia
+    // Array for personalia
     const [bruker, setBruker] = useState([]);
+    // Array for aktive interesser
+    const [interesser, setInteresser] = useState([]);
+
+    //TEST
+    const [test, setTest] = useState();
 
     const authorize = () => {
         // Henter authtoken-cookie
@@ -42,7 +51,7 @@ function Profile() {
             fontSize: '6rem',
             color: '#3bafa2',
             marginLeft: '2vw',
-            marginTop: '2vh'
+            marginTop: '1vh',
         },
 
         profileButton: {
@@ -53,13 +62,36 @@ function Profile() {
         },
 
         fagfeltButton: {
-            border: '1px solid black',
-            borderRadius: '20px',
-            margin: '0.5em',
+            border: '2px solid',
+            borderColor: '#4646a5',
+            borderRadius: '18px',
+            marginBottom: '0.5em',
+            width: '100%',
+            fontSize: '1rem',
+        },
+
+        fagfeltButtonActive: {
+            color: '#fff',
+            backgroundColor: '#4646a5',
+            borderRadius: '18px',
+            marginBottom: '0.5em',
+            width: '100%',
         },
     });
     
     const classes = useStyles();
+
+    /* Hent brukerdata fra DB */
+    const fetchBruker = async () => {
+        const res = await axios.get(process.env.REACT_APP_APIURL + "/profile/getBruker");
+        setBruker(res.data);
+    }
+    
+    /* Hent aktive interesser fra DB */
+    const fetchInteresser = async () => {
+        const res = await axios.get(process.env.REACT_APP_APIURL + "/profile/getInteresse");
+        setInteresser(res.data);
+    }
 
     /* Hent fagfelt fra DB */
     const fetchFagfelt = async () => {
@@ -67,26 +99,32 @@ function Profile() {
         setFagfelt(res.data);
     }
 
-    /* Hent brukerdata fra DB */
-    const fetchBruker = async () => {
-        const res = await axios.get(process.env.REACT_APP_APIURL + "/profile/getBruker");
-        setBruker(res.data);
-    }
 
     useEffect( () => {
         authorize();
+        fetchInteresser();
         fetchBruker();
         fetchFagfelt();
+        setLoading(false);
     }, []);
 
+    const dropInteresse = (id) => {
+        // Mottar fagfeltid for interesse som skal fjernes
+    }
 
-    if (auth) {
+    const insertInteresse = (id) => {
+        // Mottar fagfeltid for interesse som skal legges til
+    }
+
+
+    if (auth && !loading) {
     return (
         <div>
             <div className='profile-header' >
                 {/* Placeholder account icon */}
                 <AccountCircleIcon className={classes.accountCircle} />
                 <h1 className='profile-title'> Profil </h1>
+                <h2>{test}</h2>
             </div>
 
             <div className='profile-body' >
@@ -97,11 +135,7 @@ function Profile() {
                     <>
                         <FilledInput
                         disabled="true"
-                        defaultValue={b.fnavn}
-                        />
-                        <FilledInput
-                        disabled="true"
-                        defaultValue={b.enavn}
+                        defaultValue={b.fnavn + ' ' + b.enavn}
                         />
                         <FilledInput
                         defaultValue={b.telefon}
@@ -120,10 +154,29 @@ function Profile() {
                 <div className='profile-item' >
                     <h2 className='profile-subheader' > Interesser </h2>
                     <div className='interesser' >
-                        {/* Map oppnår mye av det samme som en provider, uten behovet for flere dokumenter */}
-                        {fagfelt.map(fagfelt => (               
-                            <Button className={classes.fagfeltButton} >{fagfelt.beskrivelse}</Button>
-                        ))}
+                        {/* Iterer gjennom fagfelt array etter treff på aktive interesser... */}
+                        {fagfelt.map(f => {
+                            // Test om interessen allerede er aktiv //
+                            for (var i = 0; i < interesser.length; i++) {
+                                // Treff, returner tilsvarende knapp
+                                if (interesser[i].fagfeltid == f.fagfeltid) return (
+                                    // f.fagfeltid som parameter til oppdatering av interesser
+                                     <Button onClick={() => dropInteresse(f.fagfeltid)} className={classes.fagfeltButtonActive} >{f.beskrivelse}</Button> 
+                                );
+                            }
+                        })}
+
+                        {/* ... eller ikke aktive */}
+                        {fagfelt.map(f => {
+                            // Test om interessen allerede er aktiv //
+                            for (var i = 0; i < interesser.length; i++) {
+                                // Ingen treff, returner tilsvarende knapp
+                                if (interesser[i].fagfeltid !== f.fagfeltid) return (
+                                    // f.fagfeltid som parameter til oppdatering av interesser
+                                     <Button onClick={() => insertInteresse(f.fagfeltid)} className={classes.fagfeltButton} >{f.beskrivelse}</Button> 
+                                );
+                            }
+                        })}
                     </div>
                 </div>
                 
