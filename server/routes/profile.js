@@ -27,4 +27,16 @@ router.get('/getBruker', async (req, res) => {
     }
 });
 
+router.get('/getInteresse', async (req, res) => {
+    // Hent id fra... Hvor? //
+    const brukerid = 1;
+    try{
+        connection.query("SELECT brukerid, ", (error, results) => {
+            res.send.apply(results);
+        });
+    }catch(err) {
+        res.json({message:err});
+    }
+})
+
 module.exports = router;

@@ -55,8 +55,8 @@ function Profile() {
         fagfeltButton: {
             border: '1px solid black',
             borderRadius: '20px',
-            margin: '0.5em'
-        }
+            margin: '0.5em',
+        },
     });
     
     const classes = useStyles();
@@ -92,7 +92,7 @@ function Profile() {
             <div className='profile-body' >
                 <div className='profile-item' >
                 <h2 className='profile-subheader' > Personalia </h2>
-                {/* Dette funker som en provider, uten behovet for flere dokumenter */}
+                {/* Map oppnår mye av det samme som en provider, uten behovet for flere dokumenter */}
                 {bruker.map(b => (
                     <>
                         <FilledInput
@@ -120,7 +120,7 @@ function Profile() {
                 <div className='profile-item' >
                     <h2 className='profile-subheader' > Interesser </h2>
                     <div className='interesser' >
-                        {/* Dette funker som en provider, uten behovet for flere dokumenter */}
+                        {/* Map oppnår mye av det samme som en provider, uten behovet for flere dokumenter */}
                         {fagfelt.map(fagfelt => (               
                             <Button className={classes.fagfeltButton} >{fagfelt.beskrivelse}</Button>
                         ))}
