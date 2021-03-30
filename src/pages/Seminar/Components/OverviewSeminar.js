@@ -58,7 +58,7 @@ class OverviewSeminar extends Component {
       
       if(!loading && authenticated) {
           return (            
-              <div className="content-overview">
+              <div className="Seminar-Content">
                 <SeminarFullfortProvider>
                   <SeminarProvider>
                     <SeminarNav/>

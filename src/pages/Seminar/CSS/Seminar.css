@@ -1,5 +1,17 @@
 /* Seminar overview
 ----------------------------- */
+
+/* SeminarNav */
+.Seminar-indexPosition {
+    display: flex;
+    justify-content: center;
+}
+
+.Seminar-indexRes2 {
+    display: flex;
+    justify-content: center;
+}
+
 /* Seminar Link */
 .Seminar-Link {
     text-decoration: none;
@@ -313,17 +325,17 @@
 /* Stor skjerm, 1440p */
 @media screen and (min-width: 2560px) {
     .seminar-list {
-        grid-template-columns: 400px 400px 400px 400px;
+        grid-template-columns: 400px 400px 400px;
         justify-content: center;
     }
 
     .SeminarDetails-Content {
-        grid-template-columns: 1600px;
+        grid-template-columns: 1200px;
         justify-content: center;
     }
 
     .SeminarHeading {
         grid-column-start: 1;
-        grid-column-end: 5;
+        grid-column-end: 4;
     }
 }
