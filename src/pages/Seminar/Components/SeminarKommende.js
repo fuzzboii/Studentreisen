@@ -1,5 +1,7 @@
 // React spesifikt
 import React from "react";
+import {Link} from 'react-router-dom';
+
 // 3rd-party Packages
 import moment from 'moment';
 import 'moment/locale/nb';
@@ -20,6 +22,7 @@ const SeminarKommende = (props) => {
         };
     }, []);
     
+      
     if (width < breakpoint) {
         return (
             <div className="Seminar-Mobile">
@@ -37,9 +40,11 @@ const SeminarKommende = (props) => {
                     <h3 className="Seminar-ArrangorHeading">Arrangør</h3>
                     <p className="Seminar-Arrangor">{props.arrangor}</p>
                     <SeminarCardActions className="Seminar-CardActions">
+                        <Link className='Seminar-Link' to={`/seminar/seminarkommende=${props.seminarid}`}>
                         <SeminarButton className="Seminar-buttonLes" size="small" color="default">
                         Les mer..
-                        </SeminarButton>                        
+                        </SeminarButton>
+                        </Link>                        
                         <SeminarButton className="Seminar-buttonPaameld" size="small" color="primary">
                         Påmeld
                         </SeminarButton>
@@ -53,6 +58,7 @@ const SeminarKommende = (props) => {
             
             <div className="Seminar-Desktop">
             <SeminarCard className="Seminar-Cards">
+                <Link className='Seminar-Link' to={`/seminar/seminarkommende=${props.seminarid}`}>
                 <SeminarCardActionArea>
                     <SeminarCardMedia
                         image={"/uploaded/" + props.plassering} />
@@ -74,6 +80,7 @@ const SeminarKommende = (props) => {
                         </div>
                     </SeminarCardContent>
                 </SeminarCardActionArea>
+                </Link>
                 <SeminarCardActions className="Seminar-CardActions">
                     <SeminarButton className="Seminar-buttonPaameld" size="small" color="primary">
                         Påmeld

@@ -1,9 +1,12 @@
 // React spesifikt
 import React from "react";
+import {Link} from 'react-router-dom';
+
 // 3rd-party Packages
 import DateRangeIcon from '@material-ui/icons/DateRange';
 import moment from 'moment';
 import 'moment/locale/nb';
+
 // Studentreisen-assets og komponenter
 import '../CSS/Seminar.css'; 
 import { SeminarCard, SeminarCardActionArea, SeminarCardContent, SeminarCardMedia, SeminarTypography, SeminarCardActions, SeminarButton, SeminarAccordion, SeminarAccordionSummary, SeminarAccordionDetails, SeminarExpandMoreIcon } from '../CSS/apistylesSeminar';
@@ -37,9 +40,11 @@ const SeminarFullforte = (props) => {
                     <h3 className="Seminar-ArrangorHeading">Arrangør</h3>
                     <p className="Seminar-Arrangor">{props.arrangor}</p>
                     <SeminarCardActions className="Seminar-CardActions">
+                        <Link className='Seminar-Link' to={`/seminar/seminarfullforte=${props.seminarid}`}>
                         <SeminarButton className="Seminar-buttonLes" size="small" color="default">
                         Les mer..
-                        </SeminarButton>                        
+                        </SeminarButton>
+                        </Link>                        
                         <SeminarButton disabled>
                         Fullført
                         </SeminarButton>
@@ -53,6 +58,7 @@ const SeminarFullforte = (props) => {
             
             <div className="Seminar-Desktop">
             <SeminarCard className="Seminar-Cards">
+                <Link className='Seminar-Link' to={`/seminar/seminarfullforte=${props.seminarid}`}>
                 <SeminarCardActionArea>
                     <SeminarCardMedia
                         image={"/uploaded/" + props.plassering} />
@@ -74,6 +80,7 @@ const SeminarFullforte = (props) => {
                         </div>
                     </SeminarCardContent>
                 </SeminarCardActionArea>
+                </Link>
                 <SeminarCardActions className="Seminar-CardActions">
                     <SeminarButton disabled>
                         Fullført
