@@ -1,18 +1,24 @@
+// React spesifikt
 import { useState, useEffect, useContext, Component} from 'react';
 import {useLocation, useParams} from 'react-router-dom';
 
-import axios from 'axios';
-import Box from '@material-ui/core/Box';
-import Button from '@material-ui/core/Button';
-import '../CSS/Seminar.css';
+// 3rd-party Packages
 import EventIcon from '@material-ui/icons/Event';
 import moment from 'moment';
 import 'moment/locale/nb';
 import DeleteIcon from '@material-ui/icons/Delete';
 import SaveIcon from '@material-ui/icons/Save';
 import EditIcon from '@material-ui/icons/Edit';
+import axios from 'axios';
+import Box from '@material-ui/core/Box';
+import Button from '@material-ui/core/Button';
 
-const SeminarDetailsFullforte = () => {
+// Studentreisen-assets og komponenter
+import Loader from '../../../global/Components/Loader';
+import NoAccess from '../../../global/Components/NoAccess';
+import '../CSS/Seminar.css';
+
+const SeminarDetailsFullforte = (props) => {
 
     useEffect(() => {
         fetchData();
@@ -28,7 +34,16 @@ const SeminarDetailsFullforte = () => {
         setSeminars(res.data);
 
     };
-        return(
+
+    return(
+        <>
+        {props.loading &&
+            // Om vi er i loading fasen (Før mottatt data fra API) vises det et Loading ikon
+            <section id="loading">
+                <Loader />
+            </section>
+        }
+        {!props.loading && props.auth &&
             <div className="SeminarDetails">
             {seminars.map(seminar => { if(seminarid == seminar.seminarid)           
                 return ( 
@@ -79,8 +94,12 @@ const SeminarDetailsFullforte = () => {
                 )
             })}
             </div>
-        );
-
-};
+        }{!props.loading && !props.auth &&
+            // Ugyldig eller ikke-eksisterende token 
+            <NoAccess />
+        }
+        </>        
+    );
+}
 
 export default SeminarDetailsFullforte;

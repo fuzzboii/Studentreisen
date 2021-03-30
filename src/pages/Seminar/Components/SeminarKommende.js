@@ -1,9 +1,12 @@
+// React spesifikt
 import React from "react";
-import { SeminarCard, SeminarCardActionArea, SeminarCardContent, SeminarCardMedia, SeminarTypography, SeminarCardActions, SeminarButton, SeminarAccordion, SeminarAccordionSummary, SeminarAccordionDetails, SeminarExpandMoreIcon } from '../CSS/apistylesSeminar';
-import '../CSS/Seminar.css'; 
+// 3rd-party Packages
 import moment from 'moment';
 import 'moment/locale/nb';
 import DateRangeIcon from '@material-ui/icons/DateRange';
+// Studentreisen-assets og komponenter
+import { SeminarCard, SeminarCardActionArea, SeminarCardContent, SeminarCardMedia, SeminarTypography, SeminarCardActions, SeminarButton, SeminarAccordion, SeminarAccordionSummary, SeminarAccordionDetails, SeminarExpandMoreIcon } from '../CSS/apistylesSeminar';
+import '../CSS/Seminar.css'; 
 
 const SeminarKommende = (props) => {
     const [width, setWidth] = React.useState(window.innerWidth);
