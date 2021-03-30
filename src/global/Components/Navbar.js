@@ -7,11 +7,13 @@ import { makeStyles } from '@material-ui/core/styles';
 import '../CSS/Navbar.css';
 import favicon from '../../assets/usn.png';
 import CookieService from '../Services/CookieService';
+import Loader from '../../global/Components/Loader';
 
 function Navbar(props) {
     const [click, setClick] = useState(false);
     const [button, setButton] = useState(true);
-    // Prop som mottas fra App, viser til om bruker er inn-/utlogget
+    const [loading, setLoading] = useState(true);
+    // Props som mottas fra App, viser til om bruker er inn-/utlogget
     const [auth, setAuth] = useState(false);
     const [type, setType] = useState(null);
  
@@ -20,6 +22,7 @@ function Navbar(props) {
 
     // Testing på om en "LOGG UT"-knapp skal vises i navbar eller i meny
     const showButton = () => {
+      if (!loading) {
         if(window.innerWidth <= 960) {
             setButton(false);
             if (auth) {
@@ -38,12 +41,14 @@ function Navbar(props) {
             } catch (TypeError) {}
             }
         }
+      }
     };
 
     useEffect( () => {
       setAuth(props.auth);
       setType(props.type);
       showButton();
+      setLoading(false);
     }, [props]); 
 
     // Legger til eller fjerner padding under navbar, for å skyve innholdet under nedover. //
@@ -102,7 +107,15 @@ function Navbar(props) {
       setAuth(false);
     }
 
-    return (
+    if(loading) {
+      return(
+        <section id="loading">
+          <Loader />
+        </section>
+      );
+    }
+
+    if (!loading) return (
         <>
           <nav className='navbar' id="bar" >
             <div className='navbar-container'>

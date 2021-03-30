@@ -78,8 +78,12 @@ function App() {
           />
           <Route path = "/profile" component = {Profile} />
           <Route path = "/seminar" exact component = {Seminar} />
-          <Route path = "/seminarkommende/:seminarid" component = {SeminarDetailsKommende} />
-          <Route path = "/seminarfullforte/:seminarid" component = {SeminarDetailsFullforte} />
+          <Route path = "/seminar/seminarkommende=:seminarid" render = {() =>(
+            <SeminarDetailsKommende auth={auth} loading={loading} />
+          )}/>
+          <Route path = "/seminar/seminarfullforte=:seminarid" render = {() =>(
+            <SeminarDetailsFullforte auth={auth} loading={loading} />
+          )}/>
         </Switch>
       <Footer />
     </>

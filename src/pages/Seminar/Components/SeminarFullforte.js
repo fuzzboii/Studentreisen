@@ -1,9 +1,12 @@
+// React spesifikt
 import React from "react";
-import { SeminarCard, SeminarCardActionArea, SeminarCardContent, SeminarCardMedia, SeminarTypography, SeminarCardActions, SeminarButton, SeminarAccordion, SeminarAccordionSummary, SeminarAccordionDetails, SeminarExpandMoreIcon } from '../CSS/apistylesSeminar';
-import '../CSS/Seminar.css'; 
+// 3rd-party Packages
+import DateRangeIcon from '@material-ui/icons/DateRange';
 import moment from 'moment';
 import 'moment/locale/nb';
-import DateRangeIcon from '@material-ui/icons/DateRange';
+// Studentreisen-assets og komponenter
+import '../CSS/Seminar.css'; 
+import { SeminarCard, SeminarCardActionArea, SeminarCardContent, SeminarCardMedia, SeminarTypography, SeminarCardActions, SeminarButton, SeminarAccordion, SeminarAccordionSummary, SeminarAccordionDetails, SeminarExpandMoreIcon } from '../CSS/apistylesSeminar';
 
 const SeminarFullforte = (props) => {
     const [width, setWidth] = React.useState(window.innerWidth);

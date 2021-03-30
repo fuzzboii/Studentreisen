@@ -1,5 +1,11 @@
-import axios from 'axios';
+// React spesifikt
 import React, {useState, createContext, useEffect} from 'react';
+// 3rd-party Packages
+import axios from 'axios';
+
+// Studentreisen-assets og komponenter
+
+
 
 export const SeminarContext = createContext();
 

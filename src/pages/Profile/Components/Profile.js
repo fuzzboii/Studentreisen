@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect } from "react-router-dom";
+import axios from 'axios';
 
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import { Button, FilledInput, Switch } from '@material-ui/core';
@@ -10,8 +11,11 @@ import CookieService from '../../../global/Services/CookieService';
 import AuthService from '../../../global/Services/AuthService';
 
 function Profile() {
-
     const [auth, setAuth] = useState(false);
+    // Array for alle interesser //
+    const [fagfelt, setFagfelt] = useState([]);
+    // Variabler for personalia
+    const [bruker, setBruker] = useState([]);
 
     const authorize = () => {
         // Henter authtoken-cookie
@@ -45,21 +49,36 @@ function Profile() {
             color: '#fff',
             backgroundColor: '#4646a5',
             margin: '4vw',
-            alignSelf: 'flex-end'
-        }
+            alignSelf: 'flex-end',
+        },
+
+        fagfeltButton: {
+            border: '1px solid black',
+            borderRadius: '20px',
+            margin: '0.5em',
+        },
     });
     
     const classes = useStyles();
 
+    /* Hent fagfelt fra DB */
+    const fetchFagfelt = async () => {
+        const res = await axios.get(process.env.REACT_APP_APIURL + "/profile/getFagfelt");
+        setFagfelt(res.data);
+    }
+
+    /* Hent brukerdata fra DB */
+    const fetchBruker = async () => {
+        const res = await axios.get(process.env.REACT_APP_APIURL + "/profile/getBruker");
+        setBruker(res.data);
+    }
+
     useEffect( () => {
         authorize();
+        fetchBruker();
+        fetchFagfelt();
     }, []);
 
-    /* Placeholder variabler */
-    const fnavn = 'Ola';
-    const enavn = 'Nordmann';
-    const tlf = '123 45 678';
-    const epost = '123456@usn.no';
 
     if (auth) {
     return (
@@ -72,41 +91,39 @@ function Profile() {
 
             <div className='profile-body' >
                 <div className='profile-item' >
-                    <h2 className='profile-subheader' > Personalia </h2>
-                    <FilledInput
-                        defaultValue={fnavn}
-                    />
-                    <FilledInput
-                        defaultValue={enavn}
-                    />
-                    <FilledInput
-                        defaultValue={tlf}
-                    />
-                    <FilledInput
-                        defaultValue={epost}
-                    />
-                    <Button className={classes.profileButton}> Endre </Button>
-                </div>
+                <h2 className='profile-subheader' > Personalia </h2>
+                {/* Map oppnår mye av det samme som en provider, uten behovet for flere dokumenter */}
+                {bruker.map(b => (
+                    <>
+                        <FilledInput
+                        disabled="true"
+                        defaultValue={b.fnavn}
+                        />
+                        <FilledInput
+                        disabled="true"
+                        defaultValue={b.enavn}
+                        />
+                        <FilledInput
+                        defaultValue={b.telefon}
+                        />
+                        <FilledInput
+                        defaultValue={b.email}
+                        />
+                    </>
+                ))}
+                <Button 
+                    className={classes.profileButton}> 
+                    Endre 
+                </Button>
+                    </div>
 
                 <div className='profile-item' >
                     <h2 className='profile-subheader' > Interesser </h2>
                     <div className='interesser' >
-                    <Button className={classes.profileButton}> Helse- og sosialfag </Button>
-                    <Button className={classes.profileButton}> Historie og idéhistorie </Button>
-                    <Button className={classes.profileButton}> Idrett, kroppsøving og friluftsliv </Button>
-                    {/* <Button> IT, informatikk og informasjonssystemer </Button>
-                    <Button> Jus </Button>
-                    <Button> Kunst, håndverk og musikk </Button>
-                    <Button> Lærer og lektorutdanning </Button>
-                    <Button> Maritime studier </Button>
-                    <Button> Matematikk, naturfag og miljøfag </Button>
-                    <Button> Medier, kommunikasjon og markedsføring </Button>
-                    <Button> Optometri </Button>
-                    <Button> Pedagogiske fag </Button>
-                    <Button> Samfunnsvitenskap og kulturstudier </Button>
-                    <Button> Språk og litteratur </Button>
-                    <Button> Teknologi, ingeniør og lysdesign </Button>
-                    <Button> Økonomi, ledelse og innovasjon </Button> */}
+                        {/* Map oppnår mye av det samme som en provider, uten behovet for flere dokumenter */}
+                        {fagfelt.map(fagfelt => (               
+                            <Button className={classes.fagfeltButton} >{fagfelt.beskrivelse}</Button>
+                        ))}
                     </div>
                 </div>
                 
