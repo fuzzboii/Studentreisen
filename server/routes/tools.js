@@ -28,7 +28,7 @@ router.post('/getAllUserData', async (req, res) => {
                     });
                 } else {
                     // Bruker har ikke tilgang, loggfører
-                    console.log("En innlogget bruker uten riktige tilganger har forsøkt å se brukeroversikten, brukerens ID: " + results[0].brukerid)
+                    //console.log("En innlogget bruker uten riktige tilganger har forsøkt å se brukeroversikten, brukerens ID: " + results[0].brukerid)
                     return res.json({ "status" : "error", "message" : "Ingen tilgang, om feilen fortsetter, forsøk å logg ut og inn igjen" });
                 }
             } else {
