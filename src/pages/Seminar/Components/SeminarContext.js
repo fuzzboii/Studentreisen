@@ -7,7 +7,7 @@ import axios from 'axios';
 
 
 
-export const SeminarContext = createContext();
+export const SeminarKommendeContext = createContext();
 
 
 
@@ -34,9 +34,9 @@ export const SeminarProvider = props => {
   
 
     return (
-        <SeminarContext.Provider value={[seminars, setSeminars]}>
+        <SeminarKommendeContext.Provider value={[seminars, setSeminars]}>
             {props.children}
-        </SeminarContext.Provider>
+        </SeminarKommendeContext.Provider>
 
     );
 }

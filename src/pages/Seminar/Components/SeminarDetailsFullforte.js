@@ -25,7 +25,7 @@ const SeminarDetailsFullforte = (props) => {
     },[]);
 
     let { seminarid } = useParams();
-    const [seminars, setSeminars] = useState([]);
+    const [seminarsFullfort, setSeminars] = useState([]);
 
     const fetchData = async () => {
                     
@@ -45,7 +45,7 @@ const SeminarDetailsFullforte = (props) => {
         }
         {!props.loading && props.auth &&
             <div className="SeminarDetails">
-            {seminars.map(seminar => { if(seminarid == seminar.seminarid)           
+            {seminarsFullfort.map(seminar => { if(seminarid == seminar.seminarid)           
                 return ( 
                     <div className="SeminarDetails-Content">
                         <div className="SeminarDetails-Header">
