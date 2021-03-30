@@ -15,8 +15,10 @@ router.get('/getFagfelt', async (req, res) => {
 });
 
 router.get('/getBruker', async (req, res) => {
+    // Hent id fra... Hvor? //
+    const brukerid = 1;
     try{
-        connection.query('SELECT fnavn, enavn, telefon, epost FROM bruker WHERE brukerid = 1', (error, results) => {
+        connection.query("SELECT fnavn, enavn, telefon, email FROM bruker WHERE brukerid=" + brukerid, (error, results) => {
             res.send(results);
         });
 
@@ -24,5 +26,17 @@ router.get('/getBruker', async (req, res) => {
         res.json({message:err});
     }
 });
+
+router.get('/getInteresse', async (req, res) => {
+    // Hent id fra... Hvor? //
+    const brukerid = 1;
+    try{
+        connection.query("SELECT brukerid, ", (error, results) => {
+            res.send.apply(results);
+        });
+    }catch(err) {
+        res.json({message:err});
+    }
+})
 
 module.exports = router;

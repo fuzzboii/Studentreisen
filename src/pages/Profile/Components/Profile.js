@@ -14,6 +14,7 @@ function Profile() {
     const [auth, setAuth] = useState(false);
     // Array for alle interesser //
     const [fagfelt, setFagfelt] = useState([]);
+    // Variabler for personalia
     const [bruker, setBruker] = useState([]);
 
     const authorize = () => {
@@ -48,23 +49,17 @@ function Profile() {
             color: '#fff',
             backgroundColor: '#4646a5',
             margin: '4vw',
-            alignSelf: 'flex-end'
-        }
+            alignSelf: 'flex-end',
+        },
+
+        fagfeltButton: {
+            border: '1px solid black',
+            borderRadius: '20px',
+            margin: '0.5em',
+        },
     });
     
     const classes = useStyles();
-
-    useEffect( () => {
-        authorize();
-        fetchBruker();
-        fetchFagfelt();
-    }, []);
-
-    /* Placeholder variabler */
-    const fnavn = bruker.fnavn;
-    const enavn = bruker.enavn;
-    const tlf = bruker.telefon;
-    const epost = bruker.epost;
 
     /* Hent fagfelt fra DB */
     const fetchFagfelt = async () => {
@@ -78,6 +73,13 @@ function Profile() {
         setBruker(res.data);
     }
 
+    useEffect( () => {
+        authorize();
+        fetchBruker();
+        fetchFagfelt();
+    }, []);
+
+
     if (auth) {
     return (
         <div>
@@ -89,41 +91,39 @@ function Profile() {
 
             <div className='profile-body' >
                 <div className='profile-item' >
-                    <h2 className='profile-subheader' > Personalia </h2>
-                    <FilledInput
+                <h2 className='profile-subheader' > Personalia </h2>
+                {/* Map oppnår mye av det samme som en provider, uten behovet for flere dokumenter */}
+                {bruker.map(b => (
+                    <>
+                        <FilledInput
                         disabled="true"
-                        defaultValue={fnavn}
-                    />
-                    <FilledInput
+                        defaultValue={b.fnavn}
+                        />
+                        <FilledInput
                         disabled="true"
-                        defaultValue={enavn}
-                    />
-                    <FilledInput
-                        defaultValue={tlf}
-                    />
-                    <FilledInput
-                        defaultValue={epost}
-                    />
-                    <Button 
-                        disabled="true"
-                        className={classes.profileButton}> 
-                        Endre 
-                    </Button>
-                </div>
+                        defaultValue={b.enavn}
+                        />
+                        <FilledInput
+                        defaultValue={b.telefon}
+                        />
+                        <FilledInput
+                        defaultValue={b.email}
+                        />
+                    </>
+                ))}
+                <Button 
+                    className={classes.profileButton}> 
+                    Endre 
+                </Button>
+                    </div>
 
                 <div className='profile-item' >
                     <h2 className='profile-subheader' > Interesser </h2>
                     <div className='interesser' >
-                        {/* Prøver å se om fetchFagfelt virker. Tilsynelatende ikke... */}
-                        {/* Denne biten fungerer på samme måte som en provider, uten behovet for flere dokumenter */}
+                        {/* Map oppnår mye av det samme som en provider, uten behovet for flere dokumenter */}
                         {fagfelt.map(fagfelt => (               
-                            <Button>TEST</Button>
+                            <Button className={classes.fagfeltButton} >{fagfelt.beskrivelse}</Button>
                         ))}
-                        <Button 
-                            disabled="true" 
-                            className={classes.profileButton}> 
-                            Endre 
-                        </Button>
                     </div>
                 </div>
                 

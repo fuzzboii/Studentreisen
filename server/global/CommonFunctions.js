@@ -27,7 +27,7 @@ const verifyAuth = (token) => {
                             }
     
                             if(results[0] !== undefined) {
-                                resolve({"authenticated" : true, "usertype" : results[0].niva});
+                                resolve({"authenticated" : true, "usertype" : results[0].niva, "brukerid" : results[0].brukerid});
                             } else {
                                 resolve({"authenticated" : false});
                             }
