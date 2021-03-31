@@ -9,7 +9,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import '../CSS/Profile.css';
 import CookieService from '../../../global/Services/CookieService';
 import AuthService from '../../../global/Services/AuthService';
-import { waitFor } from '@testing-library/dom';
+import Loader from '../../../global/Components/Loader';
 
 function Profile() {
     // State for loading
@@ -22,9 +22,9 @@ function Profile() {
     const [bruker, setBruker] = useState([]);
     // Array for aktive interesser
     const [interesser, setInteresser] = useState([]);
-
-    //TEST
-    const [test, setTest] = useState();
+    // Innlogget brukers id
+    // TODO: Obviously
+    const [brukerid, setID] = useState(1);
 
     const authorize = () => {
         // Henter authtoken-cookie
@@ -66,16 +66,20 @@ function Profile() {
             borderColor: '#4646a5',
             borderRadius: '18px',
             marginBottom: '0.5em',
+            // Mange av fagfeltene på disse knappene er såpass lange, stable vertikalt som baseline
             width: '100%',
             fontSize: '1rem',
         },
 
         fagfeltButtonActive: {
+            border: '2px solid',
+            borderColor: '#4646a5',
             color: '#fff',
             backgroundColor: '#4646a5',
             borderRadius: '18px',
             marginBottom: '0.5em',
             width: '100%',
+            fontSize: '1rem',
         },
     });
     
@@ -99,26 +103,38 @@ function Profile() {
         setFagfelt(res.data);
     }
 
-
     useEffect( () => {
         authorize();
-        fetchInteresser();
         fetchBruker();
         fetchFagfelt();
+        fetchInteresser();
         setLoading(false);
     }, []);
 
-    const dropInteresse = (id) => {
+    const deleteInteresse = (id) => {
         // Mottar fagfeltid for interesse som skal fjernes
+        const data = {
+            brukerid: brukerid,
+            fagfeltid: id
+        }
+        axios.delete(process.env.REACT_APP_APIURL + '/profile/deleteInteresse', data)
     }
 
     const insertInteresse = (id) => {
         // Mottar fagfeltid for interesse som skal legges til
         const data = {
-            brukerid: 1,
+            brukerid: brukerid,
             fagfeltid: id
         }
-        axios.post(process.env.REACT_APP_APIURL + '/profile/postInteresse', data);
+        axios.post(process.env.REACT_APP_APIURL + '/profile/postInteresse', data)
+    }
+
+    if (loading) {
+        return (
+            <section id="loading">
+                <Loader />
+            </section>
+        )
     }
 
 
@@ -129,7 +145,6 @@ function Profile() {
                 {/* Placeholder account icon */}
                 <AccountCircleIcon className={classes.accountCircle} />
                 <h1 className='profile-title'> Profil </h1>
-                <h2>{test}</h2>
             </div>
 
             <div className='profile-body' >
@@ -166,7 +181,7 @@ function Profile() {
                                 // Treff, returner tilsvarende knapp
                                 if (interesser[i].fagfeltid == f.fagfeltid) return (
                                     // f.fagfeltid som parameter til oppdatering av interesser
-                                     <Button onClick={() => dropInteresse(f.fagfeltid)} className={classes.fagfeltButtonActive} >{f.beskrivelse}</Button> 
+                                     <Button onClick={() => deleteInteresse(f.fagfeltid)} className={classes.fagfeltButtonActive} >{f.beskrivelse}</Button> 
                                 )
                                 // Ingen treff
                                 else return (
