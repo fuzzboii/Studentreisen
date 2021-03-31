@@ -18,7 +18,7 @@ import Loader from '../../../global/Components/Loader';
 import NoAccess from '../../../global/Components/NoAccess';
 import '../CSS/Seminar.css';
 
-const SeminarDetailsKommende = (props) => {
+const SeminarDetailsUpcoming = (props) => {
 
     useEffect(() => {
         fetchData();
@@ -108,4 +108,4 @@ const SeminarDetailsKommende = (props) => {
     );
 }
 
-export default SeminarDetailsKommende;
+export default SeminarDetailsUpcoming;

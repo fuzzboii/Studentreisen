@@ -10,7 +10,7 @@ import DateRangeIcon from '@material-ui/icons/DateRange';
 import { SeminarCard, SeminarCardActionArea, SeminarCardContent, SeminarCardMedia, SeminarTypography, SeminarCardActions, SeminarButton, SeminarAccordion, SeminarAccordionSummary, SeminarAccordionDetails, SeminarExpandMoreIcon } from '../CSS/apistylesSeminar';
 import '../CSS/Seminar.css'; 
 
-const SeminarKommende = (props) => {
+const SeminarUpcoming = (props) => {
     const [width, setWidth] = React.useState(window.innerWidth);
     const breakpoint = 1023;
     React.useEffect(() => {
@@ -93,4 +93,4 @@ const SeminarKommende = (props) => {
 }
 
 
-export default SeminarKommende;
+export default SeminarUpcoming;

@@ -11,7 +11,7 @@ import 'moment/locale/nb';
 import '../CSS/Seminar.css'; 
 import { SeminarCard, SeminarCardActionArea, SeminarCardContent, SeminarCardMedia, SeminarTypography, SeminarCardActions, SeminarButton, SeminarAccordion, SeminarAccordionSummary, SeminarAccordionDetails, SeminarExpandMoreIcon } from '../CSS/apistylesSeminar';
 
-const SeminarFullforte = (props) => {
+const SeminarExpired = (props) => {
     const [width, setWidth] = React.useState(window.innerWidth);
     const breakpoint = 1023;
     React.useEffect(() => {
@@ -93,4 +93,4 @@ const SeminarFullforte = (props) => {
 }
 
 
-export default SeminarFullforte;
+export default SeminarExpired;

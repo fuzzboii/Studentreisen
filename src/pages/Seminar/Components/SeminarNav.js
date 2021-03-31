@@ -4,10 +4,10 @@ import React, {useState, useContext} from "react";
 import {Tabs, Tab, Typography} from '@material-ui/core';
 import Pagination from '@material-ui/lab/Pagination';
 // Studentreisen-assets og komponenter
-import SeminarListKommende from './SeminarListKommende';
-import SeminarListFullforte from './SeminarListFullforte';
-import { SeminarKommendeContext } from './SeminarContext';
-import { SeminarFullfortContext } from './SeminarContext';
+import SeminarListUpcoming from './SeminarListUpcoming';
+import SeminarListExpired from './SeminarListExpired';
+import { SeminarUpcomingContext } from './SeminarContext';
+import { SeminarExpiredContext } from './SeminarContext';
 
 function TabPanel(props) {
   const { children, value, index } = props;
@@ -26,11 +26,11 @@ const SeminarNav = () => {
     const [position, setPosition] = useState(0);
 
     // States for pagination
-    const [seminarsKommende, setSeminarsKommende] = useContext(SeminarKommendeContext);
+    const [seminarsKommende, setSeminarsKommende] = useContext(SeminarUpcomingContext);
     const [currentPageKommende, setCurrentPageKommende] = useState(1);
     const [postsPerPageKommende, setPostsPerPageKommende] = useState(6);
 
-    const [seminarsFullfort, setSeminarsFullfort] = useContext(SeminarFullfortContext);
+    const [seminarsFullfort, setSeminarsFullfort] = useContext(SeminarExpiredContext);
     const [currentPageFullfort, setCurrentPageFullfort] = useState(1);
     const [postsPerPageFullfort, setPostsPerPageFullfort] = useState(6);
     
@@ -66,7 +66,7 @@ const SeminarNav = () => {
 
         <TabPanel value={position} index={0}>
             <div className="Seminar-ContentOverview">
-              <SeminarListKommende seminarsKommende={currentPostsKommende}/>
+              <SeminarListUpcoming seminarsKommende={currentPostsKommende}/>
             </div>
               <div className="Seminar-indexPosition">
                 <div className="Seminar-indexPagination">
@@ -80,7 +80,7 @@ const SeminarNav = () => {
 
         <TabPanel value={position} index={1}>
             <div className="Seminar-ContentOverview">
-              <SeminarListFullforte seminarsFullfort={currentPostsFullfort}/>
+              <SeminarListExpired seminarsFullfort={currentPostsFullfort}/>
             </div>
               <div className="Seminar-indexPosition">
                 <div className="Seminar-indexPagination">

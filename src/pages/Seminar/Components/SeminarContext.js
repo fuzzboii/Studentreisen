@@ -7,7 +7,7 @@ import axios from 'axios';
 
 
 
-export const SeminarKommendeContext = createContext();
+export const SeminarUpcomingContext = createContext();
 
 
 
@@ -34,17 +34,17 @@ export const SeminarProvider = props => {
   
 
     return (
-        <SeminarKommendeContext.Provider value={[seminars, setSeminars]}>
+        <SeminarUpcomingContext.Provider value={[seminars, setSeminars]}>
             {props.children}
-        </SeminarKommendeContext.Provider>
+        </SeminarUpcomingContext.Provider>
 
     );
 }
 
 
-export const SeminarFullfortContext = createContext();
+export const SeminarExpiredContext = createContext();
 
-export const SeminarFullfortProvider = props => {
+export const SeminarExpiredProvider = props => {
     useEffect(() => {
         fetchData();
     },[]);
@@ -62,9 +62,9 @@ export const SeminarFullfortProvider = props => {
     };
 
     return (
-        <SeminarFullfortContext.Provider value={[seminars, setSeminars]}>
+        <SeminarExpiredContext.Provider value={[seminars, setSeminars]}>
             {props.children}
-        </SeminarFullfortContext.Provider>
+        </SeminarExpiredContext.Provider>
 
     );
 }

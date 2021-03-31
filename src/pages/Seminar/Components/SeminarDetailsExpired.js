@@ -18,7 +18,7 @@ import Loader from '../../../global/Components/Loader';
 import NoAccess from '../../../global/Components/NoAccess';
 import '../CSS/Seminar.css';
 
-const SeminarDetailsFullforte = (props) => {
+const SeminarDetailsExpired = (props) => {
 
     useEffect(() => {
         fetchData();
@@ -102,4 +102,4 @@ const SeminarDetailsFullforte = (props) => {
     );
 }
 
-export default SeminarDetailsFullforte;
+export default SeminarDetailsExpired;
