@@ -87,7 +87,7 @@ const SeminarDetailsKommende = (props) => {
                             </div>
                             <div className="SeminarDetails-Information">
                                 <h2 className="SeminarDetails-ArrangorHeading">Arrangør</h2>
-                                    <p className="SeminarDetails-Arrangor">{seminar.arrangor}</p>
+                                    <p className="SeminarDetails-Arrangor">{seminar.fnavn} {seminar.enavn}</p>
                                 <h2 className="SeminarDetails-AdresseHeading">Adresse</h2>
                                     <p className="SeminarDetails-Adresse">{seminar.adresse}</p>
                                 <h2 className="SeminarDetails-BeskrivelseHeading">Beskrivelse</h2>
