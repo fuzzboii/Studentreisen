@@ -24,12 +24,17 @@ function Profile() {
     const [interesser, setInteresser] = useState([]);
     // Innlogget brukers id
     // TODO: Obviously
-    const [brukerid, setID] = useState(1);
+    const [brukerid, setID] = useState();
 
+    const [fnavn, setFnavn] = useState("");
+    const [enavn, setEnavn] = useState("");
+    const [tlf, setTlf] = useState();
+    const [email, setEmail] = useState();
+
+    // Henter authtoken-cookie
+    const token = CookieService.get("authtoken");
+    
     const authorize = () => {
-        // Henter authtoken-cookie
-        const token = CookieService.get("authtoken");
-        
         if(token !== undefined) {
             // Om token eksisterer sjekker vi mot serveren om brukeren har en gyldig token
             AuthService.isAuthenticated(token).then(res => {
@@ -87,8 +92,26 @@ function Profile() {
 
     /* Hent brukerdata fra DB */
     const fetchBruker = async () => {
-        const res = await axios.get(process.env.REACT_APP_APIURL + "/profile/getBruker");
-        setBruker(res.data);
+        const config = {
+            token: token
+        }
+
+        axios
+            // Henter API URL fra .env og utfører en POST request med dataen fra objektet over
+            // Axios serialiserer objektet til JSON selv
+            .post(process.env.REACT_APP_APIURL + "/profile/getBruker", config)
+            // Utføres ved mottatt resultat
+            .then(res => {
+                console.log(res.data.results[0].fnavn);
+                if(res.data.results[0]) {
+                    setFnavn(res.data.results[0].fnavn);
+                    setEnavn(res.data.results[0].enavn);
+                    setTlf(res.data.results[0].telefon);
+                    setEmail(res.data.results[0].email);
+                    console.log(fnavn + ", " + enavn);
+                    setLoading(false);
+                }
+            });
     }
     
     /* Hent aktive interesser fra DB */
@@ -106,9 +129,8 @@ function Profile() {
     useEffect( () => {
         authorize();
         fetchBruker();
-        fetchFagfelt();
-        fetchInteresser();
-        setLoading(false);
+        // fetchFagfelt();
+        // fetchInteresser();
     }, []);
 
     const deleteInteresse = (id) => {
@@ -150,21 +172,18 @@ function Profile() {
             <div className='profile-body' >
                 <div className='profile-item' >
                 <h2 className='profile-subheader' > Personalia </h2>
-                {/* Map oppnår mye av det samme som en provider, uten behovet for flere dokumenter */}
-                {bruker.map(b => (
-                    <>
-                        <FilledInput
-                        disabled="true"
-                        defaultValue={b.fnavn + ' ' + b.enavn}
-                        />
-                        <FilledInput
-                        defaultValue={b.telefon}
-                        />
-                        <FilledInput
-                        defaultValue={b.email}
-                        />
-                    </>
-                ))}
+                <>
+                    <FilledInput
+                    disabled={true}
+                    defaultValue={fnavn + ' ' + enavn}
+                    />
+                    <FilledInput
+                    defaultValue={tlf}
+                    />
+                    <FilledInput
+                    defaultValue={email}
+                    />
+                </>
                 <Button 
                     className={classes.profileButton}> 
                     Endre 
