@@ -81,7 +81,7 @@ function App() {
           <Route path = "/seminar/seminarkommende=:seminarid" render = {() =>(
             <SeminarDetailsUpcoming auth={auth} loading={loading} />
           )}/>
-          <Route path = "/seminar/seminarfullforte=:seminarid" render = {() =>(
+          <Route path = "/seminar/seminarutgatte=:seminarid" render = {() =>(
             <SeminarDetailsExpired auth={auth} loading={loading} />
           )}/>
         </Switch>

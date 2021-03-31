@@ -25,11 +25,11 @@ const SeminarDetailsExpired = (props) => {
     },[]);
 
     let { seminarid } = useParams();
-    const [seminarsFullfort, setSeminars] = useState([]);
+    const [seminarsExpired, setSeminars] = useState([]);
 
     const fetchData = async () => {
                     
-        const res = await axios.get(process.env.REACT_APP_APIURL + "/seminar/getAllSeminarFullfortData");
+        const res = await axios.get(process.env.REACT_APP_APIURL + "/seminar/getAllSeminarExpiredData");
         console.log(res.data);
         setSeminars(res.data);
 
@@ -45,7 +45,7 @@ const SeminarDetailsExpired = (props) => {
         }
         {!props.loading && props.auth &&
             <div className="SeminarDetails">
-            {seminarsFullfort.map(seminar => { if(seminarid == seminar.seminarid)           
+            {seminarsExpired.map(seminar => { if(seminarid == seminar.seminarid)           
                 return ( 
                     <div className="SeminarDetails-Content">
                         <div className="SeminarDetails-Header">

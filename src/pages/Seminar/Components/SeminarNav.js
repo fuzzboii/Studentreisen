@@ -26,68 +26,68 @@ const SeminarNav = () => {
     const [position, setPosition] = useState(0);
 
     // States for pagination
-    const [seminarsKommende, setSeminarsKommende] = useContext(SeminarUpcomingContext);
-    const [currentPageKommende, setCurrentPageKommende] = useState(1);
-    const [postsPerPageKommende, setPostsPerPageKommende] = useState(6);
+    const [seminarsUpcoming, setSeminarsUpcoming] = useContext(SeminarUpcomingContext);
+    const [currentPageUpcoming, setCurrentPageUpcoming] = useState(1);
+    const [postsPerPageUpcoming, setPostsPerPageUpcoming] = useState(6);
 
-    const [seminarsFullfort, setSeminarsFullfort] = useContext(SeminarExpiredContext);
-    const [currentPageFullfort, setCurrentPageFullfort] = useState(1);
-    const [postsPerPageFullfort, setPostsPerPageFullfort] = useState(6);
+    const [seminarsExpired, setSeminarsExpired] = useContext(SeminarExpiredContext);
+    const [currentPageExpired, setCurrentPageExpired] = useState(1);
+    const [postsPerPageExpired, setPostsPerPageExpired] = useState(6);
     
     //Få nåværende poster
-    const indexOfLastPostKommende = currentPageKommende * postsPerPageKommende;
-    const indexOfFirstPostKommende = indexOfLastPostKommende - postsPerPageKommende;
-    const currentPostsKommende = seminarsKommende.slice(indexOfFirstPostKommende, indexOfLastPostKommende);
-    const numberOfPagesKommende = Math.ceil(seminarsKommende.length / postsPerPageKommende);
-    const intervalKommende =  indexOfFirstPostKommende + currentPostsKommende.length;
+    const indexOfLastPostUpcoming = currentPageUpcoming * postsPerPageUpcoming;
+    const indexOfFirstPostUpcoming = indexOfLastPostUpcoming - postsPerPageUpcoming;
+    const currentPostsUpcoming = seminarsUpcoming.slice(indexOfFirstPostUpcoming, indexOfLastPostUpcoming);
+    const numberOfPagesUpcoming = Math.ceil(seminarsUpcoming.length / postsPerPageUpcoming);
+    const intervalUpcoming =  indexOfFirstPostUpcoming + currentPostsUpcoming.length;
 
-    const indexOfLastPostFullfort = currentPageFullfort * postsPerPageFullfort;
-    const indexOfFirstPostFullfort = indexOfLastPostFullfort - postsPerPageFullfort;
-    const currentPostsFullfort = seminarsFullfort.slice(indexOfFirstPostFullfort, indexOfLastPostFullfort);
-    const numberOfPagesFullfort = Math.ceil(seminarsFullfort.length / postsPerPageFullfort);
-    const intervalFullfort =  indexOfFirstPostFullfort + currentPostsFullfort.length;
+    const indexOfLastPostExpired = currentPageExpired * postsPerPageExpired;
+    const indexOfFirstPostExpired = indexOfLastPostExpired - postsPerPageExpired;
+    const currentPostsExpired = seminarsExpired.slice(indexOfFirstPostExpired, indexOfLastPostExpired);
+    const numberOfPagesExpired = Math.ceil(seminarsExpired.length / postsPerPageExpired);
+    const intervalExpired =  indexOfFirstPostExpired + currentPostsExpired.length;
       
     const handleChange = (event, newValue) => {
         setPosition(newValue);
     }
 
     const handlePage = (event, value) => {
-      setCurrentPageKommende(value);
-      setCurrentPageFullfort(value);
+      setCurrentPageUpcoming(value);
+      setCurrentPageExpired(value);
     };
 
     return (
       <div className="Seminar-Overview">  
           <Tabs value={position} indicatorColor="primary" textColor="primary" onChange={handleChange} centered>
-              <Tab className="" label="Kommende" />
+              <Tab className="" label="Upcoming" />
               <Tab className="" label="Utgåtte" />
           </Tabs>
 
 
         <TabPanel value={position} index={0}>
             <div className="Seminar-ContentOverview">
-              <SeminarListUpcoming seminarsKommende={currentPostsKommende}/>
+              <SeminarListUpcoming seminarsUpcoming={currentPostsUpcoming}/>
             </div>
               <div className="Seminar-indexPosition">
                 <div className="Seminar-indexPagination">
                   <div className="Seminar-indexRes2">
-                    <Typography  variant="caption" >Viser {indexOfFirstPostKommende + 1} - {intervalKommende} av {seminarsKommende.length} treff</Typography>
+                    <Typography  variant="caption" >Viser {indexOfFirstPostUpcoming + 1} - {intervalUpcoming} av {seminarsUpcoming.length} treff</Typography>
                   </div>
-                  <Pagination count={numberOfPagesKommende} page={currentPageKommende} onChange={handlePage} />
+                  <Pagination count={numberOfPagesUpcoming} page={currentPageUpcoming} onChange={handlePage} />
                 </div>
               </div>  
         </TabPanel>
 
         <TabPanel value={position} index={1}>
             <div className="Seminar-ContentOverview">
-              <SeminarListExpired seminarsFullfort={currentPostsFullfort}/>
+              <SeminarListExpired seminarsExpired={currentPostsExpired}/>
             </div>
               <div className="Seminar-indexPosition">
                 <div className="Seminar-indexPagination">
                   <div className="Seminar-indexRes2">
-                    <Typography  variant="caption" >Viser {indexOfFirstPostFullfort + 1} - {intervalFullfort} av {seminarsFullfort.length} treff</Typography>
+                    <Typography  variant="caption" >Viser {indexOfFirstPostExpired + 1} - {intervalExpired} av {seminarsExpired.length} treff</Typography>
                   </div>
-                  <Pagination count={numberOfPagesFullfort} page={currentPageFullfort} onChange={handlePage} />
+                  <Pagination count={numberOfPagesExpired} page={currentPageExpired} onChange={handlePage} />
                 </div>
               </div>    
         </TabPanel>

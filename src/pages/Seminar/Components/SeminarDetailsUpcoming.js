@@ -25,11 +25,11 @@ const SeminarDetailsUpcoming = (props) => {
     },[]);
 
     let { seminarid } = useParams();
-    const [seminarsKommende, setSeminars] = useState([]);
+    const [seminarsUpcoming, setSeminars] = useState([]);
 
     const fetchData = async () => {
                     
-        const res = await axios.get(process.env.REACT_APP_APIURL + "/seminar/getAllSeminarData");
+        const res = await axios.get(process.env.REACT_APP_APIURL + "/seminar/getAllSeminarUpcomingData");
         console.log(res.data);
         setSeminars(res.data);
 
@@ -45,7 +45,7 @@ const SeminarDetailsUpcoming = (props) => {
         }
         {!props.loading && props.auth &&    
             <div className="SeminarDetails">
-            {seminarsKommende.map(seminar => { if(seminarid == seminar.seminarid)           
+            {seminarsUpcoming.map(seminar => { if(seminarid == seminar.seminarid)           
                 return ( 
                     <div className="SeminarDetails-Content">
                         <div className="SeminarDetails-Header">

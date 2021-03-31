@@ -40,7 +40,7 @@ const SeminarExpired = (props) => {
                     <h3 className="Seminar-ArrangorHeading">Arrangør</h3>
                     <p className="Seminar-Arrangor">{props.fnavn} {props.enavn}</p>
                     <SeminarCardActions className="Seminar-CardActions">
-                        <Link className='Seminar-Link' to={`/seminar/seminarfullforte=${props.seminarid}`}>
+                        <Link className='Seminar-Link' to={`/seminar/seminarutgatte=${props.seminarid}`}>
                         <SeminarButton className="Seminar-buttonLes" size="small" color="default">
                         Les mer..
                         </SeminarButton>
@@ -58,7 +58,7 @@ const SeminarExpired = (props) => {
             
             <div className="Seminar-Desktop">
             <SeminarCard className="Seminar-Cards">
-                <Link className='Seminar-Link' to={`/seminar/seminarfullforte=${props.seminarid}`}>
+                <Link className='Seminar-Link' to={`/seminar/seminarutgatte=${props.seminarid}`}>
                 <SeminarCardActionArea>
                     <SeminarCardMedia
                         image={"/uploaded/" + props.plassering} />

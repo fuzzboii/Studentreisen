@@ -7,11 +7,11 @@ import React, { useState, useContext } from 'react';
 import SeminarExpired from './SeminarExpired';
 import '../CSS/Seminar.css'; 
 
-const SeminarListExpired = ({seminarsFullfort}) => {
+const SeminarListExpired = ({seminarsExpired}) => {
     return (
         <div className="seminar-list" >
             <h1 className="SeminarHeading">Utgåtte seminarer</h1>
-            {seminarsFullfort.map(seminar => (
+            {seminarsExpired.map(seminar => (
                 <SeminarExpired key={seminar.seminarid} seminarid={seminar.seminarid} bildeid={seminar.bildeid} navn={seminar.navn} brukerid={seminar.brukerid} adresse={seminar.adresse} oppstart={seminar.oppstart} varighet={seminar.varighet} beskrivelse={seminar.beskrivelse} tilgjengelighet={seminar.tilgjengelighet} plassering={seminar.plassering} fnavn={seminar.fnavn} enavn={seminar.enavn} />    
             ))}
         </div>
