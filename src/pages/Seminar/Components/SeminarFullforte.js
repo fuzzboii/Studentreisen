@@ -38,7 +38,7 @@ const SeminarFullforte = (props) => {
                     <div className="AdressDesktop"></div>
                     <p className="Seminar-Adresse">{props.adresse}</p>
                     <h3 className="Seminar-ArrangorHeading">Arrangør</h3>
-                    <p className="Seminar-Arrangor">{props.arrangor}</p>
+                    <p className="Seminar-Arrangor">{props.fnavn} {props.enavn}</p>
                     <SeminarCardActions className="Seminar-CardActions">
                         <Link className='Seminar-Link' to={`/seminar/seminarfullforte=${props.seminarid}`}>
                         <SeminarButton className="Seminar-buttonLes" size="small" color="default">
@@ -46,7 +46,7 @@ const SeminarFullforte = (props) => {
                         </SeminarButton>
                         </Link>                        
                         <SeminarButton disabled>
-                        Fullført
+                        Utgått
                         </SeminarButton>
                     </SeminarCardActions>
                 </SeminarAccordionDetails>
@@ -76,14 +76,14 @@ const SeminarFullforte = (props) => {
                             <h3 className="Seminar-StedHeading">Sted</h3>
                             <p className="Seminar-AdresseDesktop">{props.adresse}</p>
                             <h3 className="Seminar-ArrangorHeading">Arrangør</h3>
-                            <p className="Seminar-ArrangorDesktop">{props.arrangor}</p>
+                            <p className="Seminar-ArrangorDesktop">{props.fnavn} {props.enavn}</p>
                         </div>
                     </SeminarCardContent>
                 </SeminarCardActionArea>
                 </Link>
                 <SeminarCardActions className="Seminar-CardActions">
                     <SeminarButton disabled>
-                        Fullført
+                        Utgått
                     </SeminarButton>
                 </SeminarCardActions>
             </SeminarCard>

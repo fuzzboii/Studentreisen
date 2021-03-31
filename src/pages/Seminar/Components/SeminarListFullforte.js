@@ -10,9 +10,9 @@ import '../CSS/Seminar.css';
 const SeminarListFullforte = ({seminarsFullfort}) => {
     return (
         <div className="seminar-list" >
-            <h1 className="SeminarHeading">Fullførte seminarer</h1>
+            <h1 className="SeminarHeading">Utgåtte seminarer</h1>
             {seminarsFullfort.map(seminar => (
-                <SeminarFullforte key={seminar.seminarid} seminarid={seminar.seminarid} bildeid={seminar.bildeid} navn={seminar.navn} arrangor={seminar.arrangor} adresse={seminar.adresse} oppstart={seminar.oppstart} varighet={seminar.varighet} beskrivelse={seminar.beskrivelse} tilgjengelighet={seminar.tilgjengelighet} plassering={seminar.plassering} />    
+                <SeminarFullforte key={seminar.seminarid} seminarid={seminar.seminarid} bildeid={seminar.bildeid} navn={seminar.navn} brukerid={seminar.brukerid} adresse={seminar.adresse} oppstart={seminar.oppstart} varighet={seminar.varighet} beskrivelse={seminar.beskrivelse} tilgjengelighet={seminar.tilgjengelighet} plassering={seminar.plassering} fnavn={seminar.fnavn} enavn={seminar.enavn} />    
             ))}
         </div>
     );
