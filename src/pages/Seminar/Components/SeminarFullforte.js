@@ -46,7 +46,7 @@ const SeminarFullforte = (props) => {
                         </SeminarButton>
                         </Link>                        
                         <SeminarButton disabled>
-                        Fullført
+                        Utgått
                         </SeminarButton>
                     </SeminarCardActions>
                 </SeminarAccordionDetails>
@@ -83,7 +83,7 @@ const SeminarFullforte = (props) => {
                 </Link>
                 <SeminarCardActions className="Seminar-CardActions">
                     <SeminarButton disabled>
-                        Fullført
+                        Utgått
                     </SeminarButton>
                 </SeminarCardActions>
             </SeminarCard>

@@ -56,7 +56,7 @@ const SeminarDetailsFullforte = (props) => {
                                 <div className="SeminarDetails-Buttons">
                                     <div className="SeminarDetails-ButtonPameldWrapper">
                                         <Button className="SeminarDetailsButtonPameld" size="small" variant="outlined" disabled>
-                                        Fullført
+                                        Utgått
                                         </Button>
                                     </div>
                                     <div className="SeminarDetails-ButtonSlettWrapper">

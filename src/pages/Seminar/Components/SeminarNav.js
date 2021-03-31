@@ -60,7 +60,7 @@ const SeminarNav = () => {
       <div className="Seminar-Overview">  
           <Tabs value={position} indicatorColor="primary" textColor="primary" onChange={handleChange} centered>
               <Tab className="" label="Kommende" />
-              <Tab className="" label="Fullførte" />
+              <Tab className="" label="Utgåtte" />
           </Tabs>
 
 
