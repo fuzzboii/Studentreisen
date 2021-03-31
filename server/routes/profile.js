@@ -61,9 +61,9 @@ router.post('/postInteresse', async (req, res) => {
             }
         });
 
-} else {
-    res.status(400).json({"status" : "error", "message" : "Ikke tilstrekkelig data"});
-   }
+    } else {
+        res.status(400).json({"status" : "error", "message" : "Ikke tilstrekkelig data"});
+    }
 });
 
 module.exports = router;

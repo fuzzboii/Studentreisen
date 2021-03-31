@@ -114,6 +114,11 @@ function Profile() {
 
     const insertInteresse = (id) => {
         // Mottar fagfeltid for interesse som skal legges til
+        const data = {
+            brukerid: 1,
+            fagfeltid: id
+        }
+        axios.post(process.env.REACT_APP_APIURL + '/profile/postInteresse', data);
     }
 
 
@@ -154,7 +159,7 @@ function Profile() {
                 <div className='profile-item' >
                     <h2 className='profile-subheader' > Interesser </h2>
                     <div className='interesser' >
-                        {/* Iterer gjennom fagfelt array etter treff på aktive interesser... */}
+                        {/* Iterer gjennom fagfelt array etter treff på aktive interesser */}
                         {fagfelt.map(f => {
                             // Test om interessen allerede er aktiv //
                             for (var i = 0; i < interesser.length; i++) {
@@ -162,19 +167,11 @@ function Profile() {
                                 if (interesser[i].fagfeltid == f.fagfeltid) return (
                                     // f.fagfeltid som parameter til oppdatering av interesser
                                      <Button onClick={() => dropInteresse(f.fagfeltid)} className={classes.fagfeltButtonActive} >{f.beskrivelse}</Button> 
-                                );
-                            }
-                        })}
-
-                        {/* ... eller ikke aktive */}
-                        {fagfelt.map(f => {
-                            // Test om interessen allerede er aktiv //
-                            for (var i = 0; i < interesser.length; i++) {
-                                // Ingen treff, returner tilsvarende knapp
-                                if (interesser[i].fagfeltid !== f.fagfeltid) return (
-                                    // f.fagfeltid som parameter til oppdatering av interesser
-                                     <Button onClick={() => insertInteresse(f.fagfeltid)} className={classes.fagfeltButton} >{f.beskrivelse}</Button> 
-                                );
+                                )
+                                // Ingen treff
+                                else return (
+                                    <Button onClick={() => insertInteresse(f.fagfeltid)} className={classes.fagfeltButton} >{f.beskrivelse}</Button> 
+                                )
                             }
                         })}
                     </div>
