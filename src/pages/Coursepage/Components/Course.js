@@ -13,8 +13,13 @@ const Course = (props) => {
                 <MyCardContent>
                     <div className="course-sectionTop">             
                         <p className="kursnavn">{props.navn}</p>
-                        <div className="kursinfo">
-                            <p>{props.emnekode}</p>
+                        <p className="kurskode">{props.emnekode}</p>
+                    </div>
+                    <div className="kursinfo">
+                            <div className="iconBox">
+                                <LanguageIcon className="language-icon" fontSize="inherit"/>
+                                <p className="undervisningsspråk">{props.språk}</p>
+                            </div>
                             <div className="iconBox">
                                 <CalendarTodayIcon className="language-icon2" fontSize="inherit"/>
                                 <p>{props.semester}</p>
@@ -24,11 +29,6 @@ const Course = (props) => {
                                 <p>{props.studiepoeng}</p>
                             </div>
                         </div>
-                    </div>
-                    <div className="iconBox">
-                        <LanguageIcon className="language-icon" fontSize="inherit"/>
-                        <p className="undervisningsspråk">{props.språk}</p>
-                    </div>
                 </MyCardContent>
             </Box>
         

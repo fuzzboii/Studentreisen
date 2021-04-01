@@ -63,7 +63,6 @@ const CourseNav = () => {
                   <CourseList courses={currentPosts}/>
                 </div>
                   <div className="wrapIndexPage">
-
                     <div className="indexPosition">
                       <div className="indexPagination">
                         <div className="indexRes2">
@@ -72,15 +71,11 @@ const CourseNav = () => {
                         <Pagination count={numberOfPages} page={currentPage} onChange={handlePage} />
                       </div>
                     </div>
-
                   </div>
             </TabPanel>
             
-
-            
-
             <TabPanel value={position} index={1}>
-              <div>
+              <div className="content-main">
                 <ModuleList/>
               </div>
             </TabPanel>   

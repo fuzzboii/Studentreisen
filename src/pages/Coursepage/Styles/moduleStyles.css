@@ -1,0 +1,105 @@
+/* Module Detail page */
+
+
+
+
+/* Module page */
+.modulbeskrivelse {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+    display: -webkit-box;
+   -webkit-line-clamp: 2; /* number of lines to show */
+   -webkit-box-orient: vertical;
+}
+
+.header p {
+    margin-top: 0em;
+    margin-bottom: 0em;
+    padding-top: 0.2em;
+    padding-bottom: 0.4em;
+    font-weight: 600;
+    font-size: 14.5px;
+}
+
+
+
+/* Misc */
+.moduleWrap {
+    display: flex;
+    justify-content: flex-start;
+}
+.position-icon {
+    position: relative;
+    top: 10px;
+    margin-right: 5px;
+}
+
+.iconBoxMod {
+    display: flex;
+}
+.iconBoxMod p {
+    margin-right: 1em;
+    margin-top: 10px;
+    margin-bottom: 0;
+    font-weight: 600;
+    font-size: 13px;
+    
+}
+
+
+
+  /* ----------------------------- */
+ /* ------- Media queries ------- */
+/* ----------------------------- */
+
+/* Større mobiler */
+@media screen and (min-width: 370px) {
+
+}
+
+/* Tab */
+@media screen and (min-width: 720px) {
+    .module-section {
+        background-color: rgb(247, 244, 244);
+        max-width: 40em;
+        margin-bottom: 0.8em;
+    
+    }
+
+    .content-main {
+        padding-left: 2em;
+        padding-right: 2em;
+        margin-top: 0.5em;
+        margin-left: auto;
+        margin-right: auto; 
+    }
+
+
+  
+}
+
+/* Laptop / Liten skjerm,, 720p */
+@media only screen and (min-width: 1280px) {
+.content-main {
+    width: 70em;  
+}
+.module-section:hover {
+    background-color: #0000d81a;
+    transition-timing-function: ease;
+    transition: 0.4s;
+    cursor: pointer;
+    opacity: 1;
+}
+
+}
+
+/* Medium skjerm, 1080p */
+@media screen and (min-width: 1920px) {
+    
+}
+
+/* Stor skjerm, 1440p */
+@media screen and (min-width: 2560px) {
+
+}

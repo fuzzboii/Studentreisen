@@ -17,7 +17,7 @@ router.get('/', async (req, res) => {
 
     router.get('/module', async (req, res) => {
         try{
-            connection.query('SELECT modulkode, studiestatus.beskrivelse AS studietype, navn, modul.beskrivelse, lenke FROM modul, studiestatus WHERE modul.statusid = studiestatus.statusid', (error, results) => {
+            connection.query('SELECT modulkode, studiestatus.beskrivelse AS studietype, navn, modul.beskrivelse, campus, studiepoeng, lenke FROM modul, studiestatus WHERE modul.statusid = studiestatus.statusid', (error, results) => {
                 res.send(results);
             });
     
@@ -25,6 +25,31 @@ router.get('/', async (req, res) => {
             res.json({message:err});
         }
     
+        });
+
+        router.post('/module', async (req, res) => { 
+            if(req.body.modulkode !== undefined) {
+                let insertQuery = "SELECT modulkode, emnekode FROM modultilhorighet WHERE modulkode = ?";
+                let insertQueryFormat = mysql.format(insertQuery, [req.body.modulkode]);
+
+                connection.query(insertQueryFormat, (error, results) => {
+                    if (error) {
+                        console.log("An error occurred while querying, details: " + error.errno + ", " + error.sqlMessage)
+                        return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                  
+                    }
+                    // Returning the number of affected rows to indicate the insert went OK
+                    if(results[0] !== undefined) {
+                        res.send(results);
+
+                    } else {
+                        res.status(400).json({"status" : "error", "message" : "En feil oppstod under spørring"});
+                    }         
+                    
+                });
+            } else {
+                res.status(400).json({"status" : "error", "message" : "Ikke tilstrekkelig data"});
+            }
         });
 
     /* 

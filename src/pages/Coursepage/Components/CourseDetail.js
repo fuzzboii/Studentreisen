@@ -1,5 +1,5 @@
-import { useState, useEffect, useContext, Component} from 'react';
-import {useLocation, useParams} from 'react-router-dom';
+import { useState, useEffect} from 'react';
+import {useParams} from 'react-router-dom';
 import { MyCardContent } from '../Styles/apistyles';
 
 import axios from 'axios';
@@ -12,22 +12,11 @@ import Typography from '@material-ui/core/Typography';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import Link from '@material-ui/core/Link';
 
-
-
-
-
 // Studentreisen-assets og komponenter
 import '../Styles/courseStyles.css';
 import Loader from '../../../global/Components/Loader';
 import NoAccess from '../../../global/Components/NoAccess';
-import CookieService from '../../../global/Services/CookieService';
-import AuthService from '../../../global/Services/AuthService';
 
-
-function handleClick(event) {
-    event.preventDefault();
-    console.info('You clicked a breadcrumb.');
-  }
 
 const CourseDetail = (props) => {
 
