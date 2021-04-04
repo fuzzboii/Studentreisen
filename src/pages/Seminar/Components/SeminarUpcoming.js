@@ -1,11 +1,16 @@
+// React spesifikt
 import React from "react";
-import { SeminarCard, SeminarCardActionArea, SeminarCardContent, SeminarCardMedia, SeminarTypography, SeminarCardActions, SeminarButton, SeminarAccordion, SeminarAccordionSummary, SeminarAccordionDetails, SeminarExpandMoreIcon } from '../CSS/apistylesSeminar';
-import '../CSS/Seminar.css'; 
+import {Link} from 'react-router-dom';
+
+// 3rd-party Packages
 import moment from 'moment';
 import 'moment/locale/nb';
 import DateRangeIcon from '@material-ui/icons/DateRange';
+// Studentreisen-assets og komponenter
+import { SeminarCard, SeminarCardActionArea, SeminarCardContent, SeminarCardMedia, SeminarTypography, SeminarCardActions, SeminarButton, SeminarAccordion, SeminarAccordionSummary, SeminarAccordionDetails, SeminarExpandMoreIcon } from '../CSS/apistylesSeminar';
+import '../CSS/Seminar.css'; 
 
-const SeminarFullforte = (props) => {
+const SeminarUpcoming = (props) => {
     const [width, setWidth] = React.useState(window.innerWidth);
     const breakpoint = 1023;
     React.useEffect(() => {
@@ -17,6 +22,7 @@ const SeminarFullforte = (props) => {
         };
     }, []);
     
+      
     if (width < breakpoint) {
         return (
             <div className="Seminar-Mobile">
@@ -32,13 +38,15 @@ const SeminarFullforte = (props) => {
                     <div className="AdressDesktop"></div>
                     <p className="Seminar-Adresse">{props.adresse}</p>
                     <h3 className="Seminar-ArrangorHeading">Arrangør</h3>
-                    <p className="Seminar-Arrangor">{props.arrangor}</p>
+                    <p className="Seminar-Arrangor">{props.fnavn} {props.enavn}</p>
                     <SeminarCardActions className="Seminar-CardActions">
+                        <Link className='Seminar-Link' to={`/seminar/seminarkommende=${props.seminarid}`}>
                         <SeminarButton className="Seminar-buttonLes" size="small" color="default">
                         Les mer..
-                        </SeminarButton>                        
-                        <SeminarButton disabled>
-                        Fullført
+                        </SeminarButton>
+                        </Link>                        
+                        <SeminarButton className="Seminar-buttonPaameld" size="small" color="primary">
+                        Påmeld
                         </SeminarButton>
                     </SeminarCardActions>
                 </SeminarAccordionDetails>
@@ -50,6 +58,7 @@ const SeminarFullforte = (props) => {
             
             <div className="Seminar-Desktop">
             <SeminarCard className="Seminar-Cards">
+                <Link className='Seminar-Link' to={`/seminar/seminarkommende=${props.seminarid}`}>
                 <SeminarCardActionArea>
                     <SeminarCardMedia
                         image={"/uploaded/" + props.plassering} />
@@ -67,13 +76,14 @@ const SeminarFullforte = (props) => {
                             <h3 className="Seminar-StedHeading">Sted</h3>
                             <p className="Seminar-AdresseDesktop">{props.adresse}</p>
                             <h3 className="Seminar-ArrangorHeading">Arrangør</h3>
-                            <p className="Seminar-ArrangorDesktop">{props.arrangor}</p>
+                            <p className="Seminar-ArrangorDesktop">{props.fnavn} {props.enavn}</p>
                         </div>
                     </SeminarCardContent>
                 </SeminarCardActionArea>
+                </Link>
                 <SeminarCardActions className="Seminar-CardActions">
-                    <SeminarButton disabled>
-                        Fullført
+                    <SeminarButton className="Seminar-buttonPaameld" size="small" color="primary">
+                        Påmeld
                     </SeminarButton>
                 </SeminarCardActions>
             </SeminarCard>
@@ -83,4 +93,4 @@ const SeminarFullforte = (props) => {
 }
 
 
-export default SeminarFullforte;
+export default SeminarUpcoming;

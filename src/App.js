@@ -14,9 +14,9 @@ import Tools from './pages/Tools/Components/Tools';
 import Course from './pages/Coursepage/Components/Overview';
 import CourseDetail from './pages/Coursepage/Components/CourseDetail';
 import ModuleDetail from './pages/Coursepage/Components/ModuleDetail';
-import Seminar from './pages/Seminar/Components/OverviewSeminar';
-import SeminarDetailsKommende from './pages/Seminar/Components/SeminarDetailsKommende';
-import SeminarDetailsFullforte from './pages/Seminar/Components/SeminarDetailsFullforte';
+import Seminar from './pages/Seminar/Components/SeminarOverview';
+import SeminarDetailsUpcoming from './pages/Seminar/Components/SeminarDetailsUpcoming';
+import SeminarDetailsExpired from './pages/Seminar/Components/SeminarDetailsExpired';
 
 import CookieService from './global/Services/CookieService';
 import AuthService from './global/Services/AuthService';
@@ -78,8 +78,12 @@ function App() {
           />
           <Route path = "/profile" component = {Profile} />
           <Route path = "/seminar" exact component = {Seminar} />
-          <Route path = "/seminarkommende/:seminarid" component = {SeminarDetailsKommende} />
-          <Route path = "/seminarfullforte/:seminarid" component = {SeminarDetailsFullforte} />
+          <Route path = "/seminar/seminarkommende=:seminarid" render = {() =>(
+            <SeminarDetailsUpcoming auth={auth} loading={loading} />
+          )}/>
+          <Route path = "/seminar/seminarutgatte=:seminarid" render = {() =>(
+            <SeminarDetailsExpired auth={auth} loading={loading} />
+          )}/>
         </Switch>
       <Footer />
     </>

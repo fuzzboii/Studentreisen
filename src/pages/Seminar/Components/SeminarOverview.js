@@ -1,13 +1,17 @@
+// React spesifikt
 import { Component } from 'react';
-import {SeminarProvider, SeminarFullfortProvider} from './SeminarContext';
-import SeminarNav from './SeminarNav';
+// 3rd-party Packages
+
+// Studentreisen-assets og komponenter
 import '../CSS/Seminar.css';
 import Loader from '../../../global/Components/Loader';
 import NoAccess from '../../../global/Components/NoAccess';
 import CookieService from '../../../global/Services/CookieService';
 import AuthService from '../../../global/Services/AuthService'; 
+import SeminarNav from './SeminarNav';
+import {SeminarProvider, SeminarExpiredProvider} from './SeminarContext';
 
-class OverviewSeminar extends Component {
+class SeminarOverview extends Component {
     constructor(props) {
       super(props);
       
@@ -54,12 +58,12 @@ class OverviewSeminar extends Component {
       
       if(!loading && authenticated) {
           return (            
-              <div className="content-overview">
-                <SeminarFullfortProvider>
+              <div className="Seminar-Content">
+                <SeminarExpiredProvider>
                   <SeminarProvider>
                     <SeminarNav/>
                   </SeminarProvider>
-                </SeminarFullfortProvider>
+                </SeminarExpiredProvider>
               </div>
           );
       } else {
@@ -72,4 +76,4 @@ class OverviewSeminar extends Component {
 }   
   
 
-export default OverviewSeminar; 
+export default SeminarOverview; 

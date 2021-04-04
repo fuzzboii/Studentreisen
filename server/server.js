@@ -8,6 +8,7 @@ const verificationRoute = require('./routes/verification');
 const courseRoute = require('./routes/courses');
 const toolsRoute = require('./routes/tools');
 const seminarRoute = require('./routes/seminars');
+const profileRoute = require('./routes/profile');
 
 // Gjør at vi kan kalle variabler fra .env
 dotenv.config();
@@ -35,6 +36,7 @@ app.use('/api/v1/verify', verificationRoute);
 app.use('/api/v1/course', courseRoute);
 app.use('/api/v1/tools', toolsRoute);
 app.use('/api/v1/seminar', seminarRoute);
+app.use('/api/v1/profile', profileRoute);
 
 
 app.listen(process.env.PORT, () => {

@@ -35,7 +35,8 @@ main {
 
 #section_overview {
     margin-top: 2em;
-    margin-left: auto; margin-right: auto;
+    width: 90%;
+    margin-left: 5%; margin-right: 5%;
   }
   
   
@@ -45,6 +46,7 @@ main {
   /* Laptop / Liten skjerm,, 720p */
   @media screen and (min-width: 1280px) {
       #section_overview {
-        width: 80em;
+        max-width: 80em;
+        margin-left: auto; margin-right: auto;
       }
   }
