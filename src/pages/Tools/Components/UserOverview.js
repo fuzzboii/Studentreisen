@@ -4,8 +4,6 @@ import React from "react";
 import MaterialTable from "material-table";
 import axios from "axios";
 
-import { FormControl, InputLabel, Input } from '@material-ui/core';
-
 // Studentreisen-assets og komponenter
 import CookieService from '../../../global/Services/CookieService';
 import ValidationService from '../../../global/Services/ValidationService';
