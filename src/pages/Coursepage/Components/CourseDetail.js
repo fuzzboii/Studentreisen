@@ -65,8 +65,8 @@ const CourseDetail = (props) => {
         }
         {!props.loading && props.auth &&
                 <div className="course-detail">
-                {courses.map(course => { if(emnekode === course.emnekode)           
-                        return <Box className="box-detail" boxShadow={3}>
+                {courses.map((course, index) => { if(emnekode === course.emnekode)           
+                        return <Box key={index}className="box-detail" boxShadow={3}>
                                     <MyCardContent>
                                         <Breadcrumbs aria-label="breadcrumb" >
                                             <Link color="inherit" href="/" className={classes.link}>

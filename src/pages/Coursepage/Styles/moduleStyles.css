@@ -4,13 +4,17 @@
 }
 
 .accordElementWrap {
+
     display: grid;
     grid-template-rows: auto;
     width: 100%;
+    border-top: 1px solid rgb(163, 163, 163);
 }
 
 .border {
-    border-top: 1px solid rgb(163, 163, 163);
+    font-weight: 500;
+    color: #4646a5;
+   
   
 }
 
@@ -70,6 +74,12 @@
     
 }
 
+.link {
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+    
+  }
+
 
 
   /* ----------------------------- */
@@ -117,6 +127,14 @@
 
 .indexPaginationM {
     margin-left: 13.5em;
+}
+
+.accordElementWrap:hover {
+    background-color: rgb(241, 241, 241);
+    transition-timing-function: ease;
+    transition: 0.4s;
+    cursor: pointer;
+    opacity: 1;
 }
 
 }

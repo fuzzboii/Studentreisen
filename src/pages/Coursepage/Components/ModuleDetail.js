@@ -1,11 +1,10 @@
-import { useState, useEffect} from 'react';
+import { useState, useEffect, createRef} from 'react';
 import {useParams} from 'react-router-dom';
 import { MyCardContent } from '../Styles/apistyles';
 
 import axios from 'axios';
+
 import Box from '@material-ui/core/Box';
-
-
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
@@ -66,6 +65,7 @@ const Accordion = withStyles({
   const AccordionDetails = withStyles((theme) => ({
     root: {
       padding: theme.spacing(2),
+      display: "inherit",
       '&$expanded': {
         borderBottom: "1px solid rgb(163, 163, 163)",        
       },
@@ -95,6 +95,8 @@ const ModuleDetail = (props) => {
 
     const classes = useStyles();
     const [expanded, setExpanded] = useState('');
+    //
+    const wrapper = createRef();
 
     const handleChange = (panel) => (event, newExpanded) => {
         setExpanded(newExpanded ? panel : false);
@@ -130,7 +132,7 @@ const ModuleDetail = (props) => {
         {!props.loading && props.auth &&
                 <div className="course-detail">
                 {modules.map(mod => { if(modulkode === mod.modulkode)           
-                        return <Box key={mod.modulkode}className="box-detail" boxShadow={3}>
+                        return <Box key={mod.modulkode} ref={wrapper} className="box-detail" boxShadow={3}>
                                     <MyCardContent>
                                         <Breadcrumbs aria-label="breadcrumb" >
                                             <Link color="inherit" href="/" className={classes.link}>
@@ -168,16 +170,23 @@ const ModuleDetail = (props) => {
                                             <h2>Sammendrag</h2>
                                             <p>{mod.beskrivelse}</p>
                                         </div>
-                                        <Accordion square expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
-                                            <AccordionSummary aria-controls="panel1d-content" id="panel1d-header" expandIcon={<ExpandMoreIcon />}>
-                                                <Typography className={classes.heading}>Se alle kurs</Typography>
-                                            </AccordionSummary>
-                                            <AccordionDetails >
-                                                <div className="accordElementWrap">
-                                                   
-                                                </div>
-                                            </AccordionDetails>
-                                        </Accordion>
+                                        <div>
+                                                <Accordion square expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
+                                                    <AccordionSummary aria-controls="panel1d-content" id="panel1d-header" expandIcon={<ExpandMoreIcon />}>
+                                                        <Typography className={classes.heading}>Se kurstilhørighet</Typography>
+                                                    </AccordionSummary>
+                                                        <AccordionDetails >
+                                                            {courseMods.map((cod, index) => {
+                                                                return (
+                                                                    <Link key={index} underline='none' href={`/course/emnekode=${cod.emnekode}`}> 
+                                                                        <div className="accordElementWrap"><h3 className="border">{cod.navn}</h3></div>
+                                                                    </Link>
+                                                                );
+                                                            })}
+                                                            
+                                                        </AccordionDetails>
+                                                </Accordion>
+                                        </div>
                                         <div className="buttonWrapM">
                                             <Button className="courseButton" variant="outlined" color="primary" href={mod.lenke}>Gå til kursmodulens hjemmeside</Button>
                                         </div>
