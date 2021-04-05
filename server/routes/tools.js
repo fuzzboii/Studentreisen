@@ -299,8 +299,20 @@ router.post('/getAllSeminarData', async (req, res) => {
                         }
                     });
                 } else if(response.usertype.toString() === process.env.ACCESS_LECTURER) {
-                    // Hent alle kurs for underviseren
-                    
+                    // Hent alle seminar for underviseren
+                    let getDataQuery = "SELECT seminarid, navn, CONCAT(fnavn, ' ', enavn) as arrangornavn, adresse, oppstart, varighet, beskrivelse, tilgjengelighet FROM seminar, bruker WHERE arrangor = brukerid and arrangor = ?";
+                    let getDataQueryFormat = mysql.format(getDataQuery, [response.brukerid]);
+
+                    connection.query(getDataQueryFormat, (error, results) => {
+                        if (error) {
+                            console.log("En feil oppstod ved henting av all kursdata: " + error.errno + ", " + error.sqlMessage)
+                            return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                        }
+                        
+                        if(results[0] !== undefined) {
+                            return res.json({results});
+                        }
+                    });
                 } else {
                     // Bruker har ikke tilgang, loggfører
                     console.log("En innlogget bruker uten riktige tilganger har forsøkt å se kursoversikten, brukerens ID: " + results[0].brukerid)
@@ -310,6 +322,141 @@ router.post('/getAllSeminarData', async (req, res) => {
                 return res.json({ "status" : "error", "message" : "Ingen tilgang, om feilen fortsetter, forsøk å logg ut og inn igjen" });
             }
         });
+    } else {
+        return res.status(403).send();
+    }
+});
+
+
+router.post('/deleteSeminar', async (req, res) => {
+    if(req.body.seminarid !== undefined && req.body.token !== undefined && req.body.sluttdato !== undefined) {
+        verifyAuth(req.body.token).then(function(response) {
+            if(response.authenticated) {
+                // Kun Administrator og emneansvarlig skal kunne slette hvilket som helst seminar
+                if(response.usertype.toString() === process.env.ACCESS_COORDINATOR || response.usertype.toString() === process.env.ACCESS_ADMINISTRATOR) {
+                    // Sjekk om sluttdatoen allerede er nådd
+                    const sluttdato = new Date(req.body.sluttdato);
+                    const naa = new Date();
+
+                    if(sluttdato <= naa) {
+                        // Sluttdatoen er nådd, kan slette
+                        try {
+                            // Sletter påmeldinger til seminaret
+                            let deletePaameldingQuery = "DELETE FROM pamelding WHERE seminarid = ?";
+                            let deletePaameldingQueryFormat = mysql.format(deletePaameldingQuery, [req.body.seminarid]);
+                        
+                            // Sletter kobling
+                            connection.query(deletePaameldingQueryFormat, (error, r) => {
+                                if (error) {
+                                    console.log("En feil oppstod under sletting av påmeldinger til et eksisterende seminar, detaljer: " + error.errno + ", " + error.sqlMessage)
+                                    return res.json({success: false});
+                                }
+
+                                // Sletter invitasjoner til seminaret
+                                let deleteInvitasjonQuery = "DELETE FROM invitasjon WHERE seminarid = ?";
+                                let deleteInvitasjonQueryFormat = mysql.format(deleteInvitasjonQuery, [req.body.seminarid]);
+                            
+                                // Sletter kobling
+                                connection.query(deleteInvitasjonQueryFormat, (error, r) => {
+                                    if (error) {
+                                        console.log("En feil oppstod under sletting av invitasjoner til et eksisterende seminar, detaljer: " + error.errno + ", " + error.sqlMessage)
+                                        return res.json({success: false});
+                                    }
+
+                                    let deleteQuery = "DELETE FROM seminar WHERE seminarid = ?";
+                                    let deleteQueryFormat = mysql.format(deleteQuery, [req.body.seminarid]);
+
+                                    // Slett seminaret
+                                    connection.query(deleteQueryFormat, (error, results) => {
+                                        if (error) {
+                                            console.log("En feil oppstod under sletting av eksisterende seminar, detaljer: " + error.errno + ", " + error.sqlMessage)
+                                            return res.json({success: false});
+                                        }
+                                        
+                                        if(results.affectedRows > 0) {
+                                            // Seminar slettet
+                                            return res.json({success: true});
+                                        } else {
+                                            return res.json({success: false});
+                                        }
+                                    });
+                                });
+                            });
+                        } catch(e) {
+                            return res.json({success: false});
+                        }
+                    }
+                } else {
+                    // Om brukeren ikke er administrator, sjekk om brukeren er eier av seminaret
+                    let getDataQuery = "SELECT seminarid FROM seminar WHERE arrangor = ? and seminarid = ?";
+                    let getDataQueryFormat = mysql.format(getDataQuery, [response.brukerid, req.body.seminarid]);
+
+                    connection.query(getDataQueryFormat, (error, results) => {
+                        if (error) {
+                            console.log("En feil oppstod ved henting av all kursdata: " + error.errno + ", " + error.sqlMessage)
+                            return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                        }
+                        
+                        if(results[0] !== undefined) {
+                            // Sjekk om sluttdatoen allerede er nådd
+                            const sluttdato = new Date(req.body.sluttdato);
+                            const naa = new Date();
+
+                            if(sluttdato <= naa) {
+                                // Sluttdatoen er nådd, kan slette
+                                try {
+                                    // Sletter påmeldinger til seminaret
+                                    let deletePaameldingQuery = "DELETE FROM pamelding WHERE seminarid = ?";
+                                    let deletePaameldingQueryFormat = mysql.format(deletePaameldingQuery, [req.body.seminarid]);
+                                
+                                    // Sletter kobling
+                                    connection.query(deletePaameldingQueryFormat, (error, r) => {
+                                        if (error) {
+                                            console.log("En feil oppstod under sletting av påmeldinger til et eksisterende seminar, detaljer: " + error.errno + ", " + error.sqlMessage)
+                                            return res.json({success: false});
+                                        }
+
+                                        // Sletter invitasjoner til seminaret
+                                        let deleteInvitasjonQuery = "DELETE FROM invitasjon WHERE seminarid = ?";
+                                        let deleteInvitasjonQueryFormat = mysql.format(deleteInvitasjonQuery, [req.body.seminarid]);
+                                    
+                                        // Sletter kobling
+                                        connection.query(deleteInvitasjonQueryFormat, (error, r) => {
+                                            if (error) {
+                                                console.log("En feil oppstod under sletting av invitasjoner til et eksisterende seminar, detaljer: " + error.errno + ", " + error.sqlMessage)
+                                                return res.json({success: false});
+                                            }
+
+                                            let deleteQuery = "DELETE FROM seminar WHERE seminarid = ?";
+                                            let deleteQueryFormat = mysql.format(deleteQuery, [req.body.seminarid]);
+
+                                            // Slett seminaret
+                                            connection.query(deleteQueryFormat, (error, results) => {
+                                                if (error) {
+                                                    console.log("En feil oppstod under sletting av eksisterende seminar, detaljer: " + error.errno + ", " + error.sqlMessage)
+                                                    return res.json({success: false});
+                                                }
+                                                
+                                                if(results.affectedRows > 0) {
+                                                    // Seminar slettet
+                                                    return res.json({success: true});
+                                                } else {
+                                                    return res.json({success: false});
+                                                }
+                                            });
+                                        });
+                                    });
+                                } catch(e) {
+                                    return res.json({success: false});
+                                }
+                            }
+                        }
+                    });
+                }
+            } else {
+                return res.json({success: false});
+            }
+        })
     } else {
         return res.status(403).send();
     }

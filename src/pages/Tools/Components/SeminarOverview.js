@@ -68,44 +68,55 @@ function SeminarOverview(props) {
             searchPlaceholder: "Søk"
         }
     }
+    
+    const redigerbar = {
+        isEditable: () => false,
+        isEditHidden: () => true,
+        isDeletable: seminar => {
+            const sluttdato = new Date(seminar.varighet);
+            const naa = new Date(); 
+            if(sluttdato <= naa) {
+                return true;
+            } else {
+                return false;
+            }
+        },
+        isDeleteHidden: () => false,
+        onRowDelete: seminarData =>
+            new Promise((resolve, reject) => {
+                try {
+                    axios
+                        .post(process.env.REACT_APP_APIURL + "/tools/deleteSeminar", {seminarid : seminarData.seminarid, sluttdato : seminarData.varighet, token : token.token})
+                        // Utføres ved mottatt resultat
+                        .then(res => {
+                            if(res.data.success) {
+                                const oppdatertSeminar = [...seminar];
+                                const index = seminarData.tableData.id;
+                                oppdatertSeminar.splice(index, 1);
+                                setSeminar([...oppdatertSeminar]);
+
+                                resolve();
+                            } else {
+                                reject();
+                            }
+                        }).catch(e => {
+                            reject();
+                        });
+                } catch(e) {
+                    reject();
+                }
+            }
+        )
+    }
 
     return (
         <section id="section_overview">
-            <MaterialTable columns={kolonner} data={seminar} localization={lokalisering} title="Seminaroversikt" actions={[
+            <MaterialTable columns={kolonner} data={seminar} localization={lokalisering} editable={redigerbar} title="Seminaroversikt" actions={[
                     {
                         icon: 'edit',
                         tooltip: 'Rediger seminar',
                         onClick: (e, seminarData) => {
                             console.log("Gå til redigering for " + seminarData.seminarid + "\nHusk at all data er med her (seminarData.beskrivelse, seminarData.varighet osv), trenger ikke hente på nytt");
-                        }
-                    },
-                    {
-                        icon: 'delete',
-                        tooltip: 'Slett seminar',
-                        onClick: (e, seminarData) => {
-                            new Promise((resolve, reject) => {
-                                try {
-                                    axios
-                                        .post(process.env.REACT_APP_APIURL + "/tools/deleteSeminar", {seminarid : seminarData.seminarid, token : token.token})
-                                        // Utføres ved mottatt resultat
-                                        .then(res => {
-                                            if(res.data.success) {
-                                                const oppdatertSeminar = [...seminar];
-                                                const index = seminarData.tableData.id;
-                                                oppdatertSeminar.splice(index, 1);
-                                                setSeminar([...oppdatertSeminar]);
-                
-                                                resolve();
-                                            } else {
-                                                reject();
-                                            }
-                                        }).catch(e => {
-                                            reject();
-                                        });
-                                } catch(e) {
-                                    reject();
-                                }
-                            });
                         }
                     },
                     {
