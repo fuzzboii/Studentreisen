@@ -9,6 +9,7 @@ import CookieService from '../../../global/Services/CookieService';
 
 function CourseOverview(props) {
     let [kurs, setKurs] = React.useState([]);
+    let [isLoading, setIsLoading] = React.useState(true);
     
     const token = {
         token: CookieService.get("authtoken")
@@ -22,6 +23,7 @@ function CourseOverview(props) {
             // Utføres ved mottatt resultat
             .then(res => {
                 if(res.data.results) {
+                    setIsLoading(false);
                     setKurs(res.data.results);
                 }
             });
@@ -71,7 +73,7 @@ function CourseOverview(props) {
 
     return (
         <section id="section_overview">
-            <MaterialTable columns={kolonner} data={kurs} localization={lokalisering} title="Kursoversikt" actions={[
+            <MaterialTable columns={kolonner} data={kurs} localization={lokalisering} isLoading={isLoading} title="Kursoversikt" actions={[
                     {
                         icon: 'edit',
                         tooltip: 'Rediger kurs',

@@ -12,6 +12,7 @@ import ValidationService from '../../../global/Services/ValidationService';
 
 function UserOverview(props) {
     let [brukere, setBrukere] = React.useState([]);
+    let [isLoading, setIsLoading] = React.useState(true);
     
     const token = {
         token: CookieService.get("authtoken")
@@ -25,6 +26,7 @@ function UserOverview(props) {
             // Utføres ved mottatt resultat
             .then(res => {
                 if(res.data.results) {
+                    setIsLoading(false);
                     setBrukere(res.data.results);
                 }
             });
@@ -172,7 +174,7 @@ function UserOverview(props) {
 
     return (
         <section id="section_overview">
-          <MaterialTable columns={columns} data={brukere} localization={localization} editable={editable} title="Brukeroversikt" />
+          <MaterialTable columns={columns} data={brukere} localization={localization} editable={editable} isLoading={isLoading} title="Brukeroversikt" />
         </section>
     );
 }
