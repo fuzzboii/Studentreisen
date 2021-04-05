@@ -59,7 +59,7 @@ function App() {
 
   return (
     <>
-      <Navbar auth={auth} type={type} />
+      <Navbar auth={auth} type={type} loading={loading} />
         <Switch>
           <Route path = "/" exact component = {Home} />
           <Route path = "/login" component = {Login} />

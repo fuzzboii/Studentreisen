@@ -109,9 +109,7 @@ function Navbar(props) {
 
     if(loading) {
       return(
-        <section id="loading">
-          <Loader />
-        </section>
+        null
       );
     }
 

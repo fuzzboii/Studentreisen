@@ -18,7 +18,7 @@ function Profile(props) {
     // Array for alle interesser //
     const [fagfelt, setFagfelt] = useState([]);
     // Array for aktive interesser
-    const [interesser, setInteresser] = useState([]);
+    const [interesser, setInteresser] = useState([[-1, -1]]);
 
     
     // States for personalia.
@@ -94,11 +94,13 @@ function Profile(props) {
                 setInteresser(res3.data.results);
                 // Data er ferdig hentet fra server
                 setLoading(false);
+                console.log("Ferdig lastet")
             }))
     }
 
     useEffect( () => {
         setAuth(props.auth)
+        console.log("Autentisert")
         fetch();
     }, [props]);
 
@@ -109,6 +111,8 @@ function Profile(props) {
             fagfeltid: id
         }
         axios.post(process.env.REACT_APP_APIURL + '/profile/deleteInteresse', data)
+        // Oppdaterer tilstanden til relevante arrays
+        fetch()
     }
 
     const insertInteresse = (id) => {
@@ -118,6 +122,8 @@ function Profile(props) {
             fagfeltid: id
         }
         axios.post(process.env.REACT_APP_APIURL + '/profile/postInteresse', data)
+        // Oppdaterer tilstanden til relevante arrays
+        fetch()
     }
 
     if (loading) {
@@ -163,9 +169,13 @@ function Profile(props) {
                         {/* .map() iterer gjennom objekt i arrayen, og returnerer ett komponent per objekt */}
                         {/* .some(), satt som ternær operatør for visning */}
                         {/* Slik testes det om fagfeltet finnes i tabellen for aktive interesser, og tilsvarende knapp vises */}
-                        {fagfelt.map((f, key) => interesser.some(interesse => interesse.fagfeltid == f.fagfeltid) ? (
+                        {interesser !== undefined && fagfelt.map((f, key) => interesser.some(interesse => interesse.fagfeltid == f.fagfeltid) ? (
                             <Button key={key} className={classes.fagfeltButtonActive} onClick={() => deleteInteresse(f.fagfeltid)} >{f.beskrivelse}</Button>
                             ) : (
+                            <Button key={key} className={classes.fagfeltButton} onClick={() => insertInteresse(f.fagfeltid)} >{f.beskrivelse}</Button>
+                        ))}
+                        {/* Om interesse-tabellen er helt tom, som f.eks. ved første besøk av profil-siden, kjører denne mappingen i stedet */}
+                        {interesser == undefined && fagfelt.map((f, key) =>  (
                             <Button key={key} className={classes.fagfeltButton} onClick={() => insertInteresse(f.fagfeltid)} >{f.beskrivelse}</Button>
                         ))}
                     </div>
@@ -175,10 +185,11 @@ function Profile(props) {
 
         </div>
     );
-    } else {
+    } if (!loading && !auth) {
+        console.log("Omdirigerer")
         return (
             // Brukeren er ikke innlogget, omdiriger
-            <Redirect to={{pathname: "/"}} />
+            null
         );
     }
 }
