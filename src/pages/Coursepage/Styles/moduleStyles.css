@@ -1,0 +1,150 @@
+/* Module Detail page */
+.buttonWrapM {
+    padding-top: 1em;
+}
+
+.accordElementWrap {
+
+    display: grid;
+    grid-template-rows: auto;
+    width: 100%;
+    border-top: 1px solid rgb(163, 163, 163);
+}
+
+.border {
+    font-weight: 500;
+    color: #4646a5;
+   
+  
+}
+
+
+/* Module page */
+.modulbeskrivelse {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+    display: -webkit-box;
+   -webkit-line-clamp: 2; /* number of lines to show */
+   -webkit-box-orient: vertical;
+}
+
+.header p {
+    margin-top: 0em;
+    margin-bottom: 0em;
+    padding-top: 0.2em;
+    padding-bottom: 0.4em;
+    font-weight: 600;
+    font-size: 14.5px;
+}
+
+.content-main {
+    margin-top: 1em;
+}
+
+.indexPaginationM { 
+    width: 12em;
+    margin-bottom: 1em;
+    margin-top: 1em;
+
+}
+
+
+
+/* Misc */
+.moduleWrap {
+    display: flex;
+    justify-content: flex-start;
+}
+.position-icon {
+    position: relative;
+    top: 10px;
+    margin-right: 5px;
+}
+
+.iconBoxMod {
+    display: flex;
+}
+.iconBoxMod p {
+    margin-right: 1em;
+    margin-top: 10px;
+    margin-bottom: 0;
+    font-weight: 600;
+    font-size: 13px;
+    
+}
+
+.link {
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+    
+  }
+
+
+
+  /* ----------------------------- */
+ /* ------- Media queries ------- */
+/* ----------------------------- */
+
+/* Større mobiler */
+@media screen and (min-width: 370px) {
+
+}
+
+/* Tab */
+@media screen and (min-width: 720px) {
+    .module-section {
+        background-color: rgb(247, 244, 244);
+        max-width: 40em;
+        margin-bottom: 0.8em;
+    
+    }
+
+    .content-main {
+        padding-left: 2em;
+        padding-right: 2em;
+        margin-top: 2.5em;
+        margin-left: auto;
+        margin-right: auto; 
+    }
+
+
+  
+}
+
+/* Laptop / Liten skjerm,, 720p */
+@media only screen and (min-width: 1280px) {
+.content-main {
+    width: 70em;  
+}
+.module-section:hover {
+    background-color: #0000d81a;
+    transition-timing-function: ease;
+    transition: 0.4s;
+    cursor: pointer;
+    opacity: 1;
+}
+
+.indexPaginationM {
+    margin-left: 13.5em;
+}
+
+.accordElementWrap:hover {
+    background-color: rgb(241, 241, 241);
+    transition-timing-function: ease;
+    transition: 0.4s;
+    cursor: pointer;
+    opacity: 1;
+}
+
+}
+
+/* Medium skjerm, 1080p */
+@media screen and (min-width: 1920px) {
+    
+}
+
+/* Stor skjerm, 1440p */
+@media screen and (min-width: 2560px) {
+
+}

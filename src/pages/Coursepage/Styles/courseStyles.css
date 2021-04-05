@@ -1,6 +1,7 @@
  .link {
     color: rgb(0, 0, 0);
     text-decoration: none;
+    
   }
 
 .course-section {
@@ -51,6 +52,14 @@
     font-weight: 600;
     font-size: 14px;
 }
+.kurskode {
+    margin-top: 0.2em;
+    margin-bottom: 0em;
+    padding-top: 0.2em;
+    padding-bottom: 0.4em;
+    font-weight: 600;
+    font-size: 14px;
+}
 
 
 .kursbeskrivelse {
@@ -90,8 +99,15 @@
 }
 
 .indexRes2 {
+    display: grid;
+    grid-template-rows: auto auto;
+    
+}
+
+.indexCenterWrap {
     display: flex;
     justify-content: center;
+    
 }
 /* Course Detail page */
 
@@ -194,7 +210,6 @@
         display: flex;        
         padding-left: 2em;
         padding-right: 2em;
-        margin-top: 0.5em;
         margin-left: auto;
         margin-right: auto;
     }
@@ -211,8 +226,7 @@
         background-color: rgb(247, 244, 244);
         max-width: 29em;
         min-width: 20em;
-        border-radius: 3px; 
-    }
+        }
 
     .box-detail {
         max-width: 40em;
@@ -256,7 +270,7 @@
     
     .indexRes {
         position: absolute;
-        top: 7.9em;
+        top: 8.9em;
         
     }
 

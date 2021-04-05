@@ -10,7 +10,7 @@ import DateRangeIcon from '@material-ui/icons/DateRange';
 import { SeminarCard, SeminarCardActionArea, SeminarCardContent, SeminarCardMedia, SeminarTypography, SeminarCardActions, SeminarButton, SeminarAccordion, SeminarAccordionSummary, SeminarAccordionDetails, SeminarExpandMoreIcon } from '../CSS/apistylesSeminar';
 import '../CSS/Seminar.css'; 
 
-const SeminarKommende = (props) => {
+const SeminarUpcoming = (props) => {
     const [width, setWidth] = React.useState(window.innerWidth);
     const breakpoint = 1023;
     React.useEffect(() => {
@@ -38,7 +38,7 @@ const SeminarKommende = (props) => {
                     <div className="AdressDesktop"></div>
                     <p className="Seminar-Adresse">{props.adresse}</p>
                     <h3 className="Seminar-ArrangorHeading">Arrangør</h3>
-                    <p className="Seminar-Arrangor">{props.arrangor}</p>
+                    <p className="Seminar-Arrangor">{props.fnavn} {props.enavn}</p>
                     <SeminarCardActions className="Seminar-CardActions">
                         <Link className='Seminar-Link' to={`/seminar/seminarkommende=${props.seminarid}`}>
                         <SeminarButton className="Seminar-buttonLes" size="small" color="default">
@@ -76,7 +76,7 @@ const SeminarKommende = (props) => {
                             <h3 className="Seminar-StedHeading">Sted</h3>
                             <p className="Seminar-AdresseDesktop">{props.adresse}</p>
                             <h3 className="Seminar-ArrangorHeading">Arrangør</h3>
-                            <p className="Seminar-ArrangorDesktop">{props.arrangor}</p>
+                            <p className="Seminar-ArrangorDesktop">{props.fnavn} {props.enavn}</p>
                         </div>
                     </SeminarCardContent>
                 </SeminarCardActionArea>
@@ -93,4 +93,4 @@ const SeminarKommende = (props) => {
 }
 
 
-export default SeminarKommende;
+export default SeminarUpcoming;

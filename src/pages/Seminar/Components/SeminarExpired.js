@@ -11,7 +11,7 @@ import 'moment/locale/nb';
 import '../CSS/Seminar.css'; 
 import { SeminarCard, SeminarCardActionArea, SeminarCardContent, SeminarCardMedia, SeminarTypography, SeminarCardActions, SeminarButton, SeminarAccordion, SeminarAccordionSummary, SeminarAccordionDetails, SeminarExpandMoreIcon } from '../CSS/apistylesSeminar';
 
-const SeminarFullforte = (props) => {
+const SeminarExpired = (props) => {
     const [width, setWidth] = React.useState(window.innerWidth);
     const breakpoint = 1023;
     React.useEffect(() => {
@@ -38,15 +38,15 @@ const SeminarFullforte = (props) => {
                     <div className="AdressDesktop"></div>
                     <p className="Seminar-Adresse">{props.adresse}</p>
                     <h3 className="Seminar-ArrangorHeading">Arrangør</h3>
-                    <p className="Seminar-Arrangor">{props.arrangor}</p>
+                    <p className="Seminar-Arrangor">{props.fnavn} {props.enavn}</p>
                     <SeminarCardActions className="Seminar-CardActions">
-                        <Link className='Seminar-Link' to={`/seminar/seminarfullforte=${props.seminarid}`}>
+                        <Link className='Seminar-Link' to={`/seminar/seminarutgatte=${props.seminarid}`}>
                         <SeminarButton className="Seminar-buttonLes" size="small" color="default">
                         Les mer..
                         </SeminarButton>
                         </Link>                        
                         <SeminarButton disabled>
-                        Fullført
+                        Utgått
                         </SeminarButton>
                     </SeminarCardActions>
                 </SeminarAccordionDetails>
@@ -58,7 +58,7 @@ const SeminarFullforte = (props) => {
             
             <div className="Seminar-Desktop">
             <SeminarCard className="Seminar-Cards">
-                <Link className='Seminar-Link' to={`/seminar/seminarfullforte=${props.seminarid}`}>
+                <Link className='Seminar-Link' to={`/seminar/seminarutgatte=${props.seminarid}`}>
                 <SeminarCardActionArea>
                     <SeminarCardMedia
                         image={"/uploaded/" + props.plassering} />
@@ -76,14 +76,14 @@ const SeminarFullforte = (props) => {
                             <h3 className="Seminar-StedHeading">Sted</h3>
                             <p className="Seminar-AdresseDesktop">{props.adresse}</p>
                             <h3 className="Seminar-ArrangorHeading">Arrangør</h3>
-                            <p className="Seminar-ArrangorDesktop">{props.arrangor}</p>
+                            <p className="Seminar-ArrangorDesktop">{props.fnavn} {props.enavn}</p>
                         </div>
                     </SeminarCardContent>
                 </SeminarCardActionArea>
                 </Link>
                 <SeminarCardActions className="Seminar-CardActions">
                     <SeminarButton disabled>
-                        Fullført
+                        Utgått
                     </SeminarButton>
                 </SeminarCardActions>
             </SeminarCard>
@@ -93,4 +93,4 @@ const SeminarFullforte = (props) => {
 }
 
 
-export default SeminarFullforte;
+export default SeminarExpired;

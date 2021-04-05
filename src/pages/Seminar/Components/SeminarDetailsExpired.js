@@ -18,18 +18,18 @@ import Loader from '../../../global/Components/Loader';
 import NoAccess from '../../../global/Components/NoAccess';
 import '../CSS/Seminar.css';
 
-const SeminarDetailsFullforte = (props) => {
+const SeminarDetailsExpired = (props) => {
 
     useEffect(() => {
         fetchData();
     },[]);
 
     let { seminarid } = useParams();
-    const [seminarsFullfort, setSeminars] = useState([]);
+    const [seminarsExpired, setSeminars] = useState([]);
 
     const fetchData = async () => {
                     
-        const res = await axios.get(process.env.REACT_APP_APIURL + "/seminar/getAllSeminarFullfortData");
+        const res = await axios.get(process.env.REACT_APP_APIURL + "/seminar/getAllSeminarExpiredData");
         console.log(res.data);
         setSeminars(res.data);
 
@@ -45,7 +45,7 @@ const SeminarDetailsFullforte = (props) => {
         }
         {!props.loading && props.auth &&
             <div className="SeminarDetails">
-            {seminarsFullfort.map(seminar => { if(seminarid == seminar.seminarid)           
+            {seminarsExpired.map(seminar => { if(seminarid == seminar.seminarid)           
                 return ( 
                     <div className="SeminarDetails-Content">
                         <div className="SeminarDetails-Header">
@@ -56,7 +56,7 @@ const SeminarDetailsFullforte = (props) => {
                                 <div className="SeminarDetails-Buttons">
                                     <div className="SeminarDetails-ButtonPameldWrapper">
                                         <Button className="SeminarDetailsButtonPameld" size="small" variant="outlined" disabled>
-                                        Fullført
+                                        Utgått
                                         </Button>
                                     </div>
                                     <div className="SeminarDetails-ButtonSlettWrapper">
@@ -82,7 +82,7 @@ const SeminarDetailsFullforte = (props) => {
                             </div>
                             <div className="SeminarDetails-Information">
                                 <h2 className="SeminarDetails-ArrangorHeading">Arrangør</h2>
-                                    <p className="SeminarDetails-Arrangor">{seminar.arrangor}</p>
+                                    <p className="SeminarDetails-Arrangor">{seminar.fnavn} {seminar.enavn}</p>
                                 <h2 className="SeminarDetails-AdresseHeading">Adresse</h2>
                                     <p className="SeminarDetails-Adresse">{seminar.adresse}</p>
                                 <h2 className="SeminarDetails-BeskrivelseHeading">Beskrivelse</h2>
@@ -102,4 +102,4 @@ const SeminarDetailsFullforte = (props) => {
     );
 }
 
-export default SeminarDetailsFullforte;
+export default SeminarDetailsExpired;

@@ -18,18 +18,18 @@ import Loader from '../../../global/Components/Loader';
 import NoAccess from '../../../global/Components/NoAccess';
 import '../CSS/Seminar.css';
 
-const SeminarDetailsKommende = (props) => {
+const SeminarDetailsUpcoming = (props) => {
 
     useEffect(() => {
         fetchData();
     },[]);
 
     let { seminarid } = useParams();
-    const [seminarsKommende, setSeminars] = useState([]);
+    const [seminarsUpcoming, setSeminars] = useState([]);
 
     const fetchData = async () => {
                     
-        const res = await axios.get(process.env.REACT_APP_APIURL + "/seminar/getAllSeminarData");
+        const res = await axios.get(process.env.REACT_APP_APIURL + "/seminar/getAllSeminarUpcomingData");
         console.log(res.data);
         setSeminars(res.data);
 
@@ -45,7 +45,7 @@ const SeminarDetailsKommende = (props) => {
         }
         {!props.loading && props.auth &&    
             <div className="SeminarDetails">
-            {seminarsKommende.map(seminar => { if(seminarid == seminar.seminarid)           
+            {seminarsUpcoming.map(seminar => { if(seminarid == seminar.seminarid)           
                 return ( 
                     <div className="SeminarDetails-Content">
                         <div className="SeminarDetails-Header">
@@ -87,7 +87,7 @@ const SeminarDetailsKommende = (props) => {
                             </div>
                             <div className="SeminarDetails-Information">
                                 <h2 className="SeminarDetails-ArrangorHeading">Arrangør</h2>
-                                    <p className="SeminarDetails-Arrangor">{seminar.arrangor}</p>
+                                    <p className="SeminarDetails-Arrangor">{seminar.fnavn} {seminar.enavn}</p>
                                 <h2 className="SeminarDetails-AdresseHeading">Adresse</h2>
                                     <p className="SeminarDetails-Adresse">{seminar.adresse}</p>
                                 <h2 className="SeminarDetails-BeskrivelseHeading">Beskrivelse</h2>
@@ -108,4 +108,4 @@ const SeminarDetailsKommende = (props) => {
     );
 }
 
-export default SeminarDetailsKommende;
+export default SeminarDetailsUpcoming;
