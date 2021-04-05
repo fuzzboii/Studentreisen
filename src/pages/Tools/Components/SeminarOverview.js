@@ -3,6 +3,7 @@ import React from "react";
 // 3rd-party Packages
 import MaterialTable from "material-table";
 import axios from "axios";
+import PublicIcon from '@material-ui/icons/Public';
 
 // Studentreisen-assets og komponenter
 import CookieService from '../../../global/Services/CookieService';
@@ -81,7 +82,15 @@ function SeminarOverview(props) {
                 return false;
             }
         },
-        isDeleteHidden: () => false,
+        isDeleteHidden:  seminar => {
+            const sluttdato = new Date(seminar.varighet);
+            const naa = new Date(); 
+            if(sluttdato > naa) {
+                return true;
+            } else {
+                return false;
+            }
+        },
         onRowDelete: seminarData =>
             new Promise((resolve, reject) => {
                 try {
@@ -126,7 +135,80 @@ function SeminarOverview(props) {
                         onClick: () => {
                             console.log("Gå til oppretting av nytt seminar");
                         }
-                    }
+                    },
+                    seminarData => ({
+                        icon: () => <PublicIcon />,
+                        tooltip: 'Avpubliser seminar',
+                        hidden: seminarData.tilgjengelighet !== 1,
+                        onClick: () => {
+                            new Promise((resolve, reject) => {
+                                try {
+                                    axios
+                                        .post(process.env.REACT_APP_APIURL + "/tools/publicizeSeminar", {seminarid : seminarData.seminarid, tilgjengelighet: 0, token : token.token})
+                                        // Utføres ved mottatt resultat
+                                        .then(res => {
+                                            if(res.data.success) {
+
+                                                const oppdatertSeminar = [...seminar];
+                                                const index = seminarData.tableData.id;
+
+                                                if(seminarData.tilgjengelighet == 1) {
+                                                    oppdatertSeminar[index].tilgjengelighet = 0;
+                                                } else {
+                                                    oppdatertSeminar[index].tilgjengelighet = 1;
+                                                }
+                                                
+                                                setSeminar([...oppdatertSeminar]);
+                
+                                                resolve();
+                                            } else {
+                                                reject();
+                                            }
+                                        }).catch(e => {
+                                            reject();
+                                        });
+                                } catch(e) {
+                                    reject();
+                                }
+                            });
+                        }
+                    }),
+                    seminarData => ({
+                        icon: () => <PublicIcon color="disabled"/>,
+                        tooltip: 'Publiser seminar',
+                        hidden: seminarData.tilgjengelighet == 1,
+                        onClick: () => {
+                            new Promise((resolve, reject) => {
+                                try {
+                                    axios
+                                        .post(process.env.REACT_APP_APIURL + "/tools/publicizeSeminar", {seminarid : seminarData.seminarid, tilgjengelighet: 1, token : token.token})
+                                        // Utføres ved mottatt resultat
+                                        .then(res => {
+                                            if(res.data.success) {
+                                                const oppdatertSeminar = [...seminar];
+                                                const index = seminarData.tableData.id;
+
+                                                if(seminarData.tilgjengelighet == 1) {
+                                                    oppdatertSeminar[index].tilgjengelighet = 0;
+                                                } else {
+                                                    oppdatertSeminar[index].tilgjengelighet = 1;
+                                                }
+                                                
+                                                setSeminar([...oppdatertSeminar]);
+                
+                                                resolve();
+                                            } else {
+                                                reject();
+                                            }
+                                        }).catch(e => {
+                                            reject();
+                                        });
+                                } catch(e) {
+                                    reject();
+                                }
+                            });
+                        }
+                    })
                 ]}
             />
         </section>

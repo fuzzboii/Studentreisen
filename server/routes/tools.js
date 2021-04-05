@@ -290,7 +290,7 @@ router.post('/getAllSeminarData', async (req, res) => {
 
                     connection.query(getDataQueryFormat, (error, results) => {
                         if (error) {
-                            console.log("En feil oppstod ved henting av all kursdata: " + error.errno + ", " + error.sqlMessage)
+                            console.log("En feil oppstod ved henting av all seminardata: " + error.errno + ", " + error.sqlMessage)
                             return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                         }   
                         
@@ -305,7 +305,7 @@ router.post('/getAllSeminarData', async (req, res) => {
 
                     connection.query(getDataQueryFormat, (error, results) => {
                         if (error) {
-                            console.log("En feil oppstod ved henting av all kursdata: " + error.errno + ", " + error.sqlMessage)
+                            console.log("En feil oppstod ved henting av all seminardata: " + error.errno + ", " + error.sqlMessage)
                             return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                         }
                         
@@ -315,7 +315,7 @@ router.post('/getAllSeminarData', async (req, res) => {
                     });
                 } else {
                     // Bruker har ikke tilgang, loggfører
-                    console.log("En innlogget bruker uten riktige tilganger har forsøkt å se kursoversikten, brukerens ID: " + results[0].brukerid)
+                    console.log("En innlogget bruker uten riktige tilganger har forsøkt å se seminaroversikten, brukerens ID: " + results[0].brukerid)
                     return res.json({ "status" : "error", "message" : "Ingen tilgang, om feilen fortsetter, forsøk å logg ut og inn igjen" });
                 }
             } else {
@@ -393,7 +393,7 @@ router.post('/deleteSeminar', async (req, res) => {
 
                     connection.query(getDataQueryFormat, (error, results) => {
                         if (error) {
-                            console.log("En feil oppstod ved henting av all kursdata: " + error.errno + ", " + error.sqlMessage)
+                            console.log("En feil oppstod ved henting av seminar for en innlogget underviser: " + error.errno + ", " + error.sqlMessage)
                             return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                         }
                         
@@ -450,6 +450,72 @@ router.post('/deleteSeminar', async (req, res) => {
                                     return res.json({success: false});
                                 }
                             }
+                        }
+                    });
+                }
+            } else {
+                return res.json({success: false});
+            }
+        })
+    } else {
+        return res.status(403).send();
+    }
+});
+
+router.post('/publicizeSeminar', async (req, res) => {
+    if(req.body.seminarid !== undefined && req.body.token !== undefined && req.body.tilgjengelighet !== undefined) {
+        verifyAuth(req.body.token).then(function(response) {
+            if(response.authenticated) {
+                // Kun Administrator og emneansvarlig skal kunne oppdatere tilgjengeligheten til hvilket som helst seminar
+                if(response.usertype.toString() === process.env.ACCESS_COORDINATOR || response.usertype.toString() === process.env.ACCESS_ADMINISTRATOR) {
+                    // Oppdater tilgjengeligheten
+
+                    let updateQuery = "UPDATE seminar SET tilgjengelighet = ? WHERE seminarid = ?";
+                    let updateQueryFormat = mysql.format(updateQuery, [req.body.tilgjengelighet, req.body.seminarid]);
+
+                    connection.query(updateQueryFormat, (error, results) => {
+                        if (error) {
+                            console.log("En feil oppstod under publisering av eksisterende seminar, detaljer: " + error.errno + ", " + error.sqlMessage)
+                            return res.json({success: false});
+                        }
+                        
+                        if(results.affectedRows > 0) {
+                            // Seminar oppdatert
+                            return res.json({success: true});
+                        } else {
+                            return res.json({success: false});
+                        }
+                    });
+                } else {
+                    // Om brukeren ikke er administrator, sjekk om brukeren er eier av seminaret
+                    let getDataQuery = "SELECT seminarid FROM seminar WHERE arrangor = ? and seminarid = ?";
+                    let getDataQueryFormat = mysql.format(getDataQuery, [response.brukerid, req.body.seminarid]);
+
+                    connection.query(getDataQueryFormat, (error, results) => {
+                        if (error) {
+                            console.log("En feil oppstod ved henting av seminar for en innlogget underviser: " + error.errno + ", " + error.sqlMessage)
+                            return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                        }
+                        
+                        if(results[0] !== undefined) {
+                            // Oppdater tilgjengeligheten
+        
+                            let updateQuery = "UPDATE seminar SET tilgjengelighet = ? WHERE seminarid = ?";
+                            let updateQueryFormat = mysql.format(updateQuery, [req.body.tilgjengelighet, req.body.seminarid]);
+        
+                            connection.query(updateQueryFormat, (error, results) => {
+                                if (error) {
+                                    console.log("En feil oppstod under publisering av eksisterende seminar, detaljer: " + error.errno + ", " + error.sqlMessage)
+                                    return res.json({success: false});
+                                }
+                                
+                                if(results.affectedRows > 0) {
+                                    // Seminar oppdatert
+                                    return res.json({success: true});
+                                } else {
+                                    return res.json({success: false});
+                                }
+                            });
                         }
                     });
                 }
