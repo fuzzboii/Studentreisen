@@ -29,7 +29,7 @@ router.get('/', async (req, res) => {
 
         router.post('/module', async (req, res) => { 
             if(req.body.modulkode !== undefined) {
-                let insertQuery = "SELECT modulkode, emnekode FROM modultilhorighet WHERE modulkode = ?";
+                let insertQuery = "SELECT modulkode, modultilhorighet.emnekode, navn, lenke FROM modultilhorighet, kurs WHERE kurs.emnekode = modultilhorighet.emnekode AND modulkode = ?";
                 let insertQueryFormat = mysql.format(insertQuery, [req.body.modulkode]);
 
                 connection.query(insertQueryFormat, (error, results) => {

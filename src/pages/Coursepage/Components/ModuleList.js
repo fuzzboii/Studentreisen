@@ -1,10 +1,9 @@
 import React, { useState, useContext} from 'react';
 
 import Module from './Module';
-import { ModuleContext } from './CourseContext';
 
-const ModuleList = () => {
-    const [modules, setModules] = useContext(ModuleContext);
+const ModuleList = ({modules}) => {
+    
 
     return (
         <div className="">

@@ -11,6 +11,10 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import Link from '@material-ui/core/Link';
+import { makeStyles } from '@material-ui/core/styles';
+import HomeIcon from '@material-ui/icons/Home';
+import ListAltIcon from '@material-ui/icons/ListAlt';
+import DetailsIcon from '@material-ui/icons/Details';
 
 // Studentreisen-assets og komponenter
 import '../Styles/courseStyles.css';
@@ -20,10 +24,26 @@ import NoAccess from '../../../global/Components/NoAccess';
 
 const CourseDetail = (props) => {
 
+
     useEffect(() => {
         fetchData();
     },[]);
 
+    const useStyles = makeStyles((theme) => ({
+        link: {
+            display: 'flex',
+            fontSize: '14px',
+          
+        },
+        icon: {
+          marginRight: theme.spacing(0.5),
+          paddingTop: theme.spacing(0.4),
+          height: 15,
+          width: 15,
+        },
+      }));
+
+    const classes = useStyles();
     let { emnekode } = useParams();
     const [courses, setCourses] = useState([]);
 
@@ -48,11 +68,19 @@ const CourseDetail = (props) => {
                 {courses.map(course => { if(emnekode === course.emnekode)           
                         return <Box className="box-detail" boxShadow={3}>
                                     <MyCardContent>
-                                        <Breadcrumbs aria-label="breadcrumb">
-                                            <Link color="inherit" href="/course">
+                                        <Breadcrumbs aria-label="breadcrumb" >
+                                            <Link color="inherit" href="/" className={classes.link}>
+                                                <HomeIcon className={classes.icon} />
+                                                Oversikt
+                                            </Link>
+                                            <Link color="inherit" href="/course" className={classes.link}>
+                                                <ListAltIcon className={classes.icon} />
                                                 Kurs
                                             </Link>
-                                            <Typography color="textPrimary">Spesifikk</Typography>
+                                            <Typography color="textPrimary" className={classes.link}>
+                                                <DetailsIcon className={classes.icon}/>
+                                                Detaljer
+                                            </Typography>
                                         </Breadcrumbs>
                                         <div className="courseHeader">
                                             <h1 className="overskriftKurs">{course.navn}</h1>

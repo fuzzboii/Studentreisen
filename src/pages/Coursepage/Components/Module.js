@@ -6,6 +6,7 @@ import Box from '@material-ui/core/Box';
 import SchoolIcon from '@material-ui/icons/School';
 import PlaceIcon from '@material-ui/icons/Place';
 import ImportContactsIcon from '@material-ui/icons/ImportContacts';
+import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 
 
 const Module = (props) => {
@@ -28,7 +29,7 @@ const Module = (props) => {
                     <div className="moduleWrap">
 
                         <div className="iconBoxMod">
-                            <ImportContactsIcon className="position-icon" fontSize="inherit"/>
+                            <AccountBalanceIcon className="position-icon" fontSize="inherit"/>
                             <p>{props.studietype}</p>
                         </div>
 

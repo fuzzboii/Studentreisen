@@ -99,8 +99,15 @@
 }
 
 .indexRes2 {
+    display: grid;
+    grid-template-rows: auto auto;
+    
+}
+
+.indexCenterWrap {
     display: flex;
     justify-content: center;
+    
 }
 /* Course Detail page */
 
@@ -203,7 +210,6 @@
         display: flex;        
         padding-left: 2em;
         padding-right: 2em;
-        
         margin-left: auto;
         margin-right: auto;
     }
