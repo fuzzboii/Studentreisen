@@ -18,7 +18,7 @@ function UserOverview(props) {
         token: CookieService.get("authtoken")
     }
 
-    if(token !== undefined && Object.getOwnPropertyNames(brukere).length == 1 && props.activeTool == 0) {
+    if(isLoading && token !== undefined && Object.getOwnPropertyNames(brukere).length == 1 && props.activeTool == 0) {
         axios
             // Henter API URL fra .env og utfører en POST request med dataen fra objektet over
             // Axios serialiserer objektet til JSON selv
