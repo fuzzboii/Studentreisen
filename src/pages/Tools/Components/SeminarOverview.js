@@ -10,6 +10,7 @@ import CookieService from '../../../global/Services/CookieService';
 
 function SeminarOverview(props) {
     let [seminar, setSeminar] = React.useState([]);
+    let [isLoading, setIsLoading] = React.useState(true);
     
     const token = {
         token: CookieService.get("authtoken")
@@ -23,6 +24,7 @@ function SeminarOverview(props) {
             // Utføres ved mottatt resultat
             .then(res => {
                 if(res.data.results) {
+                    setIsLoading(false);
                     setSeminar(res.data.results);
                 }
             });
@@ -120,7 +122,7 @@ function SeminarOverview(props) {
 
     return (
         <section id="section_overview">
-            <MaterialTable columns={kolonner} data={seminar} localization={lokalisering} editable={redigerbar} title="Seminaroversikt" actions={[
+            <MaterialTable columns={kolonner} data={seminar} localization={lokalisering} editable={redigerbar} isLoading={isLoading} title="Seminaroversikt" actions={[
                     {
                         icon: 'edit',
                         tooltip: 'Rediger seminar',
@@ -143,6 +145,7 @@ function SeminarOverview(props) {
                         onClick: () => {
                             new Promise((resolve, reject) => {
                                 try {
+                                    setIsLoading(true);
                                     axios
                                         .post(process.env.REACT_APP_APIURL + "/tools/publicizeSeminar", {seminarid : seminarData.seminarid, tilgjengelighet: 0, token : token.token})
                                         // Utføres ved mottatt resultat
@@ -158,16 +161,20 @@ function SeminarOverview(props) {
                                                     oppdatertSeminar[index].tilgjengelighet = 1;
                                                 }
                                                 
+                                                setIsLoading(false);
                                                 setSeminar([...oppdatertSeminar]);
                 
                                                 resolve();
                                             } else {
+                                                setIsLoading(false);
                                                 reject();
                                             }
                                         }).catch(e => {
+                                            setIsLoading(false);
                                             reject();
                                         });
                                 } catch(e) {
+                                    setIsLoading(false);
                                     reject();
                                 }
                             });
@@ -180,6 +187,7 @@ function SeminarOverview(props) {
                         onClick: () => {
                             new Promise((resolve, reject) => {
                                 try {
+                                    setIsLoading(true);
                                     axios
                                         .post(process.env.REACT_APP_APIURL + "/tools/publicizeSeminar", {seminarid : seminarData.seminarid, tilgjengelighet: 1, token : token.token})
                                         // Utføres ved mottatt resultat
@@ -194,16 +202,23 @@ function SeminarOverview(props) {
                                                     oppdatertSeminar[index].tilgjengelighet = 1;
                                                 }
                                                 
+                                                setIsLoading(false);
                                                 setSeminar([...oppdatertSeminar]);
                 
                                                 resolve();
                                             } else {
+                                                setIsLoading(false);
+
                                                 reject();
                                             }
                                         }).catch(e => {
+                                            setIsLoading(false);
+
                                             reject();
                                         });
                                 } catch(e) {
+                                    setIsLoading(false);
+                                    
                                     reject();
                                 }
                             });
