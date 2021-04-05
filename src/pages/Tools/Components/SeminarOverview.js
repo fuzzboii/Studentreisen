@@ -29,7 +29,7 @@ function SeminarOverview(props) {
     
     const kolonner = [
         { title: "Navn", field: "navn" },
-        { title: "Arrangør", field: "arrangor" },
+        { title: "Arrangør", field: "arrangornavn" },
         { title: "Adresse", field: "adresse" },
         { title: "Startdato", field: "oppstart", type: "datetime" }
     ];
@@ -77,6 +77,35 @@ function SeminarOverview(props) {
                         tooltip: 'Rediger seminar',
                         onClick: (e, seminarData) => {
                             console.log("Gå til redigering for " + seminarData.seminarid + "\nHusk at all data er med her (seminarData.beskrivelse, seminarData.varighet osv), trenger ikke hente på nytt");
+                        }
+                    },
+                    {
+                        icon: 'delete',
+                        tooltip: 'Slett seminar',
+                        onClick: (e, seminarData) => {
+                            new Promise((resolve, reject) => {
+                                try {
+                                    axios
+                                        .post(process.env.REACT_APP_APIURL + "/tools/deleteSeminar", {seminarid : seminarData.seminarid, token : token.token})
+                                        // Utføres ved mottatt resultat
+                                        .then(res => {
+                                            if(res.data.success) {
+                                                const oppdatertSeminar = [...seminar];
+                                                const index = seminarData.tableData.id;
+                                                oppdatertSeminar.splice(index, 1);
+                                                setSeminar([...oppdatertSeminar]);
+                
+                                                resolve();
+                                            } else {
+                                                reject();
+                                            }
+                                        }).catch(e => {
+                                            reject();
+                                        });
+                                } catch(e) {
+                                    reject();
+                                }
+                            });
                         }
                     },
                     {

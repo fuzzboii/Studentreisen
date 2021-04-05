@@ -285,7 +285,7 @@ router.post('/getAllSeminarData', async (req, res) => {
             if(response.authenticated) {
                 // Kun Emneansvarlig / Administratorere skal kunne se hele oversikten, undervisere skal kunne se egne seminar
                 if(response.usertype.toString() === process.env.ACCESS_COORDINATOR || response.usertype.toString() === process.env.ACCESS_ADMINISTRATOR) {
-                    let getDataQuery = "SELECT seminarid, navn, arrangor, adresse, oppstart, varighet, beskrivelse, tilgjengelighet FROM seminar";
+                    let getDataQuery = "SELECT seminarid, navn, CONCAT(fnavn, ' ', enavn) as arrangornavn, adresse, oppstart, varighet, beskrivelse, tilgjengelighet FROM seminar, bruker WHERE arrangor = brukerid";
                     let getDataQueryFormat = mysql.format(getDataQuery);
 
                     connection.query(getDataQueryFormat, (error, results) => {
