@@ -48,13 +48,13 @@ function Tools(props) {
                 </Tabs>
                 <ReactSwipe swipeOptions={swipeOptions} ref={listener => (swiper = listener)}>
                     <div className="div_tools">
-                        <UserOverview />
+                        <UserOverview activeTool={position} />
                     </div>
                     <div className="div_tools">
-                        <CourseOverview />
+                        <CourseOverview activeTool={position} />
                     </div>
                     <div className="div_tools">
-                        <SeminarOverview />
+                        <SeminarOverview activeTool={position} />
                     </div>
                 </ReactSwipe>
             </main>
@@ -64,7 +64,7 @@ function Tools(props) {
                     <Tab label="Seminar"/>
                 </Tabs>
                 <div className="div_tools">
-                    <SeminarOverview />
+                    <SeminarOverview activeTool={2} />
                 </div>
             </main>
         }{!props.loading && ((props.auth && (props.type === 1)) || !props.auth) &&

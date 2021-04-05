@@ -16,7 +16,7 @@ function SeminarOverview(props) {
         token: CookieService.get("authtoken")
     }
 
-    if(token !== undefined && Object.getOwnPropertyNames(seminar).length == 1) {
+    if(token !== undefined && Object.getOwnPropertyNames(seminar).length == 1 && props.activeTool == 2) {
         axios
             // Henter API URL fra .env og utfører en POST request med dataen fra objektet over
             // Axios serialiserer objektet til JSON selv
@@ -218,7 +218,7 @@ function SeminarOverview(props) {
                                         });
                                 } catch(e) {
                                     setIsLoading(false);
-                                    
+
                                     reject();
                                 }
                             });

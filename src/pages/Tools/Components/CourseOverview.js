@@ -15,7 +15,7 @@ function CourseOverview(props) {
         token: CookieService.get("authtoken")
     }
 
-    if(token !== undefined && Object.getOwnPropertyNames(kurs).length == 1) {
+    if(token !== undefined && Object.getOwnPropertyNames(kurs).length == 1 && props.activeTool == 1) {
         axios
             // Henter API URL fra .env og utfører en POST request med dataen fra objektet over
             // Axios serialiserer objektet til JSON selv
