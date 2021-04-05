@@ -53,8 +53,7 @@ function Profile(props) {
             borderColor: '#4646a5',
             borderRadius: '18px',
             marginBottom: '0.5em',
-            // Mange av fagfeltene på disse knappene er såpass lange, stable vertikalt som baseline
-            width: '100%',
+            marginRight: '0.5em',
             fontSize: '0.8rem',
         },
 
@@ -65,8 +64,8 @@ function Profile(props) {
             backgroundColor: '#4646a5',
             borderRadius: '18px',
             marginBottom: '0.5em',
-            width: '100%',
-            fontSize: '0.8wwwwwwwwwrem',
+            marginRight: '0.5em',
+            fontSize: '0.8rem',
         },
     });
     

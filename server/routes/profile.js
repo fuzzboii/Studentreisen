@@ -34,7 +34,7 @@ router.post('/getBruker', async (req, res) => {
                 if(results[0] !== undefined) {
                     return res.json({results});
                 } else {
-                    return res.json({"status" : "error", "message" : "En feil oppstod under hetning av brukerdata"});
+                    return res.json({"status" : "error", "message" : "En feil oppstod under henting av brukerdata"});
                 }
             });       
         })
@@ -62,7 +62,7 @@ router.post('/getInteresser', async (req, res) => {
                 if(results.length > 0) {
                     return res.json({results});
                 } else {
-                    return res.json({"status" : "error", "message" : "En feil oppstod under hetning av brukerens interesser"});
+                    return res.json({"status" : "error", "message" : "En feil oppstod under henting av brukerens interesser"});
                 }
             });       
         })
