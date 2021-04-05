@@ -76,7 +76,10 @@ function App() {
               <Tools auth={auth} type={type} loading={loading} />
             )}
           />
-          <Route path = "/profile" component = {Profile} />
+          <Route path = "/profile" render={() => (
+              <Profile auth={auth} type={type} loading={loading} />
+            )}
+          />
           <Route path = "/seminar" exact component = {Seminar} />
           <Route path = "/seminar/seminarkommende=:seminarid" render = {() =>(
             <SeminarDetailsUpcoming auth={auth} loading={loading} />
