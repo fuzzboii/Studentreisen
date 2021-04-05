@@ -1,7 +1,7 @@
 import React, { useState, useContext} from 'react';
 import CourseList from './CourseList';
 import ModuleList from './ModuleList';
-import { CourseContext } from './CourseContext';
+import { CourseContext, ModuleContext } from './CourseContext';
 import Pagination from '@material-ui/lab/Pagination';
 
 
@@ -26,15 +26,22 @@ const CourseNav = () => {
 
     // States for pagination
     const [courses, setCourses] = useContext(CourseContext);
+    const [modules, setModules] = useContext(ModuleContext);
+
     const [currentPage, setCurrentPage] = useState(1);
     const [postsPerPage, setPostsPerPage] = useState(12);
 
     //Få nåværende poster
     const indexOfLastPost = currentPage * postsPerPage;
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
-    const currentPosts = courses.slice(indexOfFirstPost, indexOfLastPost);
-    const numberOfPages = Math.ceil(courses.length / postsPerPage);
-    const interval =  indexOfFirstPost + currentPosts.length;
+
+    const currentPosts_c = courses.slice(indexOfFirstPost, indexOfLastPost);
+    const numberOfPages_c = Math.ceil(courses.length / postsPerPage);
+    const interval_c =  indexOfFirstPost + currentPosts_c.length;
+
+    const currentPosts_m = modules.slice(indexOfFirstPost, indexOfLastPost);
+    const numberOfPages_m = Math.ceil(modules.length / postsPerPage);
+    const interval_m =  indexOfFirstPost + currentPosts_m.length;
     
       
     const handleChange = (event, newValue) => {
@@ -58,31 +65,47 @@ const CourseNav = () => {
             <TabPanel value={position} index={0}>
                 <div className="content-overview">
                   <div className="indexRes">
-                    <Typography variant="caption">Viser {indexOfFirstPost + 1} - {interval} av {courses.length} treff</Typography>
+                    <Typography variant="caption">Viser {indexOfFirstPost + 1} - {interval_c} av {courses.length} treff</Typography>
                   </div>
-                  <CourseList courses={currentPosts}/>
+                  <CourseList courses={currentPosts_c}/>
                 </div>
                   <div className="wrapIndexPage">
-
                     <div className="indexPosition">
                       <div className="indexPagination">
                         <div className="indexRes2">
-                          <Typography  variant="caption" >Viser {indexOfFirstPost + 1} - {interval} av {courses.length} treff</Typography>
+                          <div className="indexCenterWrap">
+                            <Typography  variant="caption" >Viser {indexOfFirstPost + 1} - {interval_c} av {courses.length} treff</Typography>
+                          </div>
+                          <div className="indexCenterWrap">
+                            <Pagination count={numberOfPages_c} page={currentPage} onChange={handlePage} />
+                          </div>
                         </div>
-                        <Pagination count={numberOfPages} page={currentPage} onChange={handlePage} />
                       </div>
                     </div>
-
                   </div>
             </TabPanel>
             
-
-            
-
             <TabPanel value={position} index={1}>
-              <div>
-                <ModuleList/>
-              </div>
+                <div className="content-main">
+                  <div className="indexRes">
+                    <Typography variant="caption">Viser {indexOfFirstPost + 1} - {interval_m} av {modules.length} treff</Typography>
+                  </div>
+                  <ModuleList modules={currentPosts_m}/>
+                </div>
+                <div className="wrapIndexPage">
+                    <div className="indexPosition">
+                      <div className="indexPaginationM">
+                        <div className="indexRes2">
+                          <div className="indexCenterWrap">
+                            <Typography  variant="caption" >Viser {indexOfFirstPost + 1} - {interval_m} av {modules.length} treff</Typography>
+                          </div>
+                          <div className="indexCenterWrap">
+                            <Pagination count={numberOfPages_m} page={currentPage} onChange={handlePage} />
+                          </div>  
+                        </div>
+                      </div>
+                    </div>
+                  </div>
             </TabPanel>   
         </div>
 

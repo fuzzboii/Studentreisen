@@ -64,12 +64,12 @@ function App() {
           <Route path = "/" exact component = {Home} />
           <Route path = "/login" component = {Login} />
           <Route path = "/course" exact component = {Course} />
-          <Route path = "/course/:emnekode" render = {() =>(
-            <CourseDetail auth={auth} loading={loading} />
-          )}/>
-          <Route path = "/course/:modulkode" render = {() =>(
-            <ModuleDetail auth={auth} loading={loading} />
-          )}/>
+            <Route path = "/course/emnekode=:emnekode" render = {() =>(
+              <CourseDetail auth={auth} loading={loading} />
+            )}/>
+            <Route path = "/course/modulkode=:modulkode" render = {() =>(
+              <ModuleDetail auth={auth} loading={loading} />
+            )}/>
           <Route path = "/register" component = {Register} />
           <Route path = "/reset" component = {Reset} />
           <Route path = "/tools" render={() => (

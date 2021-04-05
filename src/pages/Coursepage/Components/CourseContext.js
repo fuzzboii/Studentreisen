@@ -14,7 +14,6 @@ export const CourseProvider = props => {
     const fetchData = async () => {
 
         const res = await axios.get(process.env.REACT_APP_APIURL + "/course/");
-        console.log(res.data);
         setCourses(res.data);
 
     };
