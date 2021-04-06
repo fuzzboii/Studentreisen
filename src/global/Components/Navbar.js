@@ -26,8 +26,6 @@ function Navbar(props) {
         if(window.innerWidth <= 960) {
             setButton(false);
             if (auth) {
-              // TODO: Reiser TypeError hvis brukeren logger ut, og så resizer til under 960px vidde
-              // selv om authorize() burde kjøre før denne metoden, og dermed (burde) sette 'auth' til false
               try {
                 document.getElementById("loggBtnMobil").style.visibility = "visible";
               } catch (TypeError) {}
@@ -107,6 +105,11 @@ function Navbar(props) {
       setAuth(false);
     }
 
+    const onLink = () => {
+      closeMobileMenu()
+      shrink()
+    }
+
     if(loading) {
       return(
         null
@@ -135,19 +138,22 @@ function Navbar(props) {
               {auth && <div className={click ? 'nav-menu active' : 'nav-menu'}>
                 <Button
                   className={classes.loggbtnmobil}
+                  onClick={loggUt}
                   id='loggBtnMobil'>
                   Logg ut
                 </Button>
 
                 <Button 
                   className={classes.navbtn} 
+                  onClick={onLink}
                   component={Link} 
                   to='/Course'>
                   Kurs
                 </Button>
 
                 <Button 
-                  className={classes.navbtn} 
+                  className={classes.navbtn}
+                  onClick={onLink}
                   component={Link}
                   to='/Seminar'
                 >
@@ -156,6 +162,7 @@ function Navbar(props) {
     
                 <Button
                   className={classes.navbtn}
+                  onClick={onLink}
                   component={Link}
                   to='/CV'
                 >
@@ -164,6 +171,7 @@ function Navbar(props) {
                 {type >= 2 && 
                   <Button 
                     className={classes.navbtn}
+                    onClick={onLink}
                     component={Link} 
                     to='/Tools' >
                       Verktøy
