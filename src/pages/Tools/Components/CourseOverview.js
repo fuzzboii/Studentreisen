@@ -72,7 +72,7 @@ function CourseOverview(props) {
     }
 
     return (
-        <section id="section_overview">
+        <section id="tools_overview_section">
             <MaterialTable columns={kolonner} data={kurs} localization={lokalisering} isLoading={isLoading} title="Kursoversikt" actions={[
                     {
                         icon: 'edit',

@@ -171,7 +171,7 @@ function UserOverview(props) {
     }
 
     return (
-        <section id="section_overview">
+        <section id="tools_overview_section">
           <MaterialTable columns={columns} data={brukere} localization={localization} editable={editable} isLoading={isLoading} title="Brukeroversikt" />
         </section>
     );
