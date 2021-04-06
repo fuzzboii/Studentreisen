@@ -10,7 +10,6 @@ import axios from 'axios';
 // Studentreisen-assets og komponenter
 import Loader from '../../../global/Components/Loader';
 import CookieService from '../../../global/Services/CookieService';
-import AuthService from '../../../global/Services/AuthService';
 import '../CSS/Register.css';
 import usnlogo from '../../../assets/usn.png';
 
