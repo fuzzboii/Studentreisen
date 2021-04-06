@@ -60,7 +60,7 @@ function App() {
 
   return (
     <>
-      <Navbar auth={auth} type={type} />
+      <Navbar auth={auth} type={type} loading={loading} />
         <Switch>
           <Route path = "/" exact component = {Home} />
           <Route path = "/login" render={() => (
@@ -81,7 +81,10 @@ function App() {
               <Tools auth={auth} type={type} loading={loading} />
             )}
           />
-          <Route path = "/profile" component = {Profile} />
+          <Route path = "/profile" render={() => (
+              <Profile auth={auth} type={type} loading={loading} />
+            )}
+          />
           <Route path = "/seminar" exact component = {Seminar} />
           <Route path = "/seminar/seminarkommende=:seminarid" render = {() =>(
             <SeminarDetailsUpcoming auth={auth} loading={loading} />
