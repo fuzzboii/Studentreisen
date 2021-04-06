@@ -1,15 +1,14 @@
 import { useState, useEffect, createRef} from 'react';
 import {useParams} from 'react-router-dom';
-import { MyCardContent } from '../Styles/apistyles';
-
 import axios from 'axios';
 
+// Material UI komponenter 
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import Link from '@material-ui/core/Link';
-import { makeStyles, withStyles  } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 
 import HomeIcon from '@material-ui/icons/Home';
 import ListAltIcon from '@material-ui/icons/ListAlt';
@@ -19,58 +18,11 @@ import SchoolIcon from '@material-ui/icons/School';
 import PlaceIcon from '@material-ui/icons/Place';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 
-import MuiAccordion from '@material-ui/core/Accordion';
-import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
-import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
-
-
 // Studentreisen-assets og komponenter
 import '../Styles/courseStyles.css';
 import Loader from '../../../global/Components/Loader';
 import NoAccess from '../../../global/Components/NoAccess';
-
-const Accordion = withStyles({
-    root: {
-        borderTop: "1px solid rgb(163, 163, 163)",      
-        boxShadow: 'none',
-        borderBottom: "1px solid rgb(163, 163, 163)",
-      '&:before': {
-        display: 'none',
-      },
-      '&$expanded': {
-        margin: 'auto',
-      },
-    },
-    expanded: {},
-  })(MuiAccordion);
-  
-  const AccordionSummary = withStyles({
-    root: {
-      marginBottom: -1,
-      minHeight: 56,
-      '&$expanded': {
-        minHeight: 56,
-        borderBottom: "none",
-        
-      },
-    },
-    content: {
-      '&$expanded': {
-        margin: '12px 0',
-      },
-    },
-    expanded: {},
-  })(MuiAccordionSummary);
-  
-  const AccordionDetails = withStyles((theme) => ({
-    root: {
-      padding: theme.spacing(2),
-      display: "inherit",
-      '&$expanded': {
-        borderBottom: "1px solid rgb(163, 163, 163)",        
-      },
-    },
-  }))(MuiAccordionDetails);
+import { MyCardContent, Accordion, AccordionDetails, AccordionSummary } from '../Styles/apistyles';
 
 
 const ModuleDetail = (props) => {
@@ -95,7 +47,6 @@ const ModuleDetail = (props) => {
 
     const classes = useStyles();
     const [expanded, setExpanded] = useState('');
-    //
     const wrapper = createRef();
 
     const handleChange = (panel) => (event, newExpanded) => {

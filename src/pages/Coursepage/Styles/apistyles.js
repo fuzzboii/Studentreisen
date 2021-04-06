@@ -1,24 +1,55 @@
 import { styled } from '@material-ui/core/styles';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles  } from '@material-ui/core/styles';
 
-
-import Button from '@material-ui/core/Button';
+import MuiAccordion from '@material-ui/core/Accordion';
+import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
+import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import Container from '@material-ui/core/Container';
 import CardContent from '@material-ui/core/CardContent';
 
 
-export const useStyles = makeStyles({
+export const Accordion = withStyles({
     root: {
-        background: '#3bafa2',
-        border: 0,
-        borderRadius: 3,
-        color: 'white',
-        height: 48,
-        padding: '0 30px',
-      }, "&:hover": {
-          color:"#3bafa2"
-      }
-});
+        borderTop: "1px solid rgb(163, 163, 163)",      
+        boxShadow: 'none',
+        borderBottom: "1px solid rgb(163, 163, 163)",
+      '&:before': {
+        display: 'none',
+      },
+      '&$expanded': {
+        margin: 'auto',
+      },
+    },
+    expanded: {},
+  })(MuiAccordion);
+  
+  export const AccordionSummary = withStyles({
+    root: {
+      marginBottom: -1,
+      minHeight: 56,
+      '&$expanded': {
+        minHeight: 56,
+        borderBottom: "none",
+        
+      },
+    },
+    content: {
+      '&$expanded': {
+        margin: '12px 0',
+      },
+    },
+    expanded: {},
+  })(MuiAccordionSummary);
+  
+  export const AccordionDetails = withStyles((theme) => ({
+    root: {
+      padding: theme.spacing(2),
+      display: "inherit",
+      '&$expanded': {
+        borderBottom: "1px solid rgb(163, 163, 163)",        
+      },
+    },
+  }))(MuiAccordionDetails);
 
 
 export const MyContainer = styled(Container)({
