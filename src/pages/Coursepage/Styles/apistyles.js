@@ -43,7 +43,10 @@ export const Accordion = withStyles({
   
   export const AccordionDetails = withStyles((theme) => ({
     root: {
-      padding: theme.spacing(2),
+      paddingTop: theme.spacing(0),
+      paddingBottom: theme.spacing(0),
+      paddingLeft: theme.spacing(2),
+      paddingRight: theme.spacing(2),
       display: "inherit",
       '&$expanded': {
         borderBottom: "1px solid rgb(163, 163, 163)",        
