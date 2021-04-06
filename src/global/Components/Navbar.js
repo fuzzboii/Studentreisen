@@ -142,14 +142,14 @@ function Navbar(props) {
                 <Button 
                   className={classes.navbtn} 
                   component={Link} 
-                  to='/Course'>
+                  to='/course'>
                   Kurs
                 </Button>
 
                 <Button 
                   className={classes.navbtn} 
                   component={Link}
-                  to='/Seminar'
+                  to='/seminar'
                 >
                 Seminarer
                 </Button>
