@@ -110,11 +110,15 @@ function Profile(props) {
         setUpdateText("Vennligst vent");
 
         if (pwd === pwd2) {
-            // const config = {
-            //     token: token,
-            //     pwd: pwd
-            // }
-            // axios.post(process.env.REACT_APP_APIURL + "/profile/updatePassord", config)
+            const config = {
+                token: token,
+                pwd: pwd
+            }
+            axios.post(process.env.REACT_APP_APIURL + "/profile/updatePassord", config).then(
+                setAlertDisplay(""),
+                setAlertText("Passord oppdatert!"),
+                setAlertSeverity("success")
+            )
         } else {
             setAlertDisplay("");
             setAlertText("Passordene er ikke like");
@@ -223,7 +227,6 @@ function Profile(props) {
         )
     }
 
-
     if (auth && !loading) {
     return (
         <div>
@@ -240,25 +243,25 @@ function Profile(props) {
                     <form id="form-profile-tlf" onSubmit={onTlfSubmit} >
                         <FormControl id="form-profile-tlf-control">
                             <InputLabel>Telefonnummer</InputLabel>
-                            <Input type="string" variant="outlined" value={tlf} onChange={onTlfChange} />
+                            <Input type="string" variant="outlined" value={tlf} onChange={onTlfChange} required={true} />
                         </FormControl>
                         <Button className={classes.profileButton} type="submit" variant="contained" > {updateText} </Button>
                     </form>
                     <form id="form-profile-email" onSubmit={onEmailSubmit} >
                         <FormControl id="form-profile-email-control">
                             <InputLabel>E-post</InputLabel>
-                            <Input type="email" className={classes.input} variant="outlined" value={email} onChange={onEmailChange} />
+                            <Input type="email" className={classes.input} variant="outlined" value={email} onChange={onEmailChange} required={true} />
                         </FormControl>
                         <Button className={classes.profileButton} type="submit" variant="contained" > {updateText} </Button>
                     </form>
                     <form id="form-profile-pwd" onSubmit={onPwdSubmit} >
                         <FormControl id="form-pwd-profile">
                             <InputLabel>Nytt passord</InputLabel>
-                            <Input type="password" className={classes.input} variant="outlined" onChange={onPwdChange} />
+                            <Input type="password" className={classes.input} variant="outlined" onChange={onPwdChange} required={true} />
                         </FormControl>
                         <FormControl id="form-pwd2-profile">
                             <InputLabel>Bekreft passord</InputLabel>
-                            <Input type="password" variant="outlined" onChange={onPwd2Change} />
+                            <Input type="password" variant="outlined" onChange={onPwd2Change} required={true} />
                         </FormControl>
                         <Button className={classes.profileButton} type="submit" variant="contained"> {updateText} </Button>
                     </form>
