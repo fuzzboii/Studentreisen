@@ -100,7 +100,7 @@ const ModuleDetail = (props) => {
                                             </Typography>
                                         </Breadcrumbs>
                                         <div className="courseHeader">
-                                            <h1 className="overskriftKurs">{mod.navn}</h1>
+                                            <h1 className="overskriftKurs2">{mod.navn}</h1>
                                             <div className="kursinfo-tekst">
                                                 <p>{mod.modulkode}</p>
                                                 <div className="iconBox">
@@ -139,7 +139,7 @@ const ModuleDetail = (props) => {
                                                 </Accordion>
                                         </div>
                                         <div className="buttonWrapM">
-                                            <Button className="courseButton" variant="outlined" color="primary" href={mod.lenke}>Gå til kursmodulens hjemmeside</Button>
+                                            <Button className="courseButton" variant="outlined" color="primary" href={mod.lenke}>Gå til modulens hjemmeside</Button>
                                         </div>
                                     </MyCardContent>
                                 </Box>         

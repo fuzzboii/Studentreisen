@@ -8,14 +8,18 @@
     display: grid;
     grid-template-rows: auto;
     width: 100%;
-    border-top: 1px solid rgb(163, 163, 163);
+    border-top: 1px solid rgb(211, 211, 211);
 }
 
 .border {
     font-weight: 500;
     color: #4646a5;
-   
-  
+}
+
+.overskriftKurs2 {
+    font-weight: 600;
+    color: #4646a5;
+
 }
 
 
