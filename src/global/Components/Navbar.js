@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 import Button from "@material-ui/core/Button";
 import { makeStyles } from '@material-ui/core/styles';
@@ -7,7 +7,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import '../CSS/Navbar.css';
 import favicon from '../../assets/usn.png';
 import CookieService from '../Services/CookieService';
-import Loader from '../../global/Components/Loader';
 
 function Navbar(props) {
     const [click, setClick] = useState(false);
@@ -19,6 +18,8 @@ function Navbar(props) {
  
     const handleClick = () => setClick(!click);
     const closeMobileMenu = () => setClick(false);
+
+    let history = useHistory()
 
     // Testing på om en "LOGG UT"-knapp skal vises i navbar eller i meny
     const showButton = () => {
@@ -103,6 +104,7 @@ function Navbar(props) {
       closeMobileMenu();
       CookieService.remove("authtoken");
       setAuth(false);
+      history.push("/")
     }
 
     const onLink = () => {

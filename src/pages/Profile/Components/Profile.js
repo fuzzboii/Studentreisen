@@ -276,7 +276,7 @@ function Profile(props) {
     } if (!loading && !auth) {
         return (
             // Brukeren er ikke innlogget, omdiriger
-            null
+            <Redirect to={{pathname: "/"}} />
         );
     }
 }
