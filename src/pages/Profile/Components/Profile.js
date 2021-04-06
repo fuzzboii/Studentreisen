@@ -53,7 +53,18 @@ function Profile(props) {
 
     // Utføres når e-post forsøkes oppdatert
     const onEmailSubmit = e => {
+        e.preventDefault()
+        
+        const config = {
+            token: token,
+            email: email
+        }
 
+        axios.post(process.env.REACT_APP_APIURL + "/profile/updateEmail", config).then(
+            setAlertDisplay(""),
+            setAlertText("Epost oppdatert!"),
+            setAlertSeverity("success")
+        )
     }
 
     // Utføres når bruker gjør en handling i input-feltet for telefonnummer
@@ -66,13 +77,17 @@ function Profile(props) {
     // Utføres når telefonnummer forsøkes oppdatert
     const onTlfSubmit = e => {
         e.preventDefault()
-        console.log("klient nådd")
+
         const config = {
             token: token,
             telefon: tlf
         }
 
-        axios.post(process.env.REACT_APP_APIURL + "/profile/updateTelefon", config)
+        axios.post(process.env.REACT_APP_APIURL + "/profile/updateTelefon", config).then(
+            setAlertDisplay(""),
+            setAlertText("Telefonnummer oppdatert!"),
+            setAlertSeverity("success")
+        )
     }
 
     // Utføres når bruker gjør en handling i input-feltet for passord
@@ -87,7 +102,6 @@ function Profile(props) {
         setPwd2(e.target.value);
         setAlertDisplay("none"); 
         setAlertText("");
-        console.log(e.target.value);
     };
 
     // Utføres når passord forsøkes oppdatert
@@ -120,8 +134,10 @@ function Profile(props) {
         profileButton: {
             color: '#fff',
             backgroundColor: '#4646a5',
-            margin: '4vw',
             alignSelf: 'flex-end',
+            marginLeft: 'auto',
+            marginRight: '1.5vw',
+            marginTop: '1.5vh'
         },
 
         fagfeltButton: {
@@ -221,32 +237,32 @@ function Profile(props) {
                 <div className='profile-item' >
                 <h2 className='profile-subheader' > Personalia </h2>
                 <h3 className='profile-navn' > {fnavn + " " + enavn} </h3>
-                    <form id="form-profile_tlf" onSubmit={onTlfSubmit} >
-                        <FormControl id="form_profile_tlf_control">
+                    <form id="form-profile-tlf" onSubmit={onTlfSubmit} >
+                        <FormControl id="form-profile-tlf-control">
                             <InputLabel>Telefonnummer</InputLabel>
                             <Input type="string" variant="outlined" value={tlf} onChange={onTlfChange} />
                         </FormControl>
-                        <Button type="submit" variant="contained" > {updateText} </Button>
+                        <Button className={classes.profileButton} type="submit" variant="contained" > {updateText} </Button>
                     </form>
-                    <form id="form_profile_email" onSubmit={onEmailSubmit} >
-                        <FormControl id="form_profile_email_control">
+                    <form id="form-profile-email" onSubmit={onEmailSubmit} >
+                        <FormControl id="form-profile-email-control">
                             <InputLabel>E-post</InputLabel>
-                            <Input type="email" variant="outlined" value={email} onChange={onEmailChange} />
+                            <Input type="email" className={classes.input} variant="outlined" value={email} onChange={onEmailChange} />
                         </FormControl>
-                        <Button type="submit" variant="contained" > {updateText} </Button>
+                        <Button className={classes.profileButton} type="submit" variant="contained" > {updateText} </Button>
                     </form>
-                    <form id="form_profile_pwd" onSubmit={onPwdSubmit} >
-                        <FormControl id="form_pwd_profile">
+                    <form id="form-profile-pwd" onSubmit={onPwdSubmit} >
+                        <FormControl id="form-pwd-profile">
                             <InputLabel>Nytt passord</InputLabel>
-                            <Input type="password" variant="outlined" onChange={onPwdChange} />
+                            <Input type="password" className={classes.input} variant="outlined" onChange={onPwdChange} />
                         </FormControl>
-                        <FormControl id="form_pwd2_profile">
+                        <FormControl id="form-pwd2-profile">
                             <InputLabel>Bekreft passord</InputLabel>
                             <Input type="password" variant="outlined" onChange={onPwd2Change} />
                         </FormControl>
-                        <Button type="submit" variant="contained"> {updateText} </Button>
+                        <Button className={classes.profileButton} type="submit" variant="contained"> {updateText} </Button>
                     </form>
-                <Alert id="alert_register" className="fade_in" style={{display: alertDisplay}} variant="outlined" severity={alertSeverity}>
+                <Alert id="alert-register" className="fade_in" style={{display: alertDisplay}} variant="outlined" severity={alertSeverity}>
                     {alertText}
                 </Alert>
                 </div>

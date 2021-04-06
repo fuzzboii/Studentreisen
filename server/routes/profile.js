@@ -160,7 +160,6 @@ router.post('/updatePassord', async (req, res) => {
 
 // Oppdater brukerens telefonnummer
 router.post('/updateTelefon', async (req, res) => {
-    console.log("Server nådd")
     let brukerid = undefined
     if (req.body.token !== undefined && req.body.telefon !== undefined) {
         verifyAuth(req.body.token).then( resAuth => {
@@ -177,6 +176,32 @@ router.post('/updateTelefon', async (req, res) => {
 
                 } else {
                     return res.json({"status" : "error", "message" : "En feil oppstod under oppdatering av brukerens telefonnummer"})
+                }
+            })
+        })
+    } else {
+        res.status(400).json({"stauts" : "error", "message" : "Ikke tilstrekkelig data"})
+    }
+})
+
+// Oppdater brukerens telefonnummer
+router.post('/updateEmail', async (req, res) => {
+    let brukerid = undefined
+    if (req.body.token !== undefined && req.body.email !== undefined) {
+        verifyAuth(req.body.token).then( resAuth => {
+            brukerid = resAuth.brukerid
+            let updateQuery = "UPDATE bruker SET email= ? WHERE brukerid= ?"
+            let updateQueryFormat = mysql.format(updateQuery, [req.body.email, brukerid])
+            connection.query(updateQueryFormat, (error, results) => {
+                if (error) {
+                    console.log("An error occured while updating the users email, details: " + error.errno + ", " + error.sqlMessage)
+                    return res.jason({ "status" : "error", "message" : "en intern feil oppstod, vennligst forsøk igjen senere" })
+                }
+
+                if(results.length > 0) {
+
+                } else {
+                    return res.json({"status" : "error", "message" : "En feil oppstod under oppdatering av brukerens email"})
                 }
             })
         })
