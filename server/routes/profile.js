@@ -71,6 +71,7 @@ router.post('/getInteresser', async (req, res) => {
         }
 });
 
+// Sletter en av innloget brukers aktive interesser
 router.post('/deleteInteresse', async (req, res) => {
     let brukerid = undefined;
     if (req.body.token !== undefined && req.body.fagfeltid !== undefined) {
@@ -99,6 +100,7 @@ router.post('/deleteInteresse', async (req, res) => {
         }
 });
 
+// Legger til en interesse på innlogget bruker
 router.post('/postInteresse', async (req, res) => {
     let brukerid = undefined;
     if (req.body.token !== undefined && req.body.fagfeltid !== undefined) {
@@ -118,7 +120,7 @@ router.post('/postInteresse', async (req, res) => {
                     // console.log("Hentet");
                     // return res.json({results});
                 } else {
-                    return res.json({"status" : "error", "message" : "En feil oppstod under hetning av brukerens interesser"});
+                    return res.json({"status" : "error", "message" : "En feil oppstod under henting av brukerens interesser"});
                 }
             });       
         })
@@ -126,5 +128,61 @@ router.post('/postInteresse', async (req, res) => {
             res.status(400).json({"status" : "error", "message" : "Ikke tilstrekkelig data"});
         }
 });
+
+// Oppdaterer brukerens passord
+router.post('/updatePassord', async (req, res) => {
+    console.log("1")
+    let brukerid = undefined
+    if (req.body.token !== undefined && req.body.pwd !== undefined) {
+        console.log("2")
+        verifyAuth(req.body.token).then( resAuth => {
+            brukerid = resAuth.brukerid
+            let updateQuery = "UPDATE bruker SET pwd= ? WHERE brukerid= ?"
+            let updateQueryFormat = mysql.format(updateQuery, [req.body.pwd, brukerid])
+            connection.query(updateQueryFormat, (error, results) => {
+                if (error) {
+                    console.log("An error occured while updating the users password, details: " + error.errno + ", " + error.sqlMessage)
+                    return res.json({ "status" : "error", "message" : "en intern feil oppstod, vennligst forsøk igjen senere"})
+                }
+
+                if(results.length > 0) {
+                    console.log("3")
+
+                } else {
+                    return res.json({"status" : "error", "message" : "En feil oppstod under oppdatering av brukerens passord"})
+                }
+            })
+        })
+    } else {
+        res.status(400).json({"stauts" : "error", "message" : "Ikke tilstrekkelig data"})
+    }
+});
+
+// Oppdater brukerens telefonnummer
+router.post('/updateTelefon', async (req, res) => {
+    console.log("Server nådd")
+    let brukerid = undefined
+    if (req.body.token !== undefined && req.body.telefon !== undefined) {
+        verifyAuth(req.body.token).then( resAuth => {
+            brukerid = resAuth.brukerid
+            let updateQuery = "UPDATE bruker SET telefon= ? WHERE brukerid= ?"
+            let updateQueryFormat = mysql.format(updateQuery, [req.body.telefon, brukerid])
+            connection.query(updateQueryFormat, (error, results) => {
+                if (error) {
+                    console.log("An error occured while updating the users phone number, details: " + error.errno + ", " + error.sqlMessage)
+                    return res.jason({ "status" : "error", "message" : "en intern feil oppstod, vennligst forsøk igjen senere" })
+                }
+
+                if(results.length > 0) {
+
+                } else {
+                    return res.json({"status" : "error", "message" : "En feil oppstod under oppdatering av brukerens telefonnummer"})
+                }
+            })
+        })
+    } else {
+        res.status(400).json({"stauts" : "error", "message" : "Ikke tilstrekkelig data"})
+    }
+})
 
 module.exports = router;

@@ -1,6 +1,9 @@
 .profile-header {
     display: flex;
 }
+.profile-navn {
+    margin-top: 0;
+}
 
 .profile-title {
     margin-top: auto;
@@ -35,6 +38,10 @@
     padding-left: 0.7rem;
     padding-right: 0.7rem;
     border-radius: 1.4rem;
+}
+
+form {
+    margin-bottom: 2vh;
 }
 
 /* Media queries
