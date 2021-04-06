@@ -1,5 +1,6 @@
 const { connection } = require('../db');
 const mysql = require('mysql');
+const { verifyAuth } = require('../global/CommonFunctions');
 
 const router = require('express').Router();
 
@@ -57,6 +58,34 @@ router.get('/getAllSeminarExpiredData', async (req, res) => {
         res.status(400).json({"status" : "error", "message" : "Ikke tilstrekkelig data"});
        }
     });
-   
+
+
+router.post('/submitSeminar', (req, res) => {
+    if(req.body.title !== undefined && req.body.startdate !== undefined && req.body.enddate !== undefined && req.body.address !== undefined && req.body.description !== undefined && req.body.token !== undefined) {
+        verifyAuth(req.body.token).then(function(response) {
+            if(response.authenticated) {
+                if(response.usertype.toString() !== process.env.ACCESS_STUDENT) {
+                    if(req.files) {
+                        // Bruker har oppgitt et bilde som skal lastes opp
+                        console.log("Last opp seminar med bilde");
+                    } else {
+                        // Oppretter seminar uten bilde
+                        console.log("Last opp seminar uten bilde");
+                    }
+                    return res.json({success: true});
+                } else {
+                    // Studenter kan ikke opprette ett seminar
+                    console.log("En innlogget bruker uten riktige tilganger har forsøkt å opprette et seminar, brukerens ID: " + response.brukerid);
+                    return res.json({success: false});
+                }
+            } else {
+                return res.json({success: false});
+            }
+        })
+    } else {
+        return res.status(403).send();
+    }
+}); 
+
 
 module.exports = router;
