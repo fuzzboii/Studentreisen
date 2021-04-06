@@ -17,6 +17,7 @@ import ModuleDetail from './pages/Coursepage/Components/ModuleDetail';
 import Seminar from './pages/Seminar/Components/SeminarOverview';
 import SeminarDetailsUpcoming from './pages/Seminar/Components/SeminarDetailsUpcoming';
 import SeminarDetailsExpired from './pages/Seminar/Components/SeminarDetailsExpired';
+import SeminarNew from './pages/Seminar/Components/SeminarNew';
 
 import CookieService from './global/Services/CookieService';
 import AuthService from './global/Services/AuthService';
@@ -88,6 +89,9 @@ function App() {
           <Route path = "/seminar/seminarutgatte=:seminarid" render = {() =>(
             <SeminarDetailsExpired auth={auth} loading={loading} />
           )}/>
+          <Route path = "/seminar/ny"  render={() => (
+              <SeminarNew auth={auth} type={type} loading={loading} />
+            )} />
         </Switch>
       <Footer />
     </>
