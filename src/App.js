@@ -62,7 +62,9 @@ function App() {
       <Navbar auth={auth} type={type} />
         <Switch>
           <Route path = "/" exact component = {Home} />
-          <Route path = "/login" component = {Login} />
+          <Route path = "/login" render={() => (
+              <Login auth={auth} type={type} loading={loading} />
+            )} />
           <Route path = "/course" exact component = {Course} />
             <Route path = "/course/emnekode=:emnekode" render = {() =>(
               <CourseDetail auth={auth} loading={loading} />
@@ -70,7 +72,9 @@ function App() {
             <Route path = "/course/modulkode=:modulkode" render = {() =>(
               <ModuleDetail auth={auth} loading={loading} />
             )}/>
-          <Route path = "/register" component = {Register} />
+          <Route path = "/register"  render={() => (
+              <Register auth={auth} type={type} loading={loading} />
+            )} />
           <Route path = "/reset" component = {Reset} />
           <Route path = "/tools" render={() => (
               <Tools auth={auth} type={type} loading={loading} />
