@@ -3,18 +3,20 @@ import React from "react";
 // 3rd-party Packages
 import MaterialTable from "material-table";
 import axios from "axios";
+import PublicIcon from '@material-ui/icons/Public';
 
 // Studentreisen-assets og komponenter
 import CookieService from '../../../global/Services/CookieService';
 
 function SeminarOverview(props) {
     let [seminar, setSeminar] = React.useState([]);
+    let [isLoading, setIsLoading] = React.useState(true);
     
     const token = {
         token: CookieService.get("authtoken")
     }
 
-    if(token !== undefined && Object.getOwnPropertyNames(seminar).length == 1) {
+    if(isLoading && token !== undefined && Object.getOwnPropertyNames(seminar).length == 1 && props.activeTool == 2) {
         axios
             // Henter API URL fra .env og utfører en POST request med dataen fra objektet over
             // Axios serialiserer objektet til JSON selv
@@ -22,6 +24,7 @@ function SeminarOverview(props) {
             // Utføres ved mottatt resultat
             .then(res => {
                 if(res.data.results) {
+                    setIsLoading(false);
                     setSeminar(res.data.results);
                 }
             });
@@ -29,7 +32,7 @@ function SeminarOverview(props) {
     
     const kolonner = [
         { title: "Navn", field: "navn" },
-        { title: "Arrangør", field: "arrangor" },
+        { title: "Arrangør", field: "arrangornavn" },
         { title: "Adresse", field: "adresse" },
         { title: "Startdato", field: "oppstart", type: "datetime" }
     ];
@@ -68,10 +71,58 @@ function SeminarOverview(props) {
             searchPlaceholder: "Søk"
         }
     }
+    
+    const redigerbar = {
+        isEditable: () => false,
+        isEditHidden: () => true,
+        isDeletable: seminar => {
+            const sluttdato = new Date(seminar.varighet);
+            const naa = new Date(); 
+            if(sluttdato <= naa) {
+                return true;
+            } else {
+                return false;
+            }
+        },
+        isDeleteHidden:  seminar => {
+            const sluttdato = new Date(seminar.varighet);
+            const naa = new Date(); 
+            if(sluttdato > naa) {
+                return true;
+            } else {
+                return false;
+            }
+        },
+        onRowDelete: seminarData =>
+            new Promise((resolve, reject) => {
+                try {
+                    axios
+                        .post(process.env.REACT_APP_APIURL + "/tools/deleteSeminar", {seminarid : seminarData.seminarid, sluttdato : seminarData.varighet, token : token.token})
+                        // Utføres ved mottatt resultat
+                        .then(res => {
+                            if(res.data.success) {
+                                const oppdatertSeminar = [...seminar];
+                                const index = seminarData.tableData.id;
+                                oppdatertSeminar.splice(index, 1);
+                                setSeminar([...oppdatertSeminar]);
+
+                                resolve();
+                            } else {
+                                reject();
+                            }
+                        }).catch(e => {
+                            reject();
+                        });
+                } catch(e) {
+                    reject();
+                }
+            }
+        )
+    }
 
     return (
         <section id="section_overview">
-            <MaterialTable columns={kolonner} data={seminar} localization={lokalisering} title="Seminaroversikt" actions={[
+            <MaterialTable columns={kolonner} data={seminar} localization={lokalisering} editable={redigerbar} isLoading={isLoading} title="Seminaroversikt" actions={[
                     {
                         icon: 'edit',
                         tooltip: 'Rediger seminar',
@@ -86,7 +137,93 @@ function SeminarOverview(props) {
                         onClick: () => {
                             console.log("Gå til oppretting av nytt seminar");
                         }
-                    }
+                    },
+                    seminarData => ({
+                        icon: () => <PublicIcon />,
+                        tooltip: 'Avpubliser seminar',
+                        hidden: seminarData.tilgjengelighet !== 1,
+                        onClick: () => {
+                            new Promise((resolve, reject) => {
+                                try {
+                                    setIsLoading(true);
+                                    axios
+                                        .post(process.env.REACT_APP_APIURL + "/tools/publicizeSeminar", {seminarid : seminarData.seminarid, tilgjengelighet: 0, token : token.token})
+                                        // Utføres ved mottatt resultat
+                                        .then(res => {
+                                            if(res.data.success) {
+
+                                                const oppdatertSeminar = [...seminar];
+                                                const index = seminarData.tableData.id;
+
+                                                if(seminarData.tilgjengelighet == 1) {
+                                                    oppdatertSeminar[index].tilgjengelighet = 0;
+                                                } else {
+                                                    oppdatertSeminar[index].tilgjengelighet = 1;
+                                                }
+                                                
+                                                setIsLoading(false);
+                                                setSeminar([...oppdatertSeminar]);
+                
+                                                resolve();
+                                            } else {
+                                                setIsLoading(false);
+                                                reject();
+                                            }
+                                        }).catch(e => {
+                                            setIsLoading(false);
+                                            reject();
+                                        });
+                                } catch(e) {
+                                    setIsLoading(false);
+                                    reject();
+                                }
+                            });
+                        }
+                    }),
+                    seminarData => ({
+                        icon: () => <PublicIcon color="disabled"/>,
+                        tooltip: 'Publiser seminar',
+                        hidden: seminarData.tilgjengelighet == 1,
+                        onClick: () => {
+                            new Promise((resolve, reject) => {
+                                try {
+                                    setIsLoading(true);
+                                    axios
+                                        .post(process.env.REACT_APP_APIURL + "/tools/publicizeSeminar", {seminarid : seminarData.seminarid, tilgjengelighet: 1, token : token.token})
+                                        // Utføres ved mottatt resultat
+                                        .then(res => {
+                                            if(res.data.success) {
+                                                const oppdatertSeminar = [...seminar];
+                                                const index = seminarData.tableData.id;
+
+                                                if(seminarData.tilgjengelighet == 1) {
+                                                    oppdatertSeminar[index].tilgjengelighet = 0;
+                                                } else {
+                                                    oppdatertSeminar[index].tilgjengelighet = 1;
+                                                }
+                                                
+                                                setIsLoading(false);
+                                                setSeminar([...oppdatertSeminar]);
+                
+                                                resolve();
+                                            } else {
+                                                setIsLoading(false);
+
+                                                reject();
+                                            }
+                                        }).catch(e => {
+                                            setIsLoading(false);
+
+                                            reject();
+                                        });
+                                } catch(e) {
+                                    setIsLoading(false);
+
+                                    reject();
+                                }
+                            });
+                        }
+                    })
                 ]}
             />
         </section>
