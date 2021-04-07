@@ -16,6 +16,7 @@ import Button from '@material-ui/core/Button';
 // Studentreisen-assets og komponenter
 import Loader from '../../../global/Components/Loader';
 import NoAccess from '../../../global/Components/NoAccess';
+import CookieService from '../../../global/Services/CookieService';
 import '../CSS/Seminar.css';
 
 const SeminarDetailsExpired = (props) => {
@@ -33,6 +34,26 @@ const SeminarDetailsExpired = (props) => {
         console.log(res.data);
         setSeminars(res.data);
 
+    };
+
+    const deleteSeminar = async (seminarid, varighet, bilde) => {
+        console.log("TODO:\n\tImplementere feilmeldinger");
+        try {
+            axios
+                .post(process.env.REACT_APP_APIURL + "/tools/deleteSeminar", {seminarid : seminarid, sluttdato : varighet, bilde : bilde, token : CookieService.get("authtoken")})
+                // Utføres ved mottatt resultat
+                .then(res => {
+                    if(res.data.success) {
+                        window.location.href="/seminar";
+                    } else {
+                        // Vis feilmelding
+                    }
+                }).catch(e => {
+                    // Vis feilmelding
+                });
+        } catch(e) {
+            // Vis feilmelding
+        }
     };
 
     return(
@@ -60,7 +81,7 @@ const SeminarDetailsExpired = (props) => {
                                         </Button>
                                     </div>
                                     <div className="SeminarDetails-ButtonSlettWrapper">
-                                        <Button className="SeminarDetailsButtonSlett" size="small" variant="outlined" color="secondary" startIcon={<DeleteIcon />}>
+                                        <Button className="SeminarDetailsButtonSlett" size="small" variant="outlined" color="secondary" startIcon={<DeleteIcon />}  onClick={() => deleteSeminar(seminar.seminarid, seminar.varighet, seminar.plassering)}>
                                         Slett
                                         </Button>
                                     </div>
