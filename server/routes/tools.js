@@ -26,6 +26,8 @@ router.post('/getAllUserData', async (req, res) => {
                         
                         if(results[0] !== undefined) {
                             return res.json({results});
+                        } else {
+                            return res.json({});
                         }
                     });
                 } else {
@@ -264,6 +266,8 @@ router.post('/getAllCourseData', async (req, res) => {
                         
                         if(results[0] !== undefined) {
                             return res.json({results});
+                        } else {
+                            return res.json({});
                         }
                     });
                 } else {
@@ -298,6 +302,8 @@ router.post('/getAllSeminarData', async (req, res) => {
                         
                         if(results[0] !== undefined) {
                             return res.json({results});
+                        } else {
+                            return res.json({});
                         }
                     });
                 } else if(response.usertype.toString() === process.env.ACCESS_LECTURER) {
