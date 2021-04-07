@@ -26,6 +26,8 @@ function UserOverview(props) {
                 if(res.data.results) {
                     setIsLoading(false);
                     setBrukere(res.data.results);
+                } else {
+                    setIsLoading(false);
                 }
             });
     }

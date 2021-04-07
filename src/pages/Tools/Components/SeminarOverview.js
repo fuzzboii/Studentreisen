@@ -28,6 +28,8 @@ function SeminarOverview(props) {
                 if(res.data.results) {
                     setIsLoading(false);
                     setSeminar(res.data.results);
+                } else {
+                    setIsLoading(false);
                 }
             });
     }

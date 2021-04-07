@@ -25,6 +25,8 @@ function CourseOverview(props) {
                 if(res.data.results) {
                     setIsLoading(false);
                     setKurs(res.data.results);
+                } else {
+                    setIsLoading(false);
                 }
             });
     }
