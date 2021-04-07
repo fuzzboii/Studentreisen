@@ -181,9 +181,9 @@ router.post('/updateEmail', async (req, res) => {
                             console.log("An error occured while updating the users email, details: " + error.errno + ", " + error.sqlMessage)
                             return res.json({ "status" : "error", "message" : "en intern feil oppstod, vennligst forsøk igjen senere" })
                         }
-            
-                        if(results.length > 0) {
-                            return results
+                        console.log(results)
+                        if(results.affectedRows > 0) {
+                            return res.json({"status" : "success", "message" : "Passord oppdatert"})
                         } else {
                             return res.json({"status" : "error", "message" : "En feil oppstod under oppdatering av brukerens email"})
                         }

@@ -61,16 +61,16 @@ function Profile(props) {
         }
 
         axios.post(process.env.REACT_APP_APIURL + "/profile/updateEmail", config).then( res => {
-            console.log(res)
-            // if (res.status === "error") {
-            //     setAlertDisplay("")
-            //     setAlertText("Epost ikke oppdatert!")
-            //     setAlertSeverity("error")
-            // } else {
-            //     setAlertDisplay("")
-            //     setAlertText("Epost oppdatert!")
-            //     setAlertSeverity("success")
-            // }
+            console.log(res.data.status)
+            if (res.data.status === "error") {
+                setAlertDisplay("")
+                setAlertText(res.data.message)
+                setAlertSeverity("error")
+            } else {
+                setAlertDisplay("")
+                setAlertText("Passord endret")
+                setAlertSeverity("success")
+            }
         })
     }
 
