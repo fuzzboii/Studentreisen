@@ -22,7 +22,7 @@ class SeminarNew extends Component {
 
         // Nytt seminar-spesifikke states, delt opp i før-visning autentisering og felt
         let datetimeNow = moment().format('YYYY-MM-DDTHH:mm:ss');
-        let dateNow = moment().format('YYYY-MM-DD');
+        let dateNow = moment().add(1, 'days').format('YYYY-MM-DD');
         this.state = {  loading : this.props.loading, authenticated : this.props.auth, 
                         SeminarNew_input_title : "", SeminarNew_input_startdate : datetimeNow, SeminarNew_input_enddate : dateNow, SeminarNew_input_address : "", 
                         SeminarNew_input_desc : "", SeminarNew_input_image : "", SeminarNew_input_imageprev : "", SeminarNew_switch_availability : false,
