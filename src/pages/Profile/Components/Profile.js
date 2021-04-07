@@ -60,11 +60,18 @@ function Profile(props) {
             email: email
         }
 
-        axios.post(process.env.REACT_APP_APIURL + "/profile/updateEmail", config).then(
-            setAlertDisplay(""),
-            setAlertText("Epost oppdatert!"),
-            setAlertSeverity("success")
-        )
+        axios.post(process.env.REACT_APP_APIURL + "/profile/updateEmail", config).then( res => {
+            console.log(res)
+            // if (res.status === "error") {
+            //     setAlertDisplay("")
+            //     setAlertText("Epost ikke oppdatert!")
+            //     setAlertSeverity("error")
+            // } else {
+            //     setAlertDisplay("")
+            //     setAlertText("Epost oppdatert!")
+            //     setAlertSeverity("success")
+            // }
+        })
     }
 
     // Utføres når bruker gjør en handling i input-feltet for telefonnummer
