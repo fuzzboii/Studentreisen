@@ -1,6 +1,8 @@
 const { connection } = require('../db');
 const mysql = require('mysql');
 const bcrypt = require('bcryptjs');
+const path = require('path');
+const fs = require('fs');
 const { registerValidation } = require('../validation');
 const { verifyAuth, sendEmail } = require('../global/CommonFunctions');
 
@@ -285,7 +287,7 @@ router.post('/getAllSeminarData', async (req, res) => {
             if(response.authenticated) {
                 // Kun Emneansvarlig / Administratorere skal kunne se hele oversikten, undervisere skal kunne se egne seminar
                 if(response.usertype.toString() === process.env.ACCESS_COORDINATOR || response.usertype.toString() === process.env.ACCESS_ADMINISTRATOR) {
-                    let getDataQuery = "SELECT seminarid, navn, CONCAT(fnavn, ' ', enavn) as arrangornavn, adresse, oppstart, varighet, beskrivelse, tilgjengelighet FROM seminar, bruker WHERE arrangor = brukerid";
+                    let getDataQuery = "SELECT seminarid, navn, CONCAT(fnavn, ' ', enavn) as arrangornavn, adresse, oppstart, varighet, beskrivelse, tilgjengelighet FROM seminar, bruker WHERE arrangor = brukerid ORDER BY oppstart DESC";
                     let getDataQueryFormat = mysql.format(getDataQuery);
 
                     connection.query(getDataQueryFormat, (error, results) => {
@@ -300,7 +302,7 @@ router.post('/getAllSeminarData', async (req, res) => {
                     });
                 } else if(response.usertype.toString() === process.env.ACCESS_LECTURER) {
                     // Hent alle seminar for underviseren
-                    let getDataQuery = "SELECT seminarid, navn, CONCAT(fnavn, ' ', enavn) as arrangornavn, adresse, oppstart, varighet, beskrivelse, tilgjengelighet FROM seminar, bruker WHERE arrangor = brukerid and arrangor = ?";
+                    let getDataQuery = "SELECT seminarid, navn, CONCAT(fnavn, ' ', enavn) as arrangornavn, adresse, oppstart, varighet, beskrivelse, tilgjengelighet FROM seminar, bruker WHERE arrangor = brukerid and arrangor = ? ORDER BY oppstart DESC";
                     let getDataQueryFormat = mysql.format(getDataQuery, [response.brukerid]);
 
                     connection.query(getDataQueryFormat, (error, results) => {
@@ -351,7 +353,7 @@ router.post('/deleteSeminar', async (req, res) => {
                                     console.log("En feil oppstod under sletting av påmeldinger til et eksisterende seminar, detaljer: " + error.errno + ", " + error.sqlMessage)
                                     return res.json({success: false});
                                 }
-
+    
                                 // Sletter invitasjoner til seminaret
                                 let deleteInvitasjonQuery = "DELETE FROM invitasjon WHERE seminarid = ?";
                                 let deleteInvitasjonQueryFormat = mysql.format(deleteInvitasjonQuery, [req.body.seminarid]);
@@ -362,10 +364,10 @@ router.post('/deleteSeminar', async (req, res) => {
                                         console.log("En feil oppstod under sletting av invitasjoner til et eksisterende seminar, detaljer: " + error.errno + ", " + error.sqlMessage)
                                         return res.json({success: false});
                                     }
-
+    
                                     let deleteQuery = "DELETE FROM seminar WHERE seminarid = ?";
                                     let deleteQueryFormat = mysql.format(deleteQuery, [req.body.seminarid]);
-
+    
                                     // Slett seminaret
                                     connection.query(deleteQueryFormat, (error, results) => {
                                         if (error) {
@@ -375,7 +377,36 @@ router.post('/deleteSeminar', async (req, res) => {
                                         
                                         if(results.affectedRows > 0) {
                                             // Seminar slettet
-                                            return res.json({success: true});
+                                            if(req.body.bilde !== undefined) {
+                                                // Seminaret hadde et bilde, sletter denne fra databasen og fra uploaded
+                                                let deleteQuery = "DELETE FROM bilde WHERE plassering = ?";
+                                                let deleteQueryFormat = mysql.format(deleteQuery, [req.body.bilde]);
+    
+                                                // Slett seminaret
+                                                connection.query(deleteQueryFormat, (error, results) => {
+                                                    if (error) {
+                                                        console.log("En feil oppstod under sletting av bilde til seminar, detaljer: " + error.errno + ", " + error.sqlMessage)
+                                                        return res.json({success: false});
+                                                    }
+                                        
+                                                    if(results.affectedRows > 0) {
+                                                        // Fjernet fra database, sletter fil
+    
+                                                        const rootFolder = path.join(__dirname, '../../');
+                                                        fs.unlink(rootFolder + '/public/uploaded/' + req.body.bilde, (err) => {
+                                                            if(err) {
+                                                                console.log("Kunne ikke slette opplastet bilde ved sletting av seminar: " + err);
+                                                            }
+                                                        });
+    
+                                                        return res.json({success: true});
+                                                    } else {
+                                                        return res.json({success: false});
+                                                    }
+                                                });
+                                            } else {
+                                                return res.json({success: true});
+                                            }
                                         } else {
                                             return res.json({success: false});
                                         }
@@ -385,6 +416,9 @@ router.post('/deleteSeminar', async (req, res) => {
                         } catch(e) {
                             return res.json({success: false});
                         }
+                    } else {
+                        // Sluttdato ikke nådd
+                        return res.json({success: false});
                     }
                 } else {
                     // Om brukeren ikke er administrator, sjekk om brukeren er eier av seminaret
