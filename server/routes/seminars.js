@@ -66,8 +66,7 @@ router.post('/submitSeminar', (req, res) => {
         verifyAuth(req.body.token).then(function(response) {
             if(response.authenticated) {
                 if(response.usertype.toString() !== process.env.ACCESS_STUDENT) {
-                    if(req.files.image) {
-                        
+                    if(req.files) {
                         // Oppretter seminar
                         let insertSeminarQuery = "INSERT INTO seminar(navn, arrangor, adresse, oppstart, varighet, beskrivelse, tilgjengelighet) VALUES(?, ?, ?, ?, ?, ?, ?)";
                         let insertSeminarQueryFormat = mysql.format(insertSeminarQuery, [req.body.title, response.brukerid, req.body.address, req.body.startdate, req.body.enddate, req.body.description, (req.body.availability === "true") ? 1 : 0]);
@@ -112,7 +111,7 @@ router.post('/submitSeminar', (req, res) => {
                                             }
                                             
                                             if(results.affectedRows > 0) {
-                                                return res.json({success: true});
+                                                return res.json({success : true, seminarid : insertedSeminar.insertId});
                                             }
                                         });
                                     }
@@ -132,7 +131,7 @@ router.post('/submitSeminar', (req, res) => {
                             }
                             
                             if(results.affectedRows > 0) {
-                                return res.json({success: true});
+                                return res.json({success: true, seminarid : results.insertId});
                             }
                         });
                     }
