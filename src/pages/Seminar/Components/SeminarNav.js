@@ -59,7 +59,7 @@ const SeminarNav = () => {
     return (
       <div className="Seminar-Overview">  
           <Tabs value={position} indicatorColor="primary" textColor="primary" onChange={handleChange} centered>
-              <Tab className="" label="Upcoming" />
+              <Tab className="" label="Kommende" />
               <Tab className="" label="Utgåtte" />
           </Tabs>
 
