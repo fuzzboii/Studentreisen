@@ -1,4 +1,4 @@
-main {
+#tools_main {
     display: flex;
     flex-direction: column;
 }
@@ -23,17 +23,17 @@ main {
     background-color: #9DACD4;
 }
 
-.div_tools section {
+.tools_div section {
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
 
-.div_tools {
+.tools_div {
     margin-bottom: 2em;
 }
 
-#section_overview {
+#tools_overview_section {
     margin-top: 2em;
     width: 90%;
     margin-left: 5%; margin-right: 5%;
@@ -45,7 +45,7 @@ main {
   
   /* Laptop / Liten skjerm,, 720p */
   @media screen and (min-width: 1280px) {
-      #section_overview {
+      #tools_overview_section {
         max-width: 80em;
         margin-left: auto; margin-right: auto;
       }

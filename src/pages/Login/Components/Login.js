@@ -10,7 +10,6 @@ import axios from 'axios';
 // Studentreisen-assets og komponenter
 import Loader from '../../../global/Components/Loader';
 import CookieService from '../../../global/Services/CookieService';
-import AuthService from '../../../global/Services/AuthService';
 import '../CSS/Login.css';
 import usnlogo from '../../../assets/usn.png';
 
@@ -18,7 +17,7 @@ class Login extends Component {
   constructor(props) {
     super(props)
     // Login-spesifikke states, delt opp i før-visning autentisering, login, alert og glemt passord
-    this.state = {loading : true, authenticated : false, 
+    this.state = {loading : this.props.loading, authenticated : this.props.auth, 
                   email : "", pwd : "", remember : false, loginDisabled : false, loginText : "Logg inn", loginOpacity: "1",
                   alertDisplay : "none", alertText : "",
                   forgotEmail : "", forgotDisplay : false, forgotBtnDisabled : false, forgotAlertDisplay : "none", forgotAlertText : "", forgotAlertSeverity : "error"}
@@ -80,7 +79,6 @@ class Login extends Component {
             this.setState({
               authenticated: true
             });
-
             // Sjekker om bruker har satt "Husk meg"
             if(!this.state.remember) {
               let date = new Date();
@@ -90,7 +88,7 @@ class Login extends Component {
               const options = { path: "/", expires: date };
               CookieService.set('authtoken', res.data.authtoken, options);
               
-              this.props.history.push('/');
+              window.location.href="/";
             } else {
               let date = new Date();
               // Token utløper om 72 timer om "Husk meg" ikke er satt
@@ -99,7 +97,7 @@ class Login extends Component {
               const options = { path: "/", expires: date };
               CookieService.set('authtoken', res.data.authtoken, options);
               
-              this.props.history.push('/');
+              window.location.href="/";
             }
         } else {
             // Feil oppstod ved innlogging, viser meldingen
@@ -223,36 +221,10 @@ class Login extends Component {
     this.props.history.push('/register/');
   };
 
-  // Utføres når alle komponentene er lastet inn og er det siste steget i mounting-fasen
-  componentDidMount() {
-    // Henter authtoken-cookie
-    const token = CookieService.get("authtoken");
-
-    if(token !== undefined) {
-      // Om token eksisterer sjekker vi mot serveren om brukeren har en gyldig token
-      AuthService.isAuthenticated(token).then(res => {
-        if(!res) {
-          // Sletter authtoken om token eksisterer lokalt men ikke er gyldig på server
-          CookieService.remove("authtoken");
-        }
-        this.setState({
-          authenticated : res,
-          loading: false
-        });
-      });
-    } else {
-      this.setState({
-        authenticated : false,
-        loading: false
-      });
-    }
-  };
-
   render() {
-    const {loading, authenticated} = this.state;
 
     // Om vi er i loading fasen (Før mottatt data fra API) vises det et Loading ikon
-    if(loading) {
+    if(this.props.loading) {
       return(
         <section id="loading">
           <Loader />
@@ -260,7 +232,7 @@ class Login extends Component {
       );
     }
     
-    if(!loading && !authenticated) {
+    if(!this.props.loading && !this.props.auth) {
       // Når loading fasen er komplett og bruker ikke er innlogget, vis innholdet på Login-siden
       return (
         <main id="main_login">

@@ -1,4 +1,5 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 
 // 3rd-party Packages
 import MaterialTable from "material-table";
@@ -11,6 +12,7 @@ import CookieService from '../../../global/Services/CookieService';
 function SeminarOverview(props) {
     let [seminar, setSeminar] = React.useState([]);
     let [isLoading, setIsLoading] = React.useState(true);
+    const history = useHistory();
     
     const token = {
         token: CookieService.get("authtoken")
@@ -26,6 +28,8 @@ function SeminarOverview(props) {
                 if(res.data.results) {
                     setIsLoading(false);
                     setSeminar(res.data.results);
+                } else {
+                    setIsLoading(false);
                 }
             });
     }
@@ -120,8 +124,9 @@ function SeminarOverview(props) {
         )
     }
 
+
     return (
-        <section id="section_overview">
+        <section id="tools_overview_section">
             <MaterialTable columns={kolonner} data={seminar} localization={lokalisering} editable={redigerbar} isLoading={isLoading} title="Seminaroversikt" actions={[
                     {
                         icon: 'edit',
@@ -135,7 +140,7 @@ function SeminarOverview(props) {
                         tooltip: 'Nytt seminar',
                         isFreeAction: true,
                         onClick: () => {
-                            console.log("Gå til oppretting av nytt seminar");
+                            history.push("/seminar/ny");
                         }
                     },
                     seminarData => ({

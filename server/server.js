@@ -1,5 +1,6 @@
 const dotenv = require("dotenv");
 const express = require("express");
+const fileupload = require("express-fileupload");
 
 // Importerer routes vi bruker
 const authRoute = require('./routes/auth');
@@ -17,6 +18,7 @@ const app = express();
 
 // Mellomvare
 app.use(express.json());
+app.use(fileupload());
 
 // Midlertidig header for å tillate tilkoblinger fra localhost:3000, vil sannsynligvis bli endret til studentreisen.no ved senere tidspunkt
 app.use((req, res, next) => {

@@ -10,7 +10,6 @@ import axios from 'axios';
 // Studentreisen-assets og komponenter
 import Loader from '../../../global/Components/Loader';
 import CookieService from '../../../global/Services/CookieService';
-import AuthService from '../../../global/Services/AuthService';
 import '../CSS/Register.css';
 import usnlogo from '../../../assets/usn.png';
 
@@ -18,7 +17,7 @@ class Register extends Component {
   constructor(props) {
     super(props)
     // Login-spesifikke states, delt opp i før-visning autentisering, register, alert
-    this.state = {loading : true, authenticated : false, 
+    this.state = {loading : props.loading, authenticated : props.auth, 
                   email : "", fnavn : "", enavn : "", pwd : "", pwd2 : "", registerDisabled : false, registerText : "Registrer bruker", registerOpacity: "1",
                   alertDisplay : "none", alertText : "", alertSeverity : "error"}
   }
@@ -170,38 +169,11 @@ class Register extends Component {
       });
     }
   };
-
-
-  // Utføres når alle komponentene er lastet inn og er det siste steget i mounting-fasen
-  componentDidMount() {
-    // Henter authtoken-cookie
-    const token = CookieService.get("authtoken");
-
-    if(token !== undefined) {
-      // Om token eksisterer sjekker vi mot serveren om brukeren har en gyldig token
-      AuthService.isAuthenticated(token).then(res => {
-        if(!res) {
-          // Sletter authtoken om token eksisterer lokalt men ikke er gyldig på server
-          CookieService.remove("authtoken");
-        }
-        this.setState({
-          authenticated : res,
-          loading: false
-        });
-      });
-    } else {
-      this.setState({
-        authenticated : false,
-        loading: false
-      });
-    }
-  };
   
   render() {
-    const {loading, authenticated} = this.state;
 
     // Om vi er i loading fasen (Før mottatt data fra API) vises det et Loading ikon
-    if(loading) {
+    if(this.props.loading) {
       return (
         <section id="loading">
           <Loader />
@@ -209,7 +181,7 @@ class Register extends Component {
       );
     }
     
-    if(!loading && !authenticated) {
+    if(!this.props.loading && !this.props.auth) {
       return (
         <main id="main_register">
           <section id="section_logo_register">

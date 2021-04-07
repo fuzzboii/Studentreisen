@@ -4,8 +4,6 @@ import React from "react";
 import MaterialTable from "material-table";
 import axios from "axios";
 
-import { FormControl, InputLabel, Input } from '@material-ui/core';
-
 // Studentreisen-assets og komponenter
 import CookieService from '../../../global/Services/CookieService';
 import ValidationService from '../../../global/Services/ValidationService';
@@ -28,6 +26,8 @@ function UserOverview(props) {
                 if(res.data.results) {
                     setIsLoading(false);
                     setBrukere(res.data.results);
+                } else {
+                    setIsLoading(false);
                 }
             });
     }
@@ -173,7 +173,7 @@ function UserOverview(props) {
     }
 
     return (
-        <section id="section_overview">
+        <section id="tools_overview_section">
           <MaterialTable columns={columns} data={brukere} localization={localization} editable={editable} isLoading={isLoading} title="Brukeroversikt" />
         </section>
     );

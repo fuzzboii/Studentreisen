@@ -1,5 +1,7 @@
 const { connection } = require('../db');
 const mysql = require('mysql');
+const bcrypt = require('bcryptjs');
+const cryptojs = require('crypto-js');
 const { verifyAuth } = require('../global/CommonFunctions');
 const router = require('express').Router();  
 
@@ -71,6 +73,7 @@ router.post('/getInteresser', async (req, res) => {
         }
 });
 
+// Sletter en av innloget brukers aktive interesser
 router.post('/deleteInteresse', async (req, res) => {
     let brukerid = undefined;
     if (req.body.token !== undefined && req.body.fagfeltid !== undefined) {
@@ -99,6 +102,7 @@ router.post('/deleteInteresse', async (req, res) => {
         }
 });
 
+// Legger til en interesse på innlogget bruker
 router.post('/postInteresse', async (req, res) => {
     let brukerid = undefined;
     if (req.body.token !== undefined && req.body.fagfeltid !== undefined) {
@@ -118,7 +122,7 @@ router.post('/postInteresse', async (req, res) => {
                     // console.log("Hentet");
                     // return res.json({results});
                 } else {
-                    return res.json({"status" : "error", "message" : "En feil oppstod under hetning av brukerens interesser"});
+                    return res.json({"status" : "error", "message" : "En feil oppstod under henting av brukerens interesser"});
                 }
             });       
         })
@@ -126,5 +130,88 @@ router.post('/postInteresse', async (req, res) => {
             res.status(400).json({"status" : "error", "message" : "Ikke tilstrekkelig data"});
         }
 });
+
+// Oppdater brukerens telefonnummer
+router.post('/updateTelefon', async (req, res) => {
+    let brukerid = undefined
+    if (req.body.token !== undefined && req.body.telefon !== undefined) {
+        verifyAuth(req.body.token).then( resAuth => {
+            brukerid = resAuth.brukerid
+            let updateQuery = "UPDATE bruker SET telefon= ? WHERE brukerid= ?"
+            let updateQueryFormat = mysql.format(updateQuery, [req.body.telefon, brukerid])
+            connection.query(updateQueryFormat, (error, results) => {
+                if (error) {
+                    console.log("An error occured while updating the users phone number, details: " + error.errno + ", " + error.sqlMessage)
+                    return res.jason({ "status" : "error", "message" : "en intern feil oppstod, vennligst forsøk igjen senere" })
+                }
+
+                if(results.length > 0) {
+
+                } else {
+                    return res.json({"status" : "error", "message" : "En feil oppstod under oppdatering av brukerens telefonnummer"})
+                }
+            })
+        })
+    } else {
+        res.status(400).json({"stauts" : "error", "message" : "Ikke tilstrekkelig data"})
+    }
+})
+
+// Oppdater brukerens epost
+router.post('/updateEmail', async (req, res) => {
+    let brukerid = undefined
+    if (req.body.token !== undefined && req.body.email !== undefined) {
+        verifyAuth(req.body.token).then( resAuth => {
+            brukerid = resAuth.brukerid
+            let updateQuery = "UPDATE bruker SET email= ? WHERE brukerid= ?"
+            let updateQueryFormat = mysql.format(updateQuery, [req.body.email.toLowerCase(), brukerid])
+            connection.query(updateQueryFormat, (error, results) => {
+                if (error) {
+                    console.log("An error occured while updating the users email, details: " + error.errno + ", " + error.sqlMessage)
+                    return res.jason({ "status" : "error", "message" : "en intern feil oppstod, vennligst forsøk igjen senere" })
+                }
+
+                if(results.length > 0) {
+
+                } else {
+                    return res.json({"status" : "error", "message" : "En feil oppstod under oppdatering av brukerens email"})
+                }
+            })
+        })
+    } else {
+        res.status(400).json({"stauts" : "error", "message" : "Ikke tilstrekkelig data"})
+    }
+})
+
+// Oppdater brukerens passord
+router.post('/updatePassord', async (req, res) => {
+    
+    let brukerid = undefined
+    if (req.body.token !== undefined && req.body.pwd) {
+        // Salt og hash passord
+        const salt = await bcrypt.genSalt(10)
+        const hashedPwd = await bcrypt.hash(req.body.pwd, salt)
+        verifyAuth(req.body.token).then( resAuth => {
+            brukerid = resAuth.brukerid
+            let updateQuery = "UPDATE bruker SET pwd = ? WHERE brukerid = ?"
+            let updateQueryFormat = mysql.format(updateQuery, [hashedPwd, brukerid])
+            console.log(hashedPwd)
+            connection.query(updateQueryFormat, (error, results) => {
+                if (error) {
+                    console.log("An error occured while updating the users password, details: " + error.errno + ", " + error.sqlMessage)
+                    return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere"})
+                }
+
+                if(results.length > 0) {
+
+                } else {
+                    return res.json({"status" : "error", "message" : "En feil oppstod under oppdatering av brukerens passord"})
+                }
+            })
+        })
+    } else {
+        res.status(400).json({"stauts" : "error", "message" : "Ikke tilstrekkelig data"})
+    }
+})
 
 module.exports = router;

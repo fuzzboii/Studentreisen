@@ -1,6 +1,9 @@
 .profile-header {
     display: flex;
 }
+.profile-navn {
+    margin-top: 0;
+}
 
 .profile-title {
     margin-top: auto;
@@ -37,6 +40,12 @@
     border-radius: 1.4rem;
 }
 
+form {
+    margin-bottom: 2vh;
+    display: flex;
+    flex-direction: column;
+}
+
 /* Media queries
 ----------------------------- */
 /* Større mobiler */
@@ -48,6 +57,8 @@
     .interesser {
         display: inline;
     }
+
+
 }
 
 /* Laptop / Liten skjerm, 720p */
@@ -61,6 +72,11 @@
         margin-right: auto;
         width: 40vw;
         margin-top: 2vh;
+    }
+
+    #form_profile_pwd {
+        display: flex;
+        flex-direction: column;
     }
 }
 
