@@ -97,7 +97,7 @@ const CourseNav = () => {
                   </div>
             </TabPanel>
             }  
-            {Object.entries(courses).length !== 0 &&
+            {Object.entries(modules).length !== 0 &&
             <TabPanel value={position} index={1}>
                 <div className="content-main">
                   <div className="indexRes">
