@@ -75,67 +75,93 @@ class SeminarNew extends Component {
     handleSubmit = e => {
         // Stopper siden fra å laste inn på nytt
         e.preventDefault();
-        
-        // Slår midlertidig av "Opprett seminar"-knappen og endrer teksten til "Vennligst vent"
-        this.setState({
-            submitDisabled: true,
-            submitText: "Vennligst vent",
-            submitOpacity: "0.6"
-        });
 
-        const data = new FormData();
+        console.log("TODO:\n\tOm seminaret ikke er offentlig, gå til oversikt istedet for spesifikt")
 
-        data.append('title', this.state.SeminarNew_input_title);
-        data.append('startdate', this.state.SeminarNew_input_startdate);
-        data.append('enddate', this.state.SeminarNew_input_enddate);
-        data.append('address', this.state.SeminarNew_input_address);
-        data.append('description', this.state.SeminarNew_input_desc);
-        data.append('availability', this.state.SeminarNew_switch_availability);
-        data.append('token', CookieService.get("authtoken"));
-        data.append('image', this.state.SeminarNew_input_imageprev);
-
-        // Axios POST request
-        axios
-            // Henter API URL fra .env og utfører en POST request med dataen fra objektet over
-            // Axios serialiserer objektet til JSON selv
-            .post(process.env.REACT_APP_APIURL + "/seminar/submitSeminar", data)
-            // Utføres ved mottatt resultat
-            .then(res => {
-                if(res.data.success === "temp") {
-                    // Mottok OK fra server
-                    this.setState({
-                        authenticated: true
-                    });
-
-                    //window.location.href="/seminar";
+        if(this.state.SeminarNew_input_title.length > 0 && this.state.SeminarNew_input_title.length <= 255) {
+            if(this.state.SeminarNew_input_address.length > 0 && this.state.SeminarNew_input_address.length <= 255) {
+                if(this.state.SeminarNew_input_desc.length > 0 && this.state.SeminarNew_input_desc.length <= 255) {
+                    if(this.state.SeminarNew_input_startdate > moment().format('YYYY-MM-DDTHH:mm:ss')) {
+                        if(this.state.SeminarNew_input_startdate.length > 0 && this.state.SeminarNew_input_enddate.length > 0 && moment(this.state.SeminarNew_input_startdate).format('YYYY-MM-DD') <= this.state.SeminarNew_input_enddate) {
+                            // Slår midlertidig av "Opprett seminar"-knappen og endrer teksten til "Vennligst vent"
+                            this.setState({
+                                submitDisabled: true,
+                                submitText: "Vennligst vent",
+                                submitOpacity: "0.6"
+                            });
+                    
+                            const data = new FormData();
+                    
+                            data.append('title', this.state.SeminarNew_input_title);
+                            data.append('startdate', this.state.SeminarNew_input_startdate);
+                            data.append('enddate', this.state.SeminarNew_input_enddate);
+                            data.append('address', this.state.SeminarNew_input_address);
+                            data.append('description', this.state.SeminarNew_input_desc);
+                            data.append('availability', this.state.SeminarNew_switch_availability);
+                            data.append('token', CookieService.get("authtoken"));
+                            data.append('image', this.state.SeminarNew_input_imageprev);
+                    
+                            // Axios POST request
+                            axios
+                                // Henter API URL fra .env og utfører en POST request med dataen fra objektet over
+                                // Axios serialiserer objektet til JSON selv
+                                .post(process.env.REACT_APP_APIURL + "/seminar/submitSeminar", data)
+                                // Utføres ved mottatt resultat
+                                .then(res => {
+                                    if(res.data.success) {
+                                        // Mottok OK fra server
+                                        this.setState({
+                                            authenticated: true
+                                        });
+                                        
+                                        const goto = "/seminar/seminarkommende=" + res.data.seminarid;
+                    
+                                        window.location.href=goto;
+                                    } else {
+                                        // Feil oppstod ved oppretting
+                                        this.setState({
+                                            submitDisabled: false,
+                                            submitText: "Opprett seminar",
+                                            submitOpacity: "1"
+                                        });
+                                    }
+                                })
+                                .catch(err => {
+                                    // En feil oppstod ved oppkobling til server
+                                    this.setState({
+                                        submitDisabled: false,
+                                        submitText: "Opprett seminar",
+                                        submitOpacity: "1"
+                                    });
+                                })
+                                // Utføres alltid uavhengig av andre resultater
+                                .finally(() => {
+                                    // Gjør Opprett seminar knappen tilgjengelig igjen om seminaret ikke er opprettet over
+                                    if(!this.state.authenticated) {
+                                        this.setState({
+                                            submitDisabled: false,
+                                            submitText: "Opprett seminar",
+                                            submitOpacity: "1"
+                                        });
+                                    }
+                                });
+                        } else {
+                            // Startdato/Sluttdato ikke fylt inn eller sluttdato er før startdato
+                        }
+                    } else {
+                        // Startdato er bakover i tid
+                    }
                 } else {
-                    // Feil oppstod ved oppretting
-                    this.setState({
-                        submitDisabled: false,
-                        submitText: "Opprett seminar",
-                        submitOpacity: "1"
-                    });
+                    // Beskrivelsen er ikke fylt inn eller for lang
                 }
-            })
-            .catch(err => {
-                // En feil oppstod ved oppkobling til server
-                this.setState({
-                    submitDisabled: false,
-                    submitText: "Opprett seminar",
-                    submitOpacity: "1"
-                });
-            })
-            // Utføres alltid uavhengig av andre resultater
-            .finally(() => {
-                // Gjør Opprett seminar knappen tilgjengelig igjen om seminaret ikke er opprettet over
-                if(!this.state.authenticated) {
-                    this.setState({
-                        submitDisabled: false,
-                        submitText: "Opprett seminar",
-                        submitOpacity: "1"
-                    });
-                }
-            });
+            } else {
+                // Adressen er ikke fylt inn eller for lang
+
+            }
+        } else {
+            // Tittelen er ikke fylt inn eller for lang
+
+        }
     };
 
     render() {
