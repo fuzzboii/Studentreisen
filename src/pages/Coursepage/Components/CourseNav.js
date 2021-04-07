@@ -73,6 +73,7 @@ const CourseNav = () => {
               </Tabs>
             </div>
 
+            {courses !== undefined &&
             <TabPanel value={position} index={0}>
                 <div className="content-overview">
                   <div className="indexRes">
@@ -95,7 +96,8 @@ const CourseNav = () => {
                     </div>
                   </div>
             </TabPanel>
-            
+            }  
+            {modules !== undefined &&
             <TabPanel value={position} index={1}>
                 <div className="content-main">
                   <div className="indexRes">
@@ -118,8 +120,9 @@ const CourseNav = () => {
                     </div>
                   </div>
             </TabPanel>   
+            }
         </div>
-
+        
     );
 };
 
