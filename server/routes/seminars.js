@@ -1,5 +1,6 @@
 const { connection } = require('../db');
 const mysql = require('mysql');
+const path = require('path');
 const { verifyAuth } = require('../global/CommonFunctions');
 
 const router = require('express').Router();
@@ -65,14 +66,76 @@ router.post('/submitSeminar', (req, res) => {
         verifyAuth(req.body.token).then(function(response) {
             if(response.authenticated) {
                 if(response.usertype.toString() !== process.env.ACCESS_STUDENT) {
-                    if(req.files) {
-                        // Bruker har oppgitt et bilde som skal lastes opp
-                        console.log("Last opp seminar med bilde");
+                    if(req.files.image) {
+                        
+                        // Oppretter seminar
+                        let insertSeminarQuery = "INSERT INTO seminar(navn, arrangor, adresse, oppstart, varighet, beskrivelse, tilgjengelighet) VALUES(?, ?, ?, ?, ?, ?, ?)";
+                        let insertSeminarQueryFormat = mysql.format(insertSeminarQuery, [req.body.title, response.brukerid, req.body.address, req.body.startdate, req.body.enddate, req.body.description, (req.body.availability === "true") ? 1 : 0]);
+                
+                        connection.query(insertSeminarQueryFormat, (error, insertedSeminar) => {
+                            if (error) {
+                                console.log("En feil oppstod ved oppretting av nytt seminar, detaljer: " + error.errno + ", " + error.sqlMessage)
+                                return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                            }
+                            
+                            if(insertedSeminar.affectedRows > 0) {
+                                // Bruker har oppgitt et bilde som skal lastes opp
+                                const opplastetFilnavn = req.files.image.name;
+                                const filtype = opplastetFilnavn.substring(opplastetFilnavn.lastIndexOf('.'));
+                                const filnavn = "seminar" + insertedSeminar.insertId + filtype;
+
+
+                                const rootFolder = path.join(__dirname, '../../');
+        
+                                const opplastetBilde = req.files.image;
+                                opplastetBilde.mv(rootFolder + '/public/uploaded/' + filnavn);
+
+                                // Oppretter referanse til bilde og kobler mot seminar
+                                let insertImageQuery = "INSERT INTO bilde(plassering) VALUES(?)";
+                                let insertImageQueryFormat = mysql.format(insertImageQuery, [filnavn]);
+                        
+                                connection.query(insertImageQueryFormat, (error, insertedImage) => {
+                                    if (error) {
+                                        console.log("En feil oppstod ved oppretting av nytt bilde til et seminar, detaljer: " + error.errno + ", " + error.sqlMessage)
+                                        return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                                    }
+                                    
+                                    if(insertedImage.affectedRows > 0) {
+                                        // Oppretter referanse til bilde og kobler mot seminar
+                                        let insertQuery = "UPDATE seminar SET bildeid = ? WHERE seminarid = ?";
+                                        let insertQueryFormat = mysql.format(insertQuery, [insertedImage.insertId, insertedSeminar.insertId]);
+                                
+                                        connection.query(insertQueryFormat, (error, results) => {
+                                            if (error) {
+                                                console.log("En feil oppstod ved kobling av bilde og seminar, detaljer: " + error.errno + ", " + error.sqlMessage)
+                                                return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                                            }
+                                            
+                                            if(results.affectedRows > 0) {
+                                                return res.json({success: true});
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                        
                     } else {
                         // Oppretter seminar uten bilde
-                        console.log("Last opp seminar uten bilde");
+                        let insertQuery = "INSERT INTO seminar(navn, arrangor, adresse, oppstart, varighet, beskrivelse, tilgjengelighet) VALUES(?, ?, ?, ?, ?, ?, ?)";
+                        let insertQueryFormat = mysql.format(insertQuery, [req.body.title, response.brukerid, req.body.address, req.body.startdate, req.body.enddate, req.body.description, (req.body.availability === "true") ? 1 : 0]);
+                
+                        connection.query(insertQueryFormat, (error, results) => {
+                            if (error) {
+                                console.log("En feil oppstod under registrering av ny bruker, detaljer: " + error.errno + ", " + error.sqlMessage)
+                                return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                            }
+                            
+                            if(results.affectedRows > 0) {
+                                return res.json({success: true});
+                            }
+                        });
                     }
-                    return res.json({success: true});
                 } else {
                     // Studenter kan ikke opprette ett seminar
                     console.log("En innlogget bruker uten riktige tilganger har forsøkt å opprette et seminar, brukerens ID: " + response.brukerid);

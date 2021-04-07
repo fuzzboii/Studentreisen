@@ -79,7 +79,6 @@ class Login extends Component {
             this.setState({
               authenticated: true
             });
-
             // Sjekker om bruker har satt "Husk meg"
             if(!this.state.remember) {
               let date = new Date();
@@ -89,7 +88,7 @@ class Login extends Component {
               const options = { path: "/", expires: date };
               CookieService.set('authtoken', res.data.authtoken, options);
               
-              this.props.history.push('/');
+              window.location.href="/";
             } else {
               let date = new Date();
               // Token utløper om 72 timer om "Husk meg" ikke er satt
@@ -98,7 +97,7 @@ class Login extends Component {
               const options = { path: "/", expires: date };
               CookieService.set('authtoken', res.data.authtoken, options);
               
-              this.props.history.push('/');
+              window.location.href="/";
             }
         } else {
             // Feil oppstod ved innlogging, viser meldingen

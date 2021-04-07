@@ -3,7 +3,7 @@ import { Component } from "react";
 import { Redirect } from "react-router-dom";
 
 // 3rd-party Packages
-import { Button, FormControl, InputLabel, Input } from '@material-ui/core';
+import { Button, FormControl, InputLabel, Input, FormControlLabel, Switch } from '@material-ui/core';
 import axios from 'axios';
 import moment from 'moment';
 import IconButton from '@material-ui/core/IconButton';
@@ -25,12 +25,11 @@ class SeminarNew extends Component {
         let dateNow = moment().format('YYYY-MM-DD');
         this.state = {  loading : this.props.loading, authenticated : this.props.auth, 
                         SeminarNew_input_title : "", SeminarNew_input_startdate : datetimeNow, SeminarNew_input_enddate : dateNow, SeminarNew_input_address : "", 
-                        SeminarNew_input_desc : "", SeminarNew_input_image : "", SeminarNew_input_imageprev : "",
+                        SeminarNew_input_desc : "", SeminarNew_input_image : "", SeminarNew_input_imageprev : "", SeminarNew_switch_availability : false,
                         submitDisabled : false, submitText : "Opprett seminar", submitOpacity: "1" }
     }
 
     onInputChange = e => {
-        console.log(e);
         if(e.target.id === "SeminarNew_input_title") {
             this.setState({
                 SeminarNew_input_title : e.target.value
@@ -51,13 +50,17 @@ class SeminarNew extends Component {
             this.setState({
                 SeminarNew_input_desc : e.target.value
             })
+        } else if(e.target.id === "SeminarNew_switch_availability") {
+            this.setState({
+                SeminarNew_switch_availability : !this.state.SeminarNew_switch_availability
+            })
         }
     }
 
     onImageChange = e => {
         if(e.target.files && e.target.files[0]) {
             this.setState({
-                SeminarNew_input_image: e.target.value,
+                SeminarNew_input_image: e.target.files[0].name,
                 SeminarNew_input_imageprev: e.target.files[0]
             });
         } else {
@@ -87,6 +90,7 @@ class SeminarNew extends Component {
         data.append('enddate', this.state.SeminarNew_input_enddate);
         data.append('address', this.state.SeminarNew_input_address);
         data.append('description', this.state.SeminarNew_input_desc);
+        data.append('availability', this.state.SeminarNew_switch_availability);
         data.append('token', CookieService.get("authtoken"));
         data.append('image', this.state.SeminarNew_input_imageprev);
 
@@ -172,6 +176,10 @@ class SeminarNew extends Component {
                             <InputLabel>Beskrivelse</InputLabel>
                             <Input id="SeminarNew_input_desc" required={true} value={this.state.SeminarNew_input_desc} onKeyUp={this.onSubmit} onChange={this.onInputChange} variant="filled" multiline rowsMax="10" />
                         </FormControl>
+                        <FormControlLabel id="SeminarNew_formcontrol" control={
+                                <Switch id="SeminarNew_switch_availability" checked={this.state.SeminarNew_switch_availability} onChange={this.onInputChange} />
+                            } label="Åpent for alle"
+                        />
                         {this.state.SeminarNew_input_imageprev !== "" &&
                             <>
                             <img id="SeminarNew_input_imageprev" src={URL.createObjectURL(this.state.SeminarNew_input_imageprev)}/>
