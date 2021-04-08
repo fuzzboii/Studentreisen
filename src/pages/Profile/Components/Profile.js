@@ -250,7 +250,7 @@ function Profile(props) {
                     <form id="form-profile-tlf" onSubmit={onTlfSubmit} >
                         <FormControl id="form-profile-tlf-control">
                             <InputLabel>Telefonnummer</InputLabel>
-                            <Input type="string" variant="outlined" value={tlf} onChange={onTlfChange} required={true} />
+                            <Input type="text" variant="outlined" value={tlf} onChange={onTlfChange} required={true} />
                         </FormControl>
                         <Button className={classes.profileButton} type="submit" variant="contained" > {updateText} </Button>
                     </form>
