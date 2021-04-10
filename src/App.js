@@ -10,6 +10,7 @@ import Register from './pages/Register/Components/Register';
 import Reset from './pages/Reset/Components/Reset';
 import Profile from './pages/Profile/Components/Profile';
 import Home from './pages/Frontpage/Components/Home';
+import HomeIsLogged from './pages/Overviewpage/Components/HomeIsLogged';
 import Tools from './pages/Tools/Components/Tools';
 import Course from './pages/Coursepage/Components/Overview';
 import CourseDetail from './pages/Coursepage/Components/CourseDetail';
@@ -63,6 +64,9 @@ function App() {
       <Navbar auth={auth} type={type} loading={loading} />
         <Switch>
           <Route path = "/" exact component = {Home} />
+          <Route path = "/overview" render={() => (
+              <HomeIsLogged auth={auth} type={type} loading={loading} />
+            )} />
           <Route path = "/login" render={() => (
               <Login auth={auth} type={type} loading={loading} />
             )} />
