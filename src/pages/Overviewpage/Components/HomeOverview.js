@@ -1,12 +1,14 @@
 import { Component } from 'react';
+import {useLocation} from 'react-router-dom';
+
 import '../Styles/styles.css';
+import CardLinks from './CardLinks';
 import Loader from '../../../global/Components/Loader';
 import NoAccess from '../../../global/Components/NoAccess';
 import CookieService from '../../../global/Services/CookieService';
 import AuthService from '../../../global/Services/AuthService';
-import { Link, useLocation} from 'react-router-dom';
 
-import Button from "@material-ui/core/Button";
+
 
 
 export const LocationDisplay = () => {
@@ -16,7 +18,7 @@ export const LocationDisplay = () => {
   }
 
 
-class HomeIsLogged extends Component {
+class HomeOverview extends Component {
     constructor(props) {
         super(props);
         
@@ -66,12 +68,8 @@ class HomeIsLogged extends Component {
         if(!loading && authenticated) {
             return (            
                 <div className="main">
-                    Hjemmeside for innloggede brukere
-                    <Button 
-                  component={Link} 
-                  to='/course'>
-                  Kurs
-                </Button>
+                    <h1 className="mainTitle">Oversikt</h1>
+                    <CardLinks/>
                 </div>
             );
         } else {
@@ -84,4 +82,4 @@ class HomeIsLogged extends Component {
 }   
 
 
-export default HomeIsLogged; 
+export default HomeOverview; 
