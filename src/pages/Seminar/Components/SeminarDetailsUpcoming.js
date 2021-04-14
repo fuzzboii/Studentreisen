@@ -1,7 +1,6 @@
 // React spesifikt
 import { useState, useEffect, useContext, Component} from 'react';
 import {useLocation, useParams} from 'react-router-dom';
-import React from 'react';
 
 // 3rd-party Packages
 import EventIcon from '@material-ui/icons/Event';
@@ -14,13 +13,6 @@ import axios from 'axios';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import { FormControl, InputLabel, Input } from '@material-ui/core';
-
 // Studentreisen-assets og komponenter
 import Loader from '../../../global/Components/Loader';
 import NoAccess from '../../../global/Components/NoAccess';
@@ -28,43 +20,24 @@ import CookieService from '../../../global/Services/CookieService';
 import '../CSS/Seminar.css';
 
 const SeminarDetailsUpcoming = (props) => {
+
     useEffect(() => {
         fetchData();
     },[]);
 
     let { seminarid } = useParams();
-    
     const [seminarsUpcoming, setSeminars] = useState([]);
-    const [open, setOpen] = React.useState(false);
-    const handleClickOpen = () => {
-      setOpen(true);
-    };
-  
-    const handleClose = () => {
-      setOpen(false);
-    };
 
-    //Henting av kommende data til seminarene
     const fetchData = async () => {
                     
         const res = await axios.get(process.env.REACT_APP_APIURL + "/seminar/getAllSeminarUpcomingData");
         console.log(res.data);
         setSeminars(res.data);
-        res.data.map(prop => {
-            if (prop.seminarid == seminarid) {
-                setTitle(prop.navn);
-                setStartdate(prop.oppstart);
-                setEnddate(prop.varighet);
-                setAdress(prop.adresse);
-                setDescription(prop.beskrivelse);
 
-            }
-        })
     };
 
-    //Sletting av seminar
     const deleteSeminar = async (seminarid, varighet, bilde) => {
-
+        console.log("TODO:\n\tIkke vis slett om sluttdato ikke er nådd?\n\tImplementere feilmeldinger");
         try {
             axios
                 .post(process.env.REACT_APP_APIURL + "/tools/deleteSeminar", {seminarid : seminarid, sluttdato : varighet, bilde : bilde, token : CookieService.get("authtoken")})
@@ -83,47 +56,6 @@ const SeminarDetailsUpcoming = (props) => {
         }
     };
 
-    // States for oppdatering av seminar
-    // Alert, melding
-    const [alertText, setAlertText] = useState();
-    // Alert, synlighet
-    const [alertDisplay, setAlertDisplay] = useState("none");
-
-    
-    // States for endring av seminar
-    const [title, setTitle] = useState();
-    const [startdate, setStartdate] = useState();
-    const [enddate, setEnddate] = useState();
-    const [adress, setAdress] = useState();
-    const [description, setDescription] = useState();
-
-    const onInputChange = e => {
-        if(e.target.id === "SeminarEdit_input_title") {
-            setTitle(e.target.value);
-            setAlertDisplay("none");
-            setAlertText("");
-        } else if(e.target.id === "SeminarEdit_input_startdate") {
-            setStartdate(e.target.value);
-            setAlertDisplay("none");
-            setAlertText("");
-        } else if(e.target.id === "SeminarEdit_input_enddate") {
-            setEnddate(e.target.value);
-            setAlertDisplay("none");
-            setAlertText("");
-
-        } else if(e.target.id === "SeminarEdit_input_address") {
-            setAdress(e.target.value);
-            setAlertDisplay("none");
-            setAlertText("");
-
-        } else if(e.target.id === "SeminarEdit_input_desc") {
-            setDescription(e.target.value);
-            setAlertDisplay("none");
-            setAlertText("");
-        }
-    }
-    
-    {/*Kommende seminarer */}
     return(
         <>
         {props.loading &&
@@ -134,94 +66,34 @@ const SeminarDetailsUpcoming = (props) => {
         }
         {!props.loading && props.auth &&    
             <div className="SeminarDetails">
-            
             {seminarsUpcoming.map(seminar => { if(seminarid == seminar.seminarid)           
                 return ( 
                     <div className="SeminarDetails-Content">
-                        {/*Header seksjonen */}
                         <div className="SeminarDetails-Header">
                             <div className="SeminarDetailsHeading">
                                 <div className="SeminarDetails-Navn">
                                     <h1 className="SeminarDetailsNavn">{seminar.navn}</h1>
                                 </div>
-                                
-                                {/* Seksjonen for påmelding, slett, og endre - knapper */}
-                                <div className="SeminarDetails-Buttons">    
-                                    {/*Påmelding til seminaret */}
+                                <div className="SeminarDetails-Buttons">
                                     <div className="SeminarDetails-ButtonPameldWrapper">
-                                        <Button className="SeminarDetailsButtonPameld" size="small" variant="contained" color="primary">
+                                        <Button className="SeminarDetailsButtonPameld" size="small" variant="contained" color="primary"        >
                                         Påmeld
                                         </Button>
                                     </div>
-                                    
-                                    {/*Endring av seminaret, med test på brukertype */}
-                                    {props.type === 4 &&
-                                    <div className="SeminarDetails-ButtonRedigerWrapper">      
-                                        <Button className="SeminarDetailsButtonRediger" size="small" variant="outlined" color="primary" startIcon={<EditIcon />} onClick={handleClickOpen}>
+                                        <div className="SeminarDetails-ButtonRedigerWrapper">
+                                        <Button className="SeminarDetailsButtonRediger" size="small" variant="outlined" color="primary" startIcon={<EditIcon />}>
                                         Rediger
                                         </Button>
-                                        <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title"> 
-                                            <DialogTitle id="form-dialog-title">Rediger</DialogTitle>
-                                            <DialogContent>
-                                            <DialogContentText>
-                                                For å gjøre endringer på seminaret, skriv de nye endringene i feltene. Klikk deretter på oppdater.
-                                            </DialogContentText>
-                                            <form id="SeminarEdit_form" >
-                                                {/* Tittel */}
-                                                <FormControl id="Seminar_formcontrol">
-                                                    <InputLabel>Tittel</InputLabel>
-                                                    <Input id="SeminarEdit_input_title" variant="outlined" value={title} onChange={onInputChange} required={false} />
-                                                </FormControl>
-
-                                                {/* Startdato */}
-                                                <FormControl id="Seminar_formcontrol">
-                                                    <InputLabel>Startdato</InputLabel>
-                                                    <Input id="SeminarEdit_input_startdate" type="datetime-local" variant="outlined" value={moment.locale('nb'), moment(startdate).format('YYYY-MM-DDTHH:mm:ss')} onChange={onInputChange} required={false} />
-                                                </FormControl>
-
-                                                {/* Sluttdato */}
-                                                <FormControl id="Seminar_formcontrol">
-                                                    <InputLabel>Sluttdato</InputLabel>
-                                                    <Input id="SeminarEdit_input_enddate" type="date" variant="outlined" value={moment.locale('nb'), moment(enddate).format('YYYY-MM-DD')} onChange={onInputChange} required={false} />
-                                                </FormControl>
-                                                
-                                                {/* Adresse */}
-                                                <FormControl id="Seminar_formcontrol">
-                                                    <InputLabel>Adresse</InputLabel>
-                                                    <Input id="SeminarEdit_input_address" variant="outlined" value={adress} onChange={onInputChange} required={false} />
-                                                </FormControl>
-                                                
-                                                {/* Beskrivelse */}
-                                                <FormControl id="Seminar_formcontrol">
-                                                    <InputLabel>Beskrivelse</InputLabel>
-                                                    <Input id="SeminarEdit_input_desc" variant="outlined" value={description} onChange={onInputChange} required={false} multiline rows="5" />
-                                                </FormControl>
-                                            </form>
-                                            </DialogContent>
-                                            
-                                            {/* Funksjonsknapper */}
-                                            <DialogActions>
-                                            <Button onClick={handleClose} color="secondary" >
-                                                Avbryt
-                                            </Button>
-                                            <Button onClick={handleClose} color="primary" startIcon={<SaveIcon />}>
-                                                Oppdater
-                                            </Button>
-                                            </DialogActions>
-                                        </Dialog>
-                                    </div>}
-                                    
-                                    {/*Sletting av seminaret, med test på brukertype */}
-                                    {props.type === 4 &&
+                                    </div>
                                     <div className="SeminarDetails-ButtonSlettWrapper">
                                         <Button className="SeminarDetailsButtonSlett" size="small" variant="outlined" color="secondary" startIcon={<DeleteIcon />} onClick={() => deleteSeminar(seminar.seminarid, seminar.varighet, seminar.plassering)}>
                                         Slett
                                         </Button>
-                                    </div>}
+                                    </div>
                                 </div>
                             </div>
+
                             
-                            {/*Oppstart og sluttdato seksjonen */}
                             <div className="SeminarDetails-Date">
                                 <EventIcon className="SeminarDetails-DateIcon"/> 
                                 <div className="SeminarDetails-OppstartVarighet">
@@ -230,8 +102,6 @@ const SeminarDetailsUpcoming = (props) => {
                                 </div>
                             </div>
                         </div>
-
-                        {/*Bilde og informasjon seksjonen */}
                         <Box className="SeminarDetails-Box" boxShadow={1}>    
                             <div className="SeminarDetails-Image">
                                 <img src={"/uploaded/" + seminar.plassering} alt="Seminar Image" className="SeminarDetails-img" imgstart=""  />
