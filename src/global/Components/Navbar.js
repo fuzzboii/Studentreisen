@@ -148,6 +148,11 @@ function Navbar(props) {
               Logg ut
             </Button>
           </div> }
+          
+          {auth && <Link
+            to='/Profile'>
+            <i className="far fa-user" />
+          </Link> }
           {button && auth && <Button onClick={loggUt} className={classes.loggbtn} > LOGG UT </Button> }
           {button && !auth && <Link to='/Register' className={classes.loggbtnNoAuth} > REGISTRER </Link> }
           {!auth && <Link to='/Login' className={classes.loggbtnNoAuth} > LOGG INN </Link> }
