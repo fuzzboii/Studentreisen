@@ -27,7 +27,8 @@ const SeminarDetailsExpired = (props) => {
 
     let { seminarid } = useParams();
     const [seminarsExpired, setSeminars] = useState([]);
-
+    
+    //Henting av kommende data til seminarene
     const fetchData = async () => {
                     
         const res = await axios.get(process.env.REACT_APP_APIURL + "/seminar/getAllSeminarExpiredData");
@@ -35,7 +36,8 @@ const SeminarDetailsExpired = (props) => {
         setSeminars(res.data);
 
     };
-
+    
+    //Sletting av seminar
     const deleteSeminar = async (seminarid, varighet, bilde) => {
         console.log("TODO:\n\tImplementere feilmeldinger");
         try {
@@ -55,7 +57,8 @@ const SeminarDetailsExpired = (props) => {
             // Vis feilmelding
         }
     };
-
+    
+    {/*Utgåtte seminarer */}
     return(
         <>
         {props.loading &&
@@ -69,26 +72,32 @@ const SeminarDetailsExpired = (props) => {
             {seminarsExpired.map(seminar => { if(seminarid == seminar.seminarid)           
                 return ( 
                     <div className="SeminarDetails-Content">
+                        {/*Header seksjonen */}
                         <div className="SeminarDetails-Header">
                             <div className="SeminarDetailsHeading">
                                 <div className="SeminarDetails-Navn">
                                     <h1 className="SeminarDetailsNavn">{seminar.navn}</h1>
                                 </div>
+
+                                {/* Seksjonen for påmelding, og slett - knapper */}
                                 <div className="SeminarDetails-Buttons">
                                     <div className="SeminarDetails-ButtonPameldWrapper">
                                         <Button className="SeminarDetailsButtonPameld" size="small" variant="outlined" disabled>
                                         Utgått
                                         </Button>
                                     </div>
+
+                                    {/*Sletting av seminaret, med test på brukertype */}
+                                    {props.type === 4 &&
                                     <div className="SeminarDetails-ButtonSlettWrapper">
                                         <Button className="SeminarDetailsButtonSlett" size="small" variant="outlined" color="secondary" startIcon={<DeleteIcon />}  onClick={() => deleteSeminar(seminar.seminarid, seminar.varighet, seminar.plassering)}>
                                         Slett
                                         </Button>
-                                    </div>
+                                    </div>}
                                 </div>
                             </div>
 
-                            
+                            {/*Oppstart og sluttdato seksjonen */}
                             <div className="SeminarDetails-Date">
                                 <EventIcon className="SeminarDetails-DateIcon"/> 
                                 <div className="SeminarDetails-OppstartVarighet">
@@ -97,6 +106,8 @@ const SeminarDetailsExpired = (props) => {
                                 </div>
                             </div>
                         </div>
+
+                        {/*Bilde og informasjon seksjonen */}
                         <Box className="SeminarDetails-Box" boxShadow={1}>    
                             <div className="SeminarDetails-Image">
                                 <img src={"/uploaded/" + seminar.plassering} alt="Seminar Image" className="SeminarDetails-img" imgstart=""  />

@@ -87,10 +87,10 @@ function App() {
           />
           <Route path = "/seminar" exact component = {Seminar} />
           <Route path = "/seminar/seminarkommende=:seminarid" render = {() =>(
-            <SeminarDetailsUpcoming auth={auth} loading={loading} />
+            <SeminarDetailsUpcoming auth={auth} type={type} loading={loading} />
           )}/>
           <Route path = "/seminar/seminarutgatte=:seminarid" render = {() =>(
-            <SeminarDetailsExpired auth={auth} loading={loading} />
+            <SeminarDetailsExpired auth={auth} type={type} loading={loading} />
           )}/>
           <Route path = "/seminar/ny"  render={() => (
               <SeminarNew auth={auth} type={type} loading={loading} />
