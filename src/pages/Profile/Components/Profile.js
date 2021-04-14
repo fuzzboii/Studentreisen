@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Redirect } from "react-router-dom";
 import axios from 'axios';
 
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
@@ -10,6 +9,7 @@ import { Alert } from '@material-ui/lab';
 import '../CSS/Profile.css';
 import CookieService from '../../../global/Services/CookieService';
 import Loader from '../../../global/Components/Loader';
+import NoAccess from '../../../global/Components/NoAccess';
 
 function Profile(props) {
     // State for loading mens vi venter på svar fra server
@@ -60,11 +60,19 @@ function Profile(props) {
             email: email
         }
 
-        axios.post(process.env.REACT_APP_APIURL + "/profile/updateEmail", config).then(
-            setAlertDisplay(""),
-            setAlertText("Epost oppdatert!"),
-            setAlertSeverity("success")
-        )
+        axios.post(process.env.REACT_APP_APIURL + "/profile/updateEmail", config).then( res => {
+            console.log(res.data.status)
+            if (res.data.status === "error") {
+                setAlertDisplay("")
+                setAlertText(res.data.message)
+                setAlertSeverity("error")
+            } else {
+                setAlertDisplay("")
+                setAlertText("Epost endret")
+                setAlertSeverity("success")
+                setAuth(true)
+            }
+        })
     }
 
     // Utføres når bruker gjør en handling i input-feltet for telefonnummer
@@ -292,10 +300,10 @@ function Profile(props) {
 
         </div>
     );
-    } if (!loading && !auth) {
+    } else {
         return (
             // Brukeren er ikke innlogget, omdiriger
-            <Redirect to={{pathname: "/"}} />
+            <NoAccess />
         );
     }
 }
