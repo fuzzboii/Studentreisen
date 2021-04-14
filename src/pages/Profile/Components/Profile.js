@@ -60,18 +60,11 @@ function Profile(props) {
             email: email
         }
 
-        axios.post(process.env.REACT_APP_APIURL + "/profile/updateEmail", config).then( res => {
-            console.log(res.data.status)
-            if (res.data.status === "error") {
-                setAlertDisplay("")
-                setAlertText(res.data.message)
-                setAlertSeverity("error")
-            } else {
-                setAlertDisplay("")
-                setAlertText("Passord endret")
-                setAlertSeverity("success")
-            }
-        })
+        axios.post(process.env.REACT_APP_APIURL + "/profile/updateEmail", config).then(
+            setAlertDisplay(""),
+            setAlertText("Epost oppdatert!"),
+            setAlertSeverity("success")
+        )
     }
 
     // Utføres når bruker gjør en handling i input-feltet for telefonnummer
@@ -250,7 +243,7 @@ function Profile(props) {
                     <form id="form-profile-tlf" onSubmit={onTlfSubmit} >
                         <FormControl id="form-profile-tlf-control">
                             <InputLabel>Telefonnummer</InputLabel>
-                            <Input type="text" variant="outlined" value={tlf} onChange={onTlfChange} required={true} />
+                            <Input type="string" variant="outlined" value={tlf} onChange={onTlfChange} required={true} />
                         </FormControl>
                         <Button className={classes.profileButton} type="submit" variant="contained" > {updateText} </Button>
                     </form>
