@@ -85,19 +85,19 @@ class Login extends Component {
               // Token utløper om 3 timer om "Husk meg" ikke er satt
               date.setTime(date.getTime() + ((60 * 3) * 60 * 1000));
 
-              const options = { path: "/overview", expires: date };
+              const options = { path: "/", expires: date };
               CookieService.set('authtoken', res.data.authtoken, options);
               
-              window.location.href="/overview";
+              window.location.href="/";
             } else {
               let date = new Date();
               // Token utløper om 72 timer om "Husk meg" ikke er satt
               date.setTime(date.getTime() + ((60 * 72) * 60 * 1000));
 
-              const options = { path: "/overview", expires: date };
+              const options = { path: "/", expires: date };
               CookieService.set('authtoken', res.data.authtoken, options);
               
-              window.location.href="/overview";
+              window.location.href="/";
             }
         } else {
             // Feil oppstod ved innlogging, viser meldingen
@@ -275,7 +275,7 @@ class Login extends Component {
     } else {
       return (
         // Brukeren er allerede innlogget, går til forsiden
-        <Redirect to={{pathname: "/overview"}} />
+        <Redirect to={{pathname: "/"}} />
       );
     }
   }
