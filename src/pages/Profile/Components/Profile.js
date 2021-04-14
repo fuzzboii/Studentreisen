@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Redirect } from "react-router-dom";
 import axios from 'axios';
 
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
@@ -10,6 +9,7 @@ import { Alert } from '@material-ui/lab';
 import '../CSS/Profile.css';
 import CookieService from '../../../global/Services/CookieService';
 import Loader from '../../../global/Components/Loader';
+import NoAccess from '../../../global/Components/NoAccess';
 
 function Profile(props) {
     // State for loading mens vi venter på svar fra server
@@ -68,8 +68,9 @@ function Profile(props) {
                 setAlertSeverity("error")
             } else {
                 setAlertDisplay("")
-                setAlertText("Passord endret")
+                setAlertText("Epost endret")
                 setAlertSeverity("success")
+                setAuth(true)
             }
         })
     }
@@ -299,10 +300,10 @@ function Profile(props) {
 
         </div>
     );
-    } if (!loading && !auth) {
+    } else {
         return (
             // Brukeren er ikke innlogget, omdiriger
-            <Redirect to={{pathname: "/"}} />
+            <NoAccess />
         );
     }
 }
