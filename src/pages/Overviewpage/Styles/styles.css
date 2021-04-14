@@ -1,0 +1,50 @@
+
+
+.main {
+    padding-left: 5em;
+    padding-right: 5em;
+
+}
+
+
+
+  /* ----------------------------- */
+ /* ------- Media queries ------- */
+/* ----------------------------- */
+
+/* Større mobiler */
+@media screen and (min-width: 370px) {
+
+}
+
+/* Tab */
+@media screen and (min-width: 720px) {
+    
+  
+}
+/* Laptop / Liten skjerm, 720p */
+@media only screen and (min-width: 1000px) {
+    .main {
+        padding-left: 5em;
+        padding-right: 5em;
+        width: 50em;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    }
+
+/* Laptop / Liten skjerm, 720p */
+@media only screen and (min-width: 1280px) {
+
+}
+
+/* Medium skjerm, 1080p */
+@media screen and (min-width: 1920px) {
+    
+}
+
+/* Stor skjerm, 1440p */
+@media screen and (min-width: 2560px) {
+
+}

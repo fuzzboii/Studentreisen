@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useHistory, useLocation} from 'react-router-dom';
 
 import Button from "@material-ui/core/Button";
 import { makeStyles } from '@material-ui/core/styles';
@@ -15,11 +15,14 @@ function Navbar(props) {
     // Props som mottas fra App, viser til om bruker er inn-/utlogget
     const [auth, setAuth] = useState(false);
     const [type, setType] = useState(null);
- 
+
     const handleClick = () => setClick(!click);
     const closeMobileMenu = () => setClick(false);
 
     let history = useHistory()
+
+    //prop for å teste på oversiktsside
+    const location = useLocation()
 
     // Testing på om en "LOGG UT"-knapp skal vises i navbar eller i meny
     const showButton = () => {
@@ -117,6 +120,46 @@ function Navbar(props) {
         null
       );
     }
+
+    //Egen return for overview, fordi lenkene i navmenyen ikke skal vises - lagt til av Aron 
+    if(!loading && location.pathname=="/overview") return (<>
+      <nav className='navbar' id="bar" >
+        <div className='navbar-container'>
+          <Link 
+            to="/" 
+            className="navbar-logo" 
+            onClick={closeMobileMenu}>
+            <img className="navbar-logo-png" src={favicon} alt="USN" />
+          </Link>
+          {/* Første av en serie tester i 'navbar-container' på om bruker er innlogget */}
+          {auth && 
+          <div className='menu-icon' onClick={handleClick}>
+            <i className={click? 'fas fa-times' : 'fas fa-bars'} 
+              onClick={click? shrink : expand}>
+            </i>
+          </div>
+          }
+          
+          {auth && <div className={click ? 'nav-menu active' : 'nav-menu'}>
+            <Button
+              className={classes.loggbtnmobil}
+              onClick={loggUt}
+              id='loggBtnMobil'>
+              Logg ut
+            </Button>
+          </div> }
+          
+          {auth && <Link
+            to='/Profile'>
+            <i className="far fa-user" />
+          </Link> }
+          {button && auth && <Button onClick={loggUt} className={classes.loggbtn} > LOGG UT </Button> }
+          {button && !auth && <Link to='/Register' className={classes.loggbtnNoAuth} > REGISTRER </Link> }
+          {!auth && <Link to='/Login' className={classes.loggbtnNoAuth} > LOGG INN </Link> }
+        </div>
+      </nav>
+    </>
+    );
 
     if (!loading) return (
         <>
