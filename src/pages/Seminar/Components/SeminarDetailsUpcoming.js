@@ -89,7 +89,9 @@ const SeminarDetailsUpcoming = (props) => {
     // Alert, synlighet
     const [alertDisplay, setAlertDisplay] = useState("none");
 
-    
+    // Henter authtoken-cookie
+    const token = CookieService.get("authtoken");
+
     // States for endring av seminar
     const [title, setTitle] = useState();
     const [startdate, setStartdate] = useState();
@@ -103,7 +105,7 @@ const SeminarDetailsUpcoming = (props) => {
             setAlertDisplay("none");
             setAlertText("");
         } else if(e.target.id === "SeminarEdit_input_startdate") {
-            setStartdate(e.target.value);
+            setStartdate(e.target.value); 
             setAlertDisplay("none");
             setAlertText("");
         } else if(e.target.id === "SeminarEdit_input_enddate") {
@@ -121,6 +123,25 @@ const SeminarDetailsUpcoming = (props) => {
             setAlertDisplay("none");
             setAlertText("");
         }
+    }
+    
+    // Utføres når seminaret forsøkes oppdatert
+    const onSubmit = e => {
+        e.preventDefault()
+
+        const config = {
+            token: token,
+            title: title,
+            startdate: startdate,
+            enddate: enddate,
+            adress: adress,
+            description: description
+        }
+
+        axios.post(process.env.REACT_APP_APIURL + "/seminar/updateSeminar", config).then(
+            setAlertDisplay(""),
+            setAlertText("Seminaret oppdatert!"),
+        )
     }
     
     {/*Kommende seminarer */}
@@ -204,7 +225,7 @@ const SeminarDetailsUpcoming = (props) => {
                                             <Button onClick={handleClose} color="secondary" >
                                                 Avbryt
                                             </Button>
-                                            <Button onClick={handleClose} color="primary" startIcon={<SaveIcon />}>
+                                            <Button onClick={onSubmit} color="primary" startIcon={<SaveIcon />}>
                                                 Oppdater
                                             </Button>
                                             </DialogActions>
