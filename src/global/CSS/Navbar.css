@@ -103,6 +103,20 @@
     cursor: pointer;
   }
 
+/* Notifications */
+
+#notif-bell {
+  color: #fff;
+  display:flex;
+  align-items: center;
+  position: absolute;
+  font-size: 2.5rem;
+  padding: 0.5rem 1rem;
+  right: 7rem;
+  top: 1.25rem;
+}
+
+
   /* Media queries
 ----------------------------- */
 /* Større mobiler */
@@ -114,7 +128,7 @@
 }
 
 /* Laptop / Liten skjerm,, 720p */
-@media only screen and (min-width: 960px) {
+@media only screen and (min-width: 1280px) {
   .navbar {
     position: sticky;
   }
@@ -129,7 +143,7 @@
     display: none;
   }
 
-  .fa-user {
+  .fa-user, #notif-bell {
     padding: 0rem 1.5rem;
     transform: translate(-7vw);
   }

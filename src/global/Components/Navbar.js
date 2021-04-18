@@ -3,6 +3,8 @@ import { Link, useHistory } from 'react-router-dom';
 
 import Button from "@material-ui/core/Button";
 import { makeStyles } from '@material-ui/core/styles';
+import NotificationImportantIcon from '@material-ui/icons/NotificationImportant';
+import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
 
 import '../CSS/Navbar.css';
 import favicon from '../../assets/usn.png';
@@ -15,6 +17,7 @@ function Navbar(props) {
     // Props som mottas fra App, viser til om bruker er inn-/utlogget
     const [auth, setAuth] = useState(false);
     const [type, setType] = useState(null);
+    const [notif, setNotif] = useState(null);
  
     const handleClick = () => setClick(!click);
     const closeMobileMenu = () => setClick(false);
@@ -24,7 +27,7 @@ function Navbar(props) {
     // Testing på om en "LOGG UT"-knapp skal vises i navbar eller i meny
     const showButton = () => {
       if (!loading) {
-        if(window.innerWidth <= 960) {
+        if(window.innerWidth < 1280) {
             setButton(false);
             if (auth) {
               try {
@@ -46,6 +49,7 @@ function Navbar(props) {
     useEffect( () => {
       setAuth(props.auth);
       setType(props.type);
+      setNotif(props.notif);
       showButton();
       setLoading(false);
     }, [props]); 
@@ -110,6 +114,10 @@ function Navbar(props) {
     const onLink = () => {
       closeMobileMenu()
       shrink()
+    }
+
+    const visNotif = () => {
+      console.log("Vis notifikasjoner");
     }
 
     if(loading) {
@@ -180,6 +188,13 @@ function Navbar(props) {
                   </Button>
                 }
               </div> }
+
+              {auth && notif != null && 
+                <NotificationImportantIcon id="notif-bell" onClick={visNotif} />
+              }
+              {auth && notif == null &&
+                <NotificationsNoneIcon id="notif-bell" onClick={visNotif} />
+              }
               
               {auth && <Link
                 to='/Profile'>
