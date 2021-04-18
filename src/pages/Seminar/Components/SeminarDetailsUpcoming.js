@@ -20,6 +20,8 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { FormControl, InputLabel, Input } from '@material-ui/core';
+import CancelIcon from '@material-ui/icons/Cancel';
+import { Alert } from '@material-ui/lab';
 
 // Studentreisen-assets og komponenter
 import Loader from '../../../global/Components/Loader';
@@ -27,10 +29,8 @@ import NoAccess from '../../../global/Components/NoAccess';
 import CookieService from '../../../global/Services/CookieService';
 import '../CSS/Seminar.css';
 
+
 const SeminarDetailsUpcoming = (props) => {
-    useEffect(() => {
-        fetchData();
-    },[]);
 
     let { seminarid } = useParams();
     
@@ -40,6 +40,10 @@ const SeminarDetailsUpcoming = (props) => {
       setOpen(true);
     };
   
+    useEffect(() => {
+        fetchData();
+    },[open]);
+
     const handleClose = () => {
       setOpen(false);
     };
@@ -84,14 +88,16 @@ const SeminarDetailsUpcoming = (props) => {
     };
 
     // States for oppdatering av seminar
+    
     // Alert, melding
     const [alertText, setAlertText] = useState();
+    
     // Alert, synlighet
     const [alertDisplay, setAlertDisplay] = useState("none");
-
-    // Henter authtoken-cookie
-    const token = CookieService.get("authtoken");
-
+    
+    // Alert, alvorlighet
+    const [alertSeverity, setAlertSeverity] = useState("error");
+    
     // States for endring av seminar
     const [title, setTitle] = useState();
     const [startdate, setStartdate] = useState();
@@ -99,29 +105,37 @@ const SeminarDetailsUpcoming = (props) => {
     const [adress, setAdress] = useState();
     const [description, setDescription] = useState();
 
+    // Henter authtoken-cookie
+    const token = CookieService.get("authtoken");
+
     const onInputChange = e => {
         if(e.target.id === "SeminarEdit_input_title") {
             setTitle(e.target.value);
             setAlertDisplay("none");
             setAlertText("");
+
         } else if(e.target.id === "SeminarEdit_input_startdate") {
             setStartdate(e.target.value); 
             setAlertDisplay("none");
             setAlertText("");
+
         } else if(e.target.id === "SeminarEdit_input_enddate") {
             setEnddate(e.target.value);
             setAlertDisplay("none");
             setAlertText("");
+
 
         } else if(e.target.id === "SeminarEdit_input_address") {
             setAdress(e.target.value);
             setAlertDisplay("none");
             setAlertText("");
 
+
         } else if(e.target.id === "SeminarEdit_input_desc") {
             setDescription(e.target.value);
             setAlertDisplay("none");
             setAlertText("");
+
         }
     }
     
@@ -129,19 +143,29 @@ const SeminarDetailsUpcoming = (props) => {
     const onSubmit = e => {
         e.preventDefault()
 
-        const config = {
-            token: token,
-            title: title,
-            startdate: startdate,
-            enddate: enddate,
-            adress: adress,
+        const data = {
+            token : token,
+            seminarid : seminarid, 
+            title: title, 
+            startdate: moment(startdate).format('YYYY-MM-DDTHH:mm:ss'),
+            enddate: moment(enddate).format('YYYY-MM-DD'), 
+            address: adress, 
             description: description
         }
+        axios.post(process.env.REACT_APP_APIURL + "/seminar/updateSeminar", data).then( res => {
+            console.log(res.data.status)
+            if (res.data.status === "error") {
+                setAlertDisplay("")
+                setAlertText(res.data.message)
+                setAlertSeverity("error")
+            } else {
+                setAlertDisplay("")
+                setAlertText("Seminar oppdatert")
+                setAlertSeverity("success")
+                setTimeout(handleClose, 1500);
+            }
+        })
 
-        axios.post(process.env.REACT_APP_APIURL + "/seminar/updateSeminar", config).then(
-            setAlertDisplay(""),
-            setAlertText("Seminaret oppdatert!"),
-        )
     }
     
     {/*Kommende seminarer */}
@@ -217,18 +241,24 @@ const SeminarDetailsUpcoming = (props) => {
                                                     <InputLabel>Beskrivelse</InputLabel>
                                                     <Input id="SeminarEdit_input_desc" variant="outlined" value={description} onChange={onInputChange} required={false} multiline rows="5" />
                                                 </FormControl>
-                                            </form>
+                                                
+                                                {/* Alert */}
+                                                <Alert id="SeminarEdit_Alert" className="fade_in" style={{display: alertDisplay}} variant="filled" severity={alertSeverity}>
+                                                    {alertText}
+                                                </Alert>  
+                                            </form>                                         
                                             </DialogContent>
                                             
                                             {/* Funksjonsknapper */}
                                             <DialogActions>
-                                            <Button onClick={handleClose} color="secondary" >
+                                            <Button onClick={handleClose} color="secondary" startIcon={<CancelIcon />}>
                                                 Avbryt
                                             </Button>
                                             <Button onClick={onSubmit} color="primary" startIcon={<SaveIcon />}>
                                                 Oppdater
                                             </Button>
                                             </DialogActions>
+ 
                                         </Dialog>
                                     </div>}
                                     
