@@ -5,10 +5,17 @@ import Button from "@material-ui/core/Button";
 import { makeStyles } from '@material-ui/core/styles';
 import NotificationImportantIcon from '@material-ui/icons/NotificationImportant';
 import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
+import moment from 'moment';
+import axios from "axios";
 
 import '../CSS/Navbar.css';
 import favicon from '../../assets/usn.png';
 import CookieService from '../Services/CookieService';
+import Loader from './Loader';
 
 function Navbar(props) {
     const [click, setClick] = useState(false);
@@ -18,6 +25,8 @@ function Navbar(props) {
     const [auth, setAuth] = useState(false);
     const [type, setType] = useState(null);
     const [notif, setNotif] = useState(null);
+    const [notifUnread, setNotifUnread] = useState(0);
+    const [notifAapen, setNotifAapen] = useState(false);
  
     const handleClick = () => setClick(!click);
     const closeMobileMenu = () => setClick(false);
@@ -50,6 +59,9 @@ function Navbar(props) {
       setAuth(props.auth);
       setType(props.type);
       setNotif(props.notif);
+      if(props.notif !== undefined) {
+        setNotifUnread(1);
+      }
       showButton();
       setLoading(false);
     }, [props]); 
@@ -116,9 +128,32 @@ function Navbar(props) {
       shrink()
     }
 
-    const visNotif = () => {
-      console.log("Vis notifikasjoner");
-    }
+
+    const notifClickOpen = () => {
+      setNotifAapen(true);
+      setNotifUnread(0);
+      if(notif !== undefined && notif == null) {
+        axios
+          // Henter API URL fra .env og utfører en POST request med dataen fra objektet over
+          // Axios serialiserer objektet til JSON selv
+          .post(process.env.REACT_APP_APIURL + "/notif/getNotifs", {token : CookieService.get("authtoken")} )
+          // Utføres ved mottatt resultat
+          .then(res => {
+            if(res.data.results) {
+              setNotif(res.data.results);
+            }
+          });
+      } else {
+        axios
+          // Henter API URL fra .env og utfører en POST request med dataen fra objektet over
+          // Axios serialiserer objektet til JSON selv
+          .post(process.env.REACT_APP_APIURL + "/notif/readNotifs", {token : CookieService.get("authtoken"), notifs : notif});
+      }
+    };
+    
+    const notifClose = () => {
+      setNotifAapen(false);
+    };
 
     if(loading) {
       return(
@@ -189,11 +224,11 @@ function Navbar(props) {
                 }
               </div> }
 
-              {auth && notif != null && 
-                <NotificationImportantIcon id="notif-bell" onClick={visNotif} />
+              {auth && (notif !== null && notifUnread > 0) && 
+                <NotificationImportantIcon id="notif-bell" onClick={notifClickOpen} />
               }
-              {auth && notif == null &&
-                <NotificationsNoneIcon id="notif-bell" onClick={visNotif} />
+              {auth && (notif == null || notifUnread == 0) &&
+                <NotificationsNoneIcon id="notif-bell" onClick={notifClickOpen} />
               }
               
               {auth && <Link
@@ -205,8 +240,38 @@ function Navbar(props) {
               {!auth && <Link to='/Login' className={classes.loggbtnNoAuth} > LOGG INN </Link> }
             </div>
           </nav>
+        
+          <Dialog onClose={notifClose} aria-labelledby="customized-dialog-title" open={notifAapen}>
+              <DialogTitle id="customized-dialog-title" onClose={notifClose}>
+                Kunngjøringer
+              </DialogTitle>
+              <DialogContent dividers>
+                {notif &&
+                  <>
+                    {notif.map(kunngjoring => {
+                      return(
+                        <section key={kunngjoring.kid} className="notif_section">
+                          <p>{kunngjoring.tekst + " av " + kunngjoring.lagetav + ", dato: " +  moment(kunngjoring.dato).format('YYYY-MM-DD HH:mm:ss')}</p>
+                        </section>
+                      )
+                    })}
+                  </>
+                }
+                {notif == null &&
+                  <>
+                    <Loader />
+                  </>
+                }
+              </DialogContent>
+              <DialogActions>
+                <Button autoFocus onClick={notifClose} color="primary">
+                  Lukk
+                </Button>
+              </DialogActions>
+          </Dialog>
         </>
       );
     }
+
 
 export default Navbar;

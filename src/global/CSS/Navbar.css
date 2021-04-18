@@ -116,6 +116,13 @@
   top: 1.25rem;
 }
 
+.notif_section {
+  border: 1px solid #606060;
+  border-radius: 0.5em;
+  margin-top: 0.5em; margin-bottom: 0.5em;
+  padding-left: 1em; padding-right: 1em; 
+}
+
 
   /* Media queries
 ----------------------------- */

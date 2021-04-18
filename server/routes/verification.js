@@ -30,7 +30,7 @@ router.post('/auth', async (req, res) => {
                 }
                 if(results[0] !== undefined) {
                     // Henter de siste 5 kunngjøringene for brukeren som ikke er lest
-                    let hentKunngjoring = "SELECT CONCAT(fnavn, ' ', enavn) as lagetav, tekst, dato FROM kunngjoring, bruker WHERE av = brukerid AND (kunngjoring.kid, ?) NOT IN (SELECT kid, brukerid FROM lest_kunngjoring WHERE brukerid = ?) LIMIT 5";
+                    let hentKunngjoring = "SELECT kid, CONCAT(fnavn, ' ', enavn) as lagetav, tekst, dato FROM kunngjoring, bruker WHERE av = brukerid AND (kunngjoring.kid, ?) NOT IN (SELECT kid, brukerid FROM lest_kunngjoring WHERE brukerid = ?) ORDER BY kid DESC LIMIT 5";
                     let hentKunngjoringFormat = mysql.format(hentKunngjoring, [results[0].gjelderfor, results[0].gjelderfor]);
                     
                     connection.query(hentKunngjoringFormat, (error, kunngjoring) => {
