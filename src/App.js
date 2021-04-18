@@ -46,7 +46,7 @@ function App() {
         } else {
           setType(res.usertype);
 
-          if(res.notif.kunngjoring != undefined && res.notif.kunngjoring.length >= 1) {
+          if(res.notif.kunngjoring !== undefined && res.notif.kunngjoring.length >= 1) {
             setNotif(res.notif.kunngjoring);
           }
           
