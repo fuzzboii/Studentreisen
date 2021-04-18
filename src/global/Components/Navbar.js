@@ -132,7 +132,7 @@ function Navbar(props) {
     const notifClickOpen = () => {
       setNotifAapen(true);
       setNotifUnread(0);
-      if(notif !== undefined && notif == null) {
+      if(notif !== undefined || notif == null) {
         axios
           // Henter API URL fra .env og utfører en POST request med dataen fra objektet over
           // Axios serialiserer objektet til JSON selv

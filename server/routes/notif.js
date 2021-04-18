@@ -44,11 +44,11 @@ router.post('/readNotifs', async (req, res) => {
                     connection.query(readNotifsQueryFormat, (error, results) => {
                         if (error) {
                             console.log("En feil oppstod ved lagring av leste kunngjøringer: " + error.errno + ", " + error.sqlMessage)
-                            return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                         }
                     });
                 });
             }
+            return res.json({});
         }); 
     } else {
         return res.status(403).send();
