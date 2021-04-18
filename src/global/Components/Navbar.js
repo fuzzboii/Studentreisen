@@ -25,7 +25,7 @@ function Navbar(props) {
     const [auth, setAuth] = useState(false);
     const [type, setType] = useState(null);
     const [notif, setNotif] = useState(null);
-    const [notifUnread, setNotifUnread] = useState(0);
+    const [notifUlest, setNotifUlest] = useState(0);
     const [notifAapen, setNotifAapen] = useState(false);
  
     const handleClick = () => setClick(!click);
@@ -60,7 +60,7 @@ function Navbar(props) {
       setType(props.type);
       setNotif(props.notif);
       if(props.notif !== undefined) {
-        setNotifUnread(1);
+        setNotifUlest(1);
       }
       showButton();
       setLoading(false);
@@ -131,8 +131,8 @@ function Navbar(props) {
 
     const notifClickOpen = () => {
       setNotifAapen(true);
-      setNotifUnread(0);
-      if(notif !== undefined || notif == null) {
+      setNotifUlest(0);
+      if(notif !== undefined && notif == null) {
         axios
           // Henter API URL fra .env og utfører en POST request med dataen fra objektet over
           // Axios serialiserer objektet til JSON selv
@@ -224,10 +224,10 @@ function Navbar(props) {
                 }
               </div> }
 
-              {auth && (notif !== null && notifUnread > 0) && 
+              {auth && (notif !== null && notifUlest > 0) && 
                 <NotificationImportantIcon id="notif-bell" onClick={notifClickOpen} />
               }
-              {auth && (notif == null || notifUnread == 0) &&
+              {auth && (notif == null || notifUlest == 0) &&
                 <NotificationsNoneIcon id="notif-bell" onClick={notifClickOpen} />
               }
               
