@@ -26,6 +26,7 @@ import AuthService from './global/Services/AuthService';
 function App() {
   const [auth, setAuth] = useState(false);
   const [type, setType] = useState(1);
+  const [notif, setNotif] = useState(null);
   const [loading, setLoading] = useState(true);
 
   // Henter authtoken-cookie
@@ -44,6 +45,11 @@ function App() {
           CookieService.remove("authtoken");
         } else {
           setType(res.usertype);
+
+          if(res.notif.kunngjoring !== undefined && res.notif.kunngjoring.length >= 1) {
+            setNotif(res.notif.kunngjoring);
+          }
+          
         }
         setAuth(res.authenticated);
         setLoading(false);
@@ -61,7 +67,7 @@ function App() {
 
   return (
     <>
-      <Navbar auth={auth} type={type} loading={loading} />
+      <Navbar auth={auth} type={type} loading={loading} notif={notif} />
         <Switch>
           <Route path = "/" exact component = {Home} />
           <Route path = "/overview" render={() => (

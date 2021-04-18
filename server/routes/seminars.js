@@ -38,7 +38,7 @@ router.post('/getEnlistedSeminars', async (req, res) => {
 router.get('/getAllSeminarUpcomingData', async (req, res) => {
     try{
 
-        connection.query('SELECT seminarid, seminar.bildeid, navn, adresse, oppstart, varighet, beskrivelse, tilgjengelighet, plassering, brukerid, fnavn, enavn FROM Seminar, Bilde, bruker WHERE tilgjengelighet = true and varighet > CURRENT_DATE() and Seminar.bildeid = Bilde.bildeid and Seminar.arrangor = Bruker.brukerid;', (error, results) => {
+        connection.query('SELECT seminarid, seminar.bildeid, navn, adresse, oppstart, varighet, beskrivelse, tilgjengelighet, plassering, brukerid, fnavn, enavn FROM Seminar, Bilde, bruker WHERE tilgjengelighet = true and varighet > CURRENT_DATE() and Seminar.bildeid = Bilde.bildeid and Seminar.arrangor = Bruker.brukerid ORDER BY oppstart ASC;', (error, results) => {
             res.send(results);
         });
 
@@ -51,7 +51,7 @@ router.get('/getAllSeminarUpcomingData', async (req, res) => {
 router.get('/getAllSeminarExpiredData', async (req, res) => {
     try{
 
-        connection.query('SELECT seminarid, seminar.bildeid, navn, adresse, oppstart, varighet, beskrivelse, tilgjengelighet, plassering, brukerid, fnavn, enavn FROM Seminar, Bilde, bruker WHERE tilgjengelighet = true and varighet < CURRENT_DATE() and Seminar.bildeid = Bilde.bildeid and Seminar.arrangor = Bruker.brukerid;', (error, results) => {
+        connection.query('SELECT seminarid, seminar.bildeid, navn, adresse, oppstart, varighet, beskrivelse, tilgjengelighet, plassering, brukerid, fnavn, enavn FROM Seminar, Bilde, bruker WHERE tilgjengelighet = true and varighet < CURRENT_DATE() and Seminar.bildeid = Bilde.bildeid and Seminar.arrangor = Bruker.brukerid ORDER BY oppstart ASC;', (error, results) => {
             res.send(results);
         });
 
@@ -59,11 +59,64 @@ router.get('/getAllSeminarExpiredData', async (req, res) => {
         res.json({message:err});
     }
 
+    }); 
+
+
+    router.post('/updateSeminar', async (req, res) => { 
+        console.log(req.body.seminarid);
+        if(req.body.token !== undefined && req.body.seminarid !== undefined) {
+            
+            let updateQuery = "UPDATE seminar SET navn = ?, oppstart = ?, varighet = ?, beskrivelse = ?, adresse = ? WHERE seminarid = ?";
+            let updateQueryFormat = mysql.format(updateQuery, [req.body.title, req.body.startdate, req.body.enddate, req.body.description, req.body.address, req.body.seminarid]);
+
+            connection.query(updateQueryFormat, (error, results) => {
+                if (error) {
+                    console.log("An error occured while updating the data, details: " + error.errno + ", " + error.sqlMessage)
+                    return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                
+                }
+                
+                if(res.status(200)) {
+                    res.send(results);
+
+                } else {
+                    res.status(400).json({"status" : "error", "message" : "En feil oppstod under spørring"});
+                }         
+                
+            });
+        } else {
+            res.status(400).json({"status" : "error", "message" : "Ikke tilstrekkelig data"});
+        }
+    });
+
+    router.post('/updateAvailabilitySeminar', async (req, res) => { 
+        console.log(req.body.seminarid);
+        if(req.body.token !== undefined && req.body.seminarid !== undefined) {
+            
+            let updateQuery = "UPDATE seminar SET tilgjengelighet = ? WHERE seminarid = ?";
+            let updateQueryFormat = mysql.format(updateQuery, [req.body.availability, req.body.seminarid]);
+
+            connection.query(updateQueryFormat, (error, results) => {
+                if (error) {
+                    console.log("An error occured while updating the data, details: " + error.errno + ", " + error.sqlMessage)
+                    return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                
+                }
+                
+                if(res.status(200)) {
+                    res.send(results);
+
+                } else {
+                    res.status(400).json({"status" : "error", "message" : "En feil oppstod under spørring"});
+                }         
+                
+            });
+        } else {
+            res.status(400).json({"status" : "error", "message" : "Ikke tilstrekkelig data"});
+        }
     });    
-
-
-
-
+    
+    
     router.post('/', async (req, res) => {
         if(req.body.emnekode !== undefined && req.body.navn !== undefined && req.body.beskrivelse !== undefined && req.body.semester !== undefined
             && req.body.studiepoeng !== undefined && req.body.lenke !== undefined) {

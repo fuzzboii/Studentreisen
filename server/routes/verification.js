@@ -29,8 +29,25 @@ router.post('/auth', async (req, res) => {
                     return res.json({ "authenticated" : false});
                 }
                 if(results[0] !== undefined) {
-                    // Token funnet og har ikke utløpt
-                    return res.json({ "authenticated" : true, "usertype" : results[0].niva });
+                    // Henter de siste 5 kunngjøringene for brukeren som ikke er lest
+                    let hentKunngjoring = "SELECT kid, CONCAT(fnavn, ' ', enavn) as lagetav, tekst, dato FROM kunngjoring, bruker WHERE av = brukerid AND (kunngjoring.kid, ?) NOT IN (SELECT kid, brukerid FROM lest_kunngjoring WHERE brukerid = ?) ORDER BY kid DESC LIMIT 5";
+                    let hentKunngjoringFormat = mysql.format(hentKunngjoring, [results[0].gjelderfor, results[0].gjelderfor]);
+                    
+                    connection.query(hentKunngjoringFormat, (error, kunngjoring) => {
+                        if (error) {
+                            console.log("An error occurred while checking for matches while fetching notifications, details: " + error.errno + ", " + error.sqlMessage)
+                            return res.json({ "authenticated" : false});
+                        }
+                        if(kunngjoring[0] !== undefined) {
+
+                            // Kunngjøringer funnet
+                            return res.json({ "authenticated" : true, "usertype" : results[0].niva, "notif" : {kunngjoring} });
+
+                        } else {
+                            // Ingen kunngjøringer
+                            return res.json({ "authenticated" : true, "usertype" : results[0].niva, "notif" : {} });
+                        }
+                    });
                 } else {
                     // Token ikke funnet
                     return res.json({ "authenticated" : false});

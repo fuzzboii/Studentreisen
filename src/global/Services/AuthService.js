@@ -9,7 +9,7 @@ class AuthService {
             .then(res => {
                 if(res.data.authenticated === true) {
                     // Bruker er autentisert
-                    returnVal = {authenticated : true, usertype : res.data.usertype};
+                    returnVal = {authenticated : true, usertype : res.data.usertype, notif : res.data.notif};
                 }
             })
             .catch(err => {

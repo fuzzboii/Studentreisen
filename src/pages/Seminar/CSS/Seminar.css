@@ -119,6 +119,7 @@
 .SeminarDetails-Box {
     margin: 0.3em;
     border-radius: 0.2em;
+    background-color: white;
 }
 
 .SeminarDetails-Header {
@@ -202,7 +203,12 @@
     margin-right: 0em;
 }
 
-/* Nytt seminar */
+#SeminarEdit_Alert {
+    margin-top: 0.3em;
+}
+
+/* Nytt seminar
+----------------------------- */
 #SeminarNew_main {
     width: 95%;
     margin-left: auto;
