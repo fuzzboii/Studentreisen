@@ -5,6 +5,33 @@ const { verifyAuth } = require('../global/CommonFunctions');
 
 const router = require('express').Router();
 
+//Henter brukerens påmeldte seminarer
+router.get('/getEnlistedSeminars', async (req, res) => {
+    if(req.body.brukerid !== undefined) {
+        let insertQuery = "SELECT navn, adresse, oppstart FROM seminar, pamelding WHERE seminar.seminarid = pamelding.seminarid AND brukerid = ?";
+        let insertQueryFormat = mysql.format(insertQuery, [req.body.brukerid]);
+
+        connection.query(insertQueryFormat, (error, results) => {
+            if (error) {
+                console.log("An error occurred while querying, details: " + error.errno + ", " + error.sqlMessage)
+                return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+            
+            }
+            // Returning the number of affected rows to indicate the insert went OK
+            if(results[0] !== undefined) {
+                res.send(results);
+
+            } else {
+                res.status(400).json({"status" : "error", "message" : "En feil oppstod under spørring"});
+            }
+        });
+
+    } else {
+        res.status(400).json({"status" : "error", "message" : "Ikke tilstrekkelig data"});
+    }
+
+    });
+
 router.get('/getAllSeminarUpcomingData', async (req, res) => {
     try{
 

@@ -3,6 +3,7 @@ import {useLocation} from 'react-router-dom';
 
 import '../Styles/styles.css';
 import CardLinks from './CardLinks';
+import EnlistedList from './EnlistedList';
 import Loader from '../../../global/Components/Loader';
 import NoAccess from '../../../global/Components/NoAccess';
 import CookieService from '../../../global/Services/CookieService';
@@ -68,8 +69,14 @@ class HomeOverview extends Component {
         if(!loading && authenticated) {
             return (            
                 <div className="main">
-                    <h1 className="mainTitle">Oversikt</h1>
-                    <CardLinks/>
+                    <div className="cardLink-Wrap">
+                        <h1 className="mainTitle">Oversikt</h1>
+                        <CardLinks/>
+                    </div>
+                    <div className="cardLink-Wrap">
+                        <h1 className="mainTitle">Seminar</h1>
+                        <EnlistedList/>
+                    </div>
                 </div>
             );
         } else {
