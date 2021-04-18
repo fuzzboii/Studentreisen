@@ -51,8 +51,11 @@ const SeminarNav = () => {
         setPosition(newValue);
     }
 
-    const handlePage = (event, value) => {
+    const handlePageUpcoming = (event, value) => {
       setCurrentPageUpcoming(value);
+    };
+
+    const handlePageExpired = (event, value) => {
       setCurrentPageExpired(value);
     };
 
@@ -73,7 +76,7 @@ const SeminarNav = () => {
                   <div className="Seminar-indexRes2">
                     <Typography  variant="caption" >Viser {indexOfFirstPostUpcoming + 1} - {intervalUpcoming} av {seminarsUpcoming.length} treff</Typography>
                   </div>
-                  <Pagination count={numberOfPagesUpcoming} page={currentPageUpcoming} onChange={handlePage} />
+                  <Pagination count={numberOfPagesUpcoming} page={currentPageUpcoming} onChange={handlePageUpcoming} />
                 </div>
               </div>  
         </TabPanel>
@@ -87,7 +90,7 @@ const SeminarNav = () => {
                   <div className="Seminar-indexRes2">
                     <Typography  variant="caption" >Viser {indexOfFirstPostExpired + 1} - {intervalExpired} av {seminarsExpired.length} treff</Typography>
                   </div>
-                  <Pagination count={numberOfPagesExpired} page={currentPageExpired} onChange={handlePage} />
+                  <Pagination count={numberOfPagesExpired} page={currentPageExpired} onChange={handlePageExpired} />
                 </div>
               </div>    
         </TabPanel>
