@@ -4,6 +4,7 @@ import {useLocation} from 'react-router-dom';
 import '../Styles/styles.css';
 import CardLinks from './CardLinks';
 import EnlistedList from './EnlistedList';
+import {EnlistedProvider} from './EnlistedContext';
 import Loader from '../../../global/Components/Loader';
 import NoAccess from '../../../global/Components/NoAccess';
 import CookieService from '../../../global/Services/CookieService';
@@ -70,12 +71,14 @@ class HomeOverview extends Component {
             return (            
                 <div className="main">
                     <div className="cardLink-Wrap">
-                        <h1 className="mainTitle">Oversikt</h1>
+                        <h1 className="mainTitle">Utforsk</h1>
                         <CardLinks/>
                     </div>
-                    <div className="cardLink-Wrap">
-                        <h1 className="mainTitle">Seminar</h1>
-                        <EnlistedList/>
+                    <div className="enlist-Wrap">
+                        <h1 className="mainTitle">Se påmeldte seminarer</h1>
+                        <EnlistedProvider>
+                            <EnlistedList/>
+                        </EnlistedProvider>
                     </div>
                 </div>
             );
