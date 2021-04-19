@@ -10,7 +10,7 @@ router.post('/getEnlistedSeminars', async (req, res) => {
     if(req.body.token !== undefined) {
         verifyAuth(req.body.token).then( resAuth => {
             brukerid = resAuth.brukerid 
-            let getQuery = "SELECT seminar.seminarid, navn, adresse, oppstart FROM seminar, pamelding WHERE seminar.seminarid = pamelding.seminarid AND brukerid = ?";
+            let getQuery = "SELECT seminar.seminarid, navn, adresse, oppstart FROM seminar, pamelding WHERE seminar.seminarid = pamelding.seminarid AND brukerid = ? AND oppstart > CURRENT_DATE() ORDER BY oppstart ASC";
             let getQueryFormat = mysql.format(getQuery, [brukerid]);
 
             connection.query(getQueryFormat, (error, results) => {

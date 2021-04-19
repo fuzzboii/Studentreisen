@@ -19,6 +19,7 @@ export const EnlistedProvider = props => {
         const data = {
             token: token
         }
+        
         const res = await axios.post(process.env.REACT_APP_APIURL + "/seminar/getEnlistedSeminars", data );
         setEnlists(res.data);
     };
