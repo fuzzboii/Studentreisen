@@ -31,6 +31,7 @@ import CookieService from '../../../global/Services/CookieService';
 import '../CSS/Seminar.css';
 
 
+
 const SeminarDetailsUpcoming = (props) => {
 
     let { seminarid } = useParams();
@@ -41,6 +42,8 @@ const SeminarDetailsUpcoming = (props) => {
     
     const [openEdit, setOpenEdit] = React.useState(false);
     const [openDelete, setOpenDelete] = React.useState(false);
+
+    const [AlertOpen, setAlertOpen] = React.useState(false);
     
     const handleClickOpenEdit = () => {
       setOpenEdit(true);
@@ -48,6 +51,7 @@ const SeminarDetailsUpcoming = (props) => {
     const handleClickOpenDelete = () => {
         setOpenDelete(true);
     };
+    
 
     useEffect(() => {
         fetchData();
@@ -55,10 +59,15 @@ const SeminarDetailsUpcoming = (props) => {
 
     const handleCloseEdit = () => {
       setOpenEdit(false);
+      setAlertOpen(false);
     };
     const handleCloseDelete = () => {
         setOpenDelete(false);
     };
+
+  
+    
+
 
     //Henting av kommende data til seminarene
     const fetchData = async () => {
@@ -177,6 +186,7 @@ const SeminarDetailsUpcoming = (props) => {
                 setAlertTextEdit(res.data.message)
                 setAlertSeverity("error")
             } else {
+                setAlertOpen(true);
                 setAlertDisplay("")
                 setAlertTextEdit("Seminar oppdatert")
                 setAlertSeverity("success")
@@ -204,6 +214,7 @@ const SeminarDetailsUpcoming = (props) => {
                 setAlertTextDelete(res.data.message)
                 setAlertSeverity("error")
             } else {
+                setAlertOpen(true);
                 setAlertDisplay("")
                 setAlertTextDelete("Seminar slettet, du sendes nå tilbake til seminar oversikten")
                 setAlertSeverity("success")
@@ -291,9 +302,10 @@ const SeminarDetailsUpcoming = (props) => {
                                                     </FormControl>
                                                     
                                                     {/* Alert */}
-                                                    <Alert id="SeminarEdit_Alert" className="fade_in" style={{display: alertDisplay}} variant="filled" severity={alertSeverity}>
+                                                    {AlertOpen && <Alert id="SeminarEdit_Alert" className="fade_in" style={{display: alertDisplay}} variant="filled" severity={alertSeverity} >
+                                                        
                                                         {alertTextEdit}
-                                                    </Alert>  
+                                                    </Alert>}  
                                                 </form>                                         
                                             </DialogContent>
                                             
@@ -325,9 +337,9 @@ const SeminarDetailsUpcoming = (props) => {
                                                     </DialogContentText>
 
                                                     {/* Alert */}
-                                                    <Alert id="SeminarDelete_Alert" className="fade_in" style={{display: alertDisplay}} variant="filled" severity={alertSeverity}>
+                                                    {AlertOpen && <Alert id="SeminarDelete_Alert" className="fade_in" style={{display: alertDisplay}} variant="filled" severity={alertSeverity}>
                                                     {alertTextDelete}
-                                                    </Alert> 
+                                                    </Alert> }
                                                 </DialogContent>
                                             
                                             {/* Funksjonsknapper */}
