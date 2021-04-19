@@ -5,6 +5,36 @@ const { verifyAuth } = require('../global/CommonFunctions');
 
 const router = require('express').Router();
 
+//Henter brukerens påmeldte seminarer
+router.post('/getEnlistedSeminars', async (req, res) => {
+    if(req.body.token !== undefined) {
+        verifyAuth(req.body.token).then( resAuth => {
+            brukerid = resAuth.brukerid 
+            let getQuery = "SELECT seminar.seminarid, navn, adresse, oppstart FROM seminar, pamelding WHERE seminar.seminarid = pamelding.seminarid AND brukerid = ?";
+            let getQueryFormat = mysql.format(getQuery, [brukerid]);
+
+            connection.query(getQueryFormat, (error, results) => {
+                if (error) {
+                    console.log("An error occurred while querying, details: " + error.errno + ", " + error.sqlMessage)
+                    return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                
+                }
+                // Returning the number of affected rows to indicate the insert went OK
+                if(results[0] !== undefined) {
+                    res.send(results);
+
+                } else {
+                    res.status(400).json({"status" : "error", "message" : "En feil oppstod under spørring"});
+                }
+            });
+        })
+
+    } else {
+        res.status(400).json({"status" : "error", "message" : "Ikke tilstrekkelig data"});
+    }
+
+    });
+
 router.get('/getAllSeminarUpcomingData', async (req, res) => {
     try{
 
@@ -58,6 +88,33 @@ router.get('/getAllSeminarExpiredData', async (req, res) => {
             res.status(400).json({"status" : "error", "message" : "Ikke tilstrekkelig data"});
         }
     });
+
+    router.post('/updateAvailabilitySeminar', async (req, res) => { 
+        console.log(req.body.seminarid);
+        if(req.body.token !== undefined && req.body.seminarid !== undefined) {
+            
+            let updateQuery = "UPDATE seminar SET tilgjengelighet = ? WHERE seminarid = ?";
+            let updateQueryFormat = mysql.format(updateQuery, [req.body.availability, req.body.seminarid]);
+
+            connection.query(updateQueryFormat, (error, results) => {
+                if (error) {
+                    console.log("An error occured while updating the data, details: " + error.errno + ", " + error.sqlMessage)
+                    return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                
+                }
+                
+                if(res.status(200)) {
+                    res.send(results);
+
+                } else {
+                    res.status(400).json({"status" : "error", "message" : "En feil oppstod under spørring"});
+                }         
+                
+            });
+        } else {
+            res.status(400).json({"status" : "error", "message" : "Ikke tilstrekkelig data"});
+        }
+    });    
     
     
     router.post('/', async (req, res) => {

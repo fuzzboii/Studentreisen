@@ -88,7 +88,7 @@ class Login extends Component {
               const options = { path: "/", expires: date };
               CookieService.set('authtoken', res.data.authtoken, options);
               
-              window.location.href="/";
+              window.location.href="/overview";
             } else {
               let date = new Date();
               // Token utløper om 72 timer om "Husk meg" ikke er satt
@@ -97,7 +97,7 @@ class Login extends Component {
               const options = { path: "/", expires: date };
               CookieService.set('authtoken', res.data.authtoken, options);
               
-              window.location.href="/";
+              window.location.href="/overview";
             }
         } else {
             // Feil oppstod ved innlogging, viser meldingen
