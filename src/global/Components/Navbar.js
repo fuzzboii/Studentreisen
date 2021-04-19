@@ -141,6 +141,8 @@ function Navbar(props) {
           .then(res => {
             if(res.data.results) {
               setNotif(res.data.results);
+            } else if(res.data.nodata) {
+              setNotif({nodata : res.data.nodata});
             }
           });
       } else {
@@ -243,10 +245,17 @@ function Navbar(props) {
         
           <Dialog onClose={notifClose} aria-labelledby="customized-dialog-title" open={notifAapen}>
               <DialogTitle id="customized-dialog-title" onClose={notifClose}>
-                Kunngjøringer
+                Kunngjøringer fra de siste 7 dagene
               </DialogTitle>
               <DialogContent dividers>
-                {notif &&
+                {notif && notif.nodata !== undefined &&
+                  <>
+                    <section>
+                      <p>{notif.nodata}</p>
+                    </section>
+                  </>
+                }
+                {notif && notif.nodata == undefined &&
                   <>
                     {notif.map(kunngjoring => {
                       return(
