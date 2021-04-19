@@ -37,15 +37,17 @@ router.post('/readNotifs', async (req, res) => {
     if(req.body.token !== undefined && req.body.notifs !== undefined) {
         verifyAuth(req.body.token).then(function(response) {
             if(response.authenticated) {
-                req.body.notifs.forEach(kunngjoring => {
-                    let readNotifsQuery = "UPDATE kunngjoring SET lest = 1 WHERE kid = ? AND til = ?";
-                    let readNotifsQueryFormat = mysql.format(readNotifsQuery, [kunngjoring.kid, response.brukerid]);
-    
-                    connection.query(readNotifsQueryFormat, (error, results) => {
-                        if (error) {
-                        }
+                if(req.body.notifs.length >= 1) {
+                    req.body.notifs.forEach(kunngjoring => {
+                        let readNotifsQuery = "UPDATE kunngjoring SET lest = 1 WHERE kid = ? AND til = ?";
+                        let readNotifsQueryFormat = mysql.format(readNotifsQuery, [kunngjoring.kid, response.brukerid]);
+        
+                        connection.query(readNotifsQueryFormat, (error, results) => {
+                            if (error) {
+                            }
+                        });
                     });
-                });
+                }
             }
             return res.json({});
         }); 
