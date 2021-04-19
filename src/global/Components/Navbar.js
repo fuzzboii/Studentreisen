@@ -167,12 +167,18 @@ function Navbar(props) {
         <>
           <nav className='navbar' id="bar" >
             <div className='navbar-container'>
-              <Link 
+              {!auth && <Link 
                 to="/" 
                 className="navbar-logo" 
                 onClick={closeMobileMenu}>
+                <img className="navbar-logo-png" src={favicon} alt="USN" /> 
+              </Link> }
+              {auth && <Link
+                to="/overview"
+                className="navbar-logo"
+                onClick={closeMobileMenu} >
                 <img className="navbar-logo-png" src={favicon} alt="USN" />
-              </Link>
+              </Link>} 
               {/* Første av en serie tester i 'navbar-container' på om bruker er innlogget */}
               {auth && 
               <div className='menu-icon' onClick={handleClick}>
