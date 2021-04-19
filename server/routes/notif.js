@@ -9,8 +9,8 @@ router.post('/getNotifs', async (req, res) => {
     if(req.body.token !== undefined) {
         verifyAuth(req.body.token).then(function(response) {
             if(response.authenticated) {
-                let getNotifsQuery = "SELECT kid, CONCAT(fnavn, ' ', enavn) as lagetav, tekst, dato FROM kunngjoring, bruker WHERE av = brukerid ORDER BY kid DESC LIMIT 5";
-                let getNotifsQueryFormat = mysql.format(getNotifsQuery);
+                let getNotifsQuery = "SELECT kid, CONCAT(fnavn, ' ', enavn) as lagetav, tekst, dato FROM kunngjoring, bruker WHERE av = brukerid AND til = ? AND dato >= NOW() - INTERVAL 7 DAY ORDER BY kid DESC LIMIT 5";
+                let getNotifsQueryFormat = mysql.format(getNotifsQuery, [response.brukerid]);
 
                 connection.query(getNotifsQueryFormat, (error, results) => {
                     if (error) {
@@ -21,7 +21,7 @@ router.post('/getNotifs', async (req, res) => {
                     if(results[0] !== undefined) {
                         return res.json({results});
                     } else {
-                        return res.json({});
+                        return res.json({nodata : "Ingen kunngjøringer å vise"});
                     }
                 });
             } else {
@@ -37,15 +37,17 @@ router.post('/readNotifs', async (req, res) => {
     if(req.body.token !== undefined && req.body.notifs !== undefined) {
         verifyAuth(req.body.token).then(function(response) {
             if(response.authenticated) {
-                req.body.notifs.forEach(kunngjoring => {
-                    let readNotifsQuery = "INSERT INTO lest_kunngjoring(kid, brukerid) VALUES(?, ?)";
-                    let readNotifsQueryFormat = mysql.format(readNotifsQuery, [kunngjoring.kid, response.brukerid]);
-    
-                    connection.query(readNotifsQueryFormat, (error, results) => {
-                        if (error) {
-                        }
+                if(req.body.notifs.length >= 1) {
+                    req.body.notifs.forEach(kunngjoring => {
+                        let readNotifsQuery = "UPDATE kunngjoring SET lest = 1 WHERE kid = ? AND til = ?";
+                        let readNotifsQueryFormat = mysql.format(readNotifsQuery, [kunngjoring.kid, response.brukerid]);
+        
+                        connection.query(readNotifsQueryFormat, (error, results) => {
+                            if (error) {
+                            }
+                        });
                     });
-                });
+                }
             }
             return res.json({});
         }); 
