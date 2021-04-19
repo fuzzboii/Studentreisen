@@ -47,7 +47,7 @@ const SeminarDetailsUpcoming = (props) => {
     };
     const handleClickOpenDelete = () => {
         setOpenDelete(true);
-      };
+    };
 
     useEffect(() => {
         fetchData();
@@ -58,7 +58,7 @@ const SeminarDetailsUpcoming = (props) => {
     };
     const handleCloseDelete = () => {
         setOpenDelete(false);
-      };
+    };
 
     //Henting av kommende data til seminarene
     const fetchData = async () => {
@@ -211,7 +211,7 @@ const SeminarDetailsUpcoming = (props) => {
 
                 window.setTimeout(() => {
                     history.push("/seminar");
-                 }, 3000)
+                }, 3000)
             }
         })
 
@@ -325,7 +325,7 @@ const SeminarDetailsUpcoming = (props) => {
                                                     </DialogContentText>
 
                                                     {/* Alert */}
-                                                    <Alert id="SeminarEdit_Alert" className="fade_in" style={{display: alertDisplay}} variant="filled" severity={alertSeverity}>
+                                                    <Alert id="SeminarDelete_Alert" className="fade_in" style={{display: alertDisplay}} variant="filled" severity={alertSeverity}>
                                                     {alertTextDelete}
                                                     </Alert> 
                                                 </DialogContent>
