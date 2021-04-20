@@ -137,12 +137,12 @@ function Profile(props) {
                     setAlertDisplay("")
                     setAlertText(res.data.message)
                     setAlertSeverity("error")
-                    setUpdateTextEmail("Oppdater");
+                    setUpdateTextPwd("Oppdater");
                 } else {
                     setAlertDisplay("")
                     setAlertText(res.data.message)
                     setAlertSeverity("success")
-                    setUpdateTextEmail("Oppdater");
+                    setUpdateTextPwd("Oppdater");
                 }
             })
         } else {
