@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const cryptojs = require('crypto-js');
 const { verifyAuth } = require('../global/CommonFunctions');
 const router = require('express').Router();
-const { emailValidation } = require('../validation');  
+const { emailValidation, passwordValidation } = require('../validation');  
 
 // Henter alle fagfelter i database //
 router.get('/getFagfelt', async (req, res) => {
@@ -201,6 +201,33 @@ router.post('/updateEmail', async (req, res) => {
 
 // Oppdater brukerens passord
 router.post('/updatePassord', async (req, res) => {
+    // Kontroller at passordet følger retningslinjer
+    const validation = passwordValidation({password : req.body.pwd, password2 : req.body.pwd})
+    if (validation.error) {
+        // Om valideringen feiler sender vi tilbake en feilmelding utifra informasjonen utgitt av Joi
+        if(validation.error.details[0].type == "string.empty") {
+            // Ett av feltene er ikke fylt inn
+            return res.json({ "status" : "error", "message" : "Et av feltene er ikke fylt inn" });
+        } else if(validation.error.details[0].type == "any.required") {
+            // Ett av feltene er ikke tilstede i forespørselen
+            return res.json({ "status" : "error", "message" : "Et eller flere felt mangler" });
+        } else if(validation.error.details[0].type == "passwordComplexity.tooShort") {
+            // Ett av feltene er ikke tilstede i forespørselen
+            return res.json({ "status" : "error", "message" : "Passordet må være minimum 8 tegn langt med 1 liten bokstav, 1 stor bokstav og 1 tall" });
+        } else if(validation.error.details[0].type == "passwordComplexity.tooLong") {
+            // Ett av feltene er ikke tilstede i forespørselen
+            return res.json({ "status" : "error", "message" : "Passordet kan ikke være over 250 tegn" });
+        } else if(validation.error.details[0].type == "passwordComplexity.uppercase") {
+            // Ett av feltene er ikke tilstede i forespørselen
+            return res.json({ "status" : "error", "message" : "Passordet må være minimum 8 tegn langt med 1 liten bokstav, 1 stor bokstav og 1 tall" });
+        } else if(validation.error.details[0].type == "passwordComplexity.numeric") {
+            // Ett av feltene er ikke tilstede i forespørselen
+            return res.json({ "status" : "error", "message" : "Passordet må være minimum 8 tegn langt med 1 liten bokstav, 1 stor bokstav og 1 tall" });
+        } 
+
+        // Et ukjent validerings-problem oppstod, sender fulle meldingen til bruker
+        return res.json({ "status" : "error", "message" : pwdValidation.error.details[0].message });
+    }
     
     let brukerid = undefined
     if (req.body.token !== undefined && req.body.pwd) {
@@ -211,15 +238,14 @@ router.post('/updatePassord', async (req, res) => {
             brukerid = resAuth.brukerid
             let updateQuery = "UPDATE bruker SET pwd = ? WHERE brukerid = ?"
             let updateQueryFormat = mysql.format(updateQuery, [hashedPwd, brukerid])
-            console.log(hashedPwd)
             connection.query(updateQueryFormat, (error, results) => {
                 if (error) {
                     console.log("An error occured while updating the users password, details: " + error.errno + ", " + error.sqlMessage)
                     return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere"})
                 }
 
-                if(results.length > 0) {
-
+                if(results.affectedRows > 0) {
+                    return res.json({"status" : "success", "message" : "Passord endret"})
                 } else {
                     return res.json({"status" : "error", "message" : "En feil oppstod under oppdatering av brukerens passord"})
                 }

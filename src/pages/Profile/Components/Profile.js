@@ -33,9 +33,12 @@ function Profile(props) {
     // Passord, bekreftet
     const [pwd2, setPwd2] = useState("");
     // Oppdaterings-knapper, tekst
-    const [updateTextEmail, setUpdateTextEmail] = useState("Oppdater");
     const [updateTextTlf, setUpdateTextTlf] = useState("Oppdater");
+    const [updateTextEmail, setUpdateTextEmail] = useState("Oppdater");
     const [updateTextPwd, setUpdateTextPwd] = useState("Oppdater");
+    // Oppdaterings-knapper, tilgjengelighet
+    const [updateBtnTlf, setUpdateBtnTlf] = useState(false)
+    const [updateBtnEmail, setUpdateBtnEmail] = useState(false)
     
     // States for personalia.
     const [fnavn, setFnavn] = useState("");
@@ -64,8 +67,6 @@ function Profile(props) {
         }
 
         axios.post(process.env.REACT_APP_APIURL + "/profile/updateEmail", config).then( res => {
-            console.log(res.data.status)
-            console.log(res)
             if (res.data.status === "error") {
                 setAlertDisplay("")
                 setAlertText(res.data.message)
@@ -75,8 +76,8 @@ function Profile(props) {
                 setAlertDisplay("")
                 setAlertText(res.data.message)
                 setAlertSeverity("success")
-                setAuth(true)
                 setUpdateTextEmail("Oppdater");
+                setUpdateBtnEmail(false)
             }
         })
     }
@@ -102,7 +103,8 @@ function Profile(props) {
             setAlertDisplay(""),
             setAlertText("Telefonnummer oppdatert!"),
             setAlertSeverity("success"),
-            setUpdateTextTlf("Oppdater")
+            setUpdateTextTlf("Oppdater"),
+            setUpdateBtnTlf(false)
         )
     }
 
@@ -130,14 +132,22 @@ function Profile(props) {
                 token: token,
                 pwd: pwd
             }
-            axios.post(process.env.REACT_APP_APIURL + "/profile/updatePassord", config).then(
-                setAlertDisplay(""),
-                setAlertText("Passord oppdatert!"),
-                setAlertSeverity("success"),
-                setUpdateTextPwd("Oppdater")
-            )
+            axios.post(process.env.REACT_APP_APIURL + "/profile/updatePassord", config).then( res => {
+                if (res.data.status === "error") {
+                    setAlertDisplay("")
+                    setAlertText(res.data.message)
+                    setAlertSeverity("error")
+                    setUpdateTextEmail("Oppdater");
+                } else {
+                    setAlertDisplay("")
+                    setAlertText(res.data.message)
+                    setAlertSeverity("success")
+                    setUpdateTextEmail("Oppdater");
+                }
+            })
         } else {
             setAlertDisplay("");
+            setAlertSeverity("error")
             setAlertText("Passordene er ikke like");
             setUpdateTextPwd("Oppdater");
         }
@@ -236,6 +246,14 @@ function Profile(props) {
         fetch()
     }
 
+    const tlfUnlock = () => {
+        setUpdateBtnTlf(true)
+    }
+
+    const emailUnlock = () => {
+        setUpdateBtnEmail(true)
+    }
+
     if (loading) {
         return (
             <section id="loading">
@@ -257,20 +275,45 @@ function Profile(props) {
                 <div className='profile-item' >
                 <h2 className='profile-subheader' > Personalia </h2>
                 <h3 className='profile-navn' > {fnavn + " " + enavn} </h3>
-                    <form id="form-profile-tlf" onSubmit={onTlfSubmit} >
+                {/* Kondisjonell rendring, for å "låse" opp og igjen feltet */}
+                    {
+                        !updateBtnTlf ?
+                        <>
+                        <FormControl id="form-profile-tlf-control">
+                            <InputLabel>Telefonnummer</InputLabel>
+                            <Input type="string" variant="outlined" value={tlf} disabled={true} />
+                        </FormControl>
+                        <Button className={classes.profileButton} variant="contained" onClick={tlfUnlock} > Endre </Button>
+                        </>
+                        :
+                        <form id="form-profile-tlf" onSubmit={onTlfSubmit} >
                         <FormControl id="form-profile-tlf-control">
                             <InputLabel>Telefonnummer</InputLabel>
                             <Input type="string" variant="outlined" value={tlf} onChange={onTlfChange} required={true} />
                         </FormControl>
                         <Button className={classes.profileButton} type="submit" variant="contained" > {updateTextTlf} </Button>
-                    </form>
-                    <form id="form-profile-email" onSubmit={onEmailSubmit} >
+                        </form>
+                    }
+
+                    {
+                        !updateBtnEmail ? 
+                        <>
                         <FormControl id="form-profile-email-control">
                             <InputLabel>E-post</InputLabel>
-                            <Input type="email" className={classes.input} variant="outlined" value={email} onChange={onEmailChange} required={true} />
+                            <Input type="string" variant="outlined" value={email} disabled={true} />
+                        </FormControl>
+                        <Button className={classes.profileButton} variant="contained" onClick={emailUnlock} > Endre </Button>
+                        </>
+                        :
+                        <form id="form-profile-email" onSubmit={onEmailSubmit} >
+                        <FormControl id="form-profile-email-control">
+                            <InputLabel>E-post</InputLabel>
+                            <Input type="string" variant="outlined" value={email} onChange={onEmailChange} required={true} />
                         </FormControl>
                         <Button className={classes.profileButton} type="submit" variant="contained" > {updateTextEmail} </Button>
-                    </form>
+                        </form>
+                    }
+
                     <form id="form-profile-pwd" onSubmit={onPwdSubmit} >
                         <FormControl id="form-pwd-profile">
                             <InputLabel>Nytt passord</InputLabel>
