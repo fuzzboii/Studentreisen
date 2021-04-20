@@ -33,7 +33,9 @@ function Profile(props) {
     // Passord, bekreftet
     const [pwd2, setPwd2] = useState("");
     // Oppdaterings-knapper, tekst
-    const [updateText, setUpdateText] = useState("Oppdater");
+    const [updateText1, setUpdateText1] = useState("Oppdater");
+    const [updateText2, setUpdateText2] = useState("Oppdater");
+    const [updateText3, setUpdateText3] = useState("Oppdater");
     
     // States for personalia.
     const [fnavn, setFnavn] = useState("");
@@ -54,6 +56,7 @@ function Profile(props) {
     // Utføres når e-post forsøkes oppdatert
     const onEmailSubmit = e => {
         e.preventDefault()
+        setUpdateText1("Vennligst vent");
         
         const config = {
             token: token,
@@ -85,16 +88,18 @@ function Profile(props) {
     // Utføres når telefonnummer forsøkes oppdatert
     const onTlfSubmit = e => {
         e.preventDefault()
+        setUpdateText2("Vennligst vent");
 
         const config = {
             token: token,
-            telefon: tlf
+            telefon: tlf.replace(/\s/g, ''),
         }
 
         axios.post(process.env.REACT_APP_APIURL + "/profile/updateTelefon", config).then(
             setAlertDisplay(""),
             setAlertText("Telefonnummer oppdatert!"),
-            setAlertSeverity("success")
+            setAlertSeverity("success"),
+            setUpdateText1("Oppdater")
         )
     }
 
@@ -115,7 +120,7 @@ function Profile(props) {
     // Utføres når passord forsøkes oppdatert
     const onPwdSubmit = e => {
         e.preventDefault();
-        setUpdateText("Vennligst vent");
+        setUpdateText3("Vennligst vent");
 
         if (pwd === pwd2) {
             const config = {
@@ -125,12 +130,13 @@ function Profile(props) {
             axios.post(process.env.REACT_APP_APIURL + "/profile/updatePassord", config).then(
                 setAlertDisplay(""),
                 setAlertText("Passord oppdatert!"),
-                setAlertSeverity("success")
+                setAlertSeverity("success"),
+                setUpdateText3("Oppdater")
             )
         } else {
             setAlertDisplay("");
             setAlertText("Passordene er ikke like");
-            setUpdateText("Oppdater");
+            setUpdateText3("Oppdater");
         }
     }
 
@@ -253,14 +259,14 @@ function Profile(props) {
                             <InputLabel>Telefonnummer</InputLabel>
                             <Input type="string" variant="outlined" value={tlf} onChange={onTlfChange} required={true} />
                         </FormControl>
-                        <Button className={classes.profileButton} type="submit" variant="contained" > {updateText} </Button>
+                        <Button className={classes.profileButton} type="submit" variant="contained" > {updateText1} </Button>
                     </form>
                     <form id="form-profile-email" onSubmit={onEmailSubmit} >
                         <FormControl id="form-profile-email-control">
                             <InputLabel>E-post</InputLabel>
                             <Input type="email" className={classes.input} variant="outlined" value={email} onChange={onEmailChange} required={true} />
                         </FormControl>
-                        <Button className={classes.profileButton} type="submit" variant="contained" > {updateText} </Button>
+                        <Button className={classes.profileButton} type="submit" variant="contained" > {updateText2} </Button>
                     </form>
                     <form id="form-profile-pwd" onSubmit={onPwdSubmit} >
                         <FormControl id="form-pwd-profile">
@@ -271,7 +277,13 @@ function Profile(props) {
                             <InputLabel>Bekreft passord</InputLabel>
                             <Input type="password" variant="outlined" onChange={onPwd2Change} required={true} />
                         </FormControl>
-                        <Button className={classes.profileButton} type="submit" variant="contained"> {updateText} </Button>
+                        {/* Viser ulike knapper avhengig av om det finnes input av passord og bekreftet passord */}
+                        {pwd == "" || pwd2 == "" ? 
+                        <Button id="pwdSubmit" className={classes.profileButton} type="submit" variant="contained" disabled="disabled"> {updateText3} </Button> 
+                        :
+                        <Button id="pwdSubmit" className={classes.profileButton} type="submit" variant="contained"> {updateText3} </Button>
+                        }
+
                     </form>
                 <Alert id="alert-register" className="fade_in" style={{display: alertDisplay}} variant="outlined" severity={alertSeverity}>
                     {alertText}
