@@ -1,7 +1,6 @@
 const { connection } = require('../db');
 const mysql = require('mysql');
 const bcrypt = require('bcryptjs');
-const cryptojs = require('crypto-js');
 const { verifyAuth } = require('../global/CommonFunctions');
 const router = require('express').Router();
 const { emailValidation, passwordValidation } = require('../validation');  
@@ -18,13 +17,38 @@ router.get('/getFagfelt', async (req, res) => {
     }
 });
 
+// Henter profilbildet til innlogget bruker om det finnes
+router.post('/getProfilbilde', async (req, res) => {
+    let brukerid = undefined;
+    if (req.body.token !== undefined) {
+        verifyAuth(req.body.token).then( resAuth => {
+            brukerid = resAuth.brukerid
+            let getQuery = "SELECT plassering FROM profilbilde WHERE brukerid = ?"
+            let getQueryFormat = mysql.format(getQuery, [brukerid])
+            connection.query(getQueryFormat, (error, results) => {
+                if (error) {
+                    return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" })
+                }
+
+                if (results.length > 0) {
+                    return res.json({results})
+                } else {
+                    return res.json({"status" : "error", "message" : "Kunne ikke finne et profilbilde"})
+                }
+            })
+        })
+    } else {
+        res.status(400).json({"status" : "error", "message" : "Ikke tilstrekkelig data"});
+    }
+})
+
 // Henter personalia til innlogget bruker //
 router.post('/getBruker', async (req, res) => {
     let brukerid = undefined;
     if (req.body.token !== undefined) {
         verifyAuth(req.body.token).then( resAuth => {
             brukerid = resAuth.brukerid 
-            let getQuery = "SELECT fnavn, enavn, telefon, email FROM bruker WHERE brukerid = ?";
+            let getQuery = "SELECT fnavn, enavn, telefon, email, brukerid FROM bruker WHERE brukerid = ?";
             let getQueryFormat = mysql.format(getQuery, [brukerid]);
             connection.query(getQueryFormat, (error, results) => {
                 if (error) {
