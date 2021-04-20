@@ -33,7 +33,6 @@ import '../CSS/Seminar.css';
 
 
 const SeminarDetailsUpcoming = (props) => {
-
     let { seminarid } = useParams();
     
     const history = useHistory();

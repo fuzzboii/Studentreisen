@@ -27,6 +27,7 @@ function App() {
   const [auth, setAuth] = useState(false);
   const [type, setType] = useState(1);
   const [notif, setNotif] = useState(null);
+  const [brukerid, setBrukerid] = useState(0);
   const [loading, setLoading] = useState(true);
 
   // Henter authtoken-cookie
@@ -45,6 +46,7 @@ function App() {
           CookieService.remove("authtoken");
         } else {
           setType(res.usertype);
+          setBrukerid(res.brukerid);
 
           if(res.notif.kunngjoring !== undefined && res.notif.kunngjoring.length >= 1) {
             setNotif(res.notif.kunngjoring);
@@ -97,7 +99,7 @@ function App() {
           />
           <Route path = "/seminar" exact component = {Seminar} />
           <Route path = "/seminar/seminarkommende=:seminarid" render = {() =>(
-            <SeminarDetailsUpcoming auth={auth} type={type} loading={loading} />
+            <SeminarDetailsUpcoming auth={auth} type={type} loading={loading} brukerid={brukerid} />
           )}/>
           <Route path = "/seminar/seminarutgatte=:seminarid" render = {() =>(
             <SeminarDetailsExpired auth={auth} type={type} loading={loading} />

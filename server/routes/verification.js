@@ -41,11 +41,11 @@ router.post('/auth', async (req, res) => {
                         if(kunngjoring[0] !== undefined) {
 
                             // Kunngjøringer funnet
-                            return res.json({ "authenticated" : true, "usertype" : results[0].niva, "notif" : {kunngjoring} });
+                            return res.json({ "authenticated" : true, "usertype" : results[0].niva, "notif" : {kunngjoring}, "brukerid" : results[0].gjelderfor });
 
                         } else {
                             // Ingen kunngjøringer
-                            return res.json({ "authenticated" : true, "usertype" : results[0].niva, "notif" : {} });
+                            return res.json({ "authenticated" : true, "usertype" : results[0].niva, "notif" : {}, "brukerid" : results[0].gjelderfor });
                         }
                     });
                 } else {
