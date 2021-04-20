@@ -3,6 +3,7 @@ import React from "react";
 // 3rd-party Packages
 import MaterialTable from "material-table";
 import axios from "axios";
+import { useSnackbar } from 'notistack';
 
 // Studentreisen-assets og komponenter
 import CookieService from '../../../global/Services/CookieService';
@@ -11,7 +12,8 @@ import ValidationService from '../../../global/Services/ValidationService';
 function UserOverview(props) {
     let [brukere, setBrukere] = React.useState([]);
     let [isLoading, setIsLoading] = React.useState(true);
-    
+    const { enqueueSnackbar } = useSnackbar();
+
     const token = {
         token: CookieService.get("authtoken")
     }
@@ -23,10 +25,14 @@ function UserOverview(props) {
             .post(process.env.REACT_APP_APIURL + "/tools/getAllUserData", token)
             // Utføres ved mottatt resultat
             .then(res => {
-                if(res.data.results) {
-                    setIsLoading(false);
+                if(res.data.status === "success") {
                     setBrukere(res.data.results);
+                    setIsLoading(false);
                 } else {
+                    enqueueSnackbar(res.data.message, { 
+                        variant: res.data.status,
+                        autoHideDuration: 5000,
+                    });
                     setIsLoading(false);
                 }
             });
@@ -94,19 +100,39 @@ function UserOverview(props) {
                             .post(process.env.REACT_APP_APIURL + "/tools/newUser", {bruker : nyBruker, token : token.token})
                             // Utføres ved mottatt resultat
                             .then(res => {
-                                if(res.data.success) {
+                                if(res.data.status === "success") {
+                                    enqueueSnackbar("Bruker opprettet, e-post med midlertidig passord sendt til oppgitt e-post", { 
+                                        variant: res.data.status,
+                                        autoHideDuration: 7000,
+                                    });
                                     setBrukere([...brukere, nyBruker]);
                                     resolve();
                                 } else {
+                                    enqueueSnackbar(res.data.message, { 
+                                        variant: res.data.status,
+                                        autoHideDuration: 5000,
+                                    });
                                     reject();
                                 }
                             }).catch(e => {
+                                enqueueSnackbar("En intern feil oppstod, vennligst forsøk igjen senere", { 
+                                    variant: 'error',
+                                    autoHideDuration: 5000,
+                                });
                                 reject();
                             });
                     } catch(e) {
+                        enqueueSnackbar("En intern feil oppstod, vennligst forsøk igjen senere", { 
+                            variant: 'error',
+                            autoHideDuration: 5000,
+                        });
                         reject();
                     }
                 } else {
+                    enqueueSnackbar("Kunne ikke validere ett eller flere av feltene du skrev inn", { 
+                        variant: 'error',
+                        autoHideDuration: 5000,
+                    });
                     reject();
                 }
             }
@@ -123,7 +149,11 @@ function UserOverview(props) {
                                 .post(process.env.REACT_APP_APIURL + "/tools/updateUser", {nyBruker : nyBruker, gammelBruker : gammelBruker, token : token.token})
                                 // Utføres ved mottatt resultat
                                 .then(res => {
-                                    if(res.data.success) {
+                                    if(res.data.status === "success") {
+                                        enqueueSnackbar(res.data.message, { 
+                                            variant: res.data.status,
+                                            autoHideDuration: 5000,
+                                        });
                                         const oppdatertBrukere = [...brukere];
                                         const index = gammelBruker.tableData.id;
                                         oppdatertBrukere[index] = nyBruker;
@@ -131,15 +161,31 @@ function UserOverview(props) {
         
                                         resolve();
                                     } else {
+                                        enqueueSnackbar(res.data.message, { 
+                                            variant: res.data.status,
+                                            autoHideDuration: 5000,
+                                        });
                                         reject();
                                     }
                                 }).catch(e => {
+                                    enqueueSnackbar("En intern feil oppstod, vennligst forsøk igjen senere", { 
+                                        variant: 'error',
+                                        autoHideDuration: 5000,
+                                    });
                                     reject();
                                 });
                         } catch(e) {
+                            enqueueSnackbar("En intern feil oppstod, vennligst forsøk igjen senere", { 
+                                variant: 'error',
+                                autoHideDuration: 5000,
+                            });
                             reject();
                         }
                     } else {
+                        enqueueSnackbar("Kunne ikke validere ett eller flere av feltene du skrev inn", { 
+                            variant: 'error',
+                            autoHideDuration: 5000,
+                        });
                         reject();
                     }
                 }
@@ -152,7 +198,11 @@ function UserOverview(props) {
                         .post(process.env.REACT_APP_APIURL + "/tools/deleteUser", {bruker : bruker, token : token.token})
                         // Utføres ved mottatt resultat
                         .then(res => {
-                            if(res.data.success) {
+                            if(res.data.status === "success") {
+                                enqueueSnackbar(res.data.message, { 
+                                    variant: res.data.status,
+                                    autoHideDuration: 5000,
+                                });
                                 const oppdatertBrukere = [...brukere];
                                 const index = bruker.tableData.id;
                                 oppdatertBrukere.splice(index, 1);
@@ -160,12 +210,24 @@ function UserOverview(props) {
 
                                 resolve();
                             } else {
-                                reject();
+                                enqueueSnackbar(res.data.message, { 
+                                    variant: res.data.status,
+                                    autoHideDuration: 5000,
+                                });
+                                resolve();
                             }
                         }).catch(e => {
+                            enqueueSnackbar("En intern feil oppstod, vennligst forsøk igjen senere", { 
+                                variant: 'error',
+                                autoHideDuration: 5000,
+                            });
                             reject();
                         });
                 } catch(e) {
+                    enqueueSnackbar("En intern feil oppstod, vennligst forsøk igjen senere", { 
+                        variant: 'error',
+                        autoHideDuration: 5000,
+                    });
                     reject();
                 }
             }

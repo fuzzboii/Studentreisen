@@ -25,14 +25,14 @@ router.post('/getAllUserData', async (req, res) => {
                         }   
                         
                         if(results[0] !== undefined) {
-                            return res.json({results});
+                            return res.json({ "status" : "success", results });
                         } else {
-                            return res.json({});
+                            return res.json({ "status" : "info", "message" : "Ingen brukere å vise" });
                         }
                     });
                 } else {
                     // Bruker har ikke tilgang, loggfører
-                    //console.log("En innlogget bruker uten riktige tilganger har forsøkt å se brukeroversikten, brukerens ID: " + results[0].brukerid)
+                    console.log("En innlogget bruker uten riktige tilganger har forsøkt å se brukeroversikten, brukerens ID: " + results[0].brukerid)
                     return res.json({ "status" : "error", "message" : "Ingen tilgang, om feilen fortsetter, forsøk å logg ut og inn igjen" });
                 }
             } else {
@@ -40,7 +40,7 @@ router.post('/getAllUserData', async (req, res) => {
             }
         });
     } else {
-        return res.status(403).send();
+        return res.json({ "status" : "error", "message" : "Ett eller flere felt mangler fra forespørselen" });
     }
 });
 
@@ -49,7 +49,44 @@ router.post('/newUser', async (req, res) => {
         const validation = registerValidation({email: req.body.bruker.email, fnavn: req.body.bruker.fnavn, enavn: req.body.bruker.enavn, password: "", password2: ""});
         
         if(validation.error) {
-            return res.json({success: false});
+            // Om validering feilet sender vi tilbake en feilmelding med informasjon gitt ut av Joi
+            
+            // E-post validering
+            if(validation.error.details[0].path[0] == "email") {
+                if(validation.error.details[0].type == "string.empty") {
+                    // E-post feltet er tomt
+                    return res.json({ "status" : "error", "message" : "E-post er ikke fylt inn" });
+                } else if(validation.error.details[0].type == "string.email") {
+                    // E-posten er ikke en gyldig e-post
+                    return res.json({ "status" : "error", "message" : "E-post adressen er ugyldig" });
+                } else if(validation.error.details[0].type == "any.required") {
+                    // E-post feltet er ikke tilstede i forespørselen
+                    return res.json({ "status" : "error", "message" : "Ett eller flere felt mangler" });
+                }
+
+            // Fornavn validering
+            } else if(validation.error.details[0].path[0] == "fnavn") {
+                if(validation.error.details[0].type == "string.empty") {
+                    // Passord-feltet er tomt
+                    return res.json({ "status" : "error", "message" : "Fornavn er ikke fylt inn" });
+                } else if(validation.error.details[0].type == "any.required") {
+                    // Passord-feltet er ikke tilstede i forespørselen
+                    return res.json({ "status" : "error", "message" : "Ett eller flere felt mangler" });
+                }
+
+            // Etternavn validering
+            } else if(validation.error.details[0].path[0] == "enavn") {
+                if(validation.error.details[0].type == "string.empty") {
+                    // Passord-feltet er tomt
+                    return res.json({ "status" : "error", "message" : "Etternavn er ikke fylt inn" });
+                } else if(validation.error.details[0].type == "any.required") {
+                    // Passord-feltet er ikke tilstede i forespørselen
+                    return res.json({ "status" : "error", "message" : "Ett eller flere felt mangler" });
+                }
+            }
+
+            // Et ukjent validerings-problem oppstod, sender fulle meldingen til bruker
+            return res.json({ "status" : "error", "message" : validation.error.details[0].message });
         }
 
         verifyAuth(req.body.token).then(function(response) {
@@ -72,11 +109,11 @@ router.post('/newUser', async (req, res) => {
                                 connection.query(checkQueryFormat, (error, results) => {
                                     if (error) {
                                         console.log("En feil oppstod ved henting av e-post under registrering, detaljer: " + error.errno + ", " + error.sqlMessage)
-                                        return res.json({success: false});
+                                        return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                                     }
                     
                                     if(results.length > 0) {
-                                        return res.json({success: false});
+                                        return res.json({ "status" : "error", "message" : "E-posten eksisterer allerede" });
                                     } else {
 
                                         // Oppretter en e-post med info til brukeren
@@ -95,14 +132,14 @@ router.post('/newUser', async (req, res) => {
                                         connection.query(insertQueryFormat, (error, results) => {
                                             if (error) {
                                                 console.log("En feil oppstod under registrering av ny bruker, detaljer: " + error.errno + ", " + error.sqlMessage)
-                                                return res.json({success: false});
+                                                return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                                             }
                                             
                                             if(results.affectedRows > 0) {
                                                 // Bruker opprettet
-                                                return res.json({success: true});
+                                                return res.json({ "status" : "success" });
                                             } else {
-                                                return res.json({success: false});
+                                                return res.json({ "status" : "error", "message" : "Feil oppstod ved oppretting av bruker, vennligst forsøk igjen senere" });
                                             }
                                         });
                                     }
@@ -110,18 +147,18 @@ router.post('/newUser', async (req, res) => {
                             });
                         });
                     } catch(e) {
-                        return res.json({success: false});
+                        return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                     }
                 } else {
-                    return res.json({success: false});
+                    return res.json({ "status" : "error", "message" : "Ingen tilgang" });
                 }
             } else {
-                return res.json({success: false});
+                return res.json({ "status" : "error", "message" : "Ingen tilgang" });
             }
         })
 
     } else {
-        return res.status(403).send();
+        return res.json({ "status" : "error", "message" : "Ett eller flere felt mangler fra forespørselen" });
     }
 });
 
@@ -131,7 +168,44 @@ router.post('/updateUser', async (req, res) => {
         const validation = registerValidation({email: req.body.nyBruker.email, fnavn: req.body.nyBruker.fnavn, enavn: req.body.nyBruker.enavn, password: "", password2: ""});
         
         if(validation.error) {
-            return res.json({success: false});
+            // Om validering feilet sender vi tilbake en feilmelding med informasjon gitt ut av Joi
+            
+            // E-post validering
+            if(validation.error.details[0].path[0] == "email") {
+                if(validation.error.details[0].type == "string.empty") {
+                    // E-post feltet er tomt
+                    return res.json({ "status" : "error", "message" : "E-post er ikke fylt inn" });
+                } else if(validation.error.details[0].type == "string.email") {
+                    // E-posten er ikke en gyldig e-post
+                    return res.json({ "status" : "error", "message" : "E-post adressen er ugyldig" });
+                } else if(validation.error.details[0].type == "any.required") {
+                    // E-post feltet er ikke tilstede i forespørselen
+                    return res.json({ "status" : "error", "message" : "Ett eller flere felt mangler" });
+                }
+
+            // Fornavn validering
+            } else if(validation.error.details[0].path[0] == "fnavn") {
+                if(validation.error.details[0].type == "string.empty") {
+                    // Passord-feltet er tomt
+                    return res.json({ "status" : "error", "message" : "Fornavn er ikke fylt inn" });
+                } else if(validation.error.details[0].type == "any.required") {
+                    // Passord-feltet er ikke tilstede i forespørselen
+                    return res.json({ "status" : "error", "message" : "Ett eller flere felt mangler" });
+                }
+
+            // Etternavn validering
+            } else if(validation.error.details[0].path[0] == "enavn") {
+                if(validation.error.details[0].type == "string.empty") {
+                    // Passord-feltet er tomt
+                    return res.json({ "status" : "error", "message" : "Etternavn er ikke fylt inn" });
+                } else if(validation.error.details[0].type == "any.required") {
+                    // Passord-feltet er ikke tilstede i forespørselen
+                    return res.json({ "status" : "error", "message" : "Ett eller flere felt mangler" });
+                }
+            }
+
+            // Et ukjent validerings-problem oppstod, sender fulle meldingen til bruker
+            return res.json({ "status" : "error", "message" : validation.error.details[0].message });
         }
 
         verifyAuth(req.body.token).then(function(response) {
@@ -154,29 +228,29 @@ router.post('/updateUser', async (req, res) => {
                         connection.query(updateQueryFormat, (error, results) => {
                             if (error) {
                                 console.log("En feil oppstod under endring av eksisterende bruker, detaljer: " + error.errno + ", " + error.sqlMessage)
-                                return res.json({success: false});
+                                return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                             }
                             
                             if(results.affectedRows > 0) {
                                 // Bruker endret
-                                return res.json({success: true});
+                                return res.json({ "status" : "success", "message" : "Bruker oppdatert" });
                             } else {
-                                return res.json({success: false});
+                                return res.json({ "status" : "error", "message" : "Feil oppstod ved oppdatering av bruker" });
                             }
                         });
                     } catch(e) {
-                        return res.json({success: false});
+                        return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                     }
                 } else {
-                    return res.json({success: false});
+                    return res.json({ "status" : "error", "message" : "Ingen tilgang" });
                 }
             } else {
-                return res.json({success: false});
+                return res.json({ "status" : "error", "message" : "Ingen tilgang" });
             }
         })
 
     } else {
-        return res.status(403).send();
+        return res.json({ "status" : "error", "message" : "Ett eller flere felt mangler fra forespørselen" });
     }
 });
 
@@ -197,7 +271,7 @@ router.post('/deleteUser', async (req, res) => {
                             connection.query(deleteLoginQueryFormat, (error, results) => {
                                 if (error) {
                                     console.log("En feil oppstod under sletting av alle koblinger til en eksisterende bruker, detaljer: " + error.errno + ", " + error.sqlMessage)
-                                    return res.json({success: false});
+                                    return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                                 }
 
                                 // Sletter alle koblinger som er "tillatt" å slette
@@ -208,7 +282,7 @@ router.post('/deleteUser', async (req, res) => {
                                 connection.query(deleteGPQueryFormat, (error, results) => {
                                     if (error) {
                                         console.log("En feil oppstod under sletting av alle koblinger til en eksisterende bruker, detaljer: " + error.errno + ", " + error.sqlMessage)
-                                        return res.json({success: false});
+                                        return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                                     }
                                 
                                     let deleteQuery = "DELETE FROM bruker WHERE brukerid = ? AND fnavn = ? AND enavn = ? AND email = ?";
@@ -218,33 +292,33 @@ router.post('/deleteUser', async (req, res) => {
                                     connection.query(deleteQueryFormat, (error, results) => {
                                         if (error) {
                                             console.log("En feil oppstod under sletting av eksisterende bruker, detaljer: " + error.errno + ", " + error.sqlMessage)
-                                            return res.json({success: false});
+                                            return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                                         }
                                         
                                         if(results.affectedRows > 0) {
                                             // Bruker slettet
-                                            return res.json({success: true});
+                                            return res.json({ "status" : "success", "message" : "Bruker slettet" });
                                         } else {
-                                            return res.json({success: false});
+                                            return res.json({ "status" : "error", "message" : "Feil oppstod ved sletting av bruker" });
                                         }
                                     });
                                 });
                             });
                         } catch(e) {
-                            return res.json({success: false});
+                            return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                         }
                     } else {
-                        return res.json({success: false});
+                        return res.json({ "status" : "error", "message" : "Ingen tilgang" });
                     }
                 } else {
-                    return res.json({success: false});
+                    return res.json({ "status" : "error", "message" : "Ingen tilgang" });
                 }
             })
         } else {
-            return res.status(403).send();
+            return res.json({ "status" : "error", "message" : "Du kan ikke slette en Administrator" });
         }
     } else {
-        return res.status(403).send();
+        return res.json({ "status" : "error", "message" : "Ett eller flere felt mangler fra forespørselen" });
     }
 });
 
