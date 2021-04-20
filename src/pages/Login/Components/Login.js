@@ -6,6 +6,7 @@ import { Redirect } from "react-router-dom";
 import { Button, FormControl, InputLabel, Input, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Checkbox, FormControlLabel } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import axios from 'axios';
+import { withSnackbar } from 'notistack';
 
 // Studentreisen-assets og komponenter
 import Loader from '../../../global/Components/Loader';
@@ -19,25 +20,20 @@ class Login extends Component {
     // Login-spesifikke states, delt opp i før-visning autentisering, login, alert og glemt passord
     this.state = {loading : this.props.loading, authenticated : this.props.auth, 
                   email : "", pwd : "", remember : false, loginDisabled : false, loginText : "Logg inn", loginOpacity: "1",
-                  alertDisplay : "none", alertText : "",
-                  forgotEmail : "", forgotDisplay : false, forgotBtnDisabled : false, forgotAlertDisplay : "none", forgotAlertText : "", forgotAlertSeverity : "error"}
+                  forgotEmail : "", forgotDisplay : false, forgotBtnDisabled : false}
   }
 
   // Utføres når bruker gjør en handling i input-feltet for e-post
   onEmailChange = e => {
     this.setState({
-      email: e.target.value,
-      alertDisplay: "none",
-      alertText: ""
+      email: e.target.value
     });
   };
 
   // Utføres når bruker gjør en handling i input-feltet for passord
   onPasswordChange = e => {
     this.setState({
-      pwd: e.target.value,
-      alertDisplay: "none",
-      alertText: ""
+      pwd: e.target.value
     });
   };
 
@@ -101,17 +97,17 @@ class Login extends Component {
             }
         } else {
             // Feil oppstod ved innlogging, viser meldingen
-            this.setState({
-              alertDisplay: "",
-              alertText: res.data.message
+            this.props.enqueueSnackbar(res.data.message, { 
+                variant: 'error',
+                autoHideDuration: 5000,
             });
         }
       })
       .catch(err => {
         // En feil oppstod ved oppkobling til server
-        this.setState({
-          alertDisplay: "",
-          alertText: "En intern feil oppstod, vennligst forsøk igjen senere"
+        this.props.enqueueSnackbar("En intern feil oppstod, vennligst forsøk igjen senere", { 
+            variant: 'error',
+            autoHideDuration: 5000,
         });
       })
       // Utføres alltid uavhengig av andre resultater
@@ -146,24 +142,23 @@ class Login extends Component {
           // Utføres ved mottatt resultat
           .then(res => {
             if(res.data.status == "success") {
-              this.setState({
-                forgotAlertDisplay: "",
-                forgotAlertText: "Om e-posten er registrert hos oss vil du motta en lenke for tilbakestilling snart",
-                forgotAlertSeverity: "success"
+              this.props.enqueueSnackbar("Om e-posten er registrert hos oss vil du motta en lenke for tilbakestilling snart", { 
+                  variant: 'success',
+                  autoHideDuration: 5000,
               });
             } else {
               // Feil oppstod, viser meldingen
-              this.setState({
-                forgotAlertDisplay: "",
-                forgotAlertText: res.data.message
+              this.props.enqueueSnackbar(res.data.message, { 
+                  variant: 'error',
+                  autoHideDuration: 5000,
               });
             }
           })
           .catch(err => {
             // En feil oppstod ved oppkobling til server
-            this.setState({
-              forgotAlertDisplay: "",
-              forgotAlertText: "En intern feil oppstod, vennligst forsøk igjen senere"
+            this.props.enqueueSnackbar("En intern feil oppstod, vennligst forsøk igjen senere", { 
+                variant: 'error',
+                autoHideDuration: 5000,
             });
           })
           // Utføres alltid uavhengig av andre resultater
@@ -175,17 +170,21 @@ class Login extends Component {
         });
       } else {
         // Ugyldig epost
+        this.props.enqueueSnackbar("E-post adressen er ugyldig", { 
+            variant: 'error',
+            autoHideDuration: 5000,
+        });
         this.setState({
-          forgotAlertDisplay: "",
-          forgotAlertText: "E-post adressen er ugyldig",
           forgotBtnDisabled: false
         });
       }
     } else {
       // Ingen epost oppgitt
+      this.props.enqueueSnackbar("E-post er ikke fylt inn", { 
+          variant: 'error',
+          autoHideDuration: 5000,
+      });
       this.setState({
-        forgotAlertDisplay: "",
-        forgotAlertText: "E-post er ikke fylt inn",
         forgotBtnDisabled: false
       });
     }
@@ -194,10 +193,7 @@ class Login extends Component {
   // Utføres når bruker gjør en handling i input-feltet for "Glemt passord"
   onForgotChange = e => {
     this.setState({
-      forgotEmail: e.target.value,
-      forgotAlertDisplay: "none",
-      forgotAlertText: "",
-      forgotAlertSeverity: "error"
+      forgotEmail: e.target.value
     });
   };
 
@@ -239,9 +235,6 @@ class Login extends Component {
           <section id="section_logo_login">
             <img src={usnlogo} alt="USN logo" />
           </section>
-          <Alert id="alert_login" className="fade_in" style={{display: this.state.alertDisplay}} variant="outlined" severity="error">
-            {this.state.alertText}
-          </Alert>
           <form id="form_login" onSubmit={this.handleLogin}>
             <FormControl id="form_email_login">
               <InputLabel>E-post</InputLabel>
@@ -260,9 +253,6 @@ class Login extends Component {
             <DialogTitle id="dialog_glemt_tittel">Glemt passord</DialogTitle>
             <DialogContent>
               <DialogContentText>Skriv inn e-posten for å tilbakestille passordet ditt</DialogContentText>
-              <Alert id="alert_dialog_glemt" className="fade_in" style={{display: this.state.forgotAlertDisplay}} severity={this.state.forgotAlertSeverity}>
-                {this.state.forgotAlertText}
-              </Alert>
               <TextField autoFocus margin="dense" value={this.state.forgotEmail} onChange={this.onForgotChange} label="E-post" type="email" fullWidth />
             </DialogContent>
             <DialogActions>
@@ -281,4 +271,4 @@ class Login extends Component {
   }
 }
 
-export default Login;
+export default withSnackbar(Login);
