@@ -4,8 +4,8 @@ import { Redirect } from "react-router-dom";
 
 // 3rd-party Packages
 import { Button, FormControl, InputLabel, Input } from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
 import axios from 'axios';
+import { withSnackbar } from 'notistack';
 
 // Studentreisen-assets og komponenter
 import Loader from '../../../global/Components/Loader';
@@ -19,52 +19,42 @@ class Register extends Component {
     // Login-spesifikke states, delt opp i før-visning autentisering, register, alert
     this.state = {loading : props.loading, authenticated : props.auth, 
                   email : "", fnavn : "", enavn : "", pwd : "", pwd2 : "", registerDisabled : false, registerText : "Registrer bruker", registerOpacity: "1",
-                  alertDisplay : "none", alertText : "", alertSeverity : "error"}
+                  redirectHome : false, redirectLogin : false}
   }
 
 
   // Utføres når bruker gjør en handling i input-feltet for e-post
   onEmailChange = e => {
     this.setState({
-      email: e.target.value,
-      alertDisplay: "none",
-      alertText: ""
+      email: e.target.value
     });
   };
 
   // Utføres når bruker gjør en handling i input-feltet for fornavn
   onFnavnChange = e => {
     this.setState({
-      fnavn: e.target.value,
-      alertDisplay: "none",
-      alertText: ""
+      fnavn: e.target.value
     });
   };
 
   // Utføres når bruker gjør en handling i input-feltet for etternavn
   onEnavnChange = e => {
     this.setState({
-      enavn: e.target.value,
-      alertDisplay: "none",
-      alertText: ""
+      enavn: e.target.value
     });
   };
 
   // Utføres når bruker gjør en handling i input-feltet for passord
   onPwdChange = e => {
     this.setState({
-      pwd: e.target.value,
-      alertDisplay: "none",
-      alertText: ""
+      pwd: e.target.value
     });
   };
 
   // Utføres når bruker gjør en handling i input-feltet for bekreft passord
   onPwd2Change = e => {
     this.setState({
-      pwd2: e.target.value,
-      alertDisplay: "none",
-      alertText: ""
+      pwd2: e.target.value
     });
   };
 
@@ -111,40 +101,42 @@ class Register extends Component {
               CookieService.set('authtoken', res.data.authtoken, options);
               
               // Brukeren har blitt opprettet, sender til forsiden  
-              this.setState({
-                alertDisplay: "",
-                alertText: "Brukeren har blitt opprettet og du er nå innlogget, du blir sendt til forsiden om få sekunder",
-                alertSeverity: "success"
+              this.props.enqueueSnackbar("Brukeren har blitt opprettet og du er nå innlogget, du blir sendt til forsiden om få sekunder", { 
+                  variant: 'success',
+                  autoHideDuration: 5000,
               });
 
               setTimeout(() => {
-                this.props.history.push('/');
+                this.setState({
+                  redirectHome: true
+                })
               }, 5000);
             } else {
               // Brukeren ble opprettet, men mottok ikke en authtoken, sender til login
-              this.setState({
-                alertDisplay: "",
-                alertText: "Brukeren har blitt opprettet, du blir sendt til side for innlogging om få sekunder",
-                alertSeverity: "success"
+              this.props.enqueueSnackbar("Brukeren har blitt opprettet, du blir sendt til side for innlogging om få sekunder", { 
+                  variant: 'success',
+                  autoHideDuration: 5000,
               });
 
               setTimeout(() => {
-                this.props.history.push('/login');
+                this.setState({
+                  redirectLogin: true
+                })
               }, 5000);
             }
           } else {
               // Feil oppstod ved registrering av ny bruker, viser meldingen
-              this.setState({
-                alertDisplay: "",
-                alertText: res.data.message
+              this.props.enqueueSnackbar(res.data.message, { 
+                  variant: 'error',
+                  autoHideDuration: 7000,
               });
           }
         })
         .catch(err => {
           // En feil oppstod ved oppkobling til server
-          this.setState({
-            alertDisplay: "",
-            alertText: "En intern feil oppstod, vennligst forsøk igjen senere"
+          this.props.enqueueSnackbar("En intern feil oppstod, vennligst forsøk igjen senere", { 
+              variant: 'error',
+              autoHideDuration: 5000,
           });
         })
         // Utføres alltid uavhengig av andre resultater
@@ -160,9 +152,11 @@ class Register extends Component {
         });
     } else {
       // Brukeren har oppgitt ulike passord
+      this.props.enqueueSnackbar("Passordene er ikke like", { 
+        variant: 'error',
+        autoHideDuration: 5000,
+      });
       this.setState({
-        alertDisplay: "",
-        alertText: "Passordene er ikke like",
         registerDisabled: false,
         registerText: "Registrer bruker",
         registerOpacity: "1"
@@ -180,6 +174,12 @@ class Register extends Component {
         </section>
       );
     }
+
+    if(this.state.redirectHome) {
+      return <Redirect to={{pathname: "/Overview"}} />;
+    } else if(this.state.redirectLogin) {
+      return <Redirect to={{pathname: "/Login"}} />;
+    }
     
     if(!this.props.loading && !this.props.auth) {
       return (
@@ -187,9 +187,6 @@ class Register extends Component {
           <section id="section_logo_register">
             <img src={usnlogo} alt="USN logo" />
           </section>
-          <Alert id="alert_register" className="fade_in" style={{display: this.state.alertDisplay}} variant="outlined" severity={this.state.alertSeverity}>
-            {this.state.alertText}
-          </Alert>
           <form id="form_register" onSubmit={this.handleRegister}>
             <FormControl id="form_email_register">
               <InputLabel>E-post</InputLabel>
@@ -224,4 +221,4 @@ class Register extends Component {
   }
 }
 
-export default Register;
+export default withSnackbar(Register);
