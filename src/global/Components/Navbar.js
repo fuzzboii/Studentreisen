@@ -221,6 +221,16 @@ function Navbar(props) {
                 >
                   CV
                 </Button>
+
+                <Button
+                  className={classes.navbtn}
+                  onClick={onLink}
+                  component={Link}
+                  to='/overview'
+                >
+                  Oversikt
+                </Button>
+
                 {type >= 2 && 
                   <Button 
                     className={classes.navbtn}
