@@ -153,7 +153,7 @@ router.post('/updateTelefon', async (req, res) => {
             })
         })
     } else {
-        res.status(400).json({"stauts" : "error", "message" : "Ikke tilstrekkelig data"})
+        res.status(400).json({"status" : "error", "message" : "Ikke tilstrekkelig data"})
     }
 })
 
@@ -168,10 +168,16 @@ router.post('/updateEmail', async (req, res) => {
             connection.query(updateQueryFormat, (error, results) => {
                 if (error) {
                     console.log("An error occured while updating the users email, details: " + error.errno + ", " + error.sqlMessage)
-                    return res.jason({ "status" : "error", "message" : "en intern feil oppstod, vennligst forsøk igjen senere" })
+                    // Duplikat av innføring
+                    if (error.errno == 1062) {
+                        return res.json({"status" : "error", "message" : "Epost allerede i bruk"})
+                    } else {
+                        return res.json({"status" : "error", "message" : "En feil oppstod"})
+                    }
                 }
 
                 if(results.length > 0) {
+                    return res.json({"status" : "success", "message" : "Epost oppdatert" })
 
                 } else {
                     return res.json({"status" : "error", "message" : "En feil oppstod under oppdatering av brukerens email"})
@@ -179,7 +185,7 @@ router.post('/updateEmail', async (req, res) => {
             })
         })
     } else {
-        res.status(400).json({"stauts" : "error", "message" : "Ikke tilstrekkelig data"})
+        res.status(400).json({"status" : "error", "message" : "Ikke tilstrekkelig data"})
     }
 })
 
@@ -210,7 +216,7 @@ router.post('/updatePassord', async (req, res) => {
             })
         })
     } else {
-        res.status(400).json({"stauts" : "error", "message" : "Ikke tilstrekkelig data"})
+        res.status(400).json({"status" : "error", "message" : "Ikke tilstrekkelig data"})
     }
 })
 

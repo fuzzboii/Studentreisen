@@ -12,6 +12,7 @@ import Loader from '../../../global/Components/Loader';
 import NoAccess from '../../../global/Components/NoAccess';
 
 function Profile(props) {
+    console.log("TEST")
     // State for loading mens vi venter på svar fra server
     const [loading, setLoading] = useState(true);
     // Autentiseringsstatus
@@ -33,9 +34,9 @@ function Profile(props) {
     // Passord, bekreftet
     const [pwd2, setPwd2] = useState("");
     // Oppdaterings-knapper, tekst
-    const [updateText1, setUpdateText1] = useState("Oppdater");
-    const [updateText2, setUpdateText2] = useState("Oppdater");
-    const [updateText3, setUpdateText3] = useState("Oppdater");
+    const [updateTextEmail, setUpdateTextEmail] = useState("Oppdater");
+    const [updateTextTlf, setUpdateTextTlf] = useState("Oppdater");
+    const [updateTextPwd, setUpdateTextPwd] = useState("Oppdater");
     
     // States for personalia.
     const [fnavn, setFnavn] = useState("");
@@ -56,7 +57,7 @@ function Profile(props) {
     // Utføres når e-post forsøkes oppdatert
     const onEmailSubmit = e => {
         e.preventDefault()
-        setUpdateText1("Vennligst vent");
+        setUpdateTextEmail("Vennligst vent");
         
         const config = {
             token: token,
@@ -65,15 +66,18 @@ function Profile(props) {
 
         axios.post(process.env.REACT_APP_APIURL + "/profile/updateEmail", config).then( res => {
             console.log(res.data.status)
+            console.log(res)
             if (res.data.status === "error") {
                 setAlertDisplay("")
                 setAlertText(res.data.message)
                 setAlertSeverity("error")
+                setUpdateTextEmail("Oppdater");
             } else {
                 setAlertDisplay("")
-                setAlertText("Epost endret")
+                setAlertText(res.data.message)
                 setAlertSeverity("success")
                 setAuth(true)
+                setUpdateTextEmail("Oppdater");
             }
         })
     }
@@ -88,7 +92,7 @@ function Profile(props) {
     // Utføres når telefonnummer forsøkes oppdatert
     const onTlfSubmit = e => {
         e.preventDefault()
-        setUpdateText2("Vennligst vent");
+        setUpdateTextTlf("Vennligst vent");
 
         const config = {
             token: token,
@@ -99,7 +103,7 @@ function Profile(props) {
             setAlertDisplay(""),
             setAlertText("Telefonnummer oppdatert!"),
             setAlertSeverity("success"),
-            setUpdateText1("Oppdater")
+            setUpdateTextTlf("Oppdater")
         )
     }
 
@@ -120,7 +124,7 @@ function Profile(props) {
     // Utføres når passord forsøkes oppdatert
     const onPwdSubmit = e => {
         e.preventDefault();
-        setUpdateText3("Vennligst vent");
+        setUpdateTextPwd("Vennligst vent");
 
         if (pwd === pwd2) {
             const config = {
@@ -131,12 +135,12 @@ function Profile(props) {
                 setAlertDisplay(""),
                 setAlertText("Passord oppdatert!"),
                 setAlertSeverity("success"),
-                setUpdateText3("Oppdater")
+                setUpdateTextPwd("Oppdater")
             )
         } else {
             setAlertDisplay("");
             setAlertText("Passordene er ikke like");
-            setUpdateText3("Oppdater");
+            setUpdateTextPwd("Oppdater");
         }
     }
 
@@ -259,14 +263,14 @@ function Profile(props) {
                             <InputLabel>Telefonnummer</InputLabel>
                             <Input type="string" variant="outlined" value={tlf} onChange={onTlfChange} required={true} />
                         </FormControl>
-                        <Button className={classes.profileButton} type="submit" variant="contained" > {updateText1} </Button>
+                        <Button className={classes.profileButton} type="submit" variant="contained" > {updateTextTlf} </Button>
                     </form>
                     <form id="form-profile-email" onSubmit={onEmailSubmit} >
                         <FormControl id="form-profile-email-control">
                             <InputLabel>E-post</InputLabel>
                             <Input type="email" className={classes.input} variant="outlined" value={email} onChange={onEmailChange} required={true} />
                         </FormControl>
-                        <Button className={classes.profileButton} type="submit" variant="contained" > {updateText2} </Button>
+                        <Button className={classes.profileButton} type="submit" variant="contained" > {updateTextEmail} </Button>
                     </form>
                     <form id="form-profile-pwd" onSubmit={onPwdSubmit} >
                         <FormControl id="form-pwd-profile">
@@ -279,9 +283,9 @@ function Profile(props) {
                         </FormControl>
                         {/* Viser ulike knapper avhengig av om det finnes input av passord og bekreftet passord */}
                         {pwd == "" || pwd2 == "" ? 
-                        <Button id="pwdSubmit" className={classes.profileButton} type="submit" variant="contained" disabled="disabled"> {updateText3} </Button> 
+                        <Button id="pwdSubmit" className={classes.profileButton} type="submit" variant="contained" disabled="disabled"> {updateTextPwd} </Button> 
                         :
-                        <Button id="pwdSubmit" className={classes.profileButton} type="submit" variant="contained"> {updateText3} </Button>
+                        <Button id="pwdSubmit" className={classes.profileButton} type="submit" variant="contained"> {updateTextPwd} </Button>
                         }
 
                     </form>
