@@ -18,8 +18,7 @@ class Register extends Component {
     super(props)
     // Login-spesifikke states, delt opp i før-visning autentisering, register, alert
     this.state = {loading : props.loading, authenticated : props.auth, 
-                  email : "", fnavn : "", enavn : "", pwd : "", pwd2 : "", registerDisabled : false, registerText : "Registrer bruker", registerOpacity: "1",
-                  redirectHome : false, redirectLogin : false}
+                  email : "", fnavn : "", enavn : "", pwd : "", pwd2 : "", registerDisabled : false, registerText : "Registrer bruker", registerOpacity: "1"}
   }
 
 
@@ -102,26 +101,22 @@ class Register extends Component {
               
               // Brukeren har blitt opprettet, sender til forsiden  
               this.props.enqueueSnackbar("Brukeren har blitt opprettet og du er nå innlogget, du blir sendt til forsiden om få sekunder", { 
-                  variant: 'success',
-                  autoHideDuration: 5000,
+                variant: 'success',
+                autoHideDuration: 5000,
               });
 
               setTimeout(() => {
-                this.setState({
-                  redirectHome: true
-                })
+                window.location.href="/Overview";
               }, 5000);
             } else {
               // Brukeren ble opprettet, men mottok ikke en authtoken, sender til login
               this.props.enqueueSnackbar("Brukeren har blitt opprettet, du blir sendt til side for innlogging om få sekunder", { 
-                  variant: 'success',
-                  autoHideDuration: 5000,
+                variant: 'success',
+                autoHideDuration: 5000,
               });
 
               setTimeout(() => {
-                this.setState({
-                  redirectLogin: true
-                })
+                window.location.href="/Login";
               }, 5000);
             }
           } else {
@@ -135,8 +130,8 @@ class Register extends Component {
         .catch(err => {
           // En feil oppstod ved oppkobling til server
           this.props.enqueueSnackbar("En intern feil oppstod, vennligst forsøk igjen senere", { 
-              variant: 'error',
-              autoHideDuration: 5000,
+            variant: 'error',
+            autoHideDuration: 5000,
           });
         })
         // Utføres alltid uavhengig av andre resultater
@@ -173,12 +168,6 @@ class Register extends Component {
           <Loader />
         </section>
       );
-    }
-
-    if(this.state.redirectHome) {
-      return <Redirect to={{pathname: "/Overview"}} />;
-    } else if(this.state.redirectLogin) {
-      return <Redirect to={{pathname: "/Login"}} />;
     }
     
     if(!this.props.loading && !this.props.auth) {

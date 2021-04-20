@@ -19,8 +19,7 @@ class Login extends Component {
     // Login-spesifikke states, delt opp i før-visning autentisering, login, alert og glemt passord
     this.state = {loading : this.props.loading, authenticated : this.props.auth, 
                   email : "", pwd : "", remember : false, loginDisabled : false, loginText : "Logg inn", loginOpacity : "1",
-                  forgotEmail : "", forgotDisplay : false, forgotBtnDisabled : false,
-                  redirectRegister : false}
+                  forgotEmail : "", forgotDisplay : false, forgotBtnDisabled : false}
   }
 
   // Utføres når bruker gjør en handling i input-feltet for e-post
@@ -84,7 +83,7 @@ class Login extends Component {
               const options = { path: "/", expires: date };
               CookieService.set('authtoken', res.data.authtoken, options);
               
-              window.location.href="/overview";
+              window.location.href="/Overview";
             } else {
               let date = new Date();
               // Token utløper om 72 timer om "Husk meg" ikke er satt
@@ -93,7 +92,7 @@ class Login extends Component {
               const options = { path: "/", expires: date };
               CookieService.set('authtoken', res.data.authtoken, options);
               
-              window.location.href="/overview";
+              window.location.href="/Overview";
             }
         } else {
             // Feil oppstod ved innlogging, viser meldingen
@@ -214,9 +213,7 @@ class Login extends Component {
   // Utføres når bruker trykker på knapp "Ny bruker"
   gotoRegister = () => {
     // Navigerer til /register/
-    this.setState({
-      redirectRegister: true
-    });
+    window.location.href="/Register";
   };
 
   render() {
@@ -228,10 +225,6 @@ class Login extends Component {
           <Loader />
         </section>
       );
-    }
-
-    if(this.state.redirectRegister) {
-      return <Redirect to={{pathname: "/Register"}}/>;
     }
     
     if(!this.props.loading && !this.props.auth) {
