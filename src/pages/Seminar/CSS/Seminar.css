@@ -167,6 +167,7 @@
     max-height: 100%;
     border-top-right-radius: 0.2em;
     border-top-left-radius: 0.2em;
+    display: block;
 }
 
 .SeminarDetails-Information {

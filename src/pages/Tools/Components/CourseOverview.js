@@ -3,6 +3,7 @@ import React from "react";
 // 3rd-party Packages
 import MaterialTable from "material-table";
 import axios from "axios";
+import { useSnackbar } from 'notistack';
 
 // Studentreisen-assets og komponenter
 import CookieService from '../../../global/Services/CookieService';
@@ -10,6 +11,7 @@ import CookieService from '../../../global/Services/CookieService';
 function CourseOverview(props) {
     let [kurs, setKurs] = React.useState([]);
     let [isLoading, setIsLoading] = React.useState(true);
+    const { enqueueSnackbar } = useSnackbar();
     
     const token = {
         token: CookieService.get("authtoken")
@@ -22,10 +24,14 @@ function CourseOverview(props) {
             .post(process.env.REACT_APP_APIURL + "/tools/getAllCourseData", token)
             // Utføres ved mottatt resultat
             .then(res => {
-                if(res.data.results) {
+                if(res.data.status === "success") {
                     setIsLoading(false);
                     setKurs(res.data.results);
                 } else {
+                    enqueueSnackbar(res.data.message, { 
+                        variant: res.data.status,
+                        autoHideDuration: 5000,
+                    });
                     setIsLoading(false);
                 }
             });

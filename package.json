@@ -18,6 +18,7 @@
     "material-table": "^1.69.2",
     "moment": "^2.29.1",
     "nodemailer": "^6.5.0",
+    "notistack": "^1.0.6",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-icons": "^4.2.0",
