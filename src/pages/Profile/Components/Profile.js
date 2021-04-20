@@ -12,7 +12,6 @@ import Loader from '../../../global/Components/Loader';
 import NoAccess from '../../../global/Components/NoAccess';
 
 function Profile(props) {
-    console.log("TEST")
     // State for loading mens vi venter på svar fra server
     const [loading, setLoading] = useState(true);
     // Autentiseringsstatus
@@ -61,7 +60,7 @@ function Profile(props) {
         
         const config = {
             token: token,
-            email: email
+            epost: email
         }
 
         axios.post(process.env.REACT_APP_APIURL + "/profile/updateEmail", config).then( res => {

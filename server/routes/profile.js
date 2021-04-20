@@ -3,7 +3,8 @@ const mysql = require('mysql');
 const bcrypt = require('bcryptjs');
 const cryptojs = require('crypto-js');
 const { verifyAuth } = require('../global/CommonFunctions');
-const router = require('express').Router();  
+const router = require('express').Router();
+const { emailValidation } = require('../validation');  
 
 // Henter alle fagfelter i database //
 router.get('/getFagfelt', async (req, res) => {
@@ -159,12 +160,21 @@ router.post('/updateTelefon', async (req, res) => {
 
 // Oppdater brukerens epost
 router.post('/updateEmail', async (req, res) => {
+    // Valider epost som en gyldig adresse
+    const validation = emailValidation({epost : req.body.epost})
+    if (validation.error) {
+        if (validation.error.details[0].type == "string.email") {
+            return res.json({"status" : "error", "message" : "E-post adressen er ugyldig"})
+        }
+        return res.json({ "status" : "error", "message" : validation.error.details[0].message })
+    }
+
     let brukerid = undefined
-    if (req.body.token !== undefined && req.body.email !== undefined) {
+    if (req.body.token !== undefined && req.body.epost !== undefined) {
         verifyAuth(req.body.token).then( resAuth => {
             brukerid = resAuth.brukerid
             let updateQuery = "UPDATE bruker SET email= ? WHERE brukerid= ?"
-            let updateQueryFormat = mysql.format(updateQuery, [req.body.email.toLowerCase(), brukerid])
+            let updateQueryFormat = mysql.format(updateQuery, [req.body.epost.toLowerCase(), brukerid])
             connection.query(updateQueryFormat, (error, results) => {
                 if (error) {
                     console.log("An error occured while updating the users email, details: " + error.errno + ", " + error.sqlMessage)
@@ -176,7 +186,7 @@ router.post('/updateEmail', async (req, res) => {
                     }
                 }
 
-                if(results.length > 0) {
+                if(results.affectedRows > 0) {
                     return res.json({"status" : "success", "message" : "Epost oppdatert" })
 
                 } else {
