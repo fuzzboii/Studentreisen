@@ -10,6 +10,7 @@ import IconButton from '@material-ui/core/IconButton';
 import ImageOutlinedIcon from '@material-ui/icons/ImageOutlined';
 import FormData from 'form-data';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+import { withSnackbar } from 'notistack';
 
 // Studentreisen-assets og komponenter
 import CookieService from '../../../global/Services/CookieService';
@@ -76,8 +77,6 @@ class SeminarNew extends Component {
         // Stopper siden fra å laste inn på nytt
         e.preventDefault();
 
-        console.log("TODO:\n\tOm seminaret ikke er offentlig, gå til oversikt istedet for spesifikt")
-
         if(this.state.SeminarNew_input_title.length > 0 && this.state.SeminarNew_input_title.length <= 255) {
             if(this.state.SeminarNew_input_address.length > 0 && this.state.SeminarNew_input_address.length <= 255) {
                 if(this.state.SeminarNew_input_desc.length > 0 && this.state.SeminarNew_input_desc.length <= 255) {
@@ -113,12 +112,22 @@ class SeminarNew extends Component {
                                         this.setState({
                                             authenticated: true
                                         });
-                                        
-                                        const goto = "/seminar/seminarkommende=" + res.data.seminarid;
+
+                                        let goto;
+
+                                        if(this.state.SeminarNew_switch_availability) {
+                                            goto = "/Seminar/Seminarkommende=" + res.data.seminarid;
+                                        } else {
+                                            goto = "/Seminar/";
+                                        }
                     
                                         window.location.href=goto;
                                     } else {
                                         // Feil oppstod ved oppretting
+                                        this.props.enqueueSnackbar("Kunne ikke opprette seminar, vennligst forsøk igjen", { 
+                                            variant: 'error',
+                                            autoHideDuration: 5000,
+                                        });
                                         this.setState({
                                             submitDisabled: false,
                                             submitText: "Opprett seminar",
@@ -128,6 +137,10 @@ class SeminarNew extends Component {
                                 })
                                 .catch(err => {
                                     // En feil oppstod ved oppkobling til server
+                                    this.props.enqueueSnackbar("En intern feil oppstod, vennligst forsøk igjen senere", { 
+                                        variant: 'error',
+                                        autoHideDuration: 5000,
+                                    });
                                     this.setState({
                                         submitDisabled: false,
                                         submitText: "Opprett seminar",
@@ -147,20 +160,38 @@ class SeminarNew extends Component {
                                 });
                         } else {
                             // Startdato/Sluttdato ikke fylt inn eller sluttdato er før startdato
+                            this.props.enqueueSnackbar("Sluttdatoen må være samme dag som startdato eller lengre", { 
+                                variant: 'error',
+                                autoHideDuration: 5000,
+                            });
                         }
                     } else {
                         // Startdato er bakover i tid
+                        this.props.enqueueSnackbar("Startdatoen kan ikke være i fortiden", { 
+                            variant: 'error',
+                            autoHideDuration: 5000,
+                        });
                     }
                 } else {
                     // Beskrivelsen er ikke fylt inn eller for lang
+                    this.props.enqueueSnackbar("Beskrivelsen er ikke fylt inn eller for lang", { 
+                        variant: 'error',
+                        autoHideDuration: 5000,
+                    });
                 }
             } else {
                 // Adressen er ikke fylt inn eller for lang
-
+                this.props.enqueueSnackbar("Adressen er ikke fylt inn eller for lang", { 
+                    variant: 'error',
+                    autoHideDuration: 5000,
+                });
             }
         } else {
             // Tittelen er ikke fylt inn eller for lang
-
+            this.props.enqueueSnackbar("Tittelen er ikke fylt inn eller for lang", { 
+                variant: 'error',
+                autoHideDuration: 5000,
+            });
         }
     };
 
@@ -246,4 +277,4 @@ class SeminarNew extends Component {
     }
 }
 
-export default SeminarNew;
+export default withSnackbar(SeminarNew);
