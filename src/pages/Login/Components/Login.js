@@ -4,7 +4,6 @@ import { Redirect } from "react-router-dom";
 
 // 3rd-party Packages
 import { Button, FormControl, InputLabel, Input, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Checkbox, FormControlLabel } from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
 import axios from 'axios';
 import { withSnackbar } from 'notistack';
 
@@ -19,8 +18,9 @@ class Login extends Component {
     super(props)
     // Login-spesifikke states, delt opp i før-visning autentisering, login, alert og glemt passord
     this.state = {loading : this.props.loading, authenticated : this.props.auth, 
-                  email : "", pwd : "", remember : false, loginDisabled : false, loginText : "Logg inn", loginOpacity: "1",
-                  forgotEmail : "", forgotDisplay : false, forgotBtnDisabled : false}
+                  email : "", pwd : "", remember : false, loginDisabled : false, loginText : "Logg inn", loginOpacity : "1",
+                  forgotEmail : "", forgotDisplay : false, forgotBtnDisabled : false,
+                  redirectRegister : false}
   }
 
   // Utføres når bruker gjør en handling i input-feltet for e-post
@@ -214,7 +214,9 @@ class Login extends Component {
   // Utføres når bruker trykker på knapp "Ny bruker"
   gotoRegister = () => {
     // Navigerer til /register/
-    this.props.history.push('/register/');
+    this.setState({
+      redirectRegister: true
+    });
   };
 
   render() {
@@ -226,6 +228,10 @@ class Login extends Component {
           <Loader />
         </section>
       );
+    }
+
+    if(this.state.redirectRegister) {
+      return <Redirect to={{pathname: "/Register"}}/>;
     }
     
     if(!this.props.loading && !this.props.auth) {
