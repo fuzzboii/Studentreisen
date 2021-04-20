@@ -5,6 +5,8 @@ import { useHistory } from "react-router-dom";
 import MaterialTable from "material-table";
 import axios from "axios";
 import PublicIcon from '@material-ui/icons/Public';
+import { useSnackbar } from 'notistack';
+import moment from 'moment';
 
 // Studentreisen-assets og komponenter
 import CookieService from '../../../global/Services/CookieService';
@@ -13,6 +15,7 @@ function SeminarOverview(props) {
     let [seminar, setSeminar] = React.useState([]);
     let [isLoading, setIsLoading] = React.useState(true);
     const history = useHistory();
+    const { enqueueSnackbar } = useSnackbar();
     
     const token = {
         token: CookieService.get("authtoken")
@@ -25,10 +28,14 @@ function SeminarOverview(props) {
             .post(process.env.REACT_APP_APIURL + "/tools/getAllSeminarData", token)
             // Utføres ved mottatt resultat
             .then(res => {
-                if(res.data.results) {
+                if(res.data.status === "success") {
                     setIsLoading(false);
                     setSeminar(res.data.results);
                 } else {
+                    enqueueSnackbar(res.data.message, { 
+                        variant: res.data.status,
+                        autoHideDuration: 5000,
+                    });
                     setIsLoading(false);
                 }
             });
@@ -104,20 +111,40 @@ function SeminarOverview(props) {
                         .post(process.env.REACT_APP_APIURL + "/tools/deleteSeminar", {seminarid : seminarData.seminarid, sluttdato : seminarData.varighet, token : token.token})
                         // Utføres ved mottatt resultat
                         .then(res => {
-                            if(res.data.success) {
+                            if(res.data.status === "success") {
                                 const oppdatertSeminar = [...seminar];
                                 const index = seminarData.tableData.id;
                                 oppdatertSeminar.splice(index, 1);
                                 setSeminar([...oppdatertSeminar]);
+                                
+                                enqueueSnackbar(res.data.message, { 
+                                    variant: res.data.status,
+                                    autoHideDuration: 3000,
+                                });
 
                                 resolve();
                             } else {
+                                enqueueSnackbar(res.data.message, { 
+                                    variant: res.data.status,
+                                    autoHideDuration: 5000,
+                                });
+
                                 reject();
                             }
                         }).catch(e => {
+                            enqueueSnackbar("En intern feil oppstod, vennligst forsøk igjen senere", { 
+                                variant: "error",
+                                autoHideDuration: 5000,
+                            });
+
                             reject();
                         });
                 } catch(e) {
+                    enqueueSnackbar("En intern feil oppstod, vennligst forsøk igjen senere", { 
+                        variant: "error",
+                        autoHideDuration: 5000,
+                    });
+
                     reject();
                 }
             }
@@ -129,13 +156,6 @@ function SeminarOverview(props) {
         <section id="tools_overview_section">
             <MaterialTable columns={kolonner} data={seminar} localization={lokalisering} editable={redigerbar} isLoading={isLoading} title="Seminaroversikt" actions={[
                     {
-                        icon: 'edit',
-                        tooltip: 'Rediger seminar',
-                        onClick: (e, seminarData) => {
-                            console.log("Gå til redigering for " + seminarData.seminarid + "\nHusk at all data er med her (seminarData.beskrivelse, seminarData.varighet osv), trenger ikke hente på nytt");
-                        }
-                    },
-                    {
                         icon: 'add_box',
                         tooltip: 'Nytt seminar',
                         isFreeAction: true,
@@ -143,6 +163,14 @@ function SeminarOverview(props) {
                             history.push("/seminar/ny");
                         }
                     },
+                    seminarData => ({
+                        icon: 'edit',
+                        tooltip: 'Rediger seminar',
+                        hidden: seminarData.varighet <= moment().format('YYYY-MM-DDTHH:mm:ss') || seminarData.tilgjengelighet !== 1,
+                        onClick: (e, seminarData) => {
+                            history.push("/seminar/seminarkommende=" + seminarData.seminarid);
+                        }
+                    }),
                     seminarData => ({
                         icon: () => <PublicIcon />,
                         tooltip: 'Avpubliser seminar',
@@ -155,7 +183,7 @@ function SeminarOverview(props) {
                                         .post(process.env.REACT_APP_APIURL + "/tools/publicizeSeminar", {seminarid : seminarData.seminarid, tilgjengelighet: 0, token : token.token})
                                         // Utføres ved mottatt resultat
                                         .then(res => {
-                                            if(res.data.success) {
+                                            if(res.data.status === "success") {
 
                                                 const oppdatertSeminar = [...seminar];
                                                 const index = seminarData.tableData.id;
@@ -165,20 +193,40 @@ function SeminarOverview(props) {
                                                 } else {
                                                     oppdatertSeminar[index].tilgjengelighet = 1;
                                                 }
+
+                                                enqueueSnackbar(res.data.message, { 
+                                                    variant: "info",
+                                                    autoHideDuration: 3000,
+                                                });
                                                 
                                                 setIsLoading(false);
                                                 setSeminar([...oppdatertSeminar]);
                 
                                                 resolve();
                                             } else {
+                                                enqueueSnackbar(res.data.message, { 
+                                                    variant: res.data.status,
+                                                    autoHideDuration: 5000,
+                                                });
+
                                                 setIsLoading(false);
                                                 reject();
                                             }
                                         }).catch(e => {
+                                            enqueueSnackbar("En intern feil oppstod, vennligst forsøk igjen senere", { 
+                                                variant: "error",
+                                                autoHideDuration: 5000,
+                                            });
+
                                             setIsLoading(false);
                                             reject();
                                         });
                                 } catch(e) {
+                                    enqueueSnackbar("En intern feil oppstod, vennligst forsøk igjen senere", { 
+                                        variant: "error",
+                                        autoHideDuration: 5000,
+                                    });
+
                                     setIsLoading(false);
                                     reject();
                                 }
@@ -197,7 +245,7 @@ function SeminarOverview(props) {
                                         .post(process.env.REACT_APP_APIURL + "/tools/publicizeSeminar", {seminarid : seminarData.seminarid, tilgjengelighet: 1, token : token.token})
                                         // Utføres ved mottatt resultat
                                         .then(res => {
-                                            if(res.data.success) {
+                                            if(res.data.status === "success") {
                                                 const oppdatertSeminar = [...seminar];
                                                 const index = seminarData.tableData.id;
 
@@ -206,22 +254,42 @@ function SeminarOverview(props) {
                                                 } else {
                                                     oppdatertSeminar[index].tilgjengelighet = 1;
                                                 }
+
+                                                enqueueSnackbar(res.data.message, { 
+                                                    variant: "info",
+                                                    autoHideDuration: 3000,
+                                                });
                                                 
                                                 setIsLoading(false);
                                                 setSeminar([...oppdatertSeminar]);
                 
                                                 resolve();
                                             } else {
+                                                enqueueSnackbar(res.data.message, { 
+                                                    variant: res.data.status,
+                                                    autoHideDuration: 5000,
+                                                });
+                                                
                                                 setIsLoading(false);
 
                                                 reject();
                                             }
                                         }).catch(e => {
+                                            enqueueSnackbar("En intern feil oppstod, vennligst forsøk igjen senere", { 
+                                                variant: "error",
+                                                autoHideDuration: 5000,
+                                            });
+                                            
                                             setIsLoading(false);
 
                                             reject();
                                         });
                                 } catch(e) {
+                                    enqueueSnackbar("En intern feil oppstod, vennligst forsøk igjen senere", { 
+                                        variant: "error",
+                                        autoHideDuration: 5000,
+                                    });
+
                                     setIsLoading(false);
 
                                     reject();
