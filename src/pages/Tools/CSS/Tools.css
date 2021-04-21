@@ -3,30 +3,8 @@
     flex-direction: column;
 }
 
-#tools_indicator {
-    margin-top: 0.5em; margin-bottom: 0.5em;
-    text-align: center;
-}
-
-.tools_indicator_btn, .tools_indicator_btn_active {
-    padding-left: 1.5em; padding-right: 1.5em; 
-    padding-top: 0.4em; padding-bottom: 0.4em;
-    margin-left: 0.4em; margin-right: 0.4em;
-    border: 0;
-}
-
-.tools_indicator_btn {
-    background-color: #DDDDDD;
-}
-
-.tools_indicator_btn_active {
-    background-color: #9DACD4;
-}
-
-.tools_div section {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+#tools_section {
+    border-bottom:1px solid rgb(226, 226, 226);
 }
 
 .tools_div {
@@ -37,16 +15,20 @@
     margin-top: 2em;
     width: 90%;
     margin-left: 5%; margin-right: 5%;
-  }
+}
   
   
-  /* Media queries
-  ----------------------------- */
+/* Media queries
+----------------------------- */
   
-  /* Laptop / Liten skjerm,, 720p */
-  @media screen and (min-width: 1280px) {
-      #tools_overview_section {
+/* Tab */
+@media screen and (min-width: 720px) {
+}
+
+/* Laptop / Liten skjerm,, 720p */
+@media screen and (min-width: 1280px) {
+    #tools_overview_section {
         max-width: 80em;
         margin-left: auto; margin-right: auto;
-      }
-  }
+    }
+}

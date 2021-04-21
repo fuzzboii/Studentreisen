@@ -41,11 +41,13 @@ function Tools(props) {
         
         {!props.loading && props.auth && props.type === 4 &&
             <main id="tools_main">
-                <Tabs value={position} onChange={handleTabChange} centered>
-                    <Tab label="Brukere"/>
-                    <Tab label="Kurs"/>
-                    <Tab label="Seminar"/>
-                </Tabs>
+                <section id="tools_section">
+                    <Tabs value={position} onChange={handleTabChange} indicatorColor="primary" textColor="primary" centered>
+                        <Tab label="Brukere"/>
+                        <Tab label="Kurs"/>
+                        <Tab label="Seminar"/>
+                    </Tabs>
+                </section>
                 <ReactSwipe swipeOptions={swipeOptions} ref={listener => (swiper = listener)}>
                     <div className="tools_div">
                         <UserOverview activeTool={position} />
