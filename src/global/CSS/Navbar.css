@@ -117,10 +117,25 @@
 }
 
 .notif_section {
-  border: 1px solid #606060;
-  border-radius: 0.5em;
+  display: grid;
+  border: 1px solid #60606060;
+  border-radius: 0.25em;
   margin-top: 0.5em; margin-bottom: 0.5em;
-  padding-left: 1em; padding-right: 1em; 
+  padding-left: 0.8em; padding-right: 0.8em; padding-bottom: 0.5em; 
+  box-shadow: 0.05em 0.05em 0.1em #57575760;
+}
+
+.notif_section_sender, .notif_section_dato {
+  display: flex;
+}
+
+.notif_p_tekst {
+  margin-left: 0.25em;
+}
+
+.notif_section_sender p, .notif_section_dato p {
+  margin: 0;
+  margin-left: 0.3em;
 }
 
 
@@ -129,6 +144,30 @@
 /* Større mobiler */
 @media screen and (min-width: 375px) {
 }
+
+
+@media screen and (min-width: 450px) {
+  /* Kunngjøringer */
+  .notif_section {
+    grid-column-gap: 2em;
+  }
+  .notif_p_tekst {
+    margin-left: 0.25em;
+    grid-column-start: 1;
+    grid-column-end: 3;
+  }
+
+  .notif_section_sender {
+    grid-column-start: 1;
+    grid-column-end: 2;
+  }
+
+  .notif_section_dato {
+    grid-column-start: 2;
+    grid-column-end: 3;
+  }
+}
+
 
 /* Tab */
 @media screen and (min-width: 768px) {

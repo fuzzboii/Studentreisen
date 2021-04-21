@@ -5,6 +5,8 @@ import Button from "@material-ui/core/Button";
 import { makeStyles } from '@material-ui/core/styles';
 import NotificationImportantIcon from '@material-ui/icons/NotificationImportant';
 import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
+import PersonOutlinedIcon from '@material-ui/icons/PersonOutlined';
+import CalendarTodayOutlinedIcon from '@material-ui/icons/CalendarTodayOutlined';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -266,7 +268,15 @@ function Navbar(props) {
                     {notif.map(kunngjoring => {
                       return(
                         <section key={kunngjoring.kid} className="notif_section">
-                          <p>{kunngjoring.tekst + " av " + kunngjoring.lagetav + ", dato: " +  moment(kunngjoring.dato).format('YYYY-MM-DD HH:mm:ss')}</p>
+                          <p className="notif_p_tekst">{kunngjoring.tekst}</p>
+                          <section className="notif_section_sender">
+                            <PersonOutlinedIcon /> 
+                            <p>{kunngjoring.lagetav}</p>
+                          </section>
+                          <section className="notif_section_dato">
+                            <CalendarTodayOutlinedIcon />
+                            <p>{moment(kunngjoring.dato).format('DD-MM-YYYY HH:mm')}</p>
+                          </section>
                         </section>
                       )
                     })}
