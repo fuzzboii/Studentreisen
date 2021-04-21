@@ -318,7 +318,11 @@ function Profile(props) {
                     type="file"
                     />
                 <label htmlFor="avatarInput">
-                    <IconButton component="span" type="submit" >
+                    <IconButton component="span" type="submit" 
+                        style={{
+                            // "skru av" hover-skygge
+                            backgroundColor: '#f9f7f6'
+                        }}>
                         <Avatar
                             src={"/uploaded/" + profilbilde } 
                             className={classes.avatar}
