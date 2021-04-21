@@ -153,7 +153,7 @@ const SeminarDetailsExpired = (props) => {
                                     </div>
 
                                     {/*Sletting av seminaret, med test på brukertype */}
-                                    {props.type === 4 &&
+                                    {(seminar.brukerid == props.brukerid || props.type === 4) &&
                                     <div className="SeminarDetails-ButtonSlettWrapper">
                                         <Button className="SeminarDetailsButtonSlett" size="small" variant="outlined" color="secondary" startIcon={<DeleteIcon />}  onClick={handleClickOpenDelete}> {/*onClick={() => deleteSeminar(seminar.seminarid, seminar.varighet, seminar.plassering)}>*/}
                                         Slett
