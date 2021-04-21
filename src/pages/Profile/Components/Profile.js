@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import { Button, FormControl, InputLabel, Input } from '@material-ui/core';
+import { Button, FormControl, InputLabel, Input, Avatar, IconButton } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { Alert } from '@material-ui/lab';
 
@@ -33,104 +32,134 @@ function Profile(props) {
     // Passord, bekreftet
     const [pwd2, setPwd2] = useState("");
     // Oppdaterings-knapper, tekst
-    const [updateText, setUpdateText] = useState("Oppdater");
+    const [updateTextTlf, setUpdateTextTlf] = useState("Oppdater");
+    const [updateTextEmail, setUpdateTextEmail] = useState("Oppdater");
+    const [updateTextPwd, setUpdateTextPwd] = useState("Oppdater");
+    // Oppdaterings-knapper, tilgjengelighet
+    const [updateBtnTlf, setUpdateBtnTlf] = useState(false)
+    const [updateBtnEmail, setUpdateBtnEmail] = useState(false)
     
     // States for personalia.
+    const [profilbilde, setProfilbilde] = useState()
     const [fnavn, setFnavn] = useState("");
     const [enavn, setEnavn] = useState("");
     const [tlf, setTlf] = useState();
     const [email, setEmail] = useState();
+    const [brukerID, setBrukerID] = useState();
 
     // Henter authtoken-cookie
     const token = CookieService.get("authtoken");
 
-    // Utføres når bruker gjør en handling i input-feltet for e-post
-    const onEmailChange = e => {
-        setEmail(e.target.value);
-        setAlertDisplay("none");
-        setAlertText("");
-    };
+    // Utføres når avatar/profilbilde endres
+    const onImgChange = e => {
 
-    // Utføres når e-post forsøkes oppdatert
-    const onEmailSubmit = e => {
-        e.preventDefault()
-        
-        const config = {
-            token: token,
-            email: email
-        }
-
-        axios.post(process.env.REACT_APP_APIURL + "/profile/updateEmail", config).then( res => {
-            console.log(res.data.status)
-            if (res.data.status === "error") {
-                setAlertDisplay("")
-                setAlertText(res.data.message)
-                setAlertSeverity("error")
-            } else {
-                setAlertDisplay("")
-                setAlertText("Epost endret")
-                setAlertSeverity("success")
-                setAuth(true)
-            }
-        })
     }
 
+    const onImgSubmit = e => {
+
+    }
+    
     // Utføres når bruker gjør en handling i input-feltet for telefonnummer
     const onTlfChange = e => {
         setTlf(e.target.value);
         setAlertDisplay("none");
         setAlertText("");
     };
-
+    
     // Utføres når telefonnummer forsøkes oppdatert
     const onTlfSubmit = e => {
         e.preventDefault()
-
+        setUpdateTextTlf("Vennligst vent");
+        
         const config = {
             token: token,
-            telefon: tlf
+            telefon: tlf.replace(/\s/g, ''),
         }
-
+        
         axios.post(process.env.REACT_APP_APIURL + "/profile/updateTelefon", config).then(
             setAlertDisplay(""),
             setAlertText("Telefonnummer oppdatert!"),
-            setAlertSeverity("success")
-        )
-    }
+            setAlertSeverity("success"),
+            setUpdateTextTlf("Oppdater"),
+            setUpdateBtnTlf(false)
+            )
+        }
+        
+        // Utføres når bruker gjør en handling i input-feltet for e-post
+        const onEmailChange = e => {
+            setEmail(e.target.value);
+            setAlertDisplay("none");
+            setAlertText("");
+        };
+    
+        // Utføres når e-post forsøkes oppdatert
+        const onEmailSubmit = e => {
+            e.preventDefault()
+            setUpdateTextEmail("Vennligst vent");
+            
+            const config = {
+                token: token,
+                epost: email
+            }
+    
+            axios.post(process.env.REACT_APP_APIURL + "/profile/updateEmail", config).then( res => {
+                if (res.data.status === "error") {
+                    setAlertDisplay("")
+                    setAlertText(res.data.message)
+                    setAlertSeverity("error")
+                    setUpdateTextEmail("Oppdater");
+                } else {
+                    setAlertDisplay("")
+                    setAlertText(res.data.message)
+                    setAlertSeverity("success")
+                    setUpdateTextEmail("Oppdater");
+                    setUpdateBtnEmail(false)
+                }
+            })
+        }
 
-    // Utføres når bruker gjør en handling i input-feltet for passord
-    const onPwdChange = e => {
-        setPwd(e.target.value);
-        setAlertDisplay("none");
-        setAlertText("");
-    };
-
-    // Utføres når bruker gjør en handling i input-feltet for bekreft passord
-    const onPwd2Change = e => {
-        setPwd2(e.target.value);
-        setAlertDisplay("none"); 
-        setAlertText("");
-    };
+        // Utføres når bruker gjør en handling i input-feltet for passord
+        const onPwdChange = e => {
+            setPwd(e.target.value);
+            setAlertDisplay("none");
+            setAlertText("");
+        };
+        
+        // Utføres når bruker gjør en handling i input-feltet for bekreft passord
+        const onPwd2Change = e => {
+            setPwd2(e.target.value);
+            setAlertDisplay("none"); 
+            setAlertText("");
+        };
 
     // Utføres når passord forsøkes oppdatert
     const onPwdSubmit = e => {
         e.preventDefault();
-        setUpdateText("Vennligst vent");
+        setUpdateTextPwd("Vennligst vent");
 
         if (pwd === pwd2) {
             const config = {
                 token: token,
                 pwd: pwd
             }
-            axios.post(process.env.REACT_APP_APIURL + "/profile/updatePassord", config).then(
-                setAlertDisplay(""),
-                setAlertText("Passord oppdatert!"),
-                setAlertSeverity("success")
-            )
+            axios.post(process.env.REACT_APP_APIURL + "/profile/updatePassord", config).then( res => {
+                if (res.data.status === "error") {
+                    setAlertDisplay("")
+                    setAlertText(res.data.message)
+                    setAlertSeverity("error")
+                    setUpdateTextPwd("Oppdater");
+                } else {
+                    setAlertDisplay("")
+                    setAlertText(res.data.message)
+                    setAlertSeverity("success")
+                    setUpdateTextPwd("Oppdater");
+                }
+            })
         } else {
             setAlertDisplay("");
+            setAlertSeverity("error")
             setAlertText("Passordene er ikke like");
-            setUpdateText("Oppdater");
+            setUpdateTextPwd("Oppdater");
         }
     }
 
@@ -171,6 +200,15 @@ function Profile(props) {
             marginRight: '0.5em',
             fontSize: '0.8rem',
         },
+
+        avatar: {
+            width: '10vh',
+            height: '10vh',
+            marginLeft: '5vw',
+            marginRight: '2.5vw',
+            marginTop: '1vh',
+            marginBottom: '1vh'
+        }
     });
     
     const classes = useStyles();
@@ -183,18 +221,24 @@ function Profile(props) {
         axios
             // Flere spørringer kjøres samtidig, vent til ALLE er ferdige
             .all([
+                // res1
                 axios.post(process.env.REACT_APP_APIURL + "/profile/getBruker", config),
+                // res2, etc...
                 axios.get(process.env.REACT_APP_APIURL + "/profile/getFagfelt"),
-                axios.post(process.env.REACT_APP_APIURL + "/profile/getInteresser", config)
+                axios.post(process.env.REACT_APP_APIURL + "/profile/getInteresser", config),
+                axios.post(process.env.REACT_APP_APIURL + "/profile/getProfilbilde", config)
             ])
             // Alle spørringer gjennomført
-            .then(axios.spread((res1, res2, res3) => {
+            .then(axios.spread((res1, res2, res3, res4) => {
                 setFnavn(res1.data.results[0].fnavn);
                 setEnavn(res1.data.results[0].enavn);
                 setTlf(res1.data.results[0].telefon);
                 setEmail(res1.data.results[0].email);
+                setBrukerID(res1.data.results[0].brukerid)
                 setFagfelt(res2.data);
                 setInteresser(res3.data.results);
+                setProfilbilde(res4.data.results[0].plassering)
+                console.log(res4)
                 // Data er ferdig hentet fra server
                 setLoading(false);
             }))
@@ -227,6 +271,14 @@ function Profile(props) {
         fetch()
     }
 
+    const tlfUnlock = () => {
+        setUpdateBtnTlf(true)
+    }
+
+    const emailUnlock = () => {
+        setUpdateBtnEmail(true)
+    }
+
     if (loading) {
         return (
             <section id="loading">
@@ -240,7 +292,24 @@ function Profile(props) {
         <div>
             <div className='profile-header' >
                 {/* Placeholder account icon */}
-                <AccountCircleIcon className={classes.accountCircle} />
+                <input
+                    onSubmit={onImgSubmit}
+                    accept="image/png, image/jpeg"
+                    id="avatarInput"
+                    style={{
+                        display: 'none',
+                    }}
+                    type="file"
+                    />
+                <label htmlFor="avatarInput">
+                    <IconButton component="span" type="submit" >
+                        <Avatar
+                            // TODO: placeholder
+                            src={"/uploaded/" + profilbilde } 
+                            className={classes.avatar}
+                            />
+                    </IconButton>
+                </label>
                 <h1 className='profile-title'> Profil </h1>
             </div>
 
@@ -248,20 +317,45 @@ function Profile(props) {
                 <div className='profile-item' >
                 <h2 className='profile-subheader' > Personalia </h2>
                 <h3 className='profile-navn' > {fnavn + " " + enavn} </h3>
-                    <form id="form-profile-tlf" onSubmit={onTlfSubmit} >
+                {/* Kondisjonell rendring, for å "låse" opp og igjen feltet */}
+                    {
+                        !updateBtnTlf ?
+                        <>
+                        <FormControl id="form-profile-tlf-control">
+                            <InputLabel>Telefonnummer</InputLabel>
+                            <Input type="string" variant="outlined" value={tlf} disabled={true} />
+                        </FormControl>
+                        <Button className={classes.profileButton} variant="contained" onClick={tlfUnlock} > Endre </Button>
+                        </>
+                        :
+                        <form id="form-profile-tlf" onSubmit={onTlfSubmit} >
                         <FormControl id="form-profile-tlf-control">
                             <InputLabel>Telefonnummer</InputLabel>
                             <Input type="string" variant="outlined" value={tlf} onChange={onTlfChange} required={true} />
                         </FormControl>
-                        <Button className={classes.profileButton} type="submit" variant="contained" > {updateText} </Button>
-                    </form>
-                    <form id="form-profile-email" onSubmit={onEmailSubmit} >
+                        <Button className={classes.profileButton} type="submit" variant="contained" > {updateTextTlf} </Button>
+                        </form>
+                    }
+
+                    {
+                        !updateBtnEmail ? 
+                        <>
                         <FormControl id="form-profile-email-control">
                             <InputLabel>E-post</InputLabel>
-                            <Input type="email" className={classes.input} variant="outlined" value={email} onChange={onEmailChange} required={true} />
+                            <Input type="string" variant="outlined" value={email} disabled={true} />
                         </FormControl>
-                        <Button className={classes.profileButton} type="submit" variant="contained" > {updateText} </Button>
-                    </form>
+                        <Button className={classes.profileButton} variant="contained" onClick={emailUnlock} > Endre </Button>
+                        </>
+                        :
+                        <form id="form-profile-email" onSubmit={onEmailSubmit} >
+                        <FormControl id="form-profile-email-control">
+                            <InputLabel>E-post</InputLabel>
+                            <Input type="string" variant="outlined" value={email} onChange={onEmailChange} required={true} />
+                        </FormControl>
+                        <Button className={classes.profileButton} type="submit" variant="contained" > {updateTextEmail} </Button>
+                        </form>
+                    }
+
                     <form id="form-profile-pwd" onSubmit={onPwdSubmit} >
                         <FormControl id="form-pwd-profile">
                             <InputLabel>Nytt passord</InputLabel>
@@ -271,7 +365,13 @@ function Profile(props) {
                             <InputLabel>Bekreft passord</InputLabel>
                             <Input type="password" variant="outlined" onChange={onPwd2Change} required={true} />
                         </FormControl>
-                        <Button className={classes.profileButton} type="submit" variant="contained"> {updateText} </Button>
+                        {/* Viser ulike knapper avhengig av om det finnes input av passord og bekreftet passord */}
+                        {pwd == "" || pwd2 == "" ? 
+                        <Button id="pwdSubmit" className={classes.profileButton} type="submit" variant="contained" disabled="disabled"> {updateTextPwd} </Button> 
+                        :
+                        <Button id="pwdSubmit" className={classes.profileButton} type="submit" variant="contained"> {updateTextPwd} </Button>
+                        }
+
                     </form>
                 <Alert id="alert-register" className="fade_in" style={{display: alertDisplay}} variant="outlined" severity={alertSeverity}>
                     {alertText}
