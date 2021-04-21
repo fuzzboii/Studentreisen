@@ -45,18 +45,42 @@ function Profile(props) {
     const [enavn, setEnavn] = useState("");
     const [tlf, setTlf] = useState();
     const [email, setEmail] = useState();
-    const [brukerID, setBrukerID] = useState();
 
     // Henter authtoken-cookie
     const token = CookieService.get("authtoken");
 
     // Utføres når avatar/profilbilde endres
-    const onImgChange = e => {
-
-    }
-
     const onImgSubmit = e => {
+        e.preventDefault()
+        if (e.target.files && e.target.files[0]) {
+            const config = new FormData()
 
+            config.append('token', token)
+            config.append('image', e.target.files[0])
+
+            axios.post(process.env.REACT_APP_APIURL + "/profile/insertBilde", config).then(res => {
+                if (res.data.status === "error") {
+                    setAlertDisplay("")
+                    setAlertText(res.data.message)
+                    setAlertSeverity("error")
+                } else {
+                    setAlertDisplay("")
+                    setAlertText(res.data.message)
+                    setAlertSeverity("success")
+
+                    // Test på om dette er første opplastning av et profilbilde
+                    let first = false
+                    if (profilbilde == undefined) {
+                        first = true
+                    }
+                    if (first) {
+                        setProfilbilde(e.target.files[0].name)
+                        this.history.push("/profile")
+                    }
+                    setProfilbilde(e.target.files[0].name)
+                }
+            })
+        }
     }
     
     // Utføres når bruker gjør en handling i input-feltet for telefonnummer
@@ -73,7 +97,7 @@ function Profile(props) {
         
         const config = {
             token: token,
-            telefon: tlf.replace(/\s/g, ''),
+            telefon: tlf.replace(/\s/g, '')
         }
         
         axios.post(process.env.REACT_APP_APIURL + "/profile/updateTelefon", config).then(
@@ -164,14 +188,6 @@ function Profile(props) {
     }
 
     const useStyles = makeStyles ({
-        // Placeholder account icon
-        accountCircle: {
-            fontSize: '6rem',
-            color: '#3bafa2',
-            marginLeft: '2vw',
-            marginTop: '1vh',
-        },
-
         profileButton: {
             color: '#fff',
             backgroundColor: '#4646a5',
@@ -234,11 +250,11 @@ function Profile(props) {
                 setEnavn(res1.data.results[0].enavn);
                 setTlf(res1.data.results[0].telefon);
                 setEmail(res1.data.results[0].email);
-                setBrukerID(res1.data.results[0].brukerid)
                 setFagfelt(res2.data);
                 setInteresser(res3.data.results);
-                setProfilbilde(res4.data.results[0].plassering)
-                console.log(res4)
+                if (res4.data.results !== undefined) {
+                    setProfilbilde(res4.data.results[0].plassering)
+                }
                 // Data er ferdig hentet fra server
                 setLoading(false);
             }))
@@ -291,9 +307,9 @@ function Profile(props) {
     return (
         <div>
             <div className='profile-header' >
-                {/* Placeholder account icon */}
+                {/* Avatar */}
                 <input
-                    onSubmit={onImgSubmit}
+                    onChange={onImgSubmit}
                     accept="image/png, image/jpeg"
                     id="avatarInput"
                     style={{
@@ -304,12 +320,12 @@ function Profile(props) {
                 <label htmlFor="avatarInput">
                     <IconButton component="span" type="submit" >
                         <Avatar
-                            // TODO: placeholder
                             src={"/uploaded/" + profilbilde } 
                             className={classes.avatar}
                             />
                     </IconButton>
                 </label>
+
                 <h1 className='profile-title'> Profil </h1>
             </div>
 

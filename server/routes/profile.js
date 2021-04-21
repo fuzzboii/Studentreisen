@@ -3,7 +3,8 @@ const mysql = require('mysql');
 const bcrypt = require('bcryptjs');
 const { verifyAuth } = require('../global/CommonFunctions');
 const router = require('express').Router();
-const { emailValidation, passwordValidation } = require('../validation');  
+const { emailValidation, passwordValidation } = require('../validation');
+const path = require('path');  
 
 // Henter alle fagfelter i database //
 router.get('/getFagfelt', async (req, res) => {
@@ -272,6 +273,42 @@ router.post('/updatePassord', async (req, res) => {
                     return res.json({"status" : "success", "message" : "Passord endret"})
                 } else {
                     return res.json({"status" : "error", "message" : "En feil oppstod under oppdatering av brukerens passord"})
+                }
+            })
+        })
+    } else {
+        res.status(400).json({"status" : "error", "message" : "Ikke tilstrekkelig data"})
+    }
+})
+
+router.post('/insertBilde', async (req, res) => {
+    if (req.body.token !== undefined && req.files) {
+        let brukerid = undefined
+        verifyAuth(req.body.token).then( resAuth => {
+            brukerid = resAuth.brukerid
+
+            // Bruker har oppgitt et bilde som skal lastes opp
+            const opplastetFilnavn = req.files.image.name;
+            const filtype = opplastetFilnavn.substring(opplastetFilnavn.lastIndexOf('.'));
+            const filnavn = "profilbilde" + brukerid + filtype;
+
+            const rootFolder = path.join(__dirname, '../../');
+
+            const opplastetBilde = req.files.image;
+            opplastetBilde.mv(rootFolder + '/public/uploaded/' + filnavn);
+
+            // Opprett referanse til bildet
+            let insertQuery = "INSERT INTO profilbilde (brukerid, plassering) VALUES(?, ?) ON DUPLICATE KEY UPDATE brukerid=?, plassering=?"
+            let insertQueryFormat = mysql.format(insertQuery, [brukerid, filnavn, brukerid, filnavn])
+            connection.query(insertQueryFormat, (error, results) => {
+                if (error) {
+                    return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere"})
+                }
+
+                if (results.affectedRows > 0) {
+                    return res.json({ "status" : "success", "message" : "Bilde lastet opp" })
+                } else {
+                    return res.json({"status" : "error", "message" : "En feil oppstod under opplasting av profilbilde"})
                 }
             })
         })
