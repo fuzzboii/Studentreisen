@@ -1,10 +1,12 @@
 // React-spesifikt
 import { Component } from "react";
+import { Redirect } from "react-router-dom";
 
 // 3rd-party Packages
 import { Button, FormControl, InputLabel, Input } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import axios from 'axios';
+import { withSnackbar } from 'notistack';
 
 // Studentreisen-assets og komponenter
 import Loader from '../../../global/Components/Loader';
@@ -19,25 +21,20 @@ class Reset extends Component {
         // Reset-spesifikke states, delt opp i før-visning verifisering, reset, token og alert
         this.state = {loading : true, verified : false, 
                     password : "", password2 : "", resetDisabled : false, resetText : "Oppdater passord", resetOpacity: "1",
-                    token : window.location.pathname.substring(7),
-                    alertDisplay : "none", alertText : "", alertSeverity : "error"}
+                    token : window.location.pathname.substring(7), redirectLogin : false}
     };
 
     // Utføres når bruker gjør en handling i input-feltet for Passord
     onPasswordChange = e => {
         this.setState({
-            password: e.target.value,
-            alertDisplay: "none",
-            alertText: ""
+            password: e.target.value
         });
     };
 
     // Utføres når bruker gjør en handling i input-feltet for Bekreft Passord
     onPassword2Change = e => {
         this.setState({
-            password2: e.target.value,
-            alertDisplay: "none",
-            alertText: ""
+            password2: e.target.value
         });
     };
   
@@ -50,10 +47,7 @@ class Reset extends Component {
         this.setState({
             resetDisabled: true,
             resetText: "Vennligst vent",
-            resetOpacity: "0.6",
-            alertDisplay: "none",
-            alertText : "",
-            alertSeverity: "error"
+            resetOpacity: "0.6"
         });
 
         if(this.state.password === this.state.password2) {
@@ -63,6 +57,8 @@ class Reset extends Component {
                 password2: this.state.password2,
                 token: this.state.token
             };
+
+            let pwByttet = false;
         
             // Axios POST request
             axios
@@ -72,45 +68,51 @@ class Reset extends Component {
                 // Utføres ved mottatt resultat
                 .then(res => {
                     if(res.data.status == "success") {
-                        // Passordet har blitt oppdatert, sender til login  
-                        this.setState({
-                            alertDisplay: "",
-                            alertText: "Passordet har blitt oppdatert, du blir sendt til side for innlogging om få sekunder",
-                            alertSeverity: "success"
+                        pwByttet = true;
+                        // Passordet har blitt oppdatert, sender til login
+                        this.props.enqueueSnackbar("Passordet har blitt oppdatert, du blir sendt til side for innlogging om få sekunder", { 
+                            variant: 'success',
+                            autoHideDuration: 5000,
                         });
 
                         setTimeout(() => {
-                            this.props.history.push('/login');
+                            this.setState({
+                                redirectLogin: true
+                            })
                         }, 5000);
                     } else {
                         // Feil oppstod ved endring av passord
-                        this.setState({
-                        alertDisplay: "",
-                        alertText: res.data.message
+                        this.props.enqueueSnackbar(res.data.message, { 
+                            variant: 'error',
+                            autoHideDuration: 5000,
                         });
                     }
                 }).catch(err => {
                     // En feil oppstod ved oppkobling til server
-                    this.setState({
-                        alertDisplay: "",
-                        alertText: "En intern feil oppstod, vennligst forsøk igjen senere"
+                    this.props.enqueueSnackbar("En intern feil oppstod, vennligst forsøk igjen senere", { 
+                        variant: 'error',
+                        autoHideDuration: 5000,
                     });
                 // Utføres alltid uavhengig av andre resultater
                 }).finally( () => {
-                    // Gjør Oppdater passord knappen tilgjengelig igjen om passordet ikke ble akseptert eller lignende feil oppstod
-                    this.setState({
-                        resetDisabled: false,
-                        resetText: "Oppdater passord",
-                        resetOpacity: "1",
-                    });
+                    if(!pwByttet) {
+                        // Gjør Oppdater passord knappen tilgjengelig igjen om passordet ikke ble akseptert eller lignende feil oppstod
+                        this.setState({
+                            resetDisabled: false,
+                            resetText: "Oppdater passord",
+                            resetOpacity: "1",
+                        });
+                    }
                 });
         } else {
+            this.props.enqueueSnackbar("Passordene er ikke like", { 
+                variant: 'error',
+                autoHideDuration: 5000,
+            });
             this.setState({
                 resetDisabled: false,
                 resetText: "Oppdater passord",
-                resetOpacity: "1",
-                alertDisplay: "",
-                alertText: "Passordene er ikke like"
+                resetOpacity: "1"
             });
         }
     };
@@ -149,6 +151,10 @@ class Reset extends Component {
             );
         }
         
+        if(this.state.redirectLogin) {
+            return <Redirect to={{pathname: "/Login"}} />;
+        }
+        
         if(!loading && verified) {
             // Når loading fasen er komplett og token har blitt verifisert, vis side for resetting av passord
             return (
@@ -156,9 +162,6 @@ class Reset extends Component {
                     <section id="section_logo_reset">
                         <img src={usnlogo} alt="USN logo" />
                     </section>
-                    <Alert id="alert_reset" className="fade_in" style={{display: this.state.alertDisplay}} variant="outlined" severity={this.state.alertSeverity}>
-                        {this.state.alertText}
-                    </Alert>
                     <form id="form_reset" onSubmit={this.handleReset}>
                         <FormControl id="form_email_reset">
                             <InputLabel>Passord</InputLabel>
@@ -181,4 +184,4 @@ class Reset extends Component {
     };
 }
 
-export default Reset;
+export default withSnackbar(Reset);

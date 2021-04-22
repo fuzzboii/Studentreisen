@@ -157,7 +157,7 @@ router.post('/submitSeminar', (req, res) => {
                         connection.query(insertSeminarQueryFormat, (error, insertedSeminar) => {
                             if (error) {
                                 console.log("En feil oppstod ved oppretting av nytt seminar, detaljer: " + error.errno + ", " + error.sqlMessage)
-                                return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                                return res.json({success : false});
                             }
                             
                             if(insertedSeminar.affectedRows > 0) {
@@ -179,7 +179,7 @@ router.post('/submitSeminar', (req, res) => {
                                 connection.query(insertImageQueryFormat, (error, insertedImage) => {
                                     if (error) {
                                         console.log("En feil oppstod ved oppretting av nytt bilde til et seminar, detaljer: " + error.errno + ", " + error.sqlMessage)
-                                        return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                                        return res.json({success : false});
                                     }
                                     
                                     if(insertedImage.affectedRows > 0) {
@@ -190,7 +190,7 @@ router.post('/submitSeminar', (req, res) => {
                                         connection.query(insertQueryFormat, (error, results) => {
                                             if (error) {
                                                 console.log("En feil oppstod ved kobling av bilde og seminar, detaljer: " + error.errno + ", " + error.sqlMessage)
-                                                return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                                                return res.json({success : false});
                                             }
                                             
                                             if(results.affectedRows > 0) {
@@ -210,7 +210,7 @@ router.post('/submitSeminar', (req, res) => {
                         connection.query(insertQueryFormat, (error, results) => {
                             if (error) {
                                 console.log("En feil oppstod under registrering av ny bruker, detaljer: " + error.errno + ", " + error.sqlMessage)
-                                return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                                return res.json({success : false});
                             }
                             
                             if(results.affectedRows > 0) {

@@ -31,40 +31,46 @@ import CookieService from '../../../global/Services/CookieService';
 import '../CSS/Seminar.css';
 
 
-const SeminarDetailsUpcoming = (props) => {
 
+const SeminarDetailsUpcoming = (props) => {
+    console.log(props.brukerid);
     let { seminarid } = useParams();
+   
     
     const history = useHistory();
-    
     const [seminarsUpcoming, setSeminars] = useState([]);
     
     const [openEdit, setOpenEdit] = React.useState(false);
     const [openDelete, setOpenDelete] = React.useState(false);
+
+    const [AlertOpen, setAlertOpen] = React.useState(false);
     
     const handleClickOpenEdit = () => {
       setOpenEdit(true);
     };
     const handleClickOpenDelete = () => {
         setOpenDelete(true);
-      };
-
+    };
+    
+    
     useEffect(() => {
         fetchData();
     },[openEdit]);
 
     const handleCloseEdit = () => {
       setOpenEdit(false);
+      setAlertOpen(false);
     };
     const handleCloseDelete = () => {
         setOpenDelete(false);
-      };
+    };
 
+    
     //Henting av kommende data til seminarene
     const fetchData = async () => {
                     
         const res = await axios.get(process.env.REACT_APP_APIURL + "/seminar/getAllSeminarUpcomingData");
-        console.log(res.data);
+
         setSeminars(res.data);
         res.data.map(prop => {
             if (prop.seminarid == seminarid) {
@@ -74,11 +80,11 @@ const SeminarDetailsUpcoming = (props) => {
                 setAdress(prop.adresse);
                 setDescription(prop.beskrivelse);
                 setAvailability(prop.tilgjengelighet);
-
+                
             }
         })
     };
-
+    
     //Sletting av seminar
 /*     const deleteSeminar = async (seminarid, varighet, bilde) => {
 
@@ -125,6 +131,7 @@ const SeminarDetailsUpcoming = (props) => {
     // Henter authtoken-cookie
     const token = CookieService.get("authtoken");
 
+
     // Setter data i feltene basert på input felt id
     const onInputChange = e => {
         if(e.target.id === "SeminarEdit_input_title") {
@@ -156,7 +163,7 @@ const SeminarDetailsUpcoming = (props) => {
 
         }
     }
-
+    
     // Utføres når seminaret oppdateres
     const onSubmit = e => {
         e.preventDefault()
@@ -177,6 +184,7 @@ const SeminarDetailsUpcoming = (props) => {
                 setAlertTextEdit(res.data.message)
                 setAlertSeverity("error")
             } else {
+                setAlertOpen(true);
                 setAlertDisplay("")
                 setAlertTextEdit("Seminar oppdatert")
                 setAlertSeverity("success")
@@ -185,7 +193,7 @@ const SeminarDetailsUpcoming = (props) => {
         })
 
     }
-
+    
     // Utføres når seminaret slettes / Gjøres utilgjengelig
     const onSubmitSlett = () => {
         setAlertDisplay("none");
@@ -204,6 +212,7 @@ const SeminarDetailsUpcoming = (props) => {
                 setAlertTextDelete(res.data.message)
                 setAlertSeverity("error")
             } else {
+                setAlertOpen(true);
                 setAlertDisplay("")
                 setAlertTextDelete("Seminar slettet, du sendes nå tilbake til seminar oversikten")
                 setAlertSeverity("success")
@@ -211,12 +220,12 @@ const SeminarDetailsUpcoming = (props) => {
 
                 window.setTimeout(() => {
                     history.push("/seminar");
-                 }, 3000)
+                }, 3000)
             }
         })
 
     }
-    
+
     return(
         <>
         {props.loading &&
@@ -248,7 +257,8 @@ const SeminarDetailsUpcoming = (props) => {
                                     </div>
                                     
                                     {/*Endring av seminaret, med test på brukertype */}
-                                    {props.type === 4 &&
+                                    {(seminar.brukerid == props.brukerid || props.type === 4) &&
+                                    
                                     <div className="SeminarDetails-ButtonRedigerWrapper">      
                                         <Button className="SeminarDetailsButtonRediger" size="small" variant="outlined" color="primary" startIcon={<EditIcon />} onClick={handleClickOpenEdit}>
                                         Rediger
@@ -291,9 +301,10 @@ const SeminarDetailsUpcoming = (props) => {
                                                     </FormControl>
                                                     
                                                     {/* Alert */}
-                                                    <Alert id="SeminarEdit_Alert" className="fade_in" style={{display: alertDisplay}} variant="filled" severity={alertSeverity}>
+                                                    {AlertOpen && <Alert id="SeminarEdit_Alert" className="fade_in" style={{display: alertDisplay}} variant="filled" severity={alertSeverity} >
+                                                        
                                                         {alertTextEdit}
-                                                    </Alert>  
+                                                    </Alert>}  
                                                 </form>                                         
                                             </DialogContent>
                                             
@@ -307,12 +318,14 @@ const SeminarDetailsUpcoming = (props) => {
                                                 Oppdater
                                             </Button>
                                             </DialogActions>
- 
+                                        
                                         </Dialog>
                                     </div>}
                                     
+                                    
                                     {/*Sletting av seminaret, med test på brukertype */}
-                                    {props.type === 4 &&
+                                    {(seminar.brukerid == props.brukerid || props.type === 4) &&
+                                    
                                     <div className="SeminarDetails-ButtonSlettWrapper">
                                         <Button className="SeminarDetailsButtonSlett" size="small" variant="outlined" color="secondary" startIcon={<DeleteIcon />} onClick={handleClickOpenDelete}> {/*onClick={() => deleteSeminar(seminar.seminarid, seminar.varighet, seminar.plassering)}>*/}
                                         Slett
@@ -323,11 +336,11 @@ const SeminarDetailsUpcoming = (props) => {
                                                     <DialogContentText>
                                                         Er du sikker på at du ønsker å slette seminaret? Trykker du på "slett" gjøres seminaret utilgjengelig.
                                                     </DialogContentText>
-
+                                                    
                                                     {/* Alert */}
-                                                    <Alert id="SeminarEdit_Alert" className="fade_in" style={{display: alertDisplay}} variant="filled" severity={alertSeverity}>
+                                                    {AlertOpen && <Alert id="SeminarDelete_Alert" className="fade_in" style={{display: alertDisplay}} variant="filled" severity={alertSeverity}>
                                                     {alertTextDelete}
-                                                    </Alert> 
+                                                    </Alert> }
                                                 </DialogContent>
                                             
                                             {/* Funksjonsknapper */}

@@ -3,6 +3,7 @@ import React from "react";
 // 3rd-party Packages
 import MaterialTable from "material-table";
 import axios from "axios";
+import { useSnackbar } from 'notistack';
 
 // Studentreisen-assets og komponenter
 import CookieService from '../../../global/Services/CookieService';
@@ -11,7 +12,8 @@ import ValidationService from '../../../global/Services/ValidationService';
 function UserOverview(props) {
     let [brukere, setBrukere] = React.useState([]);
     let [isLoading, setIsLoading] = React.useState(true);
-    
+    const { enqueueSnackbar } = useSnackbar();
+
     const token = {
         token: CookieService.get("authtoken")
     }
@@ -23,10 +25,14 @@ function UserOverview(props) {
             .post(process.env.REACT_APP_APIURL + "/tools/getAllUserData", token)
             // Utføres ved mottatt resultat
             .then(res => {
-                if(res.data.results) {
-                    setIsLoading(false);
+                if(res.data.status === "success") {
                     setBrukere(res.data.results);
+                    setIsLoading(false);
                 } else {
+                    enqueueSnackbar(res.data.message, { 
+                        variant: res.data.status,
+                        autoHideDuration: 5000,
+                    });
                     setIsLoading(false);
                 }
             });
@@ -36,11 +42,10 @@ function UserOverview(props) {
         { title: "#", field: "brukerid", type: "numeric", editable: 'never' },
         { title: "Fornavn", field: "fnavn", validate: rowData => rowData.fnavn === '' ? { isValid: false, helperText: 'Fornavn kan ikke være tomt' } : true },
         { title: "Etternavn", field: "enavn", validate: rowData => rowData.enavn === '' ? { isValid: false, helperText: 'Etternavn kan ikke være tomt' } : true },
-        { title: "Brukertype", field: "niva", lookup: { 1: 'Student', 2: 'Underviser', 3: 'Emneansvarlig', 4: 'Administrator', 
-            validate: rowData => rowData.niva === 1 || rowData.niva === 2 || rowData.niva === 3 || rowData.niva === 4 ? { isValid: false, helperText: 'Brukertype er ikke gyldig' } : true }, 
+        { title: "Brukertype", field: "niva", lookup: { 1: 'Student', 2: 'Underviser', 3: 'Emneansvarlig', 4: 'Administrator' }, 
         },
-        { title: "Telefon", field: "telefon" },
-        { title: "E-post", field: "email", validate: rowData => /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(rowData.email) ? true : { isValid: false, helperText: 'E-post er ikke gyldig' } },
+        { title: "Telefon", field: "telefon", validate: rowData => /^([\+0-9\s]*)$/.test(rowData.telefon) || rowData.telefon == null ? true : { isValid: false, helperText: 'Telefon er ikke gyldig' } },
+        { title: "E-post", field: "email", validate: rowData => /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(rowData.email) || rowData.email === "" || rowData.email == null ? true : { isValid: false, helperText: 'E-post er ikke gyldig' } },
     ];
     
     const localization = {
@@ -88,25 +93,47 @@ function UserOverview(props) {
         onRowAdd: nyBruker =>
             new Promise((resolve, reject) => {
                 // Sjekk om feltene er OK, enkel test på brukertype, e-post og at alle feltene er tilstede
-                if(ValidationService.validateUser(nyBruker)) {
+                const validering = ValidationService.validateUser(nyBruker);
+
+                if(validering.success) {
                     try {
                         axios
                             .post(process.env.REACT_APP_APIURL + "/tools/newUser", {bruker : nyBruker, token : token.token})
                             // Utføres ved mottatt resultat
                             .then(res => {
-                                if(res.data.success) {
+                                if(res.data.status === "success") {
+                                    enqueueSnackbar("Bruker opprettet, e-post med midlertidig passord sendt til oppgitt e-post", { 
+                                        variant: res.data.status,
+                                        autoHideDuration: 7000,
+                                    });
                                     setBrukere([...brukere, nyBruker]);
                                     resolve();
                                 } else {
+                                    enqueueSnackbar(res.data.message, { 
+                                        variant: res.data.status,
+                                        autoHideDuration: 5000,
+                                    });
                                     reject();
                                 }
                             }).catch(e => {
+                                enqueueSnackbar("En intern feil oppstod, vennligst forsøk igjen senere", { 
+                                    variant: 'error',
+                                    autoHideDuration: 5000,
+                                });
                                 reject();
                             });
                     } catch(e) {
+                        enqueueSnackbar("En intern feil oppstod, vennligst forsøk igjen senere", { 
+                            variant: 'error',
+                            autoHideDuration: 5000,
+                        });
                         reject();
                     }
                 } else {
+                    enqueueSnackbar(validering.message, { 
+                        variant: 'error',
+                        autoHideDuration: 5000,
+                    });
                     reject();
                 }
             }
@@ -117,13 +144,19 @@ function UserOverview(props) {
                     resolve();
                 } else {
                     // Sjekk om feltene er OK, enkel test på brukertype, e-post og at alle feltene er tilstede
-                    if(ValidationService.validateUser(nyBruker)) {
+                    const validering = ValidationService.validateUser(nyBruker);
+                    
+                    if(validering.success) {
                         try {
                             axios
                                 .post(process.env.REACT_APP_APIURL + "/tools/updateUser", {nyBruker : nyBruker, gammelBruker : gammelBruker, token : token.token})
                                 // Utføres ved mottatt resultat
                                 .then(res => {
-                                    if(res.data.success) {
+                                    if(res.data.status === "success") {
+                                        enqueueSnackbar(res.data.message, { 
+                                            variant: res.data.status,
+                                            autoHideDuration: 5000,
+                                        });
                                         const oppdatertBrukere = [...brukere];
                                         const index = gammelBruker.tableData.id;
                                         oppdatertBrukere[index] = nyBruker;
@@ -131,15 +164,31 @@ function UserOverview(props) {
         
                                         resolve();
                                     } else {
+                                        enqueueSnackbar(res.data.message, { 
+                                            variant: res.data.status,
+                                            autoHideDuration: 5000,
+                                        });
                                         reject();
                                     }
                                 }).catch(e => {
+                                    enqueueSnackbar("En intern feil oppstod, vennligst forsøk igjen senere", { 
+                                        variant: 'error',
+                                        autoHideDuration: 5000,
+                                    });
                                     reject();
                                 });
                         } catch(e) {
+                            enqueueSnackbar("En intern feil oppstod, vennligst forsøk igjen senere", { 
+                                variant: 'error',
+                                autoHideDuration: 5000,
+                            });
                             reject();
                         }
                     } else {
+                        enqueueSnackbar(validering.message, { 
+                            variant: 'error',
+                            autoHideDuration: 5000,
+                        });
                         reject();
                     }
                 }
@@ -152,7 +201,11 @@ function UserOverview(props) {
                         .post(process.env.REACT_APP_APIURL + "/tools/deleteUser", {bruker : bruker, token : token.token})
                         // Utføres ved mottatt resultat
                         .then(res => {
-                            if(res.data.success) {
+                            if(res.data.status === "success") {
+                                enqueueSnackbar(res.data.message, { 
+                                    variant: res.data.status,
+                                    autoHideDuration: 5000,
+                                });
                                 const oppdatertBrukere = [...brukere];
                                 const index = bruker.tableData.id;
                                 oppdatertBrukere.splice(index, 1);
@@ -160,12 +213,24 @@ function UserOverview(props) {
 
                                 resolve();
                             } else {
-                                reject();
+                                enqueueSnackbar(res.data.message, { 
+                                    variant: res.data.status,
+                                    autoHideDuration: 5000,
+                                });
+                                resolve();
                             }
                         }).catch(e => {
+                            enqueueSnackbar("En intern feil oppstod, vennligst forsøk igjen senere", { 
+                                variant: 'error',
+                                autoHideDuration: 5000,
+                            });
                             reject();
                         });
                 } catch(e) {
+                    enqueueSnackbar("En intern feil oppstod, vennligst forsøk igjen senere", { 
+                        variant: 'error',
+                        autoHideDuration: 5000,
+                    });
                     reject();
                 }
             }
