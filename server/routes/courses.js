@@ -5,7 +5,7 @@ const router = require('express').Router();
 
 router.get('/', async (req, res) => {
     try{
-        connection.query('SELECT * FROM Kurs', (error, results) => {
+        connection.query('SELECT kurs.emnekode, navn, kurs.beskrivelse, språk, semester, studiepoeng, lenke, (fagfelt.beskrivelse) AS felt FROM kurs, kursfelt, fagfelt WHERE kursfelt.fagfeltid = fagfelt.fagfeltid AND kurs.emnekode = kursfelt.emnekode', (error, results) => {
             res.send(results);
         });
 

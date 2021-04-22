@@ -76,7 +76,7 @@ router.post('/getInteresser', async (req, res) => {
     let brukerid = undefined;
     if (req.body.token !== undefined) {
         verifyAuth(req.body.token).then( resAuth => {
-            brukerid = resAuth.brukerid 
+            brukerid = resAuth.brukerid;
             let getQuery = "SELECT beskrivelse, interesse.fagfeltid FROM interesse, fagfelt WHERE interesse.fagfeltid = fagfelt.fagfeltid AND interesse.brukerid = ?";
             let getQueryFormat = mysql.format(getQuery, [brukerid]);
             connection.query(getQueryFormat, (error, results) => {

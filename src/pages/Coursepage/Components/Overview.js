@@ -1,5 +1,4 @@
 import { Component } from 'react';
-import {CourseProvider, ModuleProvider} from './CourseContext';
 import CourseNav from './CourseNav';
 import '../Styles/courseStyles.css';
 import '../Styles/moduleStyles.css';
@@ -57,11 +56,7 @@ class Overview extends Component {
         if(!loading && authenticated) {
             return (            
                 <div>
-                    <ModuleProvider>
-                    <CourseProvider>
-                        <CourseNav/>
-                    </CourseProvider>
-                    </ModuleProvider>
+                    <CourseNav/>
                 </div>
             );
         } else {

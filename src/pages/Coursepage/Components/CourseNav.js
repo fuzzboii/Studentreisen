@@ -1,11 +1,15 @@
-import React, { useState, useContext} from 'react';
+import React, { useState, useContext, useEffect} from 'react';
 import CourseList from './CourseList';
 import ModuleList from './ModuleList';
-import { CourseContext, ModuleContext } from './CourseContext';
 import Pagination from '@material-ui/lab/Pagination';
+import axios from 'axios';
+import CookieService from '../../../global/Services/CookieService';
+
+
 
 
 import {Tabs, Tab, Typography} from '@material-ui/core';
+import { AddOutlined } from '@material-ui/icons';
 
 
 function TabPanel(props) {
@@ -21,12 +25,56 @@ function TabPanel(props) {
 }
 
 const CourseNav = () => {
+    useEffect(()=>{
+      fetchData();
+    },[]);
+  
 
     const [position, setPosition] = useState(0);
 
     // States for pagination
-    const [courses, setCourses] = useContext(CourseContext);
-    const [modules, setModules] = useContext(ModuleContext);
+    const [courses, setCourses] = useState([]);
+    const [modules, setModules] = useState([]);
+    const [field, setFields] = useState([]);
+    var array3 = [];
+
+    const fetchData = () => {
+      const token = CookieService.get("authtoken");
+                
+        const data = {
+            token: token
+        }
+
+      axios.all([
+        axios.get(process.env.REACT_APP_APIURL + "/course/"),
+        axios.get(process.env.REACT_APP_APIURL + "/course/module"),
+        axios.post(process.env.REACT_APP_APIURL + "/profile/getInteresser", data)
+
+      ]).then(axios.spread((res1, res2, res3) => {
+        setCourses(res1.data);
+        setModules(res2.data);
+        setFields(res3.data.results);
+        func();
+        if(array3.length !== 0) {
+          setCourses(array3);
+        }
+      }));
+    };
+   
+    const func = () => {
+      if(array3.length > 0) {
+        field.forEach( intr  => {
+          courses.forEach( course => {
+            if(intr.beskrivelse === course.felt) {
+                array3 = [...array3, course];
+            };
+          });
+        });
+        console.log("nycourse", array3);
+
+      }
+    };
+    
 
     const [currentPage_c, setcurrentPage_c] = useState(1);
     const [postsPerPage_c, setPostsPerPage_c] = useState(12);
