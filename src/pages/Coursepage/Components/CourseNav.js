@@ -36,6 +36,7 @@ const CourseNav = () => {
     const [courses, setCourses] = useState([]);
     const [modules, setModules] = useState([]);
     const [field, setFields] = useState([]);
+    const set = false;
     var array3 = [];
 
     const fetchData = () => {
@@ -54,15 +55,15 @@ const CourseNav = () => {
         setCourses(res1.data);
         setModules(res2.data);
         setFields(res3.data.results);
+        console.log("interesser", res3.data.results);
+
         func();
-        if(array3.length !== 0) {
-          setCourses(array3);
-        }
+       
       }));
     };
    
     const func = () => {
-      if(array3.length > 0) {
+      if(field !== undefined) {
         field.forEach( intr  => {
           courses.forEach( course => {
             if(intr.beskrivelse === course.felt) {
@@ -127,7 +128,12 @@ const CourseNav = () => {
                   <div className="indexRes">
                     <Typography variant="caption">Viser {cindexOfFirstPost + 1} - {interval_c} av {courses.length} treff</Typography>
                   </div>
-                  <CourseList courses={currentPosts_c}/>
+                  <div className="wrap-list">
+                    <CourseList courses={currentPosts_c}/>
+                    <div className="relevance-list">
+                      
+                    </div>
+                  </div>
                 </div>
                   <div className="wrapIndexPage">
                     <div className="indexPosition">
