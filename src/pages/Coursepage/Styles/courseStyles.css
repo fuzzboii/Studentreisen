@@ -405,7 +405,7 @@
     }
     
     .course-section:hover {
-        background-color: #0057da1a;
+        background-color: #7474741a;;
         transition-timing-function: ease;
         transition: 0.4s;
         cursor: pointer;
