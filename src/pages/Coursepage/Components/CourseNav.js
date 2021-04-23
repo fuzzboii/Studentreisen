@@ -127,7 +127,7 @@ const CourseNav = (props) => {
                   <div className="indexRes">
                     <Typography variant="caption">Viser {cindexOfFirstPost + 1} - {interval_c} av {courses.length} treff</Typography>
                     {props.type === 3 || props.type === 4 &&
-                      <Button id="course_button_newCourse">Nytt kurs</Button>
+                      <Button href="/course/ny" id="course_button_newCourse">Nytt kurs</Button>
                     }
                   </div>
                   <CourseList courses={currentPosts_c}/>
