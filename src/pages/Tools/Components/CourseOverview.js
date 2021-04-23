@@ -1,4 +1,5 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 
 // 3rd-party Packages
 import MaterialTable from "material-table";
@@ -11,6 +12,7 @@ import CookieService from '../../../global/Services/CookieService';
 function CourseOverview(props) {
     let [kurs, setKurs] = React.useState([]);
     let [isLoading, setIsLoading] = React.useState(true);
+    const history = useHistory();
     const { enqueueSnackbar } = useSnackbar();
     
     const token = {
@@ -94,7 +96,7 @@ function CourseOverview(props) {
                         tooltip: 'Nytt kurs',
                         isFreeAction: true,
                         onClick: () => {
-                            console.log("Gå til oppretting av nytt kurs");
+                            history.push("/course/ny");
                         }
                     }
                 ]}

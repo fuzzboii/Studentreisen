@@ -116,6 +116,10 @@
   top: 1.25rem;
 }
 
+#notif-bell:hover {
+  cursor: pointer;
+}
+
 .notif_section {
   display: grid;
   border: 1px solid #60606060;

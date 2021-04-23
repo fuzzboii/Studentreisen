@@ -8,7 +8,7 @@ import CookieService from '../../../global/Services/CookieService';
 
 
 
-import {Tabs, Tab, Typography} from '@material-ui/core';
+import {Tabs, Tab, Typography, Button} from '@material-ui/core';
 import { AddOutlined } from '@material-ui/icons';
 
 
@@ -24,7 +24,7 @@ function TabPanel(props) {
   );
 }
 
-const CourseNav = () => {
+const CourseNav = (props) => {
     useEffect(()=>{
       fetchData();
     },[]);
@@ -127,6 +127,9 @@ const CourseNav = () => {
                 <div className="content-overview">
                   <div className="indexRes">
                     <Typography variant="caption">Viser {cindexOfFirstPost + 1} - {interval_c} av {courses.length} treff</Typography>
+                    {props.type === 3 || props.type === 4 &&
+                      <Button href="/course/ny" id="course_button_newCourse">Nytt kurs</Button>
+                    }
                   </div>
                   <div className="wrap-list">
                     <CourseList courses={currentPosts_c}/>

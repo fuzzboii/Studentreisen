@@ -15,6 +15,7 @@ import Tools from './pages/Tools/Components/Tools';
 import Course from './pages/Coursepage/Components/Overview';
 import CourseDetail from './pages/Coursepage/Components/CourseDetail';
 import ModuleDetail from './pages/Coursepage/Components/ModuleDetail';
+import CourseNew from './pages/Coursepage/Components/CourseNew';
 import Seminar from './pages/Seminar/Components/SeminarOverview';
 import SeminarDetailsUpcoming from './pages/Seminar/Components/SeminarDetailsUpcoming';
 import SeminarDetailsExpired from './pages/Seminar/Components/SeminarDetailsExpired';
@@ -78,13 +79,18 @@ function App() {
           <Route path = "/login" render={() => (
               <Login auth={auth} type={type} loading={loading} />
             )} />
-          <Route path = "/course" exact component = {Course} />
+          <Route path = "/course" exact render = {() =>(
+              <Course auth={auth} type={type} loading={loading} />
+            )}/>
             <Route path = "/course/emnekode=:emnekode" render = {() =>(
               <CourseDetail auth={auth} loading={loading} />
             )}/>
             <Route path = "/course/modulkode=:modulkode" render = {() =>(
               <ModuleDetail auth={auth} loading={loading} />
             )}/>
+            <Route path = "/course/ny"  render={() => (
+                <CourseNew auth={auth} type={type} loading={loading} />
+            )} />
           <Route path = "/register"  render={() => (
               <Register auth={auth} type={type} loading={loading} />
             )} />
