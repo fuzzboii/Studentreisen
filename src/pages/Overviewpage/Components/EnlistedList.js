@@ -9,7 +9,7 @@ const EnlistedList = () => {
     return(
         <div className="seminarSection scrollMd">
         {enlists.length == 0 &&
-            <h4 className="no-seminar">Du har ingen påmeldte seminarer...</h4>
+            <h2 className="no-seminar">Du har ingen påmeldte seminarer...</h2>
             }
         {enlists.map((seminar,i) => (
             <EnlistedSeminar key={i} id={seminar.seminarid} navn={seminar.navn} adresse={seminar.adresse} dato={seminar.oppstart}/>

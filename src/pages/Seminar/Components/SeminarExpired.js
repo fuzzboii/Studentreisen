@@ -10,6 +10,7 @@ import 'moment/locale/nb';
 // Studentreisen-assets og komponenter
 import '../CSS/Seminar.css'; 
 import { SeminarCard, SeminarCardActionArea, SeminarCardContent, SeminarCardMedia, SeminarTypography, SeminarCardActions, SeminarButton, SeminarAccordion, SeminarAccordionSummary, SeminarAccordionDetails, SeminarExpandMoreIcon } from '../CSS/apistylesSeminar';
+import noimage from '../../../assets/noimage.jpg'; 
 
 const SeminarExpired = (props) => {
     const [width, setWidth] = React.useState(window.innerWidth);
@@ -22,6 +23,9 @@ const SeminarExpired = (props) => {
         window.removeEventListener("resize", handleResizeWindow);
         };
     }, []);
+    
+    // Om seminaret ikke har ett bilde, vis et standardbilde
+    const uploadedimg = props.plassering !== null ? "/uploaded/" + props.plassering : noimage;
     
     if (width < breakpoint) {
         return (
@@ -61,7 +65,7 @@ const SeminarExpired = (props) => {
                 <Link className='Seminar-Link' to={`/seminar/seminarutgatte=${props.seminarid}`}>
                 <SeminarCardActionArea>
                     <SeminarCardMedia
-                        image={"/uploaded/" + props.plassering} />
+                        image={uploadedimg} />
                     <SeminarCardContent className="Seminar-CardContent">
                         <div className="Seminar-CardHeading">
                             <h2 className="Seminar-NavnDesktop">{props.navn}</h2>

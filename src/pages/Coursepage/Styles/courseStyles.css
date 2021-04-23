@@ -194,6 +194,59 @@
 }
 
 
+/* Nytt Kurs
+----------------------------- */
+/* Knapp for nytt kurs */
+#course_button_newCourse {
+}
+
+#CourseNew_main {
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#CourseNew_button_back {
+    margin-top: 1em;
+}
+
+#CourseNew_form {
+    display: grid;
+    margin-bottom: 2em;
+}
+
+#CourseNew_form input {
+    height: 2em;
+    box-sizing: border-box;
+}
+
+#CourseNew_formcontrol {
+    margin-top: 1em;
+}
+
+#CourseNew_iconbutton_remove {
+    padding-left: 0;
+    width: 7em;
+    font-size: 1em;
+    justify-content: left;
+    margin-bottom: 1.5em;
+}
+
+#CourseNew_input_imageprev, #CourseNew_p_noimage {
+    max-height: 10em;
+    max-width: 100%;
+    margin-top: 1.5em;
+}
+
+#CourseNew_iconbutton_select {
+    padding: 0;
+    margin-bottom: 1.5em;
+}
+
+#CourseNew_button_submit {
+    margin-top: 2em;
+}
+
 
 /* Media queries
 ----------------------------- */
@@ -287,10 +340,17 @@
         margin-right: auto;
     }
 
-   
+}
 
 
-  
+
+/* Tab (pro) */
+@media screen and (min-width: 1024px) {
+
+    /* Nytt kurs */
+    #CourseNew_main {
+        max-width: 61em;
+    }
 }
 
 /* Laptop / Liten skjerm,, 720p */

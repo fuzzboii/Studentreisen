@@ -14,6 +14,7 @@ import axios from 'axios';
 import { SeminarCard, SeminarCardActionArea, SeminarCardContent, SeminarCardMedia, SeminarTypography, SeminarCardActions, SeminarButton, SeminarAccordion, SeminarAccordionSummary, SeminarAccordionDetails, SeminarExpandMoreIcon } from '../CSS/apistylesSeminar';
 import '../CSS/Seminar.css'; 
 import CookieService from '../../../global/Services/CookieService';
+import noimage from '../../../assets/noimage.jpg'; 
 
 const SeminarUpcoming = (props) => {
     const [seminarsUpcoming, setSeminars] = useState([]);
@@ -72,6 +73,8 @@ const SeminarUpcoming = (props) => {
     }
 
 
+    // Om seminaret ikke har ett bilde, vis et standardbilde
+    const uploadedimg = props.plassering !== null ? "/uploaded/" + props.plassering : noimage;
       
     if (width < breakpoint) {
         return (
@@ -125,7 +128,7 @@ const SeminarUpcoming = (props) => {
                 <Link className='Seminar-Link' to={`/seminar/seminarkommende=${props.seminarid}`}>
                 <SeminarCardActionArea>
                     <SeminarCardMedia
-                        image={"/uploaded/" + props.plassering} />
+                        image={uploadedimg} />
                     <SeminarCardContent className="Seminar-CardContent">
                         <div className="Seminar-CardHeading">
                             <h2 className="Seminar-NavnDesktop">{props.navn}</h2>

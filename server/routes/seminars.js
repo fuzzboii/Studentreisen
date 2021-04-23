@@ -38,7 +38,14 @@ router.post('/getEnlistedSeminars', async (req, res) => {
 router.get('/getAllSeminarUpcomingData', async (req, res) => {
     try{
 
-        connection.query('SELECT seminarid, seminar.bildeid, navn, adresse, oppstart, varighet, beskrivelse, tilgjengelighet, plassering, brukerid, fnavn, enavn FROM Seminar, Bilde, bruker WHERE tilgjengelighet = true and varighet > CURRENT_DATE() and Seminar.bildeid = Bilde.bildeid and Seminar.arrangor = Bruker.brukerid ORDER BY oppstart ASC;', (error, results) => {
+        connection.query(`SELECT seminarid, seminar.bildeid, navn, adresse, oppstart, varighet, beskrivelse, tilgjengelighet, plassering, brukerid, fnavn, enavn
+                            FROM seminar
+                            LEFT JOIN bilde
+                            ON seminar.bildeid = bilde.bildeid
+                            LEFT JOIN bruker
+                            ON seminar.arrangor = bruker.brukerid
+                            WHERE tilgjengelighet = true AND varighet > CURRENT_DATE()
+                            ORDER BY oppstart ASC`, (error, results) => {
             res.send(results);
         });
 
@@ -51,7 +58,14 @@ router.get('/getAllSeminarUpcomingData', async (req, res) => {
 router.get('/getAllSeminarExpiredData', async (req, res) => {
     try{
 
-        connection.query('SELECT seminarid, seminar.bildeid, navn, adresse, oppstart, varighet, beskrivelse, tilgjengelighet, plassering, brukerid, fnavn, enavn FROM Seminar, Bilde, bruker WHERE tilgjengelighet = true and varighet < CURRENT_DATE() and Seminar.bildeid = Bilde.bildeid and Seminar.arrangor = Bruker.brukerid ORDER BY oppstart ASC;', (error, results) => {
+        connection.query(`SELECT seminarid, seminar.bildeid, navn, adresse, oppstart, varighet, beskrivelse, tilgjengelighet, plassering, brukerid, fnavn, enavn
+                            FROM seminar
+                            LEFT JOIN bilde
+                            ON seminar.bildeid = bilde.bildeid
+                            LEFT JOIN bruker
+                            ON seminar.arrangor = bruker.brukerid
+                            WHERE tilgjengelighet = true AND varighet <= CURRENT_DATE()
+                            ORDER BY oppstart DESC`, (error, results) => {
             res.send(results);
         });
 
