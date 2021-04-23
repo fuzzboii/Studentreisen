@@ -33,30 +33,66 @@ import '../CSS/Seminar.css';
 
 
 const SeminarDetailsUpcoming = (props) => {
-    console.log(props.brukerid);
+
     let { seminarid } = useParams();
-   
     
+    //Brukes for å sette bruker tilbake til forrige side
     const history = useHistory();
+    
+    //States for å liste opp kommende seminarer
     const [seminarsUpcoming, setSeminars] = useState([]);
     
+    //States for å liste opp påmeldte brukere på seminarene
+    const [enlists, setEnlists] = useState([]);
+    
+    //States for åpning av dialog boksen
     const [openEdit, setOpenEdit] = React.useState(false);
     const [openDelete, setOpenDelete] = React.useState(false);
 
+    //States for åpning av alert
     const [AlertOpen, setAlertOpen] = React.useState(false);
     
+    //States for påmelding knappen
+    const [enlist, setEnlist] = React.useState(false);
+    
+    //States Alert, melding
+    const [alertTextEdit, setAlertTextEdit] = useState();
+    const [alertTextDelete, setAlertTextDelete] = useState();
+    
+    //States Alert, synlighet
+    const [alertDisplay, setAlertDisplay] = useState("none");
+    
+    //States Alert, alvorlighet
+    const [alertSeverity, setAlertSeverity] = useState("error");
+    
+    // States for endring av seminar
+    const [title, setTitle] = useState();
+    const [startdate, setStartdate] = useState();
+    const [enddate, setEnddate] = useState();
+    const [adress, setAdress] = useState();
+    const [description, setDescription] = useState();
+    
+    // States for sletting av seminar
+    const [availability, setAvailability] = useState();
+
+    // Henter authtoken-cookie
+    const token = CookieService.get("authtoken");    
+    
+    //Håndterer åpning av redigering og sletting
     const handleClickOpenEdit = () => {
       setOpenEdit(true);
     };
     const handleClickOpenDelete = () => {
         setOpenDelete(true);
     };
-    
-    
+
+    //Use effect
     useEffect(() => {
         fetchData();
+        fetchEnlistedData();
     },[openEdit]);
 
+    //Håndterer lukking av redigering og sletting
     const handleCloseEdit = () => {
       setOpenEdit(false);
       setAlertOpen(false);
@@ -64,9 +100,8 @@ const SeminarDetailsUpcoming = (props) => {
     const handleCloseDelete = () => {
         setOpenDelete(false);
     };
-
     
-    //Henting av kommende data til seminarene
+    //Henting av kommende data til seminarene og tester på seminarid for å sette riktig informasjon i input feltene
     const fetchData = async () => {
                     
         const res = await axios.get(process.env.REACT_APP_APIURL + "/seminar/getAllSeminarUpcomingData");
@@ -84,6 +119,31 @@ const SeminarDetailsUpcoming = (props) => {
             }
         })
     };
+    
+    
+    //Henting av påmeldte seminarer for brukeren, deretter sjekk på påmelding og settes påmeldingen til true dersom brukeren er påmeldt på seminaret
+    const fetchEnlistedData = async () => {
+        const token = CookieService.get("authtoken");
+        
+        const data = {
+            token: token
+        }
+        
+        const res = await axios.post(process.env.REACT_APP_APIURL + "/seminar/getEnlistedSeminars", data );
+        setEnlists(res.data);
+        res.data.map(enlists => {
+            
+            if (enlists.seminarid == seminarid) {
+                setEnlist(true);
+
+            } 
+        })
+    };
+
+
+
+    
+
     
     //Sletting av seminar
 /*     const deleteSeminar = async (seminarid, varighet, bilde) => {
@@ -106,31 +166,31 @@ const SeminarDetailsUpcoming = (props) => {
         }
     }; */
 
+    //Påmelder og avmelder brukeren til seminaret
+    const onEnlist = () => {
+        
+        const data = {
+            token : token,
+            seminarid : seminarid, 
+        }
 
-    
-    // Alert, melding
-    const [alertTextEdit, setAlertTextEdit] = useState();
-    const [alertTextDelete, setAlertTextDelete] = useState();
-    
-    // Alert, synlighet
-    const [alertDisplay, setAlertDisplay] = useState("none");
-    
-    // Alert, alvorlighet
-    const [alertSeverity, setAlertSeverity] = useState("error");
-    
-    // States for endring av seminar
-    const [title, setTitle] = useState();
-    const [startdate, setStartdate] = useState();
-    const [enddate, setEnddate] = useState();
-    const [adress, setAdress] = useState();
-    const [description, setDescription] = useState();
-    
-    // States for sletting av seminar
-    const [availability, setAvailability] = useState();
+        axios.post(process.env.REACT_APP_APIURL + "/seminar/postEnlist", data)
+        setEnlist(true);
+        console.log("Påmeldt");
+    }
 
-    // Henter authtoken-cookie
-    const token = CookieService.get("authtoken");
 
+    const onUnenlist = () => {
+        
+        const data = {
+            token : token,
+            seminarid : seminarid, 
+        }
+
+        axios.post(process.env.REACT_APP_APIURL + "/seminar/deleteEnlist", data)
+        setEnlist(false);
+        console.log("Avmeldt");
+    }    
 
     // Setter data i feltene basert på input felt id
     const onInputChange = e => {
@@ -164,7 +224,7 @@ const SeminarDetailsUpcoming = (props) => {
         }
     }
     
-    // Utføres når seminaret oppdateres
+    //Når brukeren submitter oppdatereringen av seminaret
     const onSubmit = e => {
         e.preventDefault()
 
@@ -194,7 +254,7 @@ const SeminarDetailsUpcoming = (props) => {
 
     }
     
-    // Utføres når seminaret slettes / Gjøres utilgjengelig
+    //Når brukeren submitter slettingen av seminaret
     const onSubmitSlett = () => {
         setAlertDisplay("none");
         setAlertTextDelete("");
@@ -249,13 +309,24 @@ const SeminarDetailsUpcoming = (props) => {
                                 
                                 {/* Seksjonen for påmelding, slett, og rediger - knapper */}
                                 <div className="SeminarDetails-Buttons">    
+                                    
                                     {/*Påmelding til seminaret */}
+                                    {(seminar.brukerid != props.brukerid) &&
                                     <div className="SeminarDetails-ButtonPameldWrapper">
-                                        <Button className="SeminarDetailsButtonPameld" size="small" variant="contained" color="primary">
+                                        {!enlist ?
+                                        <>
+                                        <Button className="SeminarDetailsButtonPameld" size="small" variant="contained" color="primary" onClick={onEnlist}>
                                         Påmeld
                                         </Button>
+                                        </>
+                                        :
+                                        <Button className="SeminarDetailsButtonPameld" size="small" variant="contained" color="default" onClick={onUnenlist}>
+                                        Avmeld
+                                        </Button>                                        
+                                        }
                                     </div>
                                     
+                                    }
                                     {/*Endring av seminaret, med test på brukertype */}
                                     {(seminar.brukerid == props.brukerid || props.type === 4) &&
                                     

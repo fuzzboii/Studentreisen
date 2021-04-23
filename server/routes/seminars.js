@@ -80,7 +80,7 @@ router.get('/getAllSeminarExpiredData', async (req, res) => {
                     res.send(results);
 
                 } else {
-                    res.status(400).json({"status" : "error", "message" : "En feil oppstod under spørring"});
+                    res.status(400).json({"status" : "error", "message" : "En feil oppstod under oppdatering av seminaret"});
                 }         
                 
             });
@@ -114,7 +114,63 @@ router.get('/getAllSeminarExpiredData', async (req, res) => {
         } else {
             res.status(400).json({"status" : "error", "message" : "Ikke tilstrekkelig data"});
         }
-    });    
+    });
+    
+    router.post('/postEnlist', async (req, res) => {
+        let brukerid = undefined;
+        if (req.body.token !== undefined && req.body.seminarid !== undefined) {
+            verifyAuth(req.body.token).then( resAuth => {
+                brukerid = resAuth.brukerid
+                let insertQuery = "INSERT INTO pamelding(seminarid, brukerid) VALUES(?, ?)";
+                let insertQueryFormat = mysql.format(insertQuery, [req.body.seminarid, brukerid]);
+                connection.query(insertQueryFormat, (error, results) => {
+                    if (error) {
+                        console.log("An error occurred while deleting an interest, details: " + error.errno + ", " + error.sqlMessage)
+                        return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                  
+                    }
+                    
+                    // Returnerer påvirkede rader
+                    if(res.status(200)) {
+                        res.send(results);
+                        
+                    } else {
+                        res.status(400).json({"status" : "error", "message" : "En feil oppstod under spørring"});
+                    }   
+                });       
+            })
+            } else {
+                res.status(400).json({"status" : "error", "message" : "Ikke tilstrekkelig data"});
+            }
+    });
+    
+    router.post('/deleteEnlist', async (req, res) => {
+        let brukerid = undefined;
+        if (req.body.token !== undefined && req.body.seminarid !== undefined) {
+            verifyAuth(req.body.token).then( resAuth => {
+                brukerid = resAuth.brukerid
+                let insertQuery = "DELETE FROM pamelding WHERE seminarid = ? AND brukerid = ?";
+                let insertQueryFormat = mysql.format(insertQuery, [req.body.seminarid, brukerid]);
+                connection.query(insertQueryFormat, (error, results) => {
+                    if (error) {
+                        console.log("An error occurred while deleting an interest, details: " + error.errno + ", " + error.sqlMessage)
+                        return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                  
+                    }
+                    
+                    // Returnerer påvirkede rader
+                    if(res.status(200)) {
+                        res.send(results);
+                        
+                    } else {
+                        res.status(400).json({"status" : "error", "message" : "En feil oppstod under spørring"});
+                    }   
+                });       
+            })
+            } else {
+                res.status(400).json({"status" : "error", "message" : "Ikke tilstrekkelig data"});
+            }
+    });
     
     
     router.post('/', async (req, res) => {

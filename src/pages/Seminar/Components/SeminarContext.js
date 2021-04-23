@@ -27,7 +27,6 @@ export const SeminarProvider = props => {
         
 
         const res = await axios.get(process.env.REACT_APP_APIURL + "/seminar/getAllSeminarUpcomingData");
-        console.log(res.data);
         setSeminars(res.data);
 
     };
@@ -56,7 +55,6 @@ export const SeminarExpiredProvider = props => {
         //const apiURL = "http://localhost:5000/api/v1/seminar/getAllFullfortSeminarData";
         
         const res = await axios.get(process.env.REACT_APP_APIURL + "/seminar/getAllSeminarExpiredData");
-        console.log(res.data);
         setSeminars(res.data);
 
     };
