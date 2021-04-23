@@ -1,14 +1,12 @@
-import React, { useState, useContext, useEffect} from 'react';
+import React, { useState, useEffect} from 'react';
 import CourseList from './CourseList';
 import ModuleList from './ModuleList';
+import RelevantField from './RelevantField';
 import Pagination from '@material-ui/lab/Pagination';
 import axios from 'axios';
 import CookieService from '../../../global/Services/CookieService';
-
-
-
-
 import {Tabs, Tab, Typography, Button} from '@material-ui/core';
+import {makeStyles} from '@material-ui/core/styles';
 import { AddOutlined } from '@material-ui/icons';
 
 
@@ -25,6 +23,18 @@ function TabPanel(props) {
 }
 
 const CourseNav = (props) => {
+
+  const useStyles = makeStyles((theme) => ({
+    button: {
+      position: "absolute",
+      padding: 0,
+      marginLeft: theme.spacing(2),
+      width: theme.spacing(12),
+    },
+  }));
+
+  const classes = useStyles();
+
     useEffect(()=>{
       fetchData();
     },[]);
@@ -35,7 +45,7 @@ const CourseNav = (props) => {
     // States for pagination
     const [courses, setCourses] = useState([]);
     const [modules, setModules] = useState([]);
-    const [field, setFields] = useState([]);
+    const [fields, setFields] = useState([]);
     const set = false;
     var array3 = [];
 
@@ -63,8 +73,8 @@ const CourseNav = (props) => {
     };
    
     const func = () => {
-      if(field !== undefined) {
-        field.forEach( intr  => {
+      if(fields !== undefined) {
+        fields.forEach( intr  => {
           courses.forEach( course => {
             if(intr.beskrivelse === course.felt) {
                 array3 = [...array3, course];
@@ -128,54 +138,49 @@ const CourseNav = (props) => {
                   <div className="indexRes">
                     <Typography variant="caption">Viser {cindexOfFirstPost + 1} - {interval_c} av {courses.length} treff</Typography>
                     {props.type === 3 || props.type === 4 &&
-                      <Button href="/course/ny" id="course_button_newCourse">Nytt kurs</Button>
+                      <Button href="/course/ny" className={classes.button} variant="contained" color="primary">Nytt kurs</Button>
                     }
                   </div>
                   <div className="wrap-list">
-                    <CourseList courses={currentPosts_c}/>
-                    <div className="relevance-list">
-                      
-                    </div>
-                  </div>
-                </div>
-                  <div className="wrapIndexPage">
-                    <div className="indexPosition">
-                      <div className="indexPagination">
-                        <div className="indexRes2">
-                          <div className="indexCenterWrap">
-                            <Typography  variant="caption" >Viser {cindexOfFirstPost + 1} - {interval_c} av {courses.length} treff</Typography>
-                          </div>
-                          <div className="indexCenterWrap">
-                            <Pagination count={numberOfPages_c} page={currentPage_c} onChange={handlePageCourse} />
+                    <div className="wrapIndexPage">
+                      <CourseList courses={currentPosts_c}/>
+                        <div className="indexPagination">
+                          <div className="indexRes2">
+                            <div className="indexCenterWrap">
+                              <Typography  variant="caption" >Viser {cindexOfFirstPost + 1} - {interval_c} av {courses.length} treff</Typography>
+                            </div>
+                            <div className="indexCenterWrap">
+                              <Pagination count={numberOfPages_c} page={currentPage_c} onChange={handlePageCourse} />
+                            </div>
                           </div>
                         </div>
-                      </div>
                     </div>
+                    <RelevantField fields={fields}/>
                   </div>
+                </div>
             </TabPanel>
             }  
             {Object.entries(modules).length !== 0 &&
             <TabPanel value={position} index={1}>
                 <div className="content-main">
-                  <div className="indexRes">
-                    <Typography variant="caption">Viser {mindexOfFirstPost + 1} - {interval_m} av {modules.length} treff</Typography>
-                  </div>
-                  <ModuleList modules={currentPosts_m}/>
-                </div>
-                <div className="wrapIndexPage">
-                    <div className="indexPosition">
-                      <div className="indexPaginationM">
-                        <div className="indexRes2">
-                          <div className="indexCenterWrap">
-                            <Typography  variant="caption" >Viser {mindexOfFirstPost + 1} - {interval_m} av {modules.length} treff</Typography>
-                          </div>
-                          <div className="indexCenterWrap">
-                            <Pagination count={numberOfPages_m} page={currentPage_m} onChange={handlePageModule} />
-                          </div>  
-                        </div>
-                      </div>
+                  <div className="wrapIndexPage">
+                    <div className="indexRes">
+                      <Typography variant="caption">Viser {mindexOfFirstPost + 1} - {interval_m} av {modules.length} treff</Typography>
                     </div>
-                  </div>
+                      <ModuleList modules={currentPosts_m}/>
+                        <div className="indexPaginationM">
+                          <div className="indexRes2">
+                            <div className="indexCenterWrap">
+                              <Typography  variant="caption" >Viser {mindexOfFirstPost + 1} - {interval_m} av {modules.length} treff</Typography>
+                            </div>
+                            <div className="indexCenterWrap">
+                              <Pagination count={numberOfPages_m} page={currentPage_m} onChange={handlePageModule} />
+                            </div>  
+                          </div>
+                        </div>
+                    </div>
+                </div>
+                
             </TabPanel>   
             }
         </div>

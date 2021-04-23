@@ -1,16 +1,17 @@
 import React from "react";
-import { MyCardContent } from '../Styles/apistyles';
+import Box from '@material-ui/core/Box';
+import CardContent from '@material-ui/core/CardContent';
 import LanguageIcon from '@material-ui/icons/Language';
 import SchoolIcon from '@material-ui/icons/School';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
-import Box from '@material-ui/core/Box';
+
 
 
 const Course = (props) => {
 
     return (
             <Box className='course-section' boxShadow={1}>
-                <MyCardContent>
+                <CardContent>
                     <div className="course-sectionTop">             
                         <p className="kursnavn">{props.navn}</p>
                         <p className="kurskode">{props.emnekode}</p>
@@ -29,7 +30,7 @@ const Course = (props) => {
                                 <p>{props.studiepoeng}</p>
                             </div>
                         </div>
-                </MyCardContent>
+                </CardContent>
             </Box>
         
     );
