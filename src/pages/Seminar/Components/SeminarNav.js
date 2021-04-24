@@ -1,13 +1,14 @@
 // React spesifikt
-import React, {useState, useContext} from "react";
+import React, {useState, useEffect} from "react";
 // 3rd-party Packages
 import {Tabs, Tab, Typography} from '@material-ui/core';
 import Pagination from '@material-ui/lab/Pagination';
+import axios from 'axios';
 // Studentreisen-assets og komponenter
 import SeminarListUpcoming from './SeminarListUpcoming';
 import SeminarListExpired from './SeminarListExpired';
-import { SeminarUpcomingContext } from './SeminarContext';
-import { SeminarExpiredContext } from './SeminarContext';
+import CookieService from '../../../global/Services/CookieService';
+
 
 function TabPanel(props) {
   const { children, value, index } = props;
@@ -21,16 +22,44 @@ function TabPanel(props) {
   );
 }
 
-const SeminarNav = () => {
+const SeminarNav = (props) => {
+  useEffect(()=>{
+    fetchData();
 
-    const [position, setPosition] = useState(0);
+  },[]);
 
-    // States for pagination
-    const [seminarsUpcoming, setSeminarsUpcoming] = useContext(SeminarUpcomingContext);
+
+  const [position, setPosition] = useState(0);
+
+
+  const [seminarsUpcoming, setSeminarsUpcoming] = useState([]);
+  const [seminarsExpired, setSeminarsExpired] = useState([]);
+
+  const [enlists, setEnlists] = useState([]);
+
+  const fetchData = () => {
+    const token = CookieService.get("authtoken");
+      
+      const data = {
+        token: token
+      } 
+
+    axios.all([
+      axios.get(process.env.REACT_APP_APIURL + "/seminar/getAllSeminarUpcomingData"),
+      axios.get(process.env.REACT_APP_APIURL + "/seminar/getAllSeminarExpiredData"),
+      axios.post(process.env.REACT_APP_APIURL + "/seminar/getEnlistedSeminars", data),
+
+    ]).then(axios.spread((res1, res2, res3) => {
+      setSeminarsUpcoming(res1.data);
+      setSeminarsExpired(res2.data);
+      setEnlists(res3.data);
+    }));
+  };
+
+
     const [currentPageUpcoming, setCurrentPageUpcoming] = useState(1);
     const [postsPerPageUpcoming, setPostsPerPageUpcoming] = useState(6);
 
-    const [seminarsExpired, setSeminarsExpired] = useContext(SeminarExpiredContext);
     const [currentPageExpired, setCurrentPageExpired] = useState(1);
     const [postsPerPageExpired, setPostsPerPageExpired] = useState(6);
     
@@ -60,16 +89,18 @@ const SeminarNav = () => {
     };
 
     return (
-      <div className="Seminar-Overview">  
+      <div className="Seminar-Overview">
+        <div className="BorderBox">   
           <Tabs value={position} indicatorColor="primary" textColor="primary" onChange={handleChange} centered>
               <Tab className="" label="Kommende" />
               <Tab className="" label="Utgåtte" />
           </Tabs>
+        </div>
 
 
         <TabPanel value={position} index={0}>
             <div className="Seminar-ContentOverview">
-              <SeminarListUpcoming seminarsUpcoming={currentPostsUpcoming}/>
+              <SeminarListUpcoming seminarsUpcoming={currentPostsUpcoming} enlists={enlists}/>
             </div>
               <div className="Seminar-indexPosition">
                 <div className="Seminar-indexPagination">

@@ -204,6 +204,12 @@
     margin-right: 0em;
 }
 
+.SeminarDetails-ButtonDeltagereWrapper {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1em;
+}
+
 #SeminarEdit_Alert {
     margin-top: 0.3em;
 }
@@ -342,7 +348,6 @@
     }
 
     .SeminarDetailsHeading {
-        display: flex;
         align-items: center;
         justify-content: space-between;
     }

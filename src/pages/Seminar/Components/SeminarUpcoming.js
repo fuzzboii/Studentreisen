@@ -10,17 +10,18 @@ import 'moment/locale/nb';
 import DateRangeIcon from '@material-ui/icons/DateRange';
 import axios from 'axios';
 
+
 // Studentreisen-assets og komponenter
 import { SeminarCard, SeminarCardActionArea, SeminarCardContent, SeminarCardMedia, SeminarTypography, SeminarCardActions, SeminarButton, SeminarAccordion, SeminarAccordionSummary, SeminarAccordionDetails, SeminarExpandMoreIcon } from '../CSS/apistylesSeminar';
 import '../CSS/Seminar.css'; 
 import CookieService from '../../../global/Services/CookieService';
 import noimage from '../../../assets/noimage.jpg'; 
 
+
 const SeminarUpcoming = (props) => {
     const [seminarsUpcoming, setSeminars] = useState([]);
     
-    //States for å liste opp påmeldte brukere på seminarene
-    const [enlists, setEnlists] = useState([]);
+
     
     //States for påmelding knappen
     const [enlist, setEnlist] = React.useState(false);
@@ -42,32 +43,32 @@ const SeminarUpcoming = (props) => {
         window.removeEventListener("resize", handleResizeWindow);
         };
         
-    }, []);
+    }, [props]);
 
 
     
     //Henting av påmeldte seminarer for brukeren, deretter sjekk på påmelding og settes påmeldingen til true dersom brukeren er påmeldt på seminaret
-    const fetchEnlistedData = async () => {
-        const token = CookieService.get("authtoken");
-        
-        const data = {
-            token: token
-        }
-        
-        const res = await axios.post(process.env.REACT_APP_APIURL + "/seminar/getEnlistedSeminars", data );
-        setEnlists(res.data);
-        res.data.map(enlists => {
+    const fetchEnlistedData = () => {
+
+        props.enlists.map(enlists => {
             
             if (enlists.seminarid == props.seminarid) {
                 setEnlist(true);
-
+                
             } 
         })
-    };    
+    };
+        
 
-    //Påmelder og avmelder brukeren til seminaret
+    //Påmelder brukeren til seminaret
     const onEnlist = () => {
         
+        const data = {
+            token : token,
+            seminarid : props.seminarid, 
+        }
+
+        axios.post(process.env.REACT_APP_APIURL + "/seminar/postEnlist", data)
         setEnlist(true);
         console.log("Påmeldt");
     }
@@ -78,8 +79,9 @@ const SeminarUpcoming = (props) => {
       
     if (width < breakpoint) {
         return (
+            
             <div className="Seminar-Mobile">
-             
+            
             <SeminarAccordion>
                 <SeminarAccordionSummary expandIcon={<SeminarExpandMoreIcon />} aria-controls="panel1a-content" id="Seminar-AccordionSummary">
                     <div className="Seminar-HeaderContent">
@@ -94,6 +96,7 @@ const SeminarUpcoming = (props) => {
                     <h3 className="Seminar-ArrangorHeading">Arrangør</h3>
                     <p className="Seminar-Arrangor">{props.fnavn} {props.enavn}</p>
                     <SeminarCardActions className="Seminar-CardActions">                   
+                        
                         <div className="Seminar-ButtonPameldWrapper">
                             {!enlist ?
                             <>
@@ -107,6 +110,7 @@ const SeminarUpcoming = (props) => {
                             </SeminarButton>                                        
                             } 
                         </div>
+                      
                         <div className="Seminar-ButtonLesWrapper">
                             <Link className='Seminar-Link' to={`/seminar/seminarkommende=${props.seminarid}`}>
                             <SeminarButton className="Seminar-buttonLes" size="small" color="default">
@@ -124,6 +128,7 @@ const SeminarUpcoming = (props) => {
         return (
             
             <div className="Seminar-Desktop">
+            
             <SeminarCard className="Seminar-Cards">
                 <Link className='Seminar-Link' to={`/seminar/seminarkommende=${props.seminarid}`}>
                 <SeminarCardActionArea>
@@ -149,6 +154,7 @@ const SeminarUpcoming = (props) => {
                 </SeminarCardActionArea>
                 </Link>
                 <SeminarCardActions className="Seminar-CardActions">      
+                    
                     <div className="Seminar-ButtonPameldWrapper">
                         {!enlist ?
                         <>
@@ -161,7 +167,9 @@ const SeminarUpcoming = (props) => {
                             Påmeldt
                         </SeminarButton>                                        
                         } 
+                    
                     </div>
+                    
                     <div className="Seminar-ButtonLesWrapper">
                         <Link className='Seminar-Link' to={`/seminar/seminarkommende=${props.seminarid}`}>
                         <SeminarButton className="Seminar-buttonLes" size="small" color="default">
@@ -171,7 +179,9 @@ const SeminarUpcoming = (props) => {
                     </div> 
                 </SeminarCardActions>
             </SeminarCard>
+            
             </div>
+                     
         );
         
 }

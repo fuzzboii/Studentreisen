@@ -48,8 +48,10 @@ const SeminarDetailsUpcoming = (props) => {
     //States for åpning av dialog boksen
     const [openEdit, setOpenEdit] = React.useState(false);
     const [openDelete, setOpenDelete] = React.useState(false);
+    const [openParticipants, setOpenParticipants] = React.useState(false);
 
     //States for åpning av alert
+    const [AlertOpenDialog, setAlertOpenDialog] = React.useState(false);
     const [AlertOpen, setAlertOpen] = React.useState(false);
     
     //States for påmelding knappen
@@ -58,6 +60,7 @@ const SeminarDetailsUpcoming = (props) => {
     //States Alert, melding
     const [alertTextEdit, setAlertTextEdit] = useState();
     const [alertTextDelete, setAlertTextDelete] = useState();
+    const [alertTextEnlist, setAlertTextEnlist] = useState();
     
     //States Alert, synlighet
     const [alertDisplay, setAlertDisplay] = useState("none");
@@ -78,12 +81,15 @@ const SeminarDetailsUpcoming = (props) => {
     // Henter authtoken-cookie
     const token = CookieService.get("authtoken");    
     
-    //Håndterer åpning av redigering og sletting
+    //Håndterer åpning av redigering, sletting, og deltagere
     const handleClickOpenEdit = () => {
-      setOpenEdit(true);
+        setOpenEdit(true);
     };
     const handleClickOpenDelete = () => {
         setOpenDelete(true);
+    };
+    const handleClickOpenParticipants = () => {
+        setOpenParticipants(true);
     };
 
     //Use effect
@@ -92,13 +98,16 @@ const SeminarDetailsUpcoming = (props) => {
         fetchEnlistedData();
     },[openEdit]);
 
-    //Håndterer lukking av redigering og sletting
+    //Håndterer lukking av redigering, sletting, og deltagere
     const handleCloseEdit = () => {
       setOpenEdit(false);
-      setAlertOpen(false);
+      setAlertOpenDialog(false);
     };
     const handleCloseDelete = () => {
         setOpenDelete(false);
+    };
+    const handleCloseParticipants = () => {
+        setOpenParticipants(false);
     };
     
     //Henting av kommende data til seminarene og tester på seminarid for å sette riktig informasjon i input feltene
@@ -174,9 +183,27 @@ const SeminarDetailsUpcoming = (props) => {
             seminarid : seminarid, 
         }
 
-        axios.post(process.env.REACT_APP_APIURL + "/seminar/postEnlist", data)
-        setEnlist(true);
-        console.log("Påmeldt");
+        axios.post(process.env.REACT_APP_APIURL + "/seminar/postEnlist", data).then( res => {
+            console.log(res.data.status)
+            if (res.data.status === "error") {
+                setAlertDisplay("")
+                setAlertTextEnlist(res.data.message)
+                setAlertSeverity("error")
+            } else {
+                setAlertOpen(true);
+                setAlertDisplay("")
+                setAlertTextEnlist("Du er nå påmeldt til seminaret")
+                setAlertSeverity("success")
+                setEnlist(true);
+                console.log("Påmeldt");
+
+                window.setTimeout(() => {
+                    setAlertOpen(false);
+                }, 3000)
+            }
+        })
+        
+        
     }
 
 
@@ -187,9 +214,25 @@ const SeminarDetailsUpcoming = (props) => {
             seminarid : seminarid, 
         }
 
-        axios.post(process.env.REACT_APP_APIURL + "/seminar/deleteEnlist", data)
-        setEnlist(false);
-        console.log("Avmeldt");
+        axios.post(process.env.REACT_APP_APIURL + "/seminar/deleteEnlist", data).then( res => {
+            console.log(res.data.status)
+            if (res.data.status === "error") {
+                setAlertDisplay("")
+                setAlertTextEnlist(res.data.message)
+                setAlertSeverity("error")
+            } else {
+                setAlertOpen(true);
+                setAlertDisplay("")
+                setAlertTextEnlist("Du er nå avmeldt fra seminaret")
+                setAlertSeverity("info")
+                setEnlist(false);
+                console.log("Avmeldt");
+
+                window.setTimeout(() => {
+                    setAlertOpen(false);
+                }, 3000)
+            }
+        })
     }    
 
     // Setter data i feltene basert på input felt id
@@ -244,7 +287,7 @@ const SeminarDetailsUpcoming = (props) => {
                 setAlertTextEdit(res.data.message)
                 setAlertSeverity("error")
             } else {
-                setAlertOpen(true);
+                setAlertOpenDialog(true);
                 setAlertDisplay("")
                 setAlertTextEdit("Seminar oppdatert")
                 setAlertSeverity("success")
@@ -272,7 +315,7 @@ const SeminarDetailsUpcoming = (props) => {
                 setAlertTextDelete(res.data.message)
                 setAlertSeverity("error")
             } else {
-                setAlertOpen(true);
+                setAlertOpenDialog(true);
                 setAlertDisplay("")
                 setAlertTextDelete("Seminar slettet, du sendes nå tilbake til seminar oversikten")
                 setAlertSeverity("success")
@@ -322,7 +365,8 @@ const SeminarDetailsUpcoming = (props) => {
                                         :
                                         <Button className="SeminarDetailsButtonPameld" size="small" variant="contained" color="default" onClick={onUnenlist}>
                                         Avmeld
-                                        </Button>                                        
+                                        </Button>
+                                                                            
                                         }
                                     </div>
                                     
@@ -372,7 +416,7 @@ const SeminarDetailsUpcoming = (props) => {
                                                     </FormControl>
                                                     
                                                     {/* Alert */}
-                                                    {AlertOpen && <Alert id="SeminarEdit_Alert" className="fade_in" style={{display: alertDisplay}} variant="filled" severity={alertSeverity} >
+                                                    {AlertOpenDialog && <Alert id="SeminarEdit_Alert" className="fade_in" style={{display: alertDisplay}} variant="filled" severity={alertSeverity} >
                                                         
                                                         {alertTextEdit}
                                                     </Alert>}  
@@ -409,7 +453,7 @@ const SeminarDetailsUpcoming = (props) => {
                                                     </DialogContentText>
                                                     
                                                     {/* Alert */}
-                                                    {AlertOpen && <Alert id="SeminarDelete_Alert" className="fade_in" style={{display: alertDisplay}} variant="filled" severity={alertSeverity}>
+                                                    {AlertOpenDialog && <Alert id="SeminarDelete_Alert" className="fade_in" style={{display: alertDisplay}} variant="filled" severity={alertSeverity}>
                                                     {alertTextDelete}
                                                     </Alert> }
                                                 </DialogContent>
@@ -452,7 +496,34 @@ const SeminarDetailsUpcoming = (props) => {
                                 <h2 className="SeminarDetails-BeskrivelseHeading">Beskrivelse</h2>
                                     <p className="SeminarDetails-Beskrivelse">{seminar.beskrivelse}</p>
                             </div>                                  
-                        </Box>   
+                        </Box>
+                        {/* Alert */}
+                        {AlertOpen && <Alert id="SeminarEnlist_Alert" className="fade_in" style={{display: alertDisplay}} variant="filled" severity={alertSeverity} >   
+                            {alertTextEnlist}
+                        </Alert>}                          
+                        
+                        {/*Deltagere seksjonen */}
+                        <div className="SeminarDetails-ButtonDeltagereWrapper">
+                            <Button className="SeminarDetailsButtonDeltagere" onClick={handleClickOpenParticipants} size="small" color="primary">
+                                Se påmeldte deltagere
+                            </Button>
+                        
+                            <Dialog open={openParticipants} onClose={handleCloseParticipants} aria-labelledby="form-dialog-title"> 
+                                <DialogTitle id="form-dialog-title">Deltagere</DialogTitle>
+                                    <DialogContent>
+
+                                                        
+
+                                    </DialogContent>
+                                                
+                                {/* Funksjonsknapper */}
+                                <DialogActions>
+                                    <Button onClick={handleCloseParticipants} color="secondary" startIcon={<CancelIcon />}>
+                                        Tilbake til seminaret
+                                    </Button>
+                                </DialogActions>
+                            </Dialog> 
+                        </div>
                     </div>
 
                 )
