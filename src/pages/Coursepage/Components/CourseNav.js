@@ -5,6 +5,8 @@ import RelevantField from './RelevantField';
 import Pagination from '@material-ui/lab/Pagination';
 import axios from 'axios';
 import CookieService from '../../../global/Services/CookieService';
+import SearchBar from "../../../global/Components/SearchBar.js";
+
 import {Tabs, Tab, Typography, Button} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import { AddOutlined } from '@material-ui/icons';
@@ -41,13 +43,15 @@ const CourseNav = (props) => {
   
 
     const [position, setPosition] = useState(0);
+    const [input, setInput] = useState('');
+
 
     // States for pagination
     const [courses, setCourses] = useState([]);
+    const [coursesDefault, setCoursesDefault] = useState([]);
+
     const [modules, setModules] = useState([]);
     const [fields, setFields] = useState([]);
-    const set = false;
-    var array3 = [];
 
     const fetchData = () => {
       const token = CookieService.get("authtoken");
@@ -63,28 +67,20 @@ const CourseNav = (props) => {
 
       ]).then(axios.spread((res1, res2, res3) => {
         setCourses(res1.data);
+        setCoursesDefault(res1.data);
         setModules(res2.data);
         setFields(res3.data.results);
-        console.log("interesser", res3.data.results);
-
-        func();
-       
+        console.log(res3.data.results);
       }));
     };
    
-    const func = () => {
-      if(fields !== undefined) {
-        fields.forEach( intr  => {
-          courses.forEach( course => {
-            if(intr.beskrivelse === course.felt) {
-                array3 = [...array3, course];
-            };
-          });
-        });
-        console.log("nycourse", array3);
-
-      }
-    };
+    const updateInput = async (input) => {
+      const filtered = coursesDefault.filter(courses => {
+       return courses.navn.toLowerCase().includes(input.toLowerCase())
+      })
+      setInput(input);
+      setCourses(filtered);
+   }
     
 
     const [currentPage_c, setcurrentPage_c] = useState(1);
@@ -125,12 +121,16 @@ const CourseNav = (props) => {
 
     return (
         <div>  
+          
+
             <div className="BorderBox"> 
               <Tabs className="tab" value={position} indicatorColor="primary" textColor="primary" onChange={handleChange}>
                   <Tab className="tabKurs" label="Kurs" />
                   <Tab className="tabKursmodul" label="Kursmodul" />
               </Tabs>
             </div>
+
+            
 
             {Object.entries(courses).length !== 0 &&
             <TabPanel value={position} index={0}>
@@ -140,6 +140,7 @@ const CourseNav = (props) => {
                     {props.type === 3 || props.type === 4 &&
                       <Button href="/course/ny" className={classes.button} variant="contained" color="primary">Nytt kurs</Button>
                     }
+                    
                   </div>
                   <div className="wrap-list">
                     <div className="wrapIndexPage">

@@ -23,19 +23,23 @@ const RelevantField = (props) => {
 
     const classes = useStyles();
     return(
+        
             <Box className="relevance-list" boxShadow={1}>
                 <CardContent>
                     <h3 className="relevanceHeader">Relevante fagfelt</h3>
+                    {props.fields !== undefined &&
+                    <>
                     {props.fields.map( (field, index) => (
                         <Link key={index} className="link2 linkFlex" to={`/course/felt=${field.beskrivelse}`}>
                             <ArrowForwardIosIcon className={classes.icon}/>
                             <p className="fieldFormat" key={index}>{field.beskrivelse}</p>
                         </Link>
-
                     ))}
-
+                    </>
+                    }
                 </CardContent>
             </Box>
+        
     );  
 };
 

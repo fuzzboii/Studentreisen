@@ -41,13 +41,16 @@ const RelevantFieldNav = (props) => {
       
     
         const [position, setPosition] = useState(0);
+
+        const [input, setInput] = useState('');
+
     
         // States for pagination
         const [courses, setCourses] = useState([]);
+        const [coursesDefault, setCoursesDefault] = useState([]);
+
         const [modules, setModules] = useState([]);
         const [fields, setFields] = useState([]);
-        const set = false;
-        var array3 = [];
     
         const fetchData = () => {
           const token = CookieService.get("authtoken");
@@ -63,13 +66,11 @@ const RelevantFieldNav = (props) => {
           ]).then(axios.spread((res1, res2, res3) => {
             setCourses(res1.data);
             setModules(res2.data);
-            setFields(res3.data.results);
-            console.log("interesser", res3.data.results);
-    
-        
-           
+            setFields(res3.data.results);           
           }));
-        };        
+        };       
+        
+        
     
         const [currentPage_c, setcurrentPage_c] = useState(1);
         const [postsPerPage_c, setPostsPerPage_c] = useState(12);
