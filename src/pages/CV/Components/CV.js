@@ -120,7 +120,7 @@ function CV(props) {
                     <Grid>
                         <Paper className='cv_elements' >
                             <h1>Utdannelse</h1>
-                            <form>
+                            <form className="cv_form">
                                 <input id="cv_input" type="text" name="post" maxlenght="128" required style={{width: "40em"}}/>
                                 <input id="cv_date_input" type="date" name="dateFrom" />
                                 <input id="cv_date_input" type="date" name="dateTill" />
@@ -128,7 +128,7 @@ function CV(props) {
                             </form>
                             {utdanning !== undefined && utdanning.map((utd, key) => (
                                 <div>
-                                    <text>{utd.innlegg}</text><text type="date">{moment.locale('nb'), moment(utd.datoFra).format("DD MM YYYY")}</text><text type="date" size="10">{moment.locale('nb'), moment(utd.datoTil).format("DD MM YYYY")}</text><button className="cvRediger" key={key}>Rediger</button><button className="cvDelete" key={key}>Slett</button>
+                                    <text>{utd.innlegg}</text><text type="date">{moment.locale('nb'), moment(utd.datoFra).format("DD MM YYYY")}</text><text type="date" size="10">{moment.locale('nb'), moment(utd.datoTil).format("DD MM YYYY")}</text><button value={utd.cv_education_id} className="cvDelete" key={key}>Slett</button>
                                 </div>
                             ))}
                         </Paper>
@@ -136,7 +136,7 @@ function CV(props) {
                     <Grid>
                         <Paper className='cv_elements' >
                             <h1>Seminarer og sertifiseringer</h1>
-                            <form>
+                            <form className="cv_form">
                                 <input id="cv_input" type="text" name="post" maxlenght="128" required style={{width: "40em"}}/>
                                 <input id="cv_date_input" type="date" name="dateFrom" />
                                 <input id="cv_date_input" type="date" name="dateTill" />
@@ -152,7 +152,7 @@ function CV(props) {
                     <Grid>
                         <Paper className='cv_elements' >
                             <h1>Jobberfaring</h1>
-                            <form>
+                            <form className="cv_form">
                                 <input id="cv_input" type="text" name="post" maxlenght="128" required style={{width: "40em"}}/>
                                 <input id="cv_date_input" type="date" name="dateFrom" />
                                 <input id="cv_date_input" type="date" name="dateTill" />
@@ -168,7 +168,7 @@ function CV(props) {
                     <Grid>
                         <Paper className='cv_elements' >
                         <h1>Annet</h1>
-                            <form>  
+                            <form className="cv_form">  
                                 <input id="cv_input" type="text" name="post" maxlenght="128" required style={{width: "40em"}}/>
                                 <input id="cv_date_input" type="date" name="dateFrom" />
                                 <input id="cv_date_input" type="date" name="dateTill" />
