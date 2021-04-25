@@ -40,7 +40,7 @@
     border-radius: 1.4rem;
 }
 
-form {
+.profileForm {
     margin-bottom: 2vh;
     display: flex;
     flex-direction: column;
