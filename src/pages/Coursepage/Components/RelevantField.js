@@ -22,8 +22,8 @@ const RelevantField = (props) => {
       }));
 
     const classes = useStyles();
+    
     return(
-        
             <Box className="relevance-list" boxShadow={1}>
                 <CardContent>
                     <h3 className="relevanceHeader">Relevante fagfelt</h3>

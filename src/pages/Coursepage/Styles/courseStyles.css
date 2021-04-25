@@ -104,11 +104,7 @@
     display: grid;
     grid-row-gap: 1em;
 }
-.wrapIndexPage {
-    display: grid;
-    grid-template-rows: auto auto;
-    
-}
+
 
 .indexPagination { 
         margin-bottom: 1em;
@@ -116,15 +112,14 @@
     
 }
 
-
-.content-overview {
-    margin-top: 1.5em;
+.searchBox {
+    display: grid;
+    grid-template-columns: auto auto;
+    
 }
 
-.indexRes {
-    position: absolute;
-    top: 8em;
-    
+.content-overview {
+    margin-top: 1em;
 }
 
 .indexRes2 {
@@ -292,8 +287,23 @@
 @media screen and (min-width: 720px) {
 
 
-    .content-overview {
-        display: flex;        
+    .content-overview {        
+        padding-left: 2em;
+        padding-right: 2em;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .boxFlexOverview {
+        display: flex;
+    }
+
+    .searchbar-course {
+        width: 20em;
+    }
+
+    .course-header-section {
+        display: flex;
         padding-left: 2em;
         padding-right: 2em;
         margin-left: auto;
@@ -301,17 +311,17 @@
     }
 
     .wrap-list {
-        display: flex;
-        justify-content: flex-end;
-        margin-top: 1em;
+        display: grid;
+        grid-template-columns: auto auto;
+        
+        column-gap: 1em;
     }
 
     .relevance-list {
         visibility: visible;
         position: relative;
         background-color: #f0f0f0;
-        width: 20em;
-        margin-left: 1em;
+        width: 17em;
         margin-bottom: 5em;
     
     }
@@ -362,11 +372,11 @@
 
     
     .indexRes {
-        position: absolute;
-        top: 8.9em;
-        
+        flex: none;
+
     }
 
+    
 
     .indexPosition {
         margin-left: auto;
@@ -429,6 +439,9 @@
     
     .content-overview {
         width: 70em;      
+    }
+    .course-header-section {
+        width: 70em;
     }
 
     .course-detail {

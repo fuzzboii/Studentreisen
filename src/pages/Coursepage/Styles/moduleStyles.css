@@ -4,7 +4,6 @@
 }
 
 .accordElementWrap {
-
     display: grid;
     grid-template-rows: auto;
     width: 100%;
@@ -43,9 +42,7 @@
     font-size: 14.5px;
 }
 
-.content-main {
-    margin-top: 1em;
-}
+
 
 .indexPaginationM { 
     width: 12em;
@@ -57,6 +54,11 @@
 
 
 /* Misc */
+
+.content-main {
+    margin-top: 1em;
+}
+
 .moduleWrap {
     display: flex;
     justify-content: flex-start;
@@ -108,7 +110,6 @@
     .content-main {
         padding-left: 2em;
         padding-right: 2em;
-        margin-top: 2.5em;
         margin-left: auto;
         margin-right: auto; 
     }

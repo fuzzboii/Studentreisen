@@ -5,10 +5,12 @@ import RelevantField from './RelevantField';
 import Pagination from '@material-ui/lab/Pagination';
 import axios from 'axios';
 import CookieService from '../../../global/Services/CookieService';
-import SearchBar from "../../../global/Components/SearchBar.js";
 
+import InputBase from '@material-ui/core/InputBase';
+import SearchIcon from '@material-ui/icons/Search';
 import {Tabs, Tab, Typography, Button} from '@material-ui/core';
-import {makeStyles} from '@material-ui/core/styles';
+import { fade, makeStyles } from '@material-ui/core/styles';
+import {FormControl} from '@material-ui/core';
 import { AddOutlined } from '@material-ui/icons';
 
 
@@ -24,17 +26,41 @@ function TabPanel(props) {
   );
 }
 
-const CourseNav = (props) => {
+const useStyles = makeStyles((theme) => ({
+  button: {
+    
+  },
+  search: {
 
-  const useStyles = makeStyles((theme) => ({
-    button: {
-      position: "absolute",
-      padding: 0,
-      marginLeft: theme.spacing(2),
-      width: theme.spacing(12),
+    position: 'relative',
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: "white",
+    backgroundColor: "lightgray",
+    '&:hover': {
+      backgroundColor: "lightgray",
     },
-  }));
+    marginLeft: 0,
+    width: '100%',
+  },
+  searchIcon: {
+    padding: theme.spacing(0, 2),
+    height: '100%',
+    position: 'absolute',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 
+  inputInput: {
+    padding: theme.spacing(1, 1, 1, 0),
+    // vertical padding + font size from searchIcon
+    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+    transition: theme.transitions.create('width'),
+    width: '100%',
+  },
+}));
+
+const CourseNav = (props) => {
   const classes = useStyles();
 
     useEffect(()=>{
@@ -74,15 +100,6 @@ const CourseNav = (props) => {
       }));
     };
    
-    const updateInput = async (input) => {
-      const filtered = coursesDefault.filter(courses => {
-       return courses.navn.toLowerCase().includes(input.toLowerCase())
-      })
-      setInput(input);
-      setCourses(filtered);
-   }
-    
-
     const [currentPage_c, setcurrentPage_c] = useState(1);
     const [postsPerPage_c, setPostsPerPage_c] = useState(12);
 
@@ -117,11 +134,38 @@ const CourseNav = (props) => {
     const handlePageModule = (event, value) => {
       setcurrentPage_m(value);
     };
+/////
+    const onInputChange = e => {
+      setInput(e.target.value);
+    }
+
+    const updateInput = async (e) => {
+      e.preventDefault();
+      const filtered = coursesDefault.filter(courses => {
+        return courses.navn.toLowerCase().includes(input.toLowerCase())
+      });
+      setCourses(filtered);
+   }
 
 
     return (
-        <div>  
-          
+        <div>
+            <div className="course-header-section">
+                <form className="searchBox" onSubmit={updateInput} >
+                    <div className={classes.search}>
+                        <div className={classes.searchIcon}>
+                          <SearchIcon />
+                        </div>
+                        <InputBase key="keysearch" value={input} onChange={onInputChange} placeholder="Søk..." classes={{input: classes.inputInput}}/>
+                    </div>
+                  <Button type="submit">Søk</Button>
+                </form>
+              <div className="wrapNewcourse">
+                {props.type === 3 || props.type === 4 &&
+                  <Button href="/course/ny" className={classes.button} variant="contained" color="primary">Nytt kurs</Button>
+                }
+              </div>         
+            </div>
 
             <div className="BorderBox"> 
               <Tabs className="tab" value={position} indicatorColor="primary" textColor="primary" onChange={handleChange}>
@@ -129,35 +173,30 @@ const CourseNav = (props) => {
                   <Tab className="tabKursmodul" label="Kursmodul" />
               </Tabs>
             </div>
-
-            
-
             {Object.entries(courses).length !== 0 &&
             <TabPanel value={position} index={0}>
                 <div className="content-overview">
-                  <div className="indexRes">
-                    <Typography variant="caption">Viser {cindexOfFirstPost + 1} - {interval_c} av {courses.length} treff</Typography>
-                    {props.type === 3 || props.type === 4 &&
-                      <Button href="/course/ny" className={classes.button} variant="contained" color="primary">Nytt kurs</Button>
-                    }
-                    
-                  </div>
-                  <div className="wrap-list">
-                    <div className="wrapIndexPage">
-                      <CourseList courses={currentPosts_c}/>
-                        <div className="indexPagination">
-                          <div className="indexRes2">
-                            <div className="indexCenterWrap">
-                              <Typography  variant="caption" >Viser {cindexOfFirstPost + 1} - {interval_c} av {courses.length} treff</Typography>
-                            </div>
-                            <div className="indexCenterWrap">
-                              <Pagination count={numberOfPages_c} page={currentPage_c} onChange={handlePageCourse} />
+                    <div className="indexRes">
+                      <Typography variant="caption">Viser {cindexOfFirstPost + 1} - {interval_c} av {courses.length} treff</Typography>
+                    </div>
+                    <div className="wrap-list">
+                      <div className="wrapIndexPage">
+                        
+                        <CourseList courses={currentPosts_c}/>
+                          <div className="indexPagination">
+                            <div className="indexRes2">
+                              <div className="indexCenterWrap">
+                                <Typography  variant="caption" >Viser {cindexOfFirstPost + 1} - {interval_c} av {courses.length} treff</Typography>
+                              </div>
+                              <div className="indexCenterWrap">
+                                <Pagination count={numberOfPages_c} page={currentPage_c} onChange={handlePageCourse} />
+                              </div>
                             </div>
                           </div>
-                        </div>
+                      </div>
+                      <RelevantField fields={fields}/>
                     </div>
-                    <RelevantField fields={fields}/>
-                  </div>
+
                 </div>
             </TabPanel>
             }  
