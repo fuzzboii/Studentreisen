@@ -1,0 +1,53 @@
+#main_cv {
+    min-width: 100%;
+    margin-left: auto; margin-right: auto;
+    margin-top: 2em;
+    margin-bottom: 2em;
+    padding-top: 0.5em; padding-bottom: 0.5em;
+}
+
+
+#main_cv h1 {
+    font-size: 1.2em;
+    text-align: center;
+    margin-left: -9em;
+    font-weight: normal;
+}
+
+.cv_profile {
+    max-width: 50%;
+    margin-left: auto; margin-right: auto;
+}
+
+.cv_profile_element {
+    margin-left: auto; margin-right: auto;
+}
+
+.cv_elements {
+    max-width: 50%;
+    margin-left: auto; margin-right: auto;
+}
+
+.cv-section {
+    display: flex;
+    background-color: rgb(247, 244, 244);
+    }
+
+#cv_input {
+    display: flex;
+    min-width: 40em;
+}
+#cv_date_input {
+    display: flex;
+    max-width: 20em;
+}
+
+#cv_courses form {
+    display: inline;
+}
+
+form {
+    margin-bottom: 2vh;
+    display: flex;
+    flex-direction: row;
+}

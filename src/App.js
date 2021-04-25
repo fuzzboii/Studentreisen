@@ -21,6 +21,7 @@ import Seminar from './pages/Seminar/Components/SeminarOverview';
 import SeminarDetailsUpcoming from './pages/Seminar/Components/SeminarDetailsUpcoming';
 import SeminarDetailsExpired from './pages/Seminar/Components/SeminarDetailsExpired';
 import SeminarNew from './pages/Seminar/Components/SeminarNew';
+import CV from './pages/CV/Components/CV';
 
 import CookieService from './global/Services/CookieService';
 import AuthService from './global/Services/AuthService';
@@ -117,6 +118,9 @@ function App() {
           <Route path = "/seminar/ny"  render={() => (
               <SeminarNew auth={auth} type={type} loading={loading} />
             )} />
+          <Route path = "/cv" render={() => (
+            <CV auth={auth} type={type} loading={loading} />
+          )} />
         </Switch>
       <Footer />
     </>
