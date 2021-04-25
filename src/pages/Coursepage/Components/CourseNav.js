@@ -10,7 +10,6 @@ import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
 import {Tabs, Tab, Typography, Button} from '@material-ui/core';
 import { fade, makeStyles } from '@material-ui/core/styles';
-import {FormControl} from '@material-ui/core';
 import { AddOutlined } from '@material-ui/icons';
 
 
@@ -134,7 +133,7 @@ const CourseNav = (props) => {
     const handlePageModule = (event, value) => {
       setcurrentPage_m(value);
     };
-/////
+
     const onInputChange = e => {
       setInput(e.target.value);
     }
@@ -151,21 +150,23 @@ const CourseNav = (props) => {
     return (
         <div>
             <div className="course-header-section">
-                <form className="searchBox" onSubmit={updateInput} >
-                    <div className={classes.search}>
-                        <div className={classes.searchIcon}>
-                          <SearchIcon />
-                        </div>
-                        <InputBase key="keysearch" value={input} onChange={onInputChange} placeholder="Søk..." classes={{input: classes.inputInput}}/>
-                    </div>
-                  <Button type="submit">Søk</Button>
-                </form>
-              <div className="wrapNewcourse">
-                {props.type === 3 || props.type === 4 &&
-                  <Button href="/course/ny" className={classes.button} variant="contained" color="primary">Nytt kurs</Button>
-                }
-              </div>         
-            </div>
+              <div className="search-wrap">
+                  <form className="searchBox" onSubmit={updateInput} >
+                      <div className={classes.search}>
+                          <div className={classes.searchIcon}>
+                            <SearchIcon />
+                          </div>
+                          <InputBase key="keysearch" value={input} onChange={onInputChange} placeholder="Søk..." classes={{input: classes.inputInput}}/>
+                      </div>
+                    <Button type="submit">Søk</Button>
+                  </form>
+                <div className="wrapNewcourse">
+                  {props.type === 3 || props.type === 4 &&
+                    <Button href="/course/ny" className={classes.button} variant="contained" color="primary">Nytt kurs</Button>
+                  }
+                </div>
+            </div>       
+          </div>
 
             <div className="BorderBox"> 
               <Tabs className="tab" value={position} indicatorColor="primary" textColor="primary" onChange={handleChange}>
@@ -181,7 +182,6 @@ const CourseNav = (props) => {
                     </div>
                     <div className="wrap-list">
                       <div className="wrapIndexPage">
-                        
                         <CourseList courses={currentPosts_c}/>
                           <div className="indexPagination">
                             <div className="indexRes2">
@@ -223,8 +223,7 @@ const CourseNav = (props) => {
                 
             </TabPanel>   
             }
-        </div>
-        
+        </div>    
     );
 };
 
