@@ -145,6 +145,7 @@ const RelevantFieldNav = (props) => {
           const filtered = coursesDefault.filter(courses => {
             return courses.navn.toLowerCase().includes(input.toLowerCase())
           });
+          console.log(filtered);
           setCourses(filtered);
        }
     

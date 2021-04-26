@@ -6,11 +6,11 @@ import Pagination from '@material-ui/lab/Pagination';
 import axios from 'axios';
 import CookieService from '../../../global/Services/CookieService';
 
-import InputBase from '@material-ui/core/InputBase';
+import {Tabs, Tab, Typography, Button, IconButton, TextField} from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
-import {Tabs, Tab, Typography, Button} from '@material-ui/core';
-import { fade, makeStyles } from '@material-ui/core/styles';
-import { AddOutlined } from '@material-ui/icons';
+import AddIcon from '@material-ui/icons/Add';
+
+import {makeStyles } from '@material-ui/core/styles';
 
 
 function TabPanel(props) {
@@ -27,35 +27,26 @@ function TabPanel(props) {
 
 const useStyles = makeStyles((theme) => ({
   button: {
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
+    marginTop: theme.spacing(2),
+    boxShadow: 'none',
     
   },
-  search: {
 
-    position: 'relative',
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: "white",
-    backgroundColor: "lightgray",
-    '&:hover': {
-      backgroundColor: "lightgray",
+  buttonIcon: {
+    marginTop: theme.spacing(2),
+    marginLeft: theme.spacing(1),
+    padding: theme.spacing(1),
+    width: theme.spacing(0.5),
+    '&:hover' : {
+      boxShadow: 'none',
     },
-    marginLeft: 0,
-    width: '100%',
-  },
-  searchIcon: {
-    padding: theme.spacing(0, 2),
-    height: '100%',
-    position: 'absolute',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 
-  inputInput: {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
+  search: {
+    marginTop: theme.spacing(2),
+    padding: theme.spacing(0),
   },
 }));
 
@@ -151,18 +142,13 @@ const CourseNav = (props) => {
         <div>
             <div className="course-header-section">
               <div className="search-wrap">
-                  <form className="searchBox" onSubmit={updateInput} >
-                      <div className={classes.search}>
-                          <div className={classes.searchIcon}>
-                            <SearchIcon />
-                          </div>
-                          <InputBase key="keysearch" value={input} onChange={onInputChange} placeholder="Søk..." classes={{input: classes.inputInput}}/>
-                      </div>
-                    <Button type="submit">Søk</Button>
+                  <form className="searchBox" onSubmit={updateInput} >    
+                      <TextField value={input} className={classes.search} size="small" onChange={onInputChange} label="Søkefelt" type="search" variant="outlined"/>                           
+                      <Button type="submit" className={classes.button} size="small" variant="contained" endIcon={<SearchIcon />}>Søk</Button>
                   </form>
                 <div className="wrapNewcourse">
                   {props.type === 3 || props.type === 4 &&
-                    <Button href="/course/ny" className={classes.button} variant="contained" color="primary">Nytt kurs</Button>
+                    <Button className={classes.buttonIcon} href="/course/ny" variant="contained" color="primary" ><AddIcon/></Button>
                   }
                 </div>
             </div>       
@@ -219,8 +205,7 @@ const CourseNav = (props) => {
                           </div>
                         </div>
                     </div>
-                </div>
-                
+                </div>               
             </TabPanel>   
             }
         </div>    
