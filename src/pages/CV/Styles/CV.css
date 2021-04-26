@@ -46,7 +46,7 @@
     display: inline;
 }
 
-form {
+#cv_form {
     margin-bottom: 2vh;
     display: flex;
     flex-direction: row;
