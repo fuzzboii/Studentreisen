@@ -119,6 +119,10 @@
     
 }
 
+.wrapNewcourse {
+    margin-bottom: 1em;
+}
+
 .content-overview {
     margin-top: 1em;
 }
@@ -286,6 +290,10 @@
 
 /* Tab */
 @media screen and (min-width: 720px) {
+
+    .wrapNewcourse {
+        margin-bottom: 0em;
+    }
 
     .searchBox {
         display: grid;

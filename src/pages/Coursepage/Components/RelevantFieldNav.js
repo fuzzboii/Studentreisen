@@ -7,9 +7,9 @@ import Pagination from '@material-ui/lab/Pagination';
 import axios from 'axios';
 import CookieService from '../../../global/Services/CookieService';
 
-import InputBase from '@material-ui/core/InputBase';
+import {Tabs, Tab, Typography, Button, TextField} from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
-import {Tabs, Tab, Typography, Button} from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
 import {makeStyles} from '@material-ui/core/styles';
 
 
@@ -23,44 +23,35 @@ function TabPanel(props) {
         )}
       </div>
     );
-  }
+  };
 
   const useStyles = makeStyles((theme) => ({
     button: {
+      marginLeft: theme.spacing(1),
+      marginRight: theme.spacing(1),
+      marginTop: theme.spacing(2),
+      boxShadow: 'none',
       
     },
-    search: {
   
-      position: 'relative',
-      borderRadius: theme.shape.borderRadius,
-      backgroundColor: "white",
-      backgroundColor: "lightgray",
-      '&:hover': {
-        backgroundColor: "lightgray",
+    buttonIcon: {
+      marginTop: theme.spacing(2),
+      marginLeft: theme.spacing(1),
+      padding: theme.spacing(1),
+      width: theme.spacing(0.5),
+      '&:hover' : {
+        boxShadow: 'none',
       },
-      marginLeft: 0,
-      width: '100%',
-    },
-    searchIcon: {
-      padding: theme.spacing(0, 2),
-      height: '100%',
-      position: 'absolute',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
     },
   
-    inputInput: {
-      padding: theme.spacing(1, 1, 1, 0),
-      // vertical padding + font size from searchIcon
-      paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
-      transition: theme.transitions.create('width'),
-      width: '100%',
+    search: {
+      marginTop: theme.spacing(2),
+      padding: theme.spacing(0),
     },
   }));
+  
 
 const RelevantFieldNav = (props) => {
-    
     
       const classes = useStyles();
       let {felt} = useParams();
@@ -71,13 +62,14 @@ const RelevantFieldNav = (props) => {
       
     
         const [position, setPosition] = useState(0);
-        const [input, setInput] = useState('');
 
-    
-        // States for pagination
-        const [courses, setCourses] = useState([]);
+        //States for søk
+        const [input, setInput] = useState('');
+        const [modulesDefault, setModulesDefault] = useState([]);
         const [coursesDefault, setCoursesDefault] = useState([]);
 
+        // States for pagination
+        const [courses, setCourses] = useState([]);
         const [modules, setModules] = useState([]);
         const [fields, setFields] = useState([]);
     
@@ -94,7 +86,9 @@ const RelevantFieldNav = (props) => {
     
           ]).then(axios.spread((res1, res2, res3) => {
             setCourses(res1.data);
+            setCoursesDefault(res1.data);
             setModules(res2.data);
+            setModulesDefault(res2.data);
             setFields(res3.data.results);           
           }));
         };       
@@ -136,36 +130,41 @@ const RelevantFieldNav = (props) => {
           setcurrentPage_m(value);
         };
 
+        //Funksjoner for søk
         const onInputChange = e => {
           setInput(e.target.value);
         }
-    
+
         const updateInput = async (e) => {
-          e.preventDefault();
-          const filtered = coursesDefault.filter(courses => {
-            return courses.navn.toLowerCase().includes(input.toLowerCase())
-          });
-          console.log(filtered);
-          setCourses(filtered);
-       }
+            e.preventDefault();
+
+            if(position === 0) {
+              const filtered = coursesDefault.filter(courses => {
+                return courses.navn.toLowerCase().includes(input.toLowerCase())
+              });
+              setCourses(filtered);
+            };
+            if(position === 1) {
+              const filtered = modulesDefault.filter(modules => {
+                return modules.navn.toLowerCase().includes(input.toLowerCase())
+              });
+              setModules(filtered);
+            };
+          
+        };
     
     
       return (
-          <div>
+        <div>
           <div className="course-header-section">
             <div className="search-wrap">
-                <form className="searchBox" onSubmit={updateInput} >
-                    <div className={classes.search}>
-                        <div className={classes.searchIcon}>
-                          <SearchIcon />
-                        </div>
-                        <InputBase key="keysearch" value={input} onChange={onInputChange} placeholder="Søk..." classes={{input: classes.inputInput}}/>
-                    </div>
-                  <Button type="submit">Søk</Button>
+                <form className="searchBox" onSubmit={updateInput} >    
+                    <TextField value={input} className={classes.search} size="small" onChange={onInputChange} label="Søkefelt" type="search" variant="outlined"/>                           
+                    <Button type="submit" className={classes.button} size="small" variant="contained" endIcon={<SearchIcon />}>Søk</Button>
                 </form>
               <div className="wrapNewcourse">
                 {props.type === 3 || props.type === 4 &&
-                  <Button href="/course/ny" className={classes.button} variant="contained" color="primary">Nytt kurs</Button>
+                  <Button className={classes.buttonIcon} href="/course/ny" variant="contained" color="primary" ><AddIcon/></Button>
                 }
               </div>
           </div>       
@@ -222,12 +221,12 @@ const RelevantFieldNav = (props) => {
                         </div>
                       </div>
                   </div>
-              </div>
-              
+              </div>               
           </TabPanel>   
           }
-      </div> 
-    ); 
+      </div>
+          
+      ); 
 };
 
 export default RelevantFieldNav;

@@ -5,7 +5,6 @@ import CardContent from '@material-ui/core/CardContent';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import {makeStyles} from '@material-ui/core/styles';
 
-
 const RelevantField = (props) => {
     const useStyles = makeStyles((theme) => ({
         link: {

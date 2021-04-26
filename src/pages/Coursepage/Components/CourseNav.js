@@ -6,7 +6,7 @@ import Pagination from '@material-ui/lab/Pagination';
 import axios from 'axios';
 import CookieService from '../../../global/Services/CookieService';
 
-import {Tabs, Tab, Typography, Button, IconButton, TextField} from '@material-ui/core';
+import {Tabs, Tab, Typography, Button, TextField} from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import AddIcon from '@material-ui/icons/Add';
 
@@ -59,13 +59,14 @@ const CourseNav = (props) => {
   
 
     const [position, setPosition] = useState(0);
-    const [input, setInput] = useState('');
 
+    //States for søk
+    const [input, setInput] = useState('');
+    const [modulesDefault, setModulesDefault] = useState([]);
+    const [coursesDefault, setCoursesDefault] = useState([]);
 
     // States for pagination
     const [courses, setCourses] = useState([]);
-    const [coursesDefault, setCoursesDefault] = useState([]);
-
     const [modules, setModules] = useState([]);
     const [fields, setFields] = useState([]);
 
@@ -85,6 +86,7 @@ const CourseNav = (props) => {
         setCourses(res1.data);
         setCoursesDefault(res1.data);
         setModules(res2.data);
+        setModulesDefault(res2.data);
         setFields(res3.data.results);
         console.log(res3.data.results);
       }));
@@ -124,18 +126,29 @@ const CourseNav = (props) => {
     const handlePageModule = (event, value) => {
       setcurrentPage_m(value);
     };
-
+    
+    //Funksjoner for søk
     const onInputChange = e => {
       setInput(e.target.value);
     }
 
     const updateInput = async (e) => {
       e.preventDefault();
-      const filtered = coursesDefault.filter(courses => {
-        return courses.navn.toLowerCase().includes(input.toLowerCase())
-      });
-      setCourses(filtered);
-   }
+
+      if(position === 0) {
+        const filtered = coursesDefault.filter(courses => {
+          return courses.navn.toLowerCase().includes(input.toLowerCase())
+        });
+        setCourses(filtered);
+      };
+      if(position === 1) {
+        const filtered = modulesDefault.filter(modules => {
+          return modules.navn.toLowerCase().includes(input.toLowerCase())
+        });
+        setModules(filtered);
+      };
+     
+   };
 
 
     return (
