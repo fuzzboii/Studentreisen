@@ -113,6 +113,15 @@ function Navbar(props) {
         display: 'flex',
         height: '100%',
         visibility: 'collapse'
+      },
+
+      loggbtnmobilBar: {
+        color: '#fff',
+        fontSize: '1.5rem',
+        padding: '0.5rem 1rem',
+        display: 'flex',
+        height: '100%',
+        display: 'none'
       }
     });
     const classes = useStyles();
@@ -191,12 +200,21 @@ function Navbar(props) {
               }
               
               {auth && <div className={click ? 'nav-menu active' : 'nav-menu'}>
+                {click ? 
                 <Button
                   className={classes.loggbtnmobil}
                   onClick={loggUt}
                   id='loggBtnMobil'>
                   Logg ut
                 </Button>
+                :
+                <Button
+                  className={classes.loggbtnmobilBar}
+                  onClick={loggUt}
+                  id='loggBtnMobil'>
+                  Logg ut
+                </Button>
+                }
 
                 <Button 
                   className={classes.navbtn} 
