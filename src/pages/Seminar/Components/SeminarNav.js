@@ -43,7 +43,7 @@ const SeminarNav = (props) => {
       const data = {
         token: token
       } 
-
+      
     axios.all([
       axios.get(process.env.REACT_APP_APIURL + "/seminar/getAllSeminarUpcomingData"),
       axios.get(process.env.REACT_APP_APIURL + "/seminar/getAllSeminarExpiredData"),
@@ -52,7 +52,10 @@ const SeminarNav = (props) => {
     ]).then(axios.spread((res1, res2, res3) => {
       setSeminarsUpcoming(res1.data);
       setSeminarsExpired(res2.data);
+      
       setEnlists(res3.data);
+      console.log(res3.data);
+      
     }));
   };
 

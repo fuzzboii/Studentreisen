@@ -48,17 +48,19 @@ const SeminarUpcoming = (props) => {
 
     
     //Henting av påmeldte seminarer for brukeren, deretter sjekk på påmelding og settes påmeldingen til true dersom brukeren er påmeldt på seminaret
-    const fetchEnlistedData = () => {
 
+    const fetchEnlistedData = () => {
+        {props.enlists !== undefined &&
         props.enlists.map(enlists => {
-            
+
             if (enlists.seminarid == props.seminarid) {
                 setEnlist(true);
                 
-            } 
+            }
         })
+        }
     };
-        
+       
 
     //Påmelder brukeren til seminaret
     const onEnlist = () => {
