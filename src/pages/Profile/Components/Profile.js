@@ -94,19 +94,53 @@ function Profile(props) {
     const onTlfSubmit = e => {
         e.preventDefault()
         setUpdateTextTlf("Vennligst vent");
-        
-        const config = {
-            token: token,
-            telefon: tlf.replace(/\s/g, '')
+
+        // Først en regex tes på om tlf kun inneholder nummer, evt. startet med et "+"-tegn
+        if (/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/.test(tlf)) {
+            // Test at nummeret er en korrekt (norsk) lengde
+            // Fjerne eventuelle mellomrom i opgitt nummer
+            var tlfTrim = tlf.replace(/\s/g, '')
+            if (tlfTrim.charAt(0) === '+') {
+                if (tlfTrim.length == 11) {
+                    const config = {
+                        token: token,
+                        telefon: tlfTrim
+                    }
+                    
+                    axios.post(process.env.REACT_APP_APIURL + "/profile/updateTelefon", config).then(
+                        setAlertDisplay(""),
+                        setAlertText("Telefonnummer oppdatert!"),
+                        setAlertSeverity("success"),
+                        setUpdateTextTlf("Oppdater"),
+                        setUpdateBtnTlf(false)
+                        )
+                }
+            } else if (tlfTrim.length == 8 || tlfTrim.length == 12) {
+                const config = {
+                    token: token,
+                    telefon: tlfTrim
+                }
+                
+                axios.post(process.env.REACT_APP_APIURL + "/profile/updateTelefon", config).then(
+                    setAlertDisplay(""),
+                    setAlertText("Telefonnummer oppdatert!"),
+                    setAlertSeverity("success"),
+                    setUpdateTextTlf("Oppdater"),
+                    setUpdateBtnTlf(false)
+                    )
+            } else {
+                setAlertDisplay("")
+                setAlertText("Telefonnummeret er ikke gyldig")
+                setAlertSeverity("error")
+                setUpdateTextTlf("Oppdater")
+            }
+        } else {
+            setAlertDisplay("")
+            setAlertText("Telefonnummeret er ikke gyldig")
+            setAlertSeverity("error")
+            setUpdateTextTlf("Oppdater")
         }
         
-        axios.post(process.env.REACT_APP_APIURL + "/profile/updateTelefon", config).then(
-            setAlertDisplay(""),
-            setAlertText("Telefonnummer oppdatert!"),
-            setAlertSeverity("success"),
-            setUpdateTextTlf("Oppdater"),
-            setUpdateBtnTlf(false)
-            )
         }
         
         // Utføres når bruker gjør en handling i input-feltet for e-post
