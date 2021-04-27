@@ -38,7 +38,8 @@ const SeminarNav = (props) => {
   const [seminarsExpired, setSeminarsExpired] = useState([]);
 
   const [enlists, setEnlists] = useState([]);
-
+  
+  
   const fetchData = () => {
     const token = CookieService.get("authtoken");
       
@@ -118,7 +119,7 @@ const SeminarNav = (props) => {
         </div>
         <TabPanel value={position} index={0}>
             <div className="Seminar-ContentOverview">
-              <SeminarListUpcoming seminarsUpcoming={currentPostsUpcoming} enlists={enlists} />
+              <SeminarListUpcoming seminarsUpcoming={currentPostsUpcoming} enlists={enlists} innloggetbruker={props.brukerid} />
             </div>
               <div className="Seminar-indexPosition">
                 <div className="Seminar-indexPagination">

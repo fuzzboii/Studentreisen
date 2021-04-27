@@ -41,7 +41,7 @@ const SeminarUpcoming = (props) => {
         
     }, [props]);
 
-
+    
     
     //Henting av påmeldte seminarer for brukeren, deretter sjekk på påmelding og settes påmeldingen til true dersom brukeren er påmeldt på seminaret
     
@@ -96,6 +96,8 @@ const SeminarUpcoming = (props) => {
                     <p className="Seminar-Arrangor">{props.fnavn} {props.enavn}</p>
                     <SeminarCardActions className="Seminar-CardActions">                   
                         
+                        {(props.innloggetbruker != props.brukerid) &&
+                        
                         <div className="Seminar-ButtonPameldWrapper">
                             {!enlist ?
                             <>
@@ -107,9 +109,10 @@ const SeminarUpcoming = (props) => {
                             <SeminarButton className="Seminar-buttonPaameld" size="small" color="default" disabled>
                                 Påmeldt
                             </SeminarButton>                                        
-                            } 
+                            }
+                         
                         </div>
-                      
+                        }
                         <div className="Seminar-ButtonLesWrapper">
                             <Link className='Seminar-Link' to={`/seminar/seminarkommende=${props.seminarid}`}>
                             <SeminarButton className="Seminar-buttonLes" size="small" color="default">
@@ -153,7 +156,7 @@ const SeminarUpcoming = (props) => {
                 </SeminarCardActionArea>
                 </Link>
                 <SeminarCardActions className="Seminar-CardActions">      
-                    
+                    {(props.innloggetbruker != props.brukerid) &&
                     <div className="Seminar-ButtonPameldWrapper">
                         {!enlist ?
                         <>
@@ -168,7 +171,7 @@ const SeminarUpcoming = (props) => {
                         } 
                     
                     </div>
-                    
+                    }
                     <div className="Seminar-ButtonLesWrapper">
                         <Link className='Seminar-Link' to={`/seminar/seminarkommende=${props.seminarid}`}>
                         <SeminarButton className="Seminar-buttonLes" size="small" color="default">
