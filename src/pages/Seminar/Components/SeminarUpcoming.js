@@ -40,8 +40,6 @@ const SeminarUpcoming = (props) => {
         };
         
     }, [props]);
-
-    
     
     //Henting av påmeldte seminarer for brukeren, deretter sjekk på påmelding og settes påmeldingen til true dersom brukeren er påmeldt på seminaret
     
@@ -57,7 +55,6 @@ const SeminarUpcoming = (props) => {
         }
     };
        
-
     //Påmelder brukeren til seminaret
     const onEnlist = () => {
         
@@ -71,7 +68,6 @@ const SeminarUpcoming = (props) => {
         console.log("Påmeldt");
     }
 
-    
     // Om seminaret ikke har ett bilde, vis et standardbilde
     const uploadedimg = props.plassering !== null ? "/uploaded/" + props.plassering : noimage;
 

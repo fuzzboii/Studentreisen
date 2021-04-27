@@ -57,8 +57,6 @@ const SeminarNav = (props) => {
       setSeminarsExpired(res2.data);
       
       setEnlists(res3.data);
-      console.log(res3.data);
-      
     }));
   };
 

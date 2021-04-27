@@ -46,12 +46,15 @@ const SeminarDetailsUpcoming = (props) => {
     
     //States for å liste opp kommende seminarer
     const [seminarsUpcoming, setSeminars] = useState([]);
+
+    //States for å liste opp plasseringen til bildet
+    const [plassering, setPlassering] = useState('');
     
     //States for å liste opp påmeldte brukere på seminarene
     const [enlists, setEnlists] = useState([]);
 
     //States for påmeldte brukere
-    //const [participants, setParticipants] = useState([]);
+
     const [participants, setParticipants] = useState([]);
     const [totalparticipants, setTotalParticipants] = useState([]);
 
@@ -107,6 +110,7 @@ const SeminarDetailsUpcoming = (props) => {
         fetchData();
         fetchEnlistedData();
         fetchParticipantsData();
+        
     },[openEdit]);
 
     //Håndterer lukking av redigering, sletting, og deltagere
@@ -121,24 +125,25 @@ const SeminarDetailsUpcoming = (props) => {
         setOpenParticipants(false);
     };
     
-    //Henting av kommende data til seminarene og tester på seminarid for å sette riktig informasjon i input feltene
+    //Henting av kommende data til seminarene og tester på seminarid
     const fetchData = async () => {
                     
-        const res = await axios.get(process.env.REACT_APP_APIURL + "/seminar/getAllSeminarUpcomingData");
+        axios.get(process.env.REACT_APP_APIURL + "/seminar/getAllSeminarUpcomingData").then(res => {
 
         setSeminars(res.data);
-        res.data.map(prop => {
-            if (prop.seminarid == seminarid) {
-                setTitle(prop.navn);
-                setStartdate(prop.oppstart);
-                setEnddate(prop.varighet);
-                setAdress(prop.adresse);
-                setDescription(prop.beskrivelse);
-                setAvailability(prop.tilgjengelighet);
+        res.data.map(seminar => {
+            if (seminar.seminarid == seminarid) {
+                setTitle(seminar.navn);
+                setStartdate(seminar.oppstart);
+                setEnddate(seminar.varighet);
+                setAdress(seminar.adresse);
+                setDescription(seminar.beskrivelse);
+                setAvailability(seminar.tilgjengelighet);
+                setPlassering(seminar.plassering);
                 
             }
         })
-    };
+    })}
     
     
     //Henting av påmeldte seminarer for brukeren, deretter sjekk på påmelding og settes påmeldingen til true dersom brukeren er påmeldt på seminaret
@@ -146,19 +151,18 @@ const SeminarDetailsUpcoming = (props) => {
         const token = CookieService.get("authtoken");
         
         const data = {
-            token: token
+            token: token,
         }
         
-        const res = await axios.post(process.env.REACT_APP_APIURL + "/seminar/getEnlistedSeminars", data );
+        axios.post(process.env.REACT_APP_APIURL + "/seminar/getEnlistedSeminars", data).then(res => {
         setEnlists(res.data);
-        res.data.map(enlists => {
-            
-            if (enlists.seminarid == seminarid) {
-                setEnlist(true);
-
-            } 
-        })
-    };
+            res.data.map(enlists => { 
+                if (enlists.seminarid == seminarid) {
+                    setEnlist(true);
+                } 
+            }
+        )})
+    }
 
     //Henting av påmeldte brukere på seminaret
     const fetchParticipantsData = async () => {
@@ -166,19 +170,16 @@ const SeminarDetailsUpcoming = (props) => {
 
         const data = {
             token: token,
-            seminarid: seminarid
+            seminarid: seminarid,
         }
-        const res = await axios.post(process.env.REACT_APP_APIURL + "/seminar/getParticipants", data);
-        const total = res.data.length;
-        setParticipants(res.data);
-        setTotalParticipants(res.data.length)
-    };
-
-
-
-    
-
-    
+        axios.post(process.env.REACT_APP_APIURL + "/seminar/getParticipants", data).then(res => {
+            const total = res.data.length;
+            setParticipants(res.data);
+            setTotalParticipants(res.data.length)
+            
+        })
+    }   
+ 
     //Sletting av seminar
 /*     const deleteSeminar = async (seminarid, varighet, bilde) => {
 
@@ -226,11 +227,8 @@ const SeminarDetailsUpcoming = (props) => {
                     setAlertOpen(false);
                 }, 3000)
             }
-        })
-        
-        
+        })    
     }
-
 
     const onUnenlist = () => {
         
@@ -354,10 +352,11 @@ const SeminarDetailsUpcoming = (props) => {
         })
 
     }
-
+    
     // Om seminaret ikke har ett bilde, vis et standardbilde
-    const uploadedimg = props.plassering !== null ? "/uploaded/" + props.plassering : noimage;
-
+    const uploadedimg = plassering !== null ? "/uploaded/" + plassering : noimage;
+    //console.log(uploadedimg);
+    //console.log(plassering);
     return(
         <>
         {props.loading &&
@@ -515,8 +514,9 @@ const SeminarDetailsUpcoming = (props) => {
 
                         {/*Bilde og informasjon seksjonen */}
                         <Box className="SeminarDetails-Box" boxShadow={1}>    
+                            
                             <div className="SeminarDetails-Image">
-                                <img src={"/uploaded/" + seminar.plassering} alt="Seminar Image" className="SeminarDetails-img" imgstart=""  />
+                                <img src={uploadedimg} alt="Seminar Image" className="SeminarDetails-img" imgstart=""  />
                             </div>
                             <div className="SeminarDetails-Information">
                                 <h2 className="SeminarDetails-ArrangorHeading">Arrangør</h2>
