@@ -19,7 +19,8 @@ class Login extends Component {
     // Login-spesifikke states, delt opp i før-visning autentisering, login, alert og glemt passord
     this.state = {loading : this.props.loading, authenticated : this.props.auth, 
                   email : "", pwd : "", remember : false, loginDisabled : false, loginText : "Logg inn", loginOpacity : "1",
-                  forgotEmail : "", forgotDisplay : false, forgotBtnDisabled : false}
+                  forgotEmail : "", forgotDisplay : false, forgotBtnDisabled : false,
+                  tempPw : "", tempPw2 : "", tempDisplay : false, tempBtnDisabled : false, tempAuthtoken : "", tempExpdate : ""}
   }
 
   // Utføres når bruker gjør en handling i input-feltet for e-post
@@ -70,43 +71,66 @@ class Login extends Component {
       // Utføres ved mottatt resultat
       .then(res => {
         if(res.data.authtoken) {
-            // Mottok autentiserings-token fra server, lagrer i Cookie
-            this.setState({
-              authenticated: true
-            });
-            // Sjekker om bruker har satt "Husk meg"
-            if(!this.state.remember) {
-              let date = new Date();
-              // Token utløper om 3 timer om "Husk meg" ikke er satt
-              date.setTime(date.getTime() + ((60 * 3) * 60 * 1000));
+          // Mottok autentiserings-token fra server, lagrer i Cookie
+          // Sjekker om bruker har satt "Husk meg"
+          if(!this.state.remember) {
+            let date = new Date();
+            // Token utløper om 3 timer om "Husk meg" ikke er satt
+            date.setTime(date.getTime() + ((60 * 3) * 60 * 1000));
+
+            if(res.data.pwd_temp !== 1) {
+              this.setState({
+                authenticated: true
+              });
+
+              const options = { path: "/", expires: date };
+              CookieService.set('authtoken', res.data.authtoken, options);
+
+              window.location.href="/Overview";
+            } else {
+              // Bruker har et midlertidig passord, ber bruker oppdatere før vi fortsetter
+              this.setState({
+                tempDisplay: true,
+                tempExpdate: date,
+                tempAuthtoken: res.data.authtoken
+              });
+            }
+          } else {
+            let date = new Date();
+            // Token utløper om 72 timer om "Husk meg" ikke er satt
+            date.setTime(date.getTime() + ((60 * 72) * 60 * 1000));
+
+            if(res.data.pwd_temp !== 1) {
+              this.setState({
+                authenticated: true
+              });
 
               const options = { path: "/", expires: date };
               CookieService.set('authtoken', res.data.authtoken, options);
               
               window.location.href="/Overview";
             } else {
-              let date = new Date();
-              // Token utløper om 72 timer om "Husk meg" ikke er satt
-              date.setTime(date.getTime() + ((60 * 72) * 60 * 1000));
-
-              const options = { path: "/", expires: date };
-              CookieService.set('authtoken', res.data.authtoken, options);
-              
-              window.location.href="/Overview";
+              // Bruker har et midlertidig passord, ber bruker oppdatere før vi fortsetter
+              this.setState({
+                tempDisplay: true,
+                tempExpdate: date,
+                tempAuthtoken: res.data.authtoken
+              });
             }
+          }
         } else {
-            // Feil oppstod ved innlogging, viser meldingen
-            this.props.enqueueSnackbar(res.data.message, { 
-                variant: 'error',
-                autoHideDuration: 5000,
-            });
+          // Feil oppstod ved innlogging, viser meldingen
+          this.props.enqueueSnackbar(res.data.message, { 
+            variant: 'error',
+            autoHideDuration: 5000,
+          });
         }
       })
       .catch(err => {
         // En feil oppstod ved oppkobling til server
         this.props.enqueueSnackbar("En intern feil oppstod, vennligst forsøk igjen senere", { 
-            variant: 'error',
-            autoHideDuration: 5000,
+          variant: 'error',
+          autoHideDuration: 5000,
         });
       })
       // Utføres alltid uavhengig av andre resultater
@@ -210,6 +234,109 @@ class Login extends Component {
     });
   };
 
+  
+
+  // Utføres når bruker velger å bekrefte nytt passord til en bruker med midlertidig passord (Manuelt opprettet av admin)
+  handleTempChange = () => {
+    // Slår midlertidig av "Oppdater passord"-knappen
+    this.setState({
+      tempBtnDisabled: true
+    });
+
+    // Sørger for at begge passordene er fyllt inn
+    if(this.state.tempPw !== "" && this.state.tempPw2 !== "") {
+      // Sjekker om passordene er like
+      if(this.state.tempPw === this.state.tempPw2) {
+        let canShowBtn = false;
+        axios
+          // Henter API URL fra .env og utfører en POST request med dataen fra objektet over
+          // Axios serialiserer objektet til JSON selv
+          .post(process.env.REACT_APP_APIURL + "/auth/updatePassord", {token : this.state.tempAuthtoken, pwd : this.state.tempPw, pwd2 : this.state.tempPw2})
+          // Utføres ved mottatt resultat
+          .then(res => {
+            if(res.data.status == "success") {
+              this.props.enqueueSnackbar("Passord oppdatert, du videresendes om få sekunder", { 
+                  variant: 'success',
+                  autoHideDuration: 5000,
+              });
+              
+              const options = { path: "/", expires: this.state.tempExpdate };
+              CookieService.set('authtoken', this.state.tempAuthtoken, options);
+
+              setTimeout(() => {
+                window.location.href="/Overview";
+              }, 5000);
+            } else {
+              // Feil oppstod, viser meldingen
+              this.props.enqueueSnackbar(res.data.message, { 
+                  variant: 'error',
+                  autoHideDuration: 5000,
+              });
+              canShowBtn = true;
+            }
+          })
+          .catch(err => {
+            // En feil oppstod ved oppkobling til server
+            this.props.enqueueSnackbar("En intern feil oppstod, vennligst forsøk igjen senere", { 
+                variant: 'error',
+                autoHideDuration: 5000,
+            });
+            canShowBtn = true;
+          })
+          // Utføres alltid uavhengig av andre resultater
+          .finally( () => {
+            if(canShowBtn) {
+              // Gjør "Oppdater passord"-knappen tilgjengelig igjen
+              this.setState({
+                tempBtnDisabled: false
+              });
+            }
+        });
+      } else {
+        // Passordene er ikke like
+        this.props.enqueueSnackbar("Passordene er ikke like", { 
+            variant: 'error',
+            autoHideDuration: 5000,
+        });
+        this.setState({
+          tempBtnDisabled: false
+        });
+      }
+    } else {
+      // Passord ikke fylt inn
+      this.props.enqueueSnackbar("Ett eller begge passord-feltene er ikke fylt inn", { 
+          variant: 'error',
+          autoHideDuration: 5000,
+      });
+      this.setState({
+        tempBtnDisabled: false
+      });
+    }
+  };
+
+  // Utføres når bruker gjør en handling i input-feltet for nytt passord
+  onTempPwChange = e => {
+    this.setState({
+      tempPw: e.target.value
+    });
+  };
+
+  // Utføres når bruker gjør en handling i input-feltet for å bekrefte nytt passord
+  onTempPw2Change = e => {
+    this.setState({
+      tempPw2: e.target.value
+    });
+  };
+
+  // Utføres når bruker trykker utenfor dialogen for "Nytt passord", eller når bruker trykker på knapp "Avbryt" i "Nytt passord"
+  handleCloseTemp = () => {
+    this.setState({
+      tempDisplay: false
+    });
+  };
+
+  
+
   // Utføres når bruker trykker på knapp "Ny bruker"
   gotoRegister = () => {
     // Navigerer til /register/
@@ -248,15 +375,29 @@ class Login extends Component {
             <Button onClick={this.gotoRegister} variant="outlined">Ny bruker</Button>
             <Button type="submit" id="form_btn_login" disabled={this.state.loginDisabled} style={{opacity: this.state.loginOpacity}} variant="contained">{this.state.loginText}</Button>
           </form>
-          <Dialog open={this.state.forgotDisplay} onClose={this.handleCloseForgot} aria-labelledby="dialog_glemt_tittel">
-            <DialogTitle id="dialog_glemt_tittel">Glemt passord</DialogTitle>
+          {/* Del for glemt passord */}
+          <Dialog open={this.state.forgotDisplay} onClose={this.handleCloseForgot} aria-labelledby="login_dialog_title">
+            <DialogTitle id="login_dialog_title">Glemt passord</DialogTitle>
             <DialogContent>
               <DialogContentText>Skriv inn e-posten for å tilbakestille passordet ditt</DialogContentText>
               <TextField autoFocus margin="dense" value={this.state.forgotEmail} onChange={this.onForgotChange} label="E-post" type="email" fullWidth />
             </DialogContent>
             <DialogActions>
               <Button onClick={this.handleCloseForgot} color="primary">Avbryt</Button>
-              <Button id="dialog_glemt_btn" disabled={this.state.forgotBtnDisabled} onClick={this.handleForgot} color="primary">Tilbakestill passord</Button>
+              <Button disabled={this.state.forgotBtnDisabled} onClick={this.handleForgot} color="primary">Tilbakestill passord</Button>
+            </DialogActions>
+          </Dialog>
+          {/* Del for oppdater passord */}
+          <Dialog open={this.state.tempDisplay} onClose={this.handleCloseTemp} aria-labelledby="login_dialog_title">
+            <DialogTitle id="login_dialog_title">Oppdater passord</DialogTitle>
+            <DialogContent>
+              <DialogContentText>Du har et midlertidig passord og må oppdatere dette før du kan fortsette</DialogContentText>
+              <TextField autoFocus margin="dense" value={this.state.tempPw} onChange={this.onTempPwChange} label="Nytt passord" type="password" fullWidth />
+              <TextField margin="dense" value={this.state.tempPw2} onChange={this.onTempPw2Change} label="Bekreft nytt passord" type="password" fullWidth />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={this.handleCloseForgot} color="primary">Avbryt</Button>
+              <Button disabled={this.state.tempBtnDisabled} onClick={this.handleTempChange} color="primary">Oppdater passord</Button>
             </DialogActions>
           </Dialog>
         </main>
