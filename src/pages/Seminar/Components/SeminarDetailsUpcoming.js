@@ -32,6 +32,7 @@ import Loader from '../../../global/Components/Loader';
 import NoAccess from '../../../global/Components/NoAccess';
 import CookieService from '../../../global/Services/CookieService';
 import '../CSS/Seminar.css';
+import noimage from '../../../assets/noimage.jpg'; 
 
 
 
@@ -293,8 +294,9 @@ const SeminarDetailsUpcoming = (props) => {
     
     //Når brukeren submitter oppdatereringen av seminaret
     const onSubmit = e => {
+        // Stopper siden fra å laste inn på nytt
         e.preventDefault()
-
+        
         const data = {
             token : token,
             seminarid : seminarid, 
@@ -352,6 +354,9 @@ const SeminarDetailsUpcoming = (props) => {
         })
 
     }
+
+    // Om seminaret ikke har ett bilde, vis et standardbilde
+    const uploadedimg = props.plassering !== null ? "/uploaded/" + props.plassering : noimage;
 
     return(
         <>

@@ -59,7 +59,7 @@ class SeminarOverview extends Component {
       if(!loading && authenticated) {
           return (            
               <div className="Seminar-Content">
-                <SeminarNav/>
+                <SeminarNav type={this.props.type} />
               </div>
           );
       } else {

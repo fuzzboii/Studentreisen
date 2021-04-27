@@ -4,6 +4,8 @@ import React, {useState, useEffect} from "react";
 import {Tabs, Tab, Typography} from '@material-ui/core';
 import Pagination from '@material-ui/lab/Pagination';
 import axios from 'axios';
+import Button from '@material-ui/core/Button';
+import AddIcon from '@material-ui/icons/Add';
 // Studentreisen-assets og komponenter
 import SeminarListUpcoming from './SeminarListUpcoming';
 import SeminarListExpired from './SeminarListExpired';
@@ -90,7 +92,7 @@ const SeminarNav = (props) => {
     const handlePageExpired = (event, value) => {
       setCurrentPageExpired(value);
     };
-
+    
     return (
       <div className="Seminar-Overview">
         <div className="BorderBox">   
@@ -99,11 +101,24 @@ const SeminarNav = (props) => {
               <Tab className="" label="Utgåtte" />
           </Tabs>
         </div>
-
-
+        <div className="Seminar-HeadingTools">
+          
+          {props.type === 3 || props.type === 4 &&
+          <div className="Seminar-HeadingToolsWrapper">
+            <div className="Seminar-HeadingToolsDesktop">
+              <Button className="Seminar-ButtonNewDesktop" href="/seminar/ny" variant="contained" color="primary">Nytt seminar<AddIcon/></Button>
+            </div>     
+            <div className="Seminar-HeadingToolsMobile">
+              <Button className="Seminar-ButtonNewMobile" href="/seminar/ny" variant="contained" color="primary"><AddIcon/></Button>
+            </div>
+                    
+          </div>
+          
+          }
+        </div>
         <TabPanel value={position} index={0}>
             <div className="Seminar-ContentOverview">
-              <SeminarListUpcoming seminarsUpcoming={currentPostsUpcoming} enlists={enlists}/>
+              <SeminarListUpcoming seminarsUpcoming={currentPostsUpcoming} enlists={enlists} />
             </div>
               <div className="Seminar-indexPosition">
                 <div className="Seminar-indexPagination">

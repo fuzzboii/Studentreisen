@@ -1,4 +1,4 @@
-/* Seminar overview
+/* Seminar oversikten
 ----------------------------- */
 
 /* SeminarNav */
@@ -83,6 +83,7 @@
 .Seminar-Desktop {
     display: flex;
     margin: 1em;
+    justify-content: center;
 }
 
 .Seminar-NavnDesktop{
@@ -109,7 +110,7 @@
     
 }
 
-/* Seminar details
+/* Spesifikt seminar
 ----------------------------- */
 
 .SeminarDetails-Content {
@@ -219,6 +220,21 @@
     display: grid;
 }
 
+.Seminar-HeadingTools {
+    display: grid;
+}
+
+.Seminar-HeadingToolsWrapper {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0.2em;
+}
+
+.Seminar-HeadingToolsDesktop {
+    visibility: hidden;
+    
+}
+
 /* Nytt seminar
 ----------------------------- */
 #SeminarNew_main {
@@ -298,6 +314,25 @@
         justify-content: center;
     }
 
+    .Seminar-HeadingTools {
+        grid-template-columns: 800px;
+        justify-content: center;
+    }
+
+    .Seminar-HeadingToolsWrapper {
+        margin-right: 1.3em;
+    }
+
+    .Seminar-HeadingToolsDesktop {
+        visibility: visible;
+    }
+
+    .Seminar-HeadingToolsMobile {
+        display: none;
+        visibility: hidden;
+        
+    }
+
     .content-seminar {
         padding-left: 2%;
         padding-right: 2%;
@@ -306,7 +341,7 @@
     .SeminarHeading {
         grid-column-start: 1;
         grid-column-end: 3;
-        margin-left: 0.8em;
+        margin-left: 1.3em;
     }
 
     /* Nytt seminar */
@@ -333,6 +368,15 @@
     .SeminarHeading {
         grid-column-start: 1;
         grid-column-end: 4;
+    }
+
+    .Seminar-HeadingTools {
+        grid-template-columns: 1200px;
+        justify-content: center;
+    }
+
+    .Seminar-HeadingToolsWrapper {
+        margin-right: 1.3em;
     }
 
     .SeminarDetails-Box {
@@ -379,6 +423,15 @@
     .SeminarDetails-Content {
         grid-template-columns: 1200px;
         justify-content: center;
+    }
+
+    .Seminar-HeadingTools {
+        grid-template-columns: 1200px;
+        justify-content: center;
+    }
+
+    .Seminar-HeadingToolsWrapper {
+        margin-right: 1.3em;
     }
 
     .SeminarHeading {

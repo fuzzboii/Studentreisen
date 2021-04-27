@@ -10,7 +10,6 @@ import 'moment/locale/nb';
 import DateRangeIcon from '@material-ui/icons/DateRange';
 import axios from 'axios';
 
-
 // Studentreisen-assets og komponenter
 import { SeminarCard, SeminarCardActionArea, SeminarCardContent, SeminarCardMedia, SeminarTypography, SeminarCardActions, SeminarButton, SeminarAccordion, SeminarAccordionSummary, SeminarAccordionDetails, SeminarExpandMoreIcon } from '../CSS/apistylesSeminar';
 import '../CSS/Seminar.css'; 
@@ -19,10 +18,7 @@ import noimage from '../../../assets/noimage.jpg';
 
 
 const SeminarUpcoming = (props) => {
-    const [seminarsUpcoming, setSeminars] = useState([]);
-    
 
-    
     //States for påmelding knappen
     const [enlist, setEnlist] = React.useState(false);
      
@@ -48,7 +44,7 @@ const SeminarUpcoming = (props) => {
 
     
     //Henting av påmeldte seminarer for brukeren, deretter sjekk på påmelding og settes påmeldingen til true dersom brukeren er påmeldt på seminaret
-
+    
     const fetchEnlistedData = () => {
         {props.enlists !== undefined &&
         props.enlists.map(enlists => {
@@ -75,16 +71,17 @@ const SeminarUpcoming = (props) => {
         console.log("Påmeldt");
     }
 
-
+    
     // Om seminaret ikke har ett bilde, vis et standardbilde
     const uploadedimg = props.plassering !== null ? "/uploaded/" + props.plassering : noimage;
-      
+
     if (width < breakpoint) {
         return (
             
             <div className="Seminar-Mobile">
-            
+
             <SeminarAccordion>
+                
                 <SeminarAccordionSummary expandIcon={<SeminarExpandMoreIcon />} aria-controls="panel1a-content" id="Seminar-AccordionSummary">
                     <div className="Seminar-HeaderContent">
                         <h2 className="Seminar-Navn">{props.navn}</h2> 
