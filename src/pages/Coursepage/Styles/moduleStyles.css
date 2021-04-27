@@ -4,10 +4,10 @@
 }
 
 .accordElementWrap {
-
     display: grid;
     grid-template-rows: auto;
     width: 100%;
+    padding-left: 8px;
     border-top: 1px solid rgb(211, 211, 211);
 }
 
@@ -42,9 +42,7 @@
     font-size: 14.5px;
 }
 
-.content-main {
-    margin-top: 1em;
-}
+
 
 .indexPaginationM { 
     width: 12em;
@@ -56,6 +54,11 @@
 
 
 /* Misc */
+
+.content-main {
+    margin-top: 1em;
+}
+
 .moduleWrap {
     display: flex;
     justify-content: flex-start;
@@ -98,7 +101,7 @@
 /* Tab */
 @media screen and (min-width: 720px) {
     .module-section {
-        background-color: rgb(247, 244, 244);
+        background-color: rgb(255, 255, 255);
         max-width: 40em;
         margin-bottom: 0.8em;
     
@@ -107,7 +110,6 @@
     .content-main {
         padding-left: 2em;
         padding-right: 2em;
-        margin-top: 2.5em;
         margin-left: auto;
         margin-right: auto; 
     }
@@ -122,7 +124,7 @@
     width: 70em;  
 }
 .module-section:hover {
-    background-color: #0000d81a;
+    background-color: #7474741a;
     transition-timing-function: ease;
     transition: 0.4s;
     cursor: pointer;

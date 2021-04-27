@@ -13,6 +13,7 @@ export const Accordion = withStyles({
         borderTop: "1px solid rgb(163, 163, 163)",      
         boxShadow: 'none',
         borderBottom: "1px solid rgb(163, 163, 163)",
+        backgroundColor: "rgb(250, 250, 250)",
       '&:before': {
         display: 'none',
       },
@@ -47,6 +48,7 @@ export const Accordion = withStyles({
       paddingBottom: theme.spacing(0),
       paddingLeft: theme.spacing(2),
       paddingRight: theme.spacing(2),
+      backgroundColor: "rgb(250, 250, 250)",
       display: "inherit",
       '&$expanded': {
         borderBottom: "1px solid rgb(163, 163, 163)",        

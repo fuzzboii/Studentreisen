@@ -198,14 +198,25 @@
 
 .SeminarDetails-ButtonRedigerWrapper {
     margin-right: 0em;
+    
 }
 
 .SeminarDetails-ButtonSlettWrapper {
     margin-right: 0em;
 }
 
+.SeminarDetails-ButtonDeltagereWrapper {
+    display: flex;
+    justify-content: flex-end;
+    margin: 0.3em;
+}
+
 #SeminarEdit_Alert {
     margin-top: 0.3em;
+}
+
+#SeminarEdit_form {
+    display: grid;
 }
 
 /* Nytt seminar
@@ -342,11 +353,11 @@
     }
 
     .SeminarDetailsHeading {
-        display: flex;
         align-items: center;
         justify-content: space-between;
     }
     
+
 }
 
 /* Medium skjerm, 1080p */

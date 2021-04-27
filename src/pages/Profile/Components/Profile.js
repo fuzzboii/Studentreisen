@@ -348,7 +348,7 @@ function Profile(props) {
                         <Button className={classes.profileButton} variant="contained" onClick={tlfUnlock} > Endre </Button>
                         </>
                         :
-                        <form id="form-profile-tlf" onSubmit={onTlfSubmit} >
+                        <form className="profileForm" id="form-profile-tlf" onSubmit={onTlfSubmit} >
                         <FormControl id="form-profile-tlf-control">
                             <InputLabel>Telefonnummer</InputLabel>
                             <Input type="string" variant="outlined" value={tlf} onChange={onTlfChange} required={true} />
@@ -367,7 +367,7 @@ function Profile(props) {
                         <Button className={classes.profileButton} variant="contained" onClick={emailUnlock} > Endre </Button>
                         </>
                         :
-                        <form id="form-profile-email" onSubmit={onEmailSubmit} >
+                        <form className="profileForm" id="form-profile-email" onSubmit={onEmailSubmit} >
                         <FormControl id="form-profile-email-control">
                             <InputLabel>E-post</InputLabel>
                             <Input type="string" variant="outlined" value={email} onChange={onEmailChange} required={true} />
@@ -376,7 +376,7 @@ function Profile(props) {
                         </form>
                     }
 
-                    <form id="form-profile-pwd" onSubmit={onPwdSubmit} >
+                    <form className="profileForm" id="form-profile-pwd" onSubmit={onPwdSubmit} >
                         <FormControl id="form-pwd-profile">
                             <InputLabel>Nytt passord</InputLabel>
                             <Input type="password" className={classes.input} variant="outlined" onChange={onPwdChange} required={true} />

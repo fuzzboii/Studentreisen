@@ -1,34 +1,89 @@
 // React spesifikt
 import React from "react";
 import {Link} from 'react-router-dom';
+import { useState, useEffect, useContext, Component} from 'react';
+import {useLocation, useParams} from 'react-router-dom';
 
 // 3rd-party Packages
 import moment from 'moment';
 import 'moment/locale/nb';
 import DateRangeIcon from '@material-ui/icons/DateRange';
+import axios from 'axios';
+
+
 // Studentreisen-assets og komponenter
 import { SeminarCard, SeminarCardActionArea, SeminarCardContent, SeminarCardMedia, SeminarTypography, SeminarCardActions, SeminarButton, SeminarAccordion, SeminarAccordionSummary, SeminarAccordionDetails, SeminarExpandMoreIcon } from '../CSS/apistylesSeminar';
 import '../CSS/Seminar.css'; 
+import CookieService from '../../../global/Services/CookieService';
 import noimage from '../../../assets/noimage.jpg'; 
 
+
 const SeminarUpcoming = (props) => {
+    const [seminarsUpcoming, setSeminars] = useState([]);
+    
+
+    
+    //States for påmelding knappen
+    const [enlist, setEnlist] = React.useState(false);
+     
+    // Henter authtoken-cookie
+    const token = CookieService.get("authtoken");  
+    
+    //States for størrelse sjekk
     const [width, setWidth] = React.useState(window.innerWidth);
     const breakpoint = 1023;
-    React.useEffect(() => {
+    
+    //Use effect
+    useEffect(() => {
+        
+        fetchEnlistedData()
         const handleResizeWindow = () => setWidth(window.innerWidth);
-
         window.addEventListener("resize", handleResizeWindow);
         return () => {
         window.removeEventListener("resize", handleResizeWindow);
         };
-    }, []);
+        
+    }, [props]);
+
+
     
+    //Henting av påmeldte seminarer for brukeren, deretter sjekk på påmelding og settes påmeldingen til true dersom brukeren er påmeldt på seminaret
+
+    const fetchEnlistedData = () => {
+        {props.enlists !== undefined &&
+        props.enlists.map(enlists => {
+
+            if (enlists.seminarid == props.seminarid) {
+                setEnlist(true);
+                
+            }
+        })
+        }
+    };
+       
+
+    //Påmelder brukeren til seminaret
+    const onEnlist = () => {
+        
+        const data = {
+            token : token,
+            seminarid : props.seminarid, 
+        }
+
+        axios.post(process.env.REACT_APP_APIURL + "/seminar/postEnlist", data)
+        setEnlist(true);
+        console.log("Påmeldt");
+    }
+
+
     // Om seminaret ikke har ett bilde, vis et standardbilde
     const uploadedimg = props.plassering !== null ? "/uploaded/" + props.plassering : noimage;
       
     if (width < breakpoint) {
         return (
+            
             <div className="Seminar-Mobile">
+            
             <SeminarAccordion>
                 <SeminarAccordionSummary expandIcon={<SeminarExpandMoreIcon />} aria-controls="panel1a-content" id="Seminar-AccordionSummary">
                     <div className="Seminar-HeaderContent">
@@ -42,24 +97,40 @@ const SeminarUpcoming = (props) => {
                     <p className="Seminar-Adresse">{props.adresse}</p>
                     <h3 className="Seminar-ArrangorHeading">Arrangør</h3>
                     <p className="Seminar-Arrangor">{props.fnavn} {props.enavn}</p>
-                    <SeminarCardActions className="Seminar-CardActions">
-                        <Link className='Seminar-Link' to={`/seminar/seminarkommende=${props.seminarid}`}>
-                        <SeminarButton className="Seminar-buttonLes" size="small" color="default">
-                        Les mer..
-                        </SeminarButton>
-                        </Link>                        
-                        <SeminarButton className="Seminar-buttonPaameld" size="small" color="primary">
-                        Påmeld
-                        </SeminarButton>
+                    <SeminarCardActions className="Seminar-CardActions">                   
+                        
+                        <div className="Seminar-ButtonPameldWrapper">
+                            {!enlist ?
+                            <>
+                            <SeminarButton className="Seminar-buttonPaameld" size="small" color="primary" onClick={onEnlist}>
+                                Påmeld
+                            </SeminarButton>
+                            </>
+                            :
+                            <SeminarButton className="Seminar-buttonPaameld" size="small" color="default" disabled>
+                                Påmeldt
+                            </SeminarButton>                                        
+                            } 
+                        </div>
+                      
+                        <div className="Seminar-ButtonLesWrapper">
+                            <Link className='Seminar-Link' to={`/seminar/seminarkommende=${props.seminarid}`}>
+                            <SeminarButton className="Seminar-buttonLes" size="small" color="default">
+                                Les mer..
+                            </SeminarButton>
+                            </Link>
+                        </div>                                                
                     </SeminarCardActions>
                 </SeminarAccordionDetails>
             </SeminarAccordion>
+            
             </div>
         );
         }
         return (
             
             <div className="Seminar-Desktop">
+            
             <SeminarCard className="Seminar-Cards">
                 <Link className='Seminar-Link' to={`/seminar/seminarkommende=${props.seminarid}`}>
                 <SeminarCardActionArea>
@@ -84,13 +155,35 @@ const SeminarUpcoming = (props) => {
                     </SeminarCardContent>
                 </SeminarCardActionArea>
                 </Link>
-                <SeminarCardActions className="Seminar-CardActions">
-                    <SeminarButton className="Seminar-buttonPaameld" size="small" color="primary">
-                        Påmeld
-                    </SeminarButton>
+                <SeminarCardActions className="Seminar-CardActions">      
+                    
+                    <div className="Seminar-ButtonPameldWrapper">
+                        {!enlist ?
+                        <>
+                        <SeminarButton className="Seminar-buttonPaameld" size="small" color="primary" onClick={onEnlist}>
+                            Påmeld
+                        </SeminarButton>
+                        </>
+                        :
+                        <SeminarButton className="Seminar-buttonPaameld" size="small" color="default" disabled>
+                            Påmeldt
+                        </SeminarButton>                                        
+                        } 
+                    
+                    </div>
+                    
+                    <div className="Seminar-ButtonLesWrapper">
+                        <Link className='Seminar-Link' to={`/seminar/seminarkommende=${props.seminarid}`}>
+                        <SeminarButton className="Seminar-buttonLes" size="small" color="default">
+                            Les mer..
+                        </SeminarButton>
+                        </Link>
+                    </div> 
                 </SeminarCardActions>
             </SeminarCard>
+            
             </div>
+                     
         );
         
 }

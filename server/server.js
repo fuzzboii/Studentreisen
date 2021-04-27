@@ -1,6 +1,7 @@
 const dotenv = require("dotenv");
 const express = require("express");
 const fileupload = require("express-fileupload");
+const cors = require('cors');
 
 // Importerer routes vi bruker
 const authRoute = require('./routes/auth');
@@ -11,7 +12,7 @@ const toolsRoute = require('./routes/tools');
 const seminarRoute = require('./routes/seminars');
 const profileRoute = require('./routes/profile');
 const notifRoute = require('./routes/notif');
-
+const cvRoute = require('./routes/cv');
 // Gjør at vi kan kalle variabler fra .env
 dotenv.config();
 
@@ -20,6 +21,7 @@ const app = express();
 // Mellomvare
 app.use(express.json());
 app.use(fileupload());
+app.use(cors());
 
 // Midlertidig header for å tillate tilkoblinger fra localhost:3000, vil sannsynligvis bli endret til studentreisen.no ved senere tidspunkt
 app.use((req, res, next) => {
@@ -41,7 +43,7 @@ app.use('/api/v1/tools', toolsRoute);
 app.use('/api/v1/seminar', seminarRoute);
 app.use('/api/v1/profile', profileRoute);
 app.use('/api/v1/notif', notifRoute);
-
+app.use('/api/v1/cv', cvRoute);
 
 app.listen(process.env.PORT, () => {
     console.log("Serveren kjører")

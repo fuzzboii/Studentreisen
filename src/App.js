@@ -15,11 +15,13 @@ import Tools from './pages/Tools/Components/Tools';
 import Course from './pages/Coursepage/Components/Overview';
 import CourseDetail from './pages/Coursepage/Components/CourseDetail';
 import ModuleDetail from './pages/Coursepage/Components/ModuleDetail';
+import RelevantFieldNav from './pages/Coursepage/Components/RelevantFieldNav';
 import CourseNew from './pages/Coursepage/Components/CourseNew';
 import Seminar from './pages/Seminar/Components/SeminarOverview';
 import SeminarDetailsUpcoming from './pages/Seminar/Components/SeminarDetailsUpcoming';
 import SeminarDetailsExpired from './pages/Seminar/Components/SeminarDetailsExpired';
 import SeminarNew from './pages/Seminar/Components/SeminarNew';
+import CV from './pages/CV/Components/CV';
 
 import CookieService from './global/Services/CookieService';
 import AuthService from './global/Services/AuthService';
@@ -88,6 +90,9 @@ function App() {
             <Route path = "/course/modulkode=:modulkode" render = {() =>(
               <ModuleDetail auth={auth} loading={loading} />
             )}/>
+            <Route path = "/course/felt=:felt" render = {() =>(
+              <RelevantFieldNav auth={auth} type={type} loading={loading} />
+            )}/>
             <Route path = "/course/ny"  render={() => (
                 <CourseNew auth={auth} type={type} loading={loading} />
             )} />
@@ -113,6 +118,9 @@ function App() {
           <Route path = "/seminar/ny"  render={() => (
               <SeminarNew auth={auth} type={type} loading={loading} />
             )} />
+          <Route path = "/cv" render={() => (
+            <CV auth={auth} type={type} loading={loading} />
+          )} />
         </Switch>
       <Footer />
     </>

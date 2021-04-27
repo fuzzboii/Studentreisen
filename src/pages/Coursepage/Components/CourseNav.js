@@ -1,15 +1,16 @@
-import React, { useState, useContext, useEffect} from 'react';
+import React, { useState, useEffect} from 'react';
 import CourseList from './CourseList';
 import ModuleList from './ModuleList';
+import RelevantField from './RelevantField';
 import Pagination from '@material-ui/lab/Pagination';
 import axios from 'axios';
 import CookieService from '../../../global/Services/CookieService';
 
+import {Tabs, Tab, Typography, Button, TextField} from '@material-ui/core';
+import SearchIcon from '@material-ui/icons/Search';
+import AddIcon from '@material-ui/icons/Add';
 
-
-
-import {Tabs, Tab, Typography, Button} from '@material-ui/core';
-import { AddOutlined } from '@material-ui/icons';
+import {makeStyles } from '@material-ui/core/styles';
 
 
 function TabPanel(props) {
@@ -24,7 +25,34 @@ function TabPanel(props) {
   );
 }
 
+const useStyles = makeStyles((theme) => ({
+  button: {
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
+    marginTop: theme.spacing(2),
+    boxShadow: 'none',
+    
+  },
+
+  buttonIcon: {
+    marginTop: theme.spacing(2),
+    marginLeft: theme.spacing(1),
+    padding: theme.spacing(1),
+    width: theme.spacing(0.5),
+    '&:hover' : {
+      boxShadow: 'none',
+    },
+  },
+
+  search: {
+    marginTop: theme.spacing(2),
+    padding: theme.spacing(0),
+  },
+}));
+
 const CourseNav = (props) => {
+  const classes = useStyles();
+
     useEffect(()=>{
       fetchData();
     },[]);
@@ -32,11 +60,15 @@ const CourseNav = (props) => {
 
     const [position, setPosition] = useState(0);
 
+    //States for søk
+    const [input, setInput] = useState('');
+    const [modulesDefault, setModulesDefault] = useState([]);
+    const [coursesDefault, setCoursesDefault] = useState([]);
+
     // States for pagination
     const [courses, setCourses] = useState([]);
     const [modules, setModules] = useState([]);
-    const [field, setFields] = useState([]);
-    var array3 = [];
+    const [fields, setFields] = useState([]);
 
     const fetchData = () => {
       const token = CookieService.get("authtoken");
@@ -52,30 +84,14 @@ const CourseNav = (props) => {
 
       ]).then(axios.spread((res1, res2, res3) => {
         setCourses(res1.data);
+        setCoursesDefault(res1.data);
         setModules(res2.data);
+        setModulesDefault(res2.data);
         setFields(res3.data.results);
-        func();
-        if(array3.length !== 0) {
-          setCourses(array3);
-        }
+        console.log(res3.data.results);
       }));
     };
    
-    const func = () => {
-      if(array3.length > 0) {
-        field.forEach( intr  => {
-          courses.forEach( course => {
-            if(intr.beskrivelse === course.felt) {
-                array3 = [...array3, course];
-            };
-          });
-        });
-        console.log("nycourse", array3);
-
-      }
-    };
-    
-
     const [currentPage_c, setcurrentPage_c] = useState(1);
     const [postsPerPage_c, setPostsPerPage_c] = useState(12);
 
@@ -110,70 +126,102 @@ const CourseNav = (props) => {
     const handlePageModule = (event, value) => {
       setcurrentPage_m(value);
     };
+    
+    //Funksjoner for søk
+    const onInputChange = e => {
+      setInput(e.target.value);
+    }
+
+    const updateInput = async (e) => {
+      e.preventDefault();
+
+      if(position === 0) {
+        const filtered = coursesDefault.filter(courses => {
+          return courses.navn.toLowerCase().includes(input.toLowerCase())
+        });
+        setCourses(filtered);
+      };
+      if(position === 1) {
+        const filtered = modulesDefault.filter(modules => {
+          return modules.navn.toLowerCase().includes(input.toLowerCase())
+        });
+        setModules(filtered);
+      };
+     
+   };
 
 
     return (
-        <div>  
+        <div>
+            <div className="course-header-section">
+              <div className="search-wrap">
+                  <form className="searchBox" onSubmit={updateInput} >    
+                      <TextField value={input} className={classes.search} size="small" onChange={onInputChange} label="Søkefelt" type="search" variant="outlined"/>                           
+                      <Button type="submit" className={classes.button} size="small" variant="contained" endIcon={<SearchIcon />}>Søk</Button>
+                  </form>
+                <div className="wrapNewcourse">
+                  {props.type === 3 || props.type === 4 &&
+                    <Button className={classes.buttonIcon} href="/course/ny" variant="contained" color="primary" ><AddIcon/></Button>
+                  }
+                </div>
+            </div>       
+          </div>
+
             <div className="BorderBox"> 
               <Tabs className="tab" value={position} indicatorColor="primary" textColor="primary" onChange={handleChange}>
                   <Tab className="tabKurs" label="Kurs" />
                   <Tab className="tabKursmodul" label="Kursmodul" />
               </Tabs>
             </div>
-
             {Object.entries(courses).length !== 0 &&
             <TabPanel value={position} index={0}>
                 <div className="content-overview">
-                  <div className="indexRes">
-                    <Typography variant="caption">Viser {cindexOfFirstPost + 1} - {interval_c} av {courses.length} treff</Typography>
-                    {props.type === 3 || props.type === 4 &&
-                      <Button href="/course/ny" id="course_button_newCourse">Nytt kurs</Button>
-                    }
-                  </div>
-                  <CourseList courses={currentPosts_c}/>
-                </div>
-                  <div className="wrapIndexPage">
-                    <div className="indexPosition">
-                      <div className="indexPagination">
-                        <div className="indexRes2">
-                          <div className="indexCenterWrap">
-                            <Typography  variant="caption" >Viser {cindexOfFirstPost + 1} - {interval_c} av {courses.length} treff</Typography>
-                          </div>
-                          <div className="indexCenterWrap">
-                            <Pagination count={numberOfPages_c} page={currentPage_c} onChange={handlePageCourse} />
-                          </div>
-                        </div>
-                      </div>
+                    <div className="indexRes">
+                      <Typography variant="caption">Viser {cindexOfFirstPost + 1} - {interval_c} av {courses.length} treff</Typography>
                     </div>
-                  </div>
+                    <div className="wrap-list">
+                      <div className="wrapIndexPage">
+                        <CourseList courses={currentPosts_c}/>
+                          <div className="indexPagination">
+                            <div className="indexRes2">
+                              <div className="indexCenterWrap">
+                                <Typography  variant="caption" >Viser {cindexOfFirstPost + 1} - {interval_c} av {courses.length} treff</Typography>
+                              </div>
+                              <div className="indexCenterWrap">
+                                <Pagination count={numberOfPages_c} page={currentPage_c} onChange={handlePageCourse} />
+                              </div>
+                            </div>
+                          </div>
+                      </div>
+                      <RelevantField fields={fields}/>
+                    </div>
+
+                </div>
             </TabPanel>
             }  
             {Object.entries(modules).length !== 0 &&
             <TabPanel value={position} index={1}>
                 <div className="content-main">
-                  <div className="indexRes">
-                    <Typography variant="caption">Viser {mindexOfFirstPost + 1} - {interval_m} av {modules.length} treff</Typography>
-                  </div>
-                  <ModuleList modules={currentPosts_m}/>
-                </div>
-                <div className="wrapIndexPage">
-                    <div className="indexPosition">
-                      <div className="indexPaginationM">
-                        <div className="indexRes2">
-                          <div className="indexCenterWrap">
-                            <Typography  variant="caption" >Viser {mindexOfFirstPost + 1} - {interval_m} av {modules.length} treff</Typography>
-                          </div>
-                          <div className="indexCenterWrap">
-                            <Pagination count={numberOfPages_m} page={currentPage_m} onChange={handlePageModule} />
-                          </div>  
-                        </div>
-                      </div>
+                  <div className="wrapIndexPage">
+                    <div className="indexRes">
+                      <Typography variant="caption">Viser {mindexOfFirstPost + 1} - {interval_m} av {modules.length} treff</Typography>
                     </div>
-                  </div>
+                      <ModuleList modules={currentPosts_m}/>
+                        <div className="indexPaginationM">
+                          <div className="indexRes2">
+                            <div className="indexCenterWrap">
+                              <Typography  variant="caption" >Viser {mindexOfFirstPost + 1} - {interval_m} av {modules.length} treff</Typography>
+                            </div>
+                            <div className="indexCenterWrap">
+                              <Pagination count={numberOfPages_m} page={currentPage_m} onChange={handlePageModule} />
+                            </div>  
+                          </div>
+                        </div>
+                    </div>
+                </div>               
             </TabPanel>   
             }
-        </div>
-        
+        </div>    
     );
 };
 

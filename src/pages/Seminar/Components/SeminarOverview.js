@@ -9,7 +9,7 @@ import NoAccess from '../../../global/Components/NoAccess';
 import CookieService from '../../../global/Services/CookieService';
 import AuthService from '../../../global/Services/AuthService'; 
 import SeminarNav from './SeminarNav';
-import {SeminarProvider, SeminarExpiredProvider} from './SeminarContext';
+
 
 class SeminarOverview extends Component {
     constructor(props) {
@@ -59,11 +59,7 @@ class SeminarOverview extends Component {
       if(!loading && authenticated) {
           return (            
               <div className="Seminar-Content">
-                <SeminarExpiredProvider>
-                  <SeminarProvider>
-                    <SeminarNav/>
-                  </SeminarProvider>
-                </SeminarExpiredProvider>
+                <SeminarNav/>
               </div>
           );
       } else {
