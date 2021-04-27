@@ -132,24 +132,27 @@ router.post('/submitCourse', (req, res) => {
                     connection.query(insertCourseQueryFormat, (error, insertedCourse) => {
                         if (error) {
                             console.log("En feil oppstod ved oppretting av nytt kurs, detaljer: " + error.errno + ", " + error.sqlMessage)
-                            return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                            if(error.errno === 1062) {
+                                return res.json({ "status" : "error", "message" : "Dette kurset eksisterer allerede" });
+                            } else {
+                                return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                            }
                         }
                         
                         if(insertedCourse.affectedRows > 0) {
-                            // Oppretter kurskoblig til fagfelt
-                            let insertCourseareaQuery = "INSERT INTO kursfelt(emnekode, fagfeltid) VALUES(?, ?)";
-                            let insertCourseareaQueryFormat = mysql.format(insertCourseareaQuery, [req.body.emnekode, req.body.fagfeltid]);
-                    
-                            connection.query(insertCourseareaQueryFormat, (error, insertedCoursearea) => {
-                                if (error) {
-                                    console.log("En feil oppstod ved oppretting av nytt kursfelt, detaljer: " + error.errno + ", " + error.sqlMessage)
-                                    return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
-                                }
-
-                                if(insertedCoursearea.affectedRows > 0) {
-                                    return res.json({ "status" : "success" });
-                                }
+                            JSON.parse(req.body.fagfeltid).map(fagfelt => {
+                                // Oppretter kurskoblig til fagfelt
+                                let insertCourseareaQuery = "INSERT INTO kursfelt(emnekode, fagfeltid) VALUES(?, ?)";
+                                let insertCourseareaQueryFormat = mysql.format(insertCourseareaQuery, [req.body.emnekode, fagfelt]);
+                        
+                                connection.query(insertCourseareaQueryFormat, (error, insertedCoursearea) => {
+                                    if (error) {
+                                        console.log("En feil oppstod ved oppretting av nytt kursfelt, detaljer: " + error.errno + ", " + error.sqlMessage)
+                                        return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                                    }
+                                });
                             });
+                            return res.json({ "status" : "success" });
                         } else {
                             return res.json({ "status" : "error", "message" : "Feil oppstod under oppretting av kurset" });
                         }
