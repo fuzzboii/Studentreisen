@@ -20,56 +20,30 @@ class SeminarOverview extends Component {
       }
   }
 
-  componentDidMount() {
-      // Henter authtoken-cookie
-      const token = CookieService.get("authtoken");
-
-      if(token !== undefined) {
-          // Om token eksisterer sjekker vi mot serveren om brukeren har en gyldig token
-          AuthService.isAuthenticated(token).then(res => {
-              if(!res.authenticated) {
-                  // Sletter authtoken om token eksisterer lokalt men ikke er gyldig på server
-                  CookieService.remove("authtoken");
-              }
-              this.setState({
-                  authenticated : res.authenticated,
-                  loading: false
-              });
-          });
-      } else {
-          this.setState({
-              authenticated : false,
-              loading: false
-          });
-      }
-  }
-
   render() {
-      const {loading, authenticated} = this.state;
-
-      if(loading) {
-          // Om vi er i loading fasen (Før mottatt data fra API) vises det et Loading ikon
-          return(
-              <section id="loading">
-                  <Loader />
-              </section>
-          );
-      }
+        if(this.props.loading) {
+            // Om vi er i loading fasen (Før mottatt data fra API) vises det et Loading ikon
+            return(
+                <section id="loading">
+                    <Loader />
+                </section>
+            );
+        }
       
-      if(!loading && authenticated) {
-          return (            
-              <div className="Seminar-Content">
-                <SeminarNav type={this.props.type} brukerid={this.props.brukerid}/>
-              </div>
-          );
-      } else {
-          return (
-              // Ugyldig eller ikke-eksisterende token 
-              <NoAccess />
-          );
-      }
-  }  
-}   
-  
+        if(!this.props.loading && this.props.auth) {
+            return (            
+                <div className="Seminar-Content">
+                    <SeminarNav type={this.props.type} brukerid={this.props.brukerid} />
+                </div>
+            );
+        } else {
+            return (
+                // Ugyldig eller ikke-eksisterende token 
+                <NoAccess />
+            );
+        }
+    }
+}    
+    
 
 export default SeminarOverview; 
