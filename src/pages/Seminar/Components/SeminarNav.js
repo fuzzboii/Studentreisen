@@ -1,5 +1,6 @@
 // React spesifikt
 import React, {useState, useEffect} from "react";
+import {useSelector, useDispatch} from 'react-redux';
 // 3rd-party Packages
 import {Tabs, Tab, Typography} from '@material-ui/core';
 import Pagination from '@material-ui/lab/Pagination';
@@ -7,6 +8,7 @@ import axios from 'axios';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
 // Studentreisen-assets og komponenter
+import {tabSeminar} from '../../../global/Services/Actions';
 import SeminarListUpcoming from './SeminarListUpcoming';
 import SeminarListExpired from './SeminarListExpired';
 import CookieService from '../../../global/Services/CookieService';
@@ -36,8 +38,11 @@ const SeminarNav = (props) => {
   const [loading, setLoading] = useState(true);
   // Autentiseringsstatus
   const [auth, setAuth] = useState(false);
-  
-  const [position, setPosition] = useState(0);
+
+  // Deklarerer storeHook for å hente data for position og henter den
+  const dispatch = useDispatch();
+  const getSeminarPosition = useSelector(state => state.seminar_tab_position);
+  const [position, setPosition] = useState(getSeminarPosition);
 
 
   const [seminarsUpcoming, setSeminarsUpcoming] = useState([]);
@@ -88,7 +93,13 @@ const SeminarNav = (props) => {
     const intervalExpired =  indexOfFirstPostExpired + currentPostsExpired.length;
       
     const handleChange = (event, newValue) => {
-        setPosition(newValue);
+      setPosition(newValue);
+      if(newValue === 1) {
+        dispatch(tabSeminar(newValue));
+      };
+      if(newValue === 0) {
+        dispatch(tabSeminar(newValue));
+      }; 
     }
 
     const handlePageUpcoming = (event, value) => {

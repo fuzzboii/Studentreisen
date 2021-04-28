@@ -8,6 +8,15 @@ import {BrowserRouter as Router, Switch, Route, useLocation} from 'react-router-
 import {SnackbarProvider} from 'notistack';
 import Slide from '@material-ui/core/Slide';
 
+import {createStore} from 'redux';
+import allReducers from './global/Services/Reducers';
+import courseReducer from './global/Services/Reducers/tabCourse';
+import { Provider } from 'react-redux';
+
+const store = createStore(
+  allReducers, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+);
+
 ReactDOM.render(
   <React.StrictMode>
     <Router >
@@ -19,7 +28,9 @@ ReactDOM.render(
         }}
         TransitionComponent={Slide}
       >
-        <App />
+        <Provider store={store}>
+          <App />
+        </Provider>
       </SnackbarProvider>
     </Router >
   </React.StrictMode>,

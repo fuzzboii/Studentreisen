@@ -108,7 +108,9 @@ function App() {
               <Profile auth={auth} type={type} loading={loading} />
             )}
           />
-          <Route path = "/seminar" exact component = {Seminar} />
+          <Route path = "/seminar" exact render = {() =>(
+              <Seminar auth={auth} type={type} loading={loading} brukerid={brukerid} />
+          )}/>          
           <Route path = "/seminar/seminarkommende=:seminarid" render = {() =>(
             <SeminarDetailsUpcoming auth={auth} type={type} loading={loading} brukerid={brukerid} />
           )}/>
