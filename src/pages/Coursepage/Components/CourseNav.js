@@ -205,18 +205,18 @@ const CourseNav = (props) => {
                     <div className="indexRes">
                       <Typography variant="caption">Viser {mindexOfFirstPost + 1} - {interval_m} av {modules.length} treff</Typography>
                     </div>
-                      <ModuleList modules={currentPosts_m}/>
-                        <div className="indexPaginationM">
-                          <div className="indexRes2">
-                            <div className="indexCenterWrap">
-                              <Typography  variant="caption" >Viser {mindexOfFirstPost + 1} - {interval_m} av {modules.length} treff</Typography>
-                            </div>
-                            <div className="indexCenterWrap">
-                              <Pagination count={numberOfPages_m} page={currentPage_m} onChange={handlePageModule} />
-                            </div>  
-                          </div>
+                    <ModuleList modules={currentPosts_m}/>
+                    <div className="indexPaginationM">
+                      <div className="indexRes2">
+                        <div className="indexCenterWrap">
+                          <Typography  variant="caption" >Viser {mindexOfFirstPost + 1} - {interval_m} av {modules.length} treff</Typography>
                         </div>
+                        <div className="indexCenterWrap">
+                          <Pagination count={numberOfPages_m} page={currentPage_m} onChange={handlePageModule} />
+                        </div>  
+                      </div>
                     </div>
+                  </div>
                 </div>               
             </TabPanel>   
             }

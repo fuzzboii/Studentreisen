@@ -89,6 +89,11 @@
     
   }
 
+.modulesList {
+    display: grid;
+    row-gap: 1em;
+      
+}
 
 
   /* ----------------------------- */
@@ -102,11 +107,13 @@
 
 /* Tab */
 @media screen and (min-width: 720px) {
+
+    .wrapIndexPage {
+        display: grid;
+        width: 40em;
+    }
     .module-section {
         background-color: rgb(255, 255, 255);
-        max-width: 40em;
-        margin-bottom: 0.8em;
-    
     }
 
     .content-main {
@@ -116,19 +123,10 @@
         margin-right: auto; 
     }
 
-    .indexPaginationM { 
-        width: 12em;
-        margin-bottom: 1em;
-        margin-top: 1em;
-        margin-left: 0;
-        margin-right: 0;
+   
+
+
     
-    }
-
-    .indexPaginationM {
-        margin-left: 13.5em;
-    }
-
 
   
 }
@@ -146,9 +144,7 @@
     opacity: 1;
 }
 
-.indexPaginationM {
-    margin-left: 13.5em;
-}
+
 
 .accordElementWrap:hover {
     background-color: rgb(241, 241, 241);
