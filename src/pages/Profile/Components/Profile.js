@@ -167,10 +167,16 @@ function Profile(props) {
                     setUpdateTextEmail("Oppdater");
                 } else {
                     setAlertDisplay("")
-                    setAlertText(res.data.message)
+                    setAlertText("Epost oppdatert!")
                     setAlertSeverity("success")
                     setUpdateTextEmail("Oppdater");
                     setUpdateBtnEmail(false)
+
+                    let exp = new Date()
+                    exp.setDate(res.data.utlopsdato)
+
+                    const options = { path: "/", expires: exp };
+                    CookieService.set('authtoken', res.data.token, options);
                 }
             })
         }
@@ -420,7 +426,7 @@ function Profile(props) {
                         </FormControl>
                         {/* Viser ulike knapper avhengig av om det finnes input av passord og bekreftet passord */}
                         {pwd == "" || pwd2 == "" ? 
-                        <Button id="pwdSubmit" className={classes.profileButton} type="submit" variant="contained" disabled="disabled"> {updateTextPwd} </Button> 
+                        <Button id="pwdSubmit" className={classes.profileButton} type="submit" variant="contained" disabled={true}> {updateTextPwd} </Button> 
                         :
                         <Button id="pwdSubmit" className={classes.profileButton} type="submit" variant="contained"> {updateTextPwd} </Button>
                         }
