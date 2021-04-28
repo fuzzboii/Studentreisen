@@ -18,6 +18,8 @@ function Profile(props) {
     // Array for alle interesser //
     const [fagfelt, setFagfelt] = useState([]);
     // Array for aktive interesser
+    // Opprettet med ett falsk objekt for å sikre at arrayet aldri er tomt
+    // Kan byttes ut med en if-test, litt hacky
     const [interesser, setInteresser] = useState([[-1, -1]]);
 
     // States for oppdatering av personalia
