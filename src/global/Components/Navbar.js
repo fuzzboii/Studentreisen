@@ -98,7 +98,8 @@ function Navbar(props) {
         padding: '0.5rem 1rem',
         display: 'grid',
         minWidth: '7rem',
-        transform: 'translate(45vw)'
+        transform: 'translate(45vw)',
+        marginRight: '2vw'
       },
 
       loggbtnNoAuth: {
@@ -117,7 +118,7 @@ function Navbar(props) {
         padding: '0.5rem 1rem',
         display: 'flex',
         height: '100%',
-        visibility: 'collapse'
+        visibility: 'collapse',
       },
 
       loggbtnmobilBar: {
@@ -126,7 +127,7 @@ function Navbar(props) {
         padding: '0.5rem 1rem',
         display: 'flex',
         height: '100%',
-        display: 'none'
+        display: 'none',
       },
 
       avatar: {
