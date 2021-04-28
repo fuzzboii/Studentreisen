@@ -4,10 +4,14 @@ import React, {useState, useEffect} from "react";
 import {Tabs, Tab, Typography} from '@material-ui/core';
 import Pagination from '@material-ui/lab/Pagination';
 import axios from 'axios';
+import Button from '@material-ui/core/Button';
+import AddIcon from '@material-ui/icons/Add';
 // Studentreisen-assets og komponenter
 import SeminarListUpcoming from './SeminarListUpcoming';
 import SeminarListExpired from './SeminarListExpired';
 import CookieService from '../../../global/Services/CookieService';
+import Loader from '../../../global/Components/Loader';
+import NoAccess from '../../../global/Components/NoAccess';
 
 
 function TabPanel(props) {
@@ -28,7 +32,11 @@ const SeminarNav = (props) => {
 
   },[]);
 
-
+  // State for loading mens vi venter på svar fra server
+  const [loading, setLoading] = useState(true);
+  // Autentiseringsstatus
+  const [auth, setAuth] = useState(false);
+  
   const [position, setPosition] = useState(0);
 
 
@@ -36,14 +44,15 @@ const SeminarNav = (props) => {
   const [seminarsExpired, setSeminarsExpired] = useState([]);
 
   const [enlists, setEnlists] = useState([]);
-
+  
+  
   const fetchData = () => {
     const token = CookieService.get("authtoken");
       
       const data = {
         token: token
       } 
-
+      
     axios.all([
       axios.get(process.env.REACT_APP_APIURL + "/seminar/getAllSeminarUpcomingData"),
       axios.get(process.env.REACT_APP_APIURL + "/seminar/getAllSeminarExpiredData"),
@@ -53,6 +62,8 @@ const SeminarNav = (props) => {
       setSeminarsUpcoming(res1.data);
       setSeminarsExpired(res2.data);
       setEnlists(res3.data);
+      // Data er ferdig hentet fra server
+      setLoading(false);
     }));
   };
 
@@ -87,7 +98,16 @@ const SeminarNav = (props) => {
     const handlePageExpired = (event, value) => {
       setCurrentPageExpired(value);
     };
+  
+    if (loading) {
+    return (
+        <section id="loading">
+            <Loader />
+        </section>
+    )
+  }
 
+  if (!loading) {    
     return (
       <div className="Seminar-Overview">
         <div className="BorderBox">   
@@ -96,11 +116,24 @@ const SeminarNav = (props) => {
               <Tab className="" label="Utgåtte" />
           </Tabs>
         </div>
-
-
+        <div className="Seminar-HeadingTools">
+          
+          {props.type === 3 || props.type === 4 &&
+          <div className="Seminar-HeadingToolsWrapper">
+            <div className="Seminar-HeadingToolsDesktop">
+              <Button className="Seminar-ButtonNewDesktop" href="/seminar/ny" variant="contained" color="primary">Nytt seminar<AddIcon/></Button>
+            </div>     
+            <div className="Seminar-HeadingToolsMobile">
+              <Button className="Seminar-ButtonNewMobile" href="/seminar/ny" variant="contained" color="primary"><AddIcon/></Button>
+            </div>
+                    
+          </div>
+          
+          }
+        </div>
         <TabPanel value={position} index={0}>
             <div className="Seminar-ContentOverview">
-              <SeminarListUpcoming seminarsUpcoming={currentPostsUpcoming} enlists={enlists}/>
+              <SeminarListUpcoming seminarsUpcoming={currentPostsUpcoming} enlists={enlists} innloggetbruker={props.brukerid} />
             </div>
               <div className="Seminar-indexPosition">
                 <div className="Seminar-indexPagination">
@@ -127,6 +160,13 @@ const SeminarNav = (props) => {
         </TabPanel>
       </div>
     );
+  
+  } else {
+    return (
+        // Brukeren er ikke innlogget, omdiriger
+        <NoAccess />
+    );
+  }
 };
 
 

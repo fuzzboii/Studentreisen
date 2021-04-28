@@ -4,6 +4,7 @@ import {useLocation, useParams} from 'react-router-dom';
 import React from 'react';
 import { useHistory } from "react-router-dom";
 
+
 // 3rd-party Packages
 import EventIcon from '@material-ui/icons/Event';
 import moment from 'moment';
@@ -14,7 +15,6 @@ import EditIcon from '@material-ui/icons/Edit';
 import axios from 'axios';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
-
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -23,16 +23,21 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { FormControl, InputLabel, Input } from '@material-ui/core';
 import CancelIcon from '@material-ui/icons/Cancel';
 import { Alert } from '@material-ui/lab';
+import Chip from '@material-ui/core/Chip';
+import FaceIcon from '@material-ui/icons/Face';
+
 
 // Studentreisen-assets og komponenter
 import Loader from '../../../global/Components/Loader';
 import NoAccess from '../../../global/Components/NoAccess';
 import CookieService from '../../../global/Services/CookieService';
 import '../CSS/Seminar.css';
+import noimage from '../../../assets/noimage.jpg'; 
 
 
 
 const SeminarDetailsUpcoming = (props) => {
+    
 
     let { seminarid } = useParams();
     
@@ -41,10 +46,18 @@ const SeminarDetailsUpcoming = (props) => {
     
     //States for å liste opp kommende seminarer
     const [seminarsUpcoming, setSeminars] = useState([]);
+
+    //States for å liste opp plasseringen til bildet
+    const [plassering, setPlassering] = useState('');
     
     //States for å liste opp påmeldte brukere på seminarene
     const [enlists, setEnlists] = useState([]);
-    
+
+    //States for påmeldte brukere
+
+    const [participants, setParticipants] = useState([]);
+    const [totalparticipants, setTotalParticipants] = useState([]);
+
     //States for åpning av dialog boksen
     const [openEdit, setOpenEdit] = React.useState(false);
     const [openDelete, setOpenDelete] = React.useState(false);
@@ -96,6 +109,8 @@ const SeminarDetailsUpcoming = (props) => {
     useEffect(() => {
         fetchData();
         fetchEnlistedData();
+        fetchParticipantsData();
+        
     },[openEdit]);
 
     //Håndterer lukking av redigering, sletting, og deltagere
@@ -110,24 +125,25 @@ const SeminarDetailsUpcoming = (props) => {
         setOpenParticipants(false);
     };
     
-    //Henting av kommende data til seminarene og tester på seminarid for å sette riktig informasjon i input feltene
+    //Henting av kommende data til seminarene og tester på seminarid
     const fetchData = async () => {
                     
-        const res = await axios.get(process.env.REACT_APP_APIURL + "/seminar/getAllSeminarUpcomingData");
+        axios.get(process.env.REACT_APP_APIURL + "/seminar/getAllSeminarUpcomingData").then(res => {
 
         setSeminars(res.data);
-        res.data.map(prop => {
-            if (prop.seminarid == seminarid) {
-                setTitle(prop.navn);
-                setStartdate(prop.oppstart);
-                setEnddate(prop.varighet);
-                setAdress(prop.adresse);
-                setDescription(prop.beskrivelse);
-                setAvailability(prop.tilgjengelighet);
+        res.data.map(seminar => {
+            if (seminar.seminarid == seminarid) {
+                setTitle(seminar.navn);
+                setStartdate(seminar.oppstart);
+                setEnddate(seminar.varighet);
+                setAdress(seminar.adresse);
+                setDescription(seminar.beskrivelse);
+                setAvailability(seminar.tilgjengelighet);
+                setPlassering(seminar.plassering);
                 
             }
         })
-    };
+    })}
     
     
     //Henting av påmeldte seminarer for brukeren, deretter sjekk på påmelding og settes påmeldingen til true dersom brukeren er påmeldt på seminaret
@@ -135,25 +151,35 @@ const SeminarDetailsUpcoming = (props) => {
         const token = CookieService.get("authtoken");
         
         const data = {
-            token: token
+            token: token,
         }
         
-        const res = await axios.post(process.env.REACT_APP_APIURL + "/seminar/getEnlistedSeminars", data );
+        axios.post(process.env.REACT_APP_APIURL + "/seminar/getEnlistedSeminars", data).then(res => {
         setEnlists(res.data);
-        res.data.map(enlists => {
+            res.data.map(enlists => { 
+                if (enlists.seminarid == seminarid) {
+                    setEnlist(true);
+                } 
+            }
+        )})
+    }
+
+    //Henting av påmeldte brukere på seminaret
+    const fetchParticipantsData = async () => {
+        const token = CookieService.get("authtoken");
+
+        const data = {
+            token: token,
+            seminarid: seminarid,
+        }
+        axios.post(process.env.REACT_APP_APIURL + "/seminar/getParticipants", data).then(res => {
+            const total = res.data.length;
+            setParticipants(res.data);
+            setTotalParticipants(res.data.length)
             
-            if (enlists.seminarid == seminarid) {
-                setEnlist(true);
-
-            } 
         })
-    };
-
-
-
-    
-
-    
+    }   
+ 
     //Sletting av seminar
 /*     const deleteSeminar = async (seminarid, varighet, bilde) => {
 
@@ -195,17 +221,13 @@ const SeminarDetailsUpcoming = (props) => {
                 setAlertTextEnlist("Du er nå påmeldt til seminaret")
                 setAlertSeverity("success")
                 setEnlist(true);
-                console.log("Påmeldt");
 
                 window.setTimeout(() => {
                     setAlertOpen(false);
                 }, 3000)
             }
-        })
-        
-        
+        })    
     }
-
 
     const onUnenlist = () => {
         
@@ -219,14 +241,12 @@ const SeminarDetailsUpcoming = (props) => {
             if (res.data.status === "error") {
                 setAlertDisplay("")
                 setAlertTextEnlist(res.data.message)
-                setAlertSeverity("error")
             } else {
                 setAlertOpen(true);
                 setAlertDisplay("")
                 setAlertTextEnlist("Du er nå avmeldt fra seminaret")
                 setAlertSeverity("info")
                 setEnlist(false);
-                console.log("Avmeldt");
 
                 window.setTimeout(() => {
                     setAlertOpen(false);
@@ -269,8 +289,9 @@ const SeminarDetailsUpcoming = (props) => {
     
     //Når brukeren submitter oppdatereringen av seminaret
     const onSubmit = e => {
+        // Stopper siden fra å laste inn på nytt
         e.preventDefault()
-
+        
         const data = {
             token : token,
             seminarid : seminarid, 
@@ -328,6 +349,9 @@ const SeminarDetailsUpcoming = (props) => {
         })
 
     }
+    
+    // Om seminaret ikke har ett bilde, vis et standardbilde
+    const uploadedimg = plassering !== null ? "/uploaded/" + plassering : noimage;
 
     return(
         <>
@@ -384,6 +408,7 @@ const SeminarDetailsUpcoming = (props) => {
                                                 <DialogContentText>
                                                     For å gjøre endringer på seminaret, skriv de nye endringene i feltene. Klikk deretter på oppdater.
                                                 </DialogContentText>
+                                                
                                                 <form id="SeminarEdit_form" >
                                                     {/* Tittel */}
                                                     <FormControl id="Seminar_formcontrol">
@@ -485,8 +510,9 @@ const SeminarDetailsUpcoming = (props) => {
 
                         {/*Bilde og informasjon seksjonen */}
                         <Box className="SeminarDetails-Box" boxShadow={1}>    
+                            
                             <div className="SeminarDetails-Image">
-                                <img src={"/uploaded/" + seminar.plassering} alt="Seminar Image" className="SeminarDetails-img" imgstart=""  />
+                                <img src={uploadedimg} alt="Seminar Image" className="SeminarDetails-img" imgstart=""  />
                             </div>
                             <div className="SeminarDetails-Information">
                                 <h2 className="SeminarDetails-ArrangorHeading">Arrangør</h2>
@@ -504,25 +530,11 @@ const SeminarDetailsUpcoming = (props) => {
                         
                         {/*Deltagere seksjonen */}
                         <div className="SeminarDetails-ButtonDeltagereWrapper">
-                            <Button className="SeminarDetailsButtonDeltagere" onClick={handleClickOpenParticipants} size="small" color="primary">
-                                Se påmeldte deltagere
-                            </Button>
-                        
-                            <Dialog open={openParticipants} onClose={handleCloseParticipants} aria-labelledby="form-dialog-title"> 
-                                <DialogTitle id="form-dialog-title">Deltagere</DialogTitle>
-                                    <DialogContent>
-
-                                                        
-
-                                    </DialogContent>
-                                                
-                                {/* Funksjonsknapper */}
-                                <DialogActions>
-                                    <Button onClick={handleCloseParticipants} color="secondary" startIcon={<CancelIcon />}>
-                                        Tilbake til seminaret
-                                    </Button>
-                                </DialogActions>
-                            </Dialog> 
+                        <Chip
+                            icon={<FaceIcon />}
+                            label={totalparticipants + " Påmeldt"}
+                            color="primary"
+                        />
                         </div>
                     </div>
 

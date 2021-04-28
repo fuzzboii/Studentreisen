@@ -18,6 +18,8 @@ function Profile(props) {
     // Array for alle interesser //
     const [fagfelt, setFagfelt] = useState([]);
     // Array for aktive interesser
+    // Opprettet med ett falsk objekt for å sikre at arrayet aldri er tomt
+    // Kan byttes ut med en if-test, litt hacky
     const [interesser, setInteresser] = useState([[-1, -1]]);
 
     // States for oppdatering av personalia
@@ -75,7 +77,6 @@ function Profile(props) {
                     }
                     if (first) {
                         setProfilbilde(e.target.files[0].name)
-                        this.history.push("/profile")
                     }
                     setProfilbilde(e.target.files[0].name)
                 }
@@ -94,19 +95,53 @@ function Profile(props) {
     const onTlfSubmit = e => {
         e.preventDefault()
         setUpdateTextTlf("Vennligst vent");
-        
-        const config = {
-            token: token,
-            telefon: tlf.replace(/\s/g, '')
+
+        // Først en regex tes på om tlf kun inneholder nummer, evt. startet med et "+"-tegn
+        if (/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/.test(tlf)) {
+            // Test at nummeret er en korrekt (norsk) lengde
+            // Fjerne eventuelle mellomrom i opgitt nummer
+            var tlfTrim = tlf.replace(/\s/g, '')
+            if (tlfTrim.charAt(0) === '+') {
+                if (tlfTrim.length == 11) {
+                    const config = {
+                        token: token,
+                        telefon: tlfTrim
+                    }
+                    
+                    axios.post(process.env.REACT_APP_APIURL + "/profile/updateTelefon", config).then(
+                        setAlertDisplay(""),
+                        setAlertText("Telefonnummer oppdatert!"),
+                        setAlertSeverity("success"),
+                        setUpdateTextTlf("Oppdater"),
+                        setUpdateBtnTlf(false)
+                        )
+                }
+            } else if (tlfTrim.length == 8 || tlfTrim.length == 12) {
+                const config = {
+                    token: token,
+                    telefon: tlfTrim
+                }
+                
+                axios.post(process.env.REACT_APP_APIURL + "/profile/updateTelefon", config).then(
+                    setAlertDisplay(""),
+                    setAlertText("Telefonnummer oppdatert!"),
+                    setAlertSeverity("success"),
+                    setUpdateTextTlf("Oppdater"),
+                    setUpdateBtnTlf(false)
+                    )
+            } else {
+                setAlertDisplay("")
+                setAlertText("Telefonnummeret er ikke gyldig")
+                setAlertSeverity("error")
+                setUpdateTextTlf("Oppdater")
+            }
+        } else {
+            setAlertDisplay("")
+            setAlertText("Telefonnummeret er ikke gyldig")
+            setAlertSeverity("error")
+            setUpdateTextTlf("Oppdater")
         }
         
-        axios.post(process.env.REACT_APP_APIURL + "/profile/updateTelefon", config).then(
-            setAlertDisplay(""),
-            setAlertText("Telefonnummer oppdatert!"),
-            setAlertSeverity("success"),
-            setUpdateTextTlf("Oppdater"),
-            setUpdateBtnTlf(false)
-            )
         }
         
         // Utføres når bruker gjør en handling i input-feltet for e-post
@@ -134,10 +169,16 @@ function Profile(props) {
                     setUpdateTextEmail("Oppdater");
                 } else {
                     setAlertDisplay("")
-                    setAlertText(res.data.message)
+                    setAlertText("Epost oppdatert!")
                     setAlertSeverity("success")
                     setUpdateTextEmail("Oppdater");
                     setUpdateBtnEmail(false)
+
+                    let exp = new Date()
+                    exp.setDate(res.data.utlopsdato)
+
+                    const options = { path: "/", expires: exp };
+                    CookieService.set('authtoken', res.data.token, options);
                 }
             })
         }
@@ -387,7 +428,7 @@ function Profile(props) {
                         </FormControl>
                         {/* Viser ulike knapper avhengig av om det finnes input av passord og bekreftet passord */}
                         {pwd == "" || pwd2 == "" ? 
-                        <Button id="pwdSubmit" className={classes.profileButton} type="submit" variant="contained" disabled="disabled"> {updateTextPwd} </Button> 
+                        <Button id="pwdSubmit" className={classes.profileButton} type="submit" variant="contained" disabled={true}> {updateTextPwd} </Button> 
                         :
                         <Button id="pwdSubmit" className={classes.profileButton} type="submit" variant="contained"> {updateTextPwd} </Button>
                         }

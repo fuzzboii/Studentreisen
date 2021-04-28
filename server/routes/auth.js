@@ -2,7 +2,9 @@ const { connection } = require('../db');
 const mysql = require('mysql');
 const bcrypt = require('bcryptjs');
 const cryptojs = require('crypto-js');
+
 const { registerValidation, loginValidation, passwordValidation } = require('../validation');
+const { verifyAuth } = require('../global/CommonFunctions');
 
 const router = require('express').Router();
 
@@ -218,17 +220,17 @@ router.post('/login', async (req, res) => {
             return res.json({ "status" : "error", "message" : validation.error.details[0].message });
         } else {
             // Henter brukerinfo utifra oppgitt e-post
-            let checkQuery = "SELECT brukerid, email, pwd FROM bruker WHERE email = ?";
+            let checkQuery = "SELECT brukerid, email, pwd, pwd_temp FROM bruker WHERE email = ?";
             let checkQueryFormat = mysql.format(checkQuery, [req.body.email]);
 
-            connection.query(checkQueryFormat, (error, results) => {
+            connection.query(checkQueryFormat, (error, fetchedUser) => {
                 if (error) {
                     console.log("En feil oppstod under sjekking av brukerinfo ved innlogging, detaljer: " + error.errno + ", " + error.sqlMessage)
                     return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                 }
 
-                if(results[0] !== undefined) {
-                    const validatePass = bcrypt.compareSync(req.body.pwd, results[0].pwd);
+                if(fetchedUser[0] !== undefined) {
+                    const validatePass = bcrypt.compareSync(req.body.pwd, fetchedUser[0].pwd);
                     
                     if(validatePass) {
                         // Bruker autentisert
@@ -245,11 +247,11 @@ router.post('/login', async (req, res) => {
                         }
 
                         // Opprett en token utifra e-posten til brukeren
-                        const token = cryptojs.AES.encrypt(results[0].email, process.env.TOKEN_SECRET);
+                        const token = cryptojs.AES.encrypt(fetchedUser[0].email, process.env.TOKEN_SECRET);
 
                         // Legg til nye token i databasen med utløpsdato ovenfor
                         let insertQuery = "INSERT INTO login_token(gjelderfor, token, utlopsdato) VALUES(?, ?, ?)";
-                        let insertQueryFormat = mysql.format(insertQuery, [results[0].brukerid, token.toString(), date]);
+                        let insertQueryFormat = mysql.format(insertQuery, [fetchedUser[0].brukerid, token.toString(), date]);
                 
                         connection.query(insertQueryFormat, (error, results) => {
                             if (error) {
@@ -258,7 +260,7 @@ router.post('/login', async (req, res) => {
                             }
 
                             if(results.affectedRows > 0) {
-                                return res.json({"status" : "success", "message" : "OK", "authtoken" : token.toString()});
+                                return res.json({"status" : "success", "message" : "OK", "authtoken" : token.toString(), "pwd_temp" : fetchedUser[0].pwd_temp});
                             } else {
                                 return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                             }
@@ -278,5 +280,61 @@ router.post('/login', async (req, res) => {
     }
 });
 
+
+router.post('/updatePassord', async (req, res) => {
+    // Kontroller at passordet følger retningslinjer
+    const validation = passwordValidation({password : req.body.pwd, password2 : req.body.pwd2})
+
+    if (validation.error) {
+        // Om valideringen feiler sender vi tilbake en feilmelding utifra informasjonen utgitt av Joi
+        if(validation.error.details[0].type == "string.empty") {
+            // Ett av feltene er ikke fylt inn
+            return res.json({ "status" : "error", "message" : "Et av feltene er ikke fylt inn" });
+        } else if(validation.error.details[0].type == "any.required") {
+            // Ett av feltene er ikke tilstede i forespørselen
+            return res.json({ "status" : "error", "message" : "Et eller flere felt mangler" });
+        } else if(validation.error.details[0].type == "passwordComplexity.tooShort") {
+            // Ett av feltene er ikke tilstede i forespørselen
+            return res.json({ "status" : "error", "message" : "Passordet må være minimum 8 tegn langt med 1 liten bokstav, 1 stor bokstav og 1 tall" });
+        } else if(validation.error.details[0].type == "passwordComplexity.tooLong") {
+            // Ett av feltene er ikke tilstede i forespørselen
+            return res.json({ "status" : "error", "message" : "Passordet kan ikke være over 250 tegn" });
+        } else if(validation.error.details[0].type == "passwordComplexity.uppercase") {
+            // Ett av feltene er ikke tilstede i forespørselen
+            return res.json({ "status" : "error", "message" : "Passordet må være minimum 8 tegn langt med 1 liten bokstav, 1 stor bokstav og 1 tall" });
+        } else if(validation.error.details[0].type == "passwordComplexity.numeric") {
+            // Ett av feltene er ikke tilstede i forespørselen
+            return res.json({ "status" : "error", "message" : "Passordet må være minimum 8 tegn langt med 1 liten bokstav, 1 stor bokstav og 1 tall" });
+        } 
+
+        // Et ukjent validerings-problem oppstod, sender fulle meldingen til bruker
+        return res.json({ "status" : "error", "message" : pwdValidation.error.details[0].message });
+    } else {
+        if(req.body.token !== undefined) {
+            // Salt og hash passord
+            const salt = await bcrypt.genSalt(10)
+            const hashedPwd = await bcrypt.hash(req.body.pwd, salt)
+    
+            verifyAuth(req.body.token).then( resAuth => {
+                let updateQuery = "UPDATE bruker SET pwd = ?, pwd_temp = 0 WHERE brukerid = ?"
+                let updateQueryFormat = mysql.format(updateQuery, [hashedPwd, resAuth.brukerid])
+                connection.query(updateQueryFormat, (error, results) => {
+                    if (error) {
+                        console.log("En feil oppstod ved oppdatering av midlertidig passord for en bruker, detaljer: " + error.errno + ", " + error.sqlMessage)
+                        return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere"})
+                    }
+    
+                    if(results.affectedRows > 0) {
+                        return res.json({"status" : "success"})
+                    } else {
+                        return res.json({"status" : "error", "message" : "En feil oppstod under oppdatering av brukerens passord"})
+                    }
+                })
+            })
+        } else {
+            res.status(400).json({"status" : "error", "message" : "Ikke tilstrekkelig data"})
+        }
+    }
+})
 
 module.exports = router;

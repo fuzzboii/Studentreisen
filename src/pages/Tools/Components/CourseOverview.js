@@ -88,7 +88,7 @@ function CourseOverview(props) {
                         icon: 'edit',
                         tooltip: 'Rediger kurs',
                         onClick: (e, kursData) => {
-                            console.log("Gå til redigering for " + kursData.emnekode + "\nHusk at all data er med her (kursData.beskrivelse, kursData.lenke osv), trenger ikke hente på nytt");
+                            history.push("/course/emnekode=" + kursData.emnekode);
                         }
                     },
                     {

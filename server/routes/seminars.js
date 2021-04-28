@@ -24,16 +24,18 @@ router.post('/getEnlistedSeminars', async (req, res) => {
                     res.send(results);
 
                 } else {
-                    res.status(400).json({"status" : "error", "message" : "En feil oppstod under spørring"});
+                    res.send(results);
                 }
             });
         })
 
     } else {
         res.status(400).json({"status" : "error", "message" : "Ikke tilstrekkelig data"});
+        
     }
 
     });
+
 
 router.get('/getAllSeminarUpcomingData', async (req, res) => {
     try{
@@ -77,7 +79,6 @@ router.get('/getAllSeminarExpiredData', async (req, res) => {
 
 
     router.post('/updateSeminar', async (req, res) => { 
-        console.log(req.body.seminarid);
         if(req.body.token !== undefined && req.body.seminarid !== undefined) {
             
             let updateQuery = "UPDATE seminar SET navn = ?, oppstart = ?, varighet = ?, beskrivelse = ?, adresse = ? WHERE seminarid = ?";
@@ -103,8 +104,33 @@ router.get('/getAllSeminarExpiredData', async (req, res) => {
         }
     });
 
+    router.post('/getParticipants', async (req, res) => {
+        if(req.body.token !== undefined && req.body.seminarid !== undefined) {
+            
+            let getQuery = "SELECT bruker.brukerid, pamelding.seminarid, fnavn, enavn, pamelding.seminarid FROM bruker, pamelding WHERE bruker.brukerid = pamelding.brukerid AND pamelding.seminarid = ? ORDER BY enavn ASC";
+            let getQueryFormat = mysql.format(getQuery, [req.body.seminarid]);
+    
+            connection.query(getQueryFormat, (error, results) => {
+                if (error) {
+                    console.log("An error occured while fetching the data, details: " + error.errno + ", " + error.sqlMessage)
+                    return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                
+                }
+                
+                if(res.status(200)) {
+                    res.send(results);
+    
+                } else {
+                    res.status(400).json({"status" : "error", "message" : "En feil oppstod under spørring"});
+                }         
+                
+            });
+        } else {
+            res.status(400).json({"status" : "error", "message" : "Ikke tilstrekkelig data"});
+        }
+    });
+
     router.post('/updateAvailabilitySeminar', async (req, res) => { 
-        console.log(req.body.seminarid);
         if(req.body.token !== undefined && req.body.seminarid !== undefined) {
             
             let updateQuery = "UPDATE seminar SET tilgjengelighet = ? WHERE seminarid = ?";

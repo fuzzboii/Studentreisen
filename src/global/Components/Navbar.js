@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 
-import Button from "@material-ui/core/Button";
+import { Button, Avatar } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import NotificationImportantIcon from '@material-ui/icons/NotificationImportant';
 import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
@@ -23,9 +23,13 @@ function Navbar(props) {
     const [click, setClick] = useState(false);
     const [button, setButton] = useState(true);
     const [loading, setLoading] = useState(true);
+    // States for profilbilde
+    const [profilbilde, setProfilbilde] = useState()
+    const [initialer, setInitialer] = useState("")
     // Props som mottas fra App, viser til om bruker er inn-/utlogget
     const [auth, setAuth] = useState(false);
     const [type, setType] = useState(null);
+    // States for notifiseringer
     const [notif, setNotif] = useState(null);
     const [notifUlest, setNotifUlest] = useState(0);
     const [notifAapen, setNotifAapen] = useState(false);
@@ -61,6 +65,7 @@ function Navbar(props) {
       setAuth(props.auth);
       setType(props.type);
       setNotif(props.notif);
+      getAvatar()
       if(props.notif !== undefined) {
         setNotifUlest(1);
       }
@@ -113,7 +118,21 @@ function Navbar(props) {
         display: 'flex',
         height: '100%',
         visibility: 'collapse'
+      },
+
+      loggbtnmobilBar: {
+        color: '#fff',
+        fontSize: '1.5rem',
+        padding: '0.5rem 1rem',
+        display: 'flex',
+        height: '100%',
+        display: 'none'
+      },
+
+      avatar: {
+        backgroundColor: '#3bafa2'
       }
+
     });
     const classes = useStyles();
 
@@ -159,6 +178,19 @@ function Navbar(props) {
       setNotifAapen(false);
     };
 
+    const getAvatar = () => {
+      axios.all([
+        axios.post(process.env.REACT_APP_APIURL + "/profile/getProfilbilde", {token : CookieService.get("authtoken")}),
+        axios.post(process.env.REACT_APP_APIURL + "/profile/getBruker", {token : CookieService.get("authtoken")})
+      ]).then(axios.spread((res1, res2) => {
+        if (res1.data.results != undefined) {
+          setProfilbilde(res1.data.results[0].plassering)
+        } else {
+          setInitialer(res2.data.results[0].fnavn.charAt(0) + res2.data.results[0].enavn.charAt(0))
+        }
+      }))
+    }
+
     if(loading) {
       return(
         null
@@ -191,12 +223,21 @@ function Navbar(props) {
               }
               
               {auth && <div className={click ? 'nav-menu active' : 'nav-menu'}>
+                {click ? 
                 <Button
                   className={classes.loggbtnmobil}
                   onClick={loggUt}
                   id='loggBtnMobil'>
                   Logg ut
                 </Button>
+                :
+                <Button
+                  className={classes.loggbtnmobilBar}
+                  onClick={loggUt}
+                  id='loggBtnMobil'>
+                  Logg ut
+                </Button>
+                }
 
                 <Button 
                   className={classes.navbtn} 
@@ -250,11 +291,18 @@ function Navbar(props) {
               {auth && (notif == null || notifUlest == 0) &&
                 <NotificationsNoneIcon id="notif-bell" onClick={notifClickOpen} />
               }
-              
+
               {auth && <Link
-                to='/Profile'>
-                <i className="far fa-user" />
-              </Link> }
+                to='/Profile'
+                className="avatarWrap">
+                <Avatar
+                  src={"/uploaded/" + profilbilde }
+                  className={classes.avatar}
+                >
+                  {/* Hvis det ikke eksisterer et bilde for brukeren faller avatar tilbake på initialer */}
+                  {initialer}
+                </Avatar>
+              </Link>}
               {button && auth && <Button onClick={loggUt} className={classes.loggbtn} > LOGG UT </Button> }
               {button && !auth && <Link to='/Register' className={classes.loggbtnNoAuth} > REGISTRER </Link> }
               {!auth && <Link to='/Login' className={classes.loggbtnNoAuth} > LOGG INN </Link> }

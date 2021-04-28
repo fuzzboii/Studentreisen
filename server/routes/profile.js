@@ -1,6 +1,7 @@
 const { connection } = require('../db');
 const mysql = require('mysql');
 const bcrypt = require('bcryptjs');
+const cryptojs = require('crypto-js');
 const { verifyAuth } = require('../global/CommonFunctions');
 const router = require('express').Router();
 const { emailValidation, passwordValidation } = require('../validation');
@@ -212,9 +213,34 @@ router.post('/updateEmail', async (req, res) => {
                 }
 
                 if(results.affectedRows > 0) {
-                    return res.json({"status" : "success", "message" : "Epost oppdatert" })
+                    // email som oppbevares i authtoken må først krypteres
+                    console.log("Epost: " + req.body.epost.toLowerCase())
+                    console.log("Secret: " + process.env.TOKEN_SECRET)
+                    const token = cryptojs.AES.encrypt(req.body.epost.toLowerCase(), process.env.TOKEN_SECRET);
+
+                    // Setter dato på utløp, reverterer for øyeblikket "husk meg"
+                    let date = new Date()
+                    date.setTime(date.getTime() + ((60 * 3) * 60 * 1000))
+                    console.log("Dato: " + date)
+
+                    let insertQuery = "INSERT INTO login_token(gjelderfor, token, utlopsdato) VALUES(?, ?, ?)"
+                    let insertQueryFormat = mysql.format(insertQuery, [brukerid, token.toString(), date])
+                    
+                    connection.query(insertQueryFormat, (error2, results2) => {
+                        if (error2) {
+                            console.log("1")
+                            return res.json({"status" : "error", "message" : "En feil oppstod under oppdatering av brukerens email"})
+                        }
+                        if (results2.affectedRows > 0) {
+                            return res.json({utlopsdato : date, token : token.toString()})
+                        } else {
+                            console.log("2")
+                            return res.json({"status" : "error", "message" : "En feil oppstod under oppdatering av brukerens email"})
+                        }
+                    })
 
                 } else {
+                    console.log("3")
                     return res.json({"status" : "error", "message" : "En feil oppstod under oppdatering av brukerens email"})
                 }
             })

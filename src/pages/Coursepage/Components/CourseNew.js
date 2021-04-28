@@ -22,7 +22,7 @@ class CourseNew extends Component {
                         CourseNew_input_emnekode : "", CourseNew_input_navn : "", 
                         CourseNew_input_beskrivelse : "", CourseNew_input_spraak : "", 
                         CourseNew_input_semester : "", CourseNew_input_studiepoeng : "", 
-                        CourseNew_input_lenke : "", CourseNew_input_fagfelt : "", CourseNew_fagfelt : null, CourseNew_fagfelt_hentet : false, 
+                        CourseNew_input_lenke : "", CourseNew_input_fagfelt : [], CourseNew_fagfelt : null, CourseNew_fagfelt_hentet : false, 
                         submitDisabled : false, submitText : "Opprett kurs", submitOpacity: "1" }
     }
 
@@ -85,7 +85,6 @@ class CourseNew extends Component {
                                         });
                                 
                                         const data = new FormData();
-
                                 
                                         data.append('emnekode', this.state.CourseNew_input_emnekode);
                                         data.append('navn', this.state.CourseNew_input_navn);
@@ -94,7 +93,7 @@ class CourseNew extends Component {
                                         data.append('semester', this.state.CourseNew_input_semester);
                                         data.append('studiepoeng', this.state.CourseNew_input_studiepoeng);
                                         data.append('lenke', this.state.CourseNew_input_lenke);
-                                        data.append('fagfeltid', this.state.CourseNew_input_fagfelt);
+                                        data.append('fagfeltid', JSON.stringify(this.state.CourseNew_input_fagfelt));
                                         data.append('token', CookieService.get("authtoken"));
                                 
                                         // Axios POST request
@@ -261,7 +260,7 @@ class CourseNew extends Component {
                         </FormControl>
                         <FormControl id="CourseNew_formcontrol">
                             <InputLabel htmlFor="CourseNew_select_fagfelt">Fagfelt</InputLabel>
-                            <Select id="CourseNew_select_fagfelt" name="CourseNew_select_fagfelt" value={this.state.CourseNew_input_fagfelt} onKeyUp={this.onSubmit} onChange={this.onSelectChange}>
+                            <Select id="CourseNew_select_fagfelt" name="CourseNew_select_fagfelt" value={this.state.CourseNew_input_fagfelt} multiple onKeyUp={this.onSubmit} onChange={this.onSelectChange}>
                                 {fagfeltList}
                             </Select>
                         </FormControl>
