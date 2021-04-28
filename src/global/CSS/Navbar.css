@@ -16,7 +16,6 @@
     align-items: center;
     text-decoration: none;
     height: 5rem;
-    width: 95vw;
     font-size: 1.5rem;
   }
   
@@ -66,7 +65,6 @@
     position: absolute;
     padding: 0.5rem 1rem;
     right: 3.75rem;
-    top: 1.2rem;
     text-decoration: none;
   }
 
@@ -98,11 +96,15 @@
   .menu-icon {
     display: block;
     position: absolute;
-    top: 0;
-    right: 0;
-    transform: translate( -100%, 60%);
     font-size: 2rem;
     cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    position: absolute;
+    padding: 0.5rem 1rem;
+    right: 1rem;
+    text-decoration: none;
   }
 
 /* Notifications */
@@ -115,7 +117,6 @@
   font-size: 2.5rem;
   padding: 0.5rem 1rem;
   right: 7rem;
-  top: 1.25rem;
 }
 
 #notif-bell:hover {
@@ -204,7 +205,7 @@
   }
 
   .avatarWrap {
-    transform: translate(-7.25vw, -0.4rem);
+    transform: translate(-7.25vw, -0.0rem);
   }
 }
 
