@@ -75,7 +75,6 @@ function Profile(props) {
                     }
                     if (first) {
                         setProfilbilde(e.target.files[0].name)
-                        this.history.push("/profile")
                     }
                     setProfilbilde(e.target.files[0].name)
                 }

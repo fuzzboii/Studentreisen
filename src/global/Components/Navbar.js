@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 
-import Button from "@material-ui/core/Button";
+import { Button, Avatar } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import NotificationImportantIcon from '@material-ui/icons/NotificationImportant';
 import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
@@ -23,9 +23,12 @@ function Navbar(props) {
     const [click, setClick] = useState(false);
     const [button, setButton] = useState(true);
     const [loading, setLoading] = useState(true);
+    const [profilbilde, setProfilbilde] = useState()
     // Props som mottas fra App, viser til om bruker er inn-/utlogget
     const [auth, setAuth] = useState(false);
     const [type, setType] = useState(null);
+    const [id, setId] = useState()
+    // States for notifiseringer
     const [notif, setNotif] = useState(null);
     const [notifUlest, setNotifUlest] = useState(0);
     const [notifAapen, setNotifAapen] = useState(false);
@@ -61,6 +64,8 @@ function Navbar(props) {
       setAuth(props.auth);
       setType(props.type);
       setNotif(props.notif);
+      setId(props.brukerid)
+      getAvatar()
       if(props.notif !== undefined) {
         setNotifUlest(1);
       }
@@ -122,7 +127,8 @@ function Navbar(props) {
         display: 'flex',
         height: '100%',
         display: 'none'
-      }
+      },
+
     });
     const classes = useStyles();
 
@@ -167,6 +173,15 @@ function Navbar(props) {
     const notifClose = () => {
       setNotifAapen(false);
     };
+
+    const getAvatar = () => {
+      // Henting av profilbilde lånt fra Profile.js
+      axios.post(process.env.REACT_APP_APIURL + "/profile/getProfilbilde", {token : CookieService.get("authtoken")}).then( res => {
+        if (res.data.results != undefined) {
+          setProfilbilde(res.data.results[0].plassering)
+        }
+      })
+    }
 
     if(loading) {
       return(
@@ -269,10 +284,19 @@ function Navbar(props) {
                 <NotificationsNoneIcon id="notif-bell" onClick={notifClickOpen} />
               }
               
-              {auth && <Link
-                to='/Profile'>
+              {auth && profilbilde == undefined && <Link
+                to='/Profile'
+                className="avatarWrapIcon">
                 <i className="far fa-user" />
               </Link> }
+              {auth && profilbilde != undefined && <Link
+                to='/Profile'
+                className="avatarWrap">
+                <Avatar
+                  src={"/uploaded/" + profilbilde }
+                  className={classes.avatar}
+                />
+              </Link>}
               {button && auth && <Button onClick={loggUt} className={classes.loggbtn} > LOGG UT </Button> }
               {button && !auth && <Link to='/Register' className={classes.loggbtnNoAuth} > REGISTRER </Link> }
               {!auth && <Link to='/Login' className={classes.loggbtnNoAuth} > LOGG INN </Link> }

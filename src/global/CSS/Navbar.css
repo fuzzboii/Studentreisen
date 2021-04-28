@@ -57,13 +57,27 @@
 
   .fa-user {
     color: #fff;
+    
+    font-size: 2rem;
+    
+  }
+
+  .avatarWrapIcon {
     display:flex;
     align-items: center;
     position: absolute;
-    font-size: 2rem;
     padding: 0.5rem 1rem;
     right: 3.25rem;
     top: 1.5rem;
+  }
+
+  .avatarWrap {
+    display:flex;
+    align-items: center;
+    position: absolute;
+    padding: 0.5rem 1rem;
+    right: 3.75rem;
+    top: 1.2rem;
   }
 
   .nav-menu {
@@ -197,13 +211,22 @@
     padding: 0rem 1.5rem;
     transform: translate(-7vw);
   }
+
+  .avatarWrap {
+    transform: translate(-7vw, -0.5vw);
+  }
 }
 
 /* Medium skjerm, 1080p */
 @media screen and (min-width: 1920px) {
-
+  .avatarWrap {
+    transform: translate(-7.4vw, -0.5vw);
+  }
 }
 
 /* Stor skjerm, 1440p */
 @media screen and (min-width: 2560px) {
+  .avatarWrap {
+    transform: translate(-7.2vw, -0.3vw);
+  }
 }
