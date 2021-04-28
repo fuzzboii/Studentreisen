@@ -90,7 +90,7 @@ function App() {
             <Route path = "/course/modulkode=:modulkode" render = {() =>(
               <ModuleDetail auth={auth} loading={loading} />
             )}/>
-            <Route path = "/course/felt=:felt" render = {() =>(
+            <Route path = "/course/:felt" render = {() =>(
               <RelevantFieldNav auth={auth} type={type} loading={loading} />
             )}/>
             <Route path = "/course/ny"  render={() => (

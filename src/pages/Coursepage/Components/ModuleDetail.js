@@ -1,5 +1,7 @@
 import { useState, useEffect, createRef} from 'react';
 import {useParams} from 'react-router-dom';
+import {useHistory} from 'react-router';
+
 import axios from 'axios';
 
 // Material UI komponenter 
@@ -30,6 +32,8 @@ const ModuleDetail = (props) => {
         fetchData();
         fetchPost();
     },[]);
+
+    const history = useHistory();
 
     const useStyles = makeStyles((theme) => ({
         link: {
@@ -72,6 +76,10 @@ const ModuleDetail = (props) => {
         setCoursemods(res.data);
     };
 
+    const goBackHandle = () => {
+        history.goBack();
+    };
+
     return(
         <>
         {props.loading &&
@@ -90,7 +98,7 @@ const ModuleDetail = (props) => {
                                                 <HomeIcon className={classes.icon} />
                                                 Oversikt
                                             </Link>
-                                            <Link color="inherit" href="/course" className={classes.link}>
+                                            <Link color="inherit" onClick={goBackHandle} className={classes.link}>
                                                 <ListAltIcon className={classes.icon} />
                                                 Kurs
                                             </Link>
