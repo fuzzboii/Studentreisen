@@ -51,10 +51,9 @@ const SeminarDetailsExpired = (props) => {
     //Henting av kommende data til seminarene
     const fetchData = async () => {
                     
-        const res = await axios.get(process.env.REACT_APP_APIURL + "/seminar/getAllSeminarExpiredData");
-        console.log(res.data);
+        axios.get(process.env.REACT_APP_APIURL + "/seminar/getAllSeminarExpiredData").then(res => {
         setSeminars(res.data);
-    };
+    })}
     
 /*     //Sletting av seminar
     const deleteSeminar = async (seminarid, varighet, bilde) => {

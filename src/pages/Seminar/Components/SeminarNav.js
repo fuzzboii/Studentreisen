@@ -4,6 +4,8 @@ import React, {useState, useEffect} from "react";
 import {Tabs, Tab, Typography} from '@material-ui/core';
 import Pagination from '@material-ui/lab/Pagination';
 import axios from 'axios';
+import Button from '@material-ui/core/Button';
+import AddIcon from '@material-ui/icons/Add';
 // Studentreisen-assets og komponenter
 import SeminarListUpcoming from './SeminarListUpcoming';
 import SeminarListExpired from './SeminarListExpired';
@@ -36,14 +38,15 @@ const SeminarNav = (props) => {
   const [seminarsExpired, setSeminarsExpired] = useState([]);
 
   const [enlists, setEnlists] = useState([]);
-
+  
+  
   const fetchData = () => {
     const token = CookieService.get("authtoken");
       
       const data = {
         token: token
       } 
-
+      
     axios.all([
       axios.get(process.env.REACT_APP_APIURL + "/seminar/getAllSeminarUpcomingData"),
       axios.get(process.env.REACT_APP_APIURL + "/seminar/getAllSeminarExpiredData"),
@@ -52,6 +55,7 @@ const SeminarNav = (props) => {
     ]).then(axios.spread((res1, res2, res3) => {
       setSeminarsUpcoming(res1.data);
       setSeminarsExpired(res2.data);
+      
       setEnlists(res3.data);
     }));
   };
@@ -87,7 +91,7 @@ const SeminarNav = (props) => {
     const handlePageExpired = (event, value) => {
       setCurrentPageExpired(value);
     };
-
+    
     return (
       <div className="Seminar-Overview">
         <div className="BorderBox">   
@@ -96,11 +100,24 @@ const SeminarNav = (props) => {
               <Tab className="" label="Utgåtte" />
           </Tabs>
         </div>
-
-
+        <div className="Seminar-HeadingTools">
+          
+          {props.type === 3 || props.type === 4 &&
+          <div className="Seminar-HeadingToolsWrapper">
+            <div className="Seminar-HeadingToolsDesktop">
+              <Button className="Seminar-ButtonNewDesktop" href="/seminar/ny" variant="contained" color="primary">Nytt seminar<AddIcon/></Button>
+            </div>     
+            <div className="Seminar-HeadingToolsMobile">
+              <Button className="Seminar-ButtonNewMobile" href="/seminar/ny" variant="contained" color="primary"><AddIcon/></Button>
+            </div>
+                    
+          </div>
+          
+          }
+        </div>
         <TabPanel value={position} index={0}>
             <div className="Seminar-ContentOverview">
-              <SeminarListUpcoming seminarsUpcoming={currentPostsUpcoming} enlists={enlists}/>
+              <SeminarListUpcoming seminarsUpcoming={currentPostsUpcoming} enlists={enlists} innloggetbruker={props.brukerid} />
             </div>
               <div className="Seminar-indexPosition">
                 <div className="Seminar-indexPagination">
