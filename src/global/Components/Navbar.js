@@ -23,11 +23,12 @@ function Navbar(props) {
     const [click, setClick] = useState(false);
     const [button, setButton] = useState(true);
     const [loading, setLoading] = useState(true);
+    // States for profilbilde
     const [profilbilde, setProfilbilde] = useState()
+    const [initialer, setInitialer] = useState("")
     // Props som mottas fra App, viser til om bruker er inn-/utlogget
     const [auth, setAuth] = useState(false);
     const [type, setType] = useState(null);
-    const [id, setId] = useState()
     // States for notifiseringer
     const [notif, setNotif] = useState(null);
     const [notifUlest, setNotifUlest] = useState(0);
@@ -64,7 +65,6 @@ function Navbar(props) {
       setAuth(props.auth);
       setType(props.type);
       setNotif(props.notif);
-      setId(props.brukerid)
       getAvatar()
       if(props.notif !== undefined) {
         setNotifUlest(1);
@@ -129,6 +129,10 @@ function Navbar(props) {
         display: 'none'
       },
 
+      avatar: {
+        backgroundColor: '#3bafa2'
+      }
+
     });
     const classes = useStyles();
 
@@ -175,12 +179,16 @@ function Navbar(props) {
     };
 
     const getAvatar = () => {
-      // Henting av profilbilde lånt fra Profile.js
-      axios.post(process.env.REACT_APP_APIURL + "/profile/getProfilbilde", {token : CookieService.get("authtoken")}).then( res => {
-        if (res.data.results != undefined) {
-          setProfilbilde(res.data.results[0].plassering)
+      axios.all([
+        axios.post(process.env.REACT_APP_APIURL + "/profile/getProfilbilde", {token : CookieService.get("authtoken")}),
+        axios.post(process.env.REACT_APP_APIURL + "/profile/getBruker", {token : CookieService.get("authtoken")})
+      ]).then(axios.spread((res1, res2) => {
+        if (res1.data.results != undefined) {
+          setProfilbilde(res1.data.results[0].plassering)
+        } else {
+          setInitialer(res2.data.results[0].fnavn.charAt(0) + res2.data.results[0].enavn.charAt(0))
         }
-      })
+      }))
     }
 
     if(loading) {
@@ -283,19 +291,17 @@ function Navbar(props) {
               {auth && (notif == null || notifUlest == 0) &&
                 <NotificationsNoneIcon id="notif-bell" onClick={notifClickOpen} />
               }
-              
-              {auth && profilbilde == undefined && <Link
-                to='/Profile'
-                className="avatarWrapIcon">
-                <i className="far fa-user" />
-              </Link> }
-              {auth && profilbilde != undefined && <Link
+
+              {auth && <Link
                 to='/Profile'
                 className="avatarWrap">
                 <Avatar
                   src={"/uploaded/" + profilbilde }
                   className={classes.avatar}
-                />
+                >
+                  {/* Hvis det ikke eksisterer et bilde for brukeren faller avatar tilbake på initialer */}
+                  {initialer}
+                </Avatar>
               </Link>}
               {button && auth && <Button onClick={loggUt} className={classes.loggbtn} > LOGG UT </Button> }
               {button && !auth && <Link to='/Register' className={classes.loggbtnNoAuth} > REGISTRER </Link> }
