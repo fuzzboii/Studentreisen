@@ -159,7 +159,7 @@ const CourseNav = (props) => {
                       <Button type="submit" className={classes.button} size="small" variant="contained" endIcon={<SearchIcon />}>Søk</Button>
                   </form>
                 <div className="wrapNewcourse">
-                  {props.type === 3 || props.type === 4 &&
+                  {props.type === 3 || props.type === 4 && position == 0 &&
                     <Button className={classes.buttonIcon} href="/course/new" variant="contained" color="primary" ><AddIcon/></Button>
                   }
                 </div>
@@ -201,7 +201,7 @@ const CourseNav = (props) => {
             {Object.entries(modules).length !== 0 &&
             <TabPanel value={position} index={1}>
                 <div className="content-main">
-                  <div className="wrapIndexPage">
+                  <div className="wrapIndexModulePage">
                     <div className="indexRes">
                       <Typography variant="caption">Viser {mindexOfFirstPost + 1} - {interval_m} av {modules.length} treff</Typography>
                     </div>

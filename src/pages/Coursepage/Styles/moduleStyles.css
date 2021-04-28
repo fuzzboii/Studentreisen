@@ -108,7 +108,7 @@
 /* Tab */
 @media screen and (min-width: 720px) {
 
-    .wrapIndexPage {
+    .wrapIndexModulePage {
         display: grid;
         width: 40em;
     }

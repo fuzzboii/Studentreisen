@@ -155,76 +155,76 @@ const RelevantFieldNav = (props) => {
     
     
       return (
-        <div>
-          <div className="course-header-section">
-            <div className="search-wrap">
-                <form className="searchBox" onSubmit={updateInput} >    
-                    <TextField value={input} className={classes.search} size="small" onChange={onInputChange} label="Søkefelt" type="search" variant="outlined"/>                           
-                    <Button type="submit" className={classes.button} size="small" variant="contained" endIcon={<SearchIcon />}>Søk</Button>
-                </form>
-              <div className="wrapNewcourse">
-                {props.type === 3 || props.type === 4 &&
-                  <Button className={classes.buttonIcon} href="/course/new" variant="contained" color="primary" ><AddIcon/></Button>
-                }
+              <div>
+                <div className="course-header-section">
+                  <div className="search-wrap">
+                      <form className="searchBox" onSubmit={updateInput} >    
+                          <TextField value={input} className={classes.search} size="small" onChange={onInputChange} label="Søkefelt" type="search" variant="outlined"/>                           
+                          <Button type="submit" className={classes.button} size="small" variant="contained" endIcon={<SearchIcon />}>Søk</Button>
+                      </form>
+                    <div className="wrapNewcourse">
+                      {props.type === 3 || props.type === 4 && position == 0 &&
+                        <Button className={classes.buttonIcon} href="/course/new" variant="contained" color="primary" ><AddIcon/></Button>
+                      }
+                    </div>
+                </div>       
               </div>
-          </div>       
-        </div>
 
-          <div className="BorderBox"> 
-            <Tabs className="tab" value={position} indicatorColor="primary" textColor="primary" onChange={handleChange}>
-                <Tab className="tabKurs" label="Kurs" />
-                <Tab className="tabKursmodul" label="Kursmodul" />
-            </Tabs>
-          </div>
-          {Object.entries(courses).length !== 0 &&
-          <TabPanel value={position} index={0}>
-              <div className="content-overview">
-                  <div className="indexRes">
-                    <Typography variant="caption">Viser {cindexOfFirstPost + 1} - {interval_c} av {courses.length} treff</Typography>
-                  </div>
-                  <div className="wrap-list">
-                    <div className="wrapIndexPage">
-                      <CourseList courses={currentPosts_c}/>
-                        <div className="indexPagination">
+                <div className="BorderBox"> 
+                  <Tabs className="tab" value={position} indicatorColor="primary" textColor="primary" onChange={handleChange}>
+                      <Tab className="tabKurs" label="Kurs" />
+                      <Tab className="tabKursmodul" label="Kursmodul" />
+                  </Tabs>
+                </div>
+                {Object.entries(courses).length !== 0 &&
+                <TabPanel value={position} index={0}>
+                    <div className="content-overview">
+                        <div className="indexRes">
+                          <Typography variant="caption">Viser {cindexOfFirstPost + 1} - {interval_c} av {courses.length} treff</Typography>
+                        </div>
+                        <div className="wrap-list">
+                          <div className="wrapIndexPage">
+                            <CourseList courses={currentPosts_c}/>
+                              <div className="indexPagination">
+                                <div className="indexRes2">
+                                  <div className="indexCenterWrap">
+                                    <Typography  variant="caption" >Viser {cindexOfFirstPost + 1} - {interval_c} av {courses.length} treff</Typography>
+                                  </div>
+                                  <div className="indexCenterWrap">
+                                    <Pagination count={numberOfPages_c} page={currentPage_c} onChange={handlePageCourse} />
+                                  </div>
+                                </div>
+                              </div>
+                          </div>
+                          <RelevantField fields={fields}/>
+                        </div>
+
+                    </div>
+                </TabPanel>
+                }  
+                {Object.entries(modules).length !== 0 &&
+                <TabPanel value={position} index={1}>
+                    <div className="content-main">
+                      <div className="wrapIndexModulePage">
+                        <div className="indexRes">
+                          <Typography variant="caption">Viser {mindexOfFirstPost + 1} - {interval_m} av {modules.length} treff</Typography>
+                        </div>
+                        <ModuleList modules={currentPosts_m}/>
+                        <div className="indexPaginationM">
                           <div className="indexRes2">
                             <div className="indexCenterWrap">
-                              <Typography  variant="caption" >Viser {cindexOfFirstPost + 1} - {interval_c} av {courses.length} treff</Typography>
+                              <Typography  variant="caption" >Viser {mindexOfFirstPost + 1} - {interval_m} av {modules.length} treff</Typography>
                             </div>
                             <div className="indexCenterWrap">
-                              <Pagination count={numberOfPages_c} page={currentPage_c} onChange={handlePageCourse} />
-                            </div>
+                              <Pagination count={numberOfPages_m} page={currentPage_m} onChange={handlePageModule} />
+                            </div>  
                           </div>
-                        </div>
-                    </div>
-                    <RelevantField fields={fields}/>
-                  </div>
-
-              </div>
-          </TabPanel>
-          }  
-          {Object.entries(modules).length !== 0 &&
-          <TabPanel value={position} index={1}>
-              <div className="content-main">
-                <div className="wrapIndexPage">
-                  <div className="indexRes">
-                    <Typography variant="caption">Viser {mindexOfFirstPost + 1} - {interval_m} av {modules.length} treff</Typography>
-                  </div>
-                    <ModuleList modules={currentPosts_m}/>
-                      <div className="indexPaginationM">
-                        <div className="indexRes2">
-                          <div className="indexCenterWrap">
-                            <Typography  variant="caption" >Viser {mindexOfFirstPost + 1} - {interval_m} av {modules.length} treff</Typography>
-                          </div>
-                          <div className="indexCenterWrap">
-                            <Pagination count={numberOfPages_m} page={currentPage_m} onChange={handlePageModule} />
-                          </div>  
                         </div>
                       </div>
-                  </div>
-              </div>               
-          </TabPanel>   
-          }
-      </div>
+                    </div>               
+                </TabPanel>   
+                }
+            </div>
           
       ); 
 };
