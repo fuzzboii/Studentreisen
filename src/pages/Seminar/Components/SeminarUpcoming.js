@@ -65,7 +65,6 @@ const SeminarUpcoming = (props) => {
 
         axios.post(process.env.REACT_APP_APIURL + "/seminar/postEnlist", data)
         setEnlist(true);
-        console.log("Påmeldt");
     }
 
     // Om seminaret ikke har ett bilde, vis et standardbilde
@@ -73,7 +72,7 @@ const SeminarUpcoming = (props) => {
 
     if (width < breakpoint) {
         return (
-            
+        
             <div className="Seminar-Mobile">
 
             <SeminarAccordion>
@@ -118,13 +117,12 @@ const SeminarUpcoming = (props) => {
                         </div>                                                
                     </SeminarCardActions>
                 </SeminarAccordionDetails>
-            </SeminarAccordion>
-            
+            </SeminarAccordion>   
             </div>
         );
         }
         return (
-            
+          
             <div className="Seminar-Desktop">
             
             <SeminarCard className="Seminar-Cards">
@@ -177,9 +175,7 @@ const SeminarUpcoming = (props) => {
                     </div> 
                 </SeminarCardActions>
             </SeminarCard>
-            
-            </div>
-                     
+            </div>                       
         );
         
 }

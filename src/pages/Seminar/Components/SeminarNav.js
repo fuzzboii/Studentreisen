@@ -10,6 +10,8 @@ import AddIcon from '@material-ui/icons/Add';
 import SeminarListUpcoming from './SeminarListUpcoming';
 import SeminarListExpired from './SeminarListExpired';
 import CookieService from '../../../global/Services/CookieService';
+import Loader from '../../../global/Components/Loader';
+import NoAccess from '../../../global/Components/NoAccess';
 
 
 function TabPanel(props) {
@@ -30,7 +32,11 @@ const SeminarNav = (props) => {
 
   },[]);
 
-
+  // State for loading mens vi venter på svar fra server
+  const [loading, setLoading] = useState(true);
+  // Autentiseringsstatus
+  const [auth, setAuth] = useState(false);
+  
   const [position, setPosition] = useState(0);
 
 
@@ -55,8 +61,9 @@ const SeminarNav = (props) => {
     ]).then(axios.spread((res1, res2, res3) => {
       setSeminarsUpcoming(res1.data);
       setSeminarsExpired(res2.data);
-      
       setEnlists(res3.data);
+      // Data er ferdig hentet fra server
+      setLoading(false);
     }));
   };
 
@@ -91,7 +98,16 @@ const SeminarNav = (props) => {
     const handlePageExpired = (event, value) => {
       setCurrentPageExpired(value);
     };
-    
+  
+    if (loading) {
+    return (
+        <section id="loading">
+            <Loader />
+        </section>
+    )
+  }
+
+  if (!loading) {    
     return (
       <div className="Seminar-Overview">
         <div className="BorderBox">   
@@ -144,6 +160,13 @@ const SeminarNav = (props) => {
         </TabPanel>
       </div>
     );
+  
+  } else {
+    return (
+        // Brukeren er ikke innlogget, omdiriger
+        <NoAccess />
+    );
+  }
 };
 
 
