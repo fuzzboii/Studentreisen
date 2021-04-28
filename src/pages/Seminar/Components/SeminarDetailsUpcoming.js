@@ -221,7 +221,6 @@ const SeminarDetailsUpcoming = (props) => {
                 setAlertTextEnlist("Du er nå påmeldt til seminaret")
                 setAlertSeverity("success")
                 setEnlist(true);
-                console.log("Påmeldt");
 
                 window.setTimeout(() => {
                     setAlertOpen(false);
@@ -242,14 +241,12 @@ const SeminarDetailsUpcoming = (props) => {
             if (res.data.status === "error") {
                 setAlertDisplay("")
                 setAlertTextEnlist(res.data.message)
-                setAlertSeverity("error")
             } else {
                 setAlertOpen(true);
                 setAlertDisplay("")
                 setAlertTextEnlist("Du er nå avmeldt fra seminaret")
                 setAlertSeverity("info")
                 setEnlist(false);
-                console.log("Avmeldt");
 
                 window.setTimeout(() => {
                     setAlertOpen(false);
@@ -355,8 +352,7 @@ const SeminarDetailsUpcoming = (props) => {
     
     // Om seminaret ikke har ett bilde, vis et standardbilde
     const uploadedimg = plassering !== null ? "/uploaded/" + plassering : noimage;
-    //console.log(uploadedimg);
-    //console.log(plassering);
+
     return(
         <>
         {props.loading &&
