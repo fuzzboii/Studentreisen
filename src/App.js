@@ -90,10 +90,10 @@ function App() {
             <Route path = "/course/modulkode=:modulkode" render = {() =>(
               <ModuleDetail auth={auth} loading={loading} />
             )}/>
-            <Route path = "/course/:felt" render = {() =>(
+            <Route path = "/course/field/:field" render = {() =>(
               <RelevantFieldNav auth={auth} type={type} loading={loading} />
             )}/>
-            <Route path = "/course/ny"  render={() => (
+            <Route path = "/course/new"  render={() => (
                 <CourseNew auth={auth} type={type} loading={loading} />
             )} />
           <Route path = "/register"  render={() => (
@@ -108,9 +108,7 @@ function App() {
               <Profile auth={auth} type={type} loading={loading} />
             )}
           />
-          <Route path = "/seminar" exact render = {() =>(
-              <Seminar auth={auth} type={type} loading={loading} brukerid={brukerid} />
-          )}/>
+          <Route path = "/seminar" exact component = {Seminar} />
           <Route path = "/seminar/seminarkommende=:seminarid" render = {() =>(
             <SeminarDetailsUpcoming auth={auth} type={type} loading={loading} brukerid={brukerid} />
           )}/>

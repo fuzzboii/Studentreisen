@@ -39,9 +39,8 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(1),
     padding: theme.spacing(1),
     width: theme.spacing(0.5),
-    '&:hover' : {
-      boxShadow: 'none',
-    },
+    boxShadow: 'none',
+    
   },
 
   search: {
@@ -161,7 +160,7 @@ const CourseNav = (props) => {
                   </form>
                 <div className="wrapNewcourse">
                   {props.type === 3 || props.type === 4 &&
-                    <Button className={classes.buttonIcon} href="/course/ny" variant="contained" color="primary" ><AddIcon/></Button>
+                    <Button className={classes.buttonIcon} href="/course/new" variant="contained" color="primary" ><AddIcon/></Button>
                   }
                 </div>
             </div>       

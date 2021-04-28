@@ -54,11 +54,11 @@ function TabPanel(props) {
 const RelevantFieldNav = (props) => {
     
       const classes = useStyles();
-      let {felt} = useParams();
+      let {field} = useParams();
     
         useEffect(()=>{
           fetchData();
-        },[felt]);
+        },[field]);
       
     
         const [position, setPosition] = useState(0);
@@ -76,7 +76,7 @@ const RelevantFieldNav = (props) => {
         const fetchData = () => {
           const token = CookieService.get("authtoken");
                     
-            const data = {felt: felt}
+            const data = {felt: field}
             const data2 = {token: token}
     
           axios.all([
@@ -164,7 +164,7 @@ const RelevantFieldNav = (props) => {
                 </form>
               <div className="wrapNewcourse">
                 {props.type === 3 || props.type === 4 &&
-                  <Button className={classes.buttonIcon} href="/course/ny" variant="contained" color="primary" ><AddIcon/></Button>
+                  <Button className={classes.buttonIcon} href="/course/new" variant="contained" color="primary" ><AddIcon/></Button>
                 }
               </div>
           </div>       

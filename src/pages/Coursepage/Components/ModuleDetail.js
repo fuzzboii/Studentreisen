@@ -94,10 +94,6 @@ const ModuleDetail = (props) => {
                         return <Box key={mod.modulkode} ref={wrapper} className="box-detail" boxShadow={3}>
                                     <MyCardContent>
                                         <Breadcrumbs aria-label="breadcrumb" >
-                                            <Link color="inherit" href="/" className={classes.link}>
-                                                <HomeIcon className={classes.icon} />
-                                                Oversikt
-                                            </Link>
                                             <Link color="inherit" onClick={goBackHandle} className={classes.link}>
                                                 <ListAltIcon className={classes.icon} />
                                                 Kurs

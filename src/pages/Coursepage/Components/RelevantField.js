@@ -29,7 +29,7 @@ const RelevantField = (props) => {
                     {props.fields !== undefined &&
                     <>
                     {props.fields.map( (field, index) => (
-                        <Link key={index} className="link2 linkFlex" to={`/course/${field.beskrivelse}`}>
+                        <Link key={index} className="link2 linkFlex" to={`/course/field/${field.beskrivelse}`}>
                             <ArrowForwardIosIcon className={classes.icon}/>
                             <p className="fieldFormat" key={index}>{field.beskrivelse}</p>
                         </Link>

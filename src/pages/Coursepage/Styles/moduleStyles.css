@@ -48,6 +48,8 @@
     width: 12em;
     margin-bottom: 1em;
     margin-top: 1em;
+    margin-left: auto;
+    margin-right: auto;
 
 }
 
@@ -112,6 +114,19 @@
         padding-right: 2em;
         margin-left: auto;
         margin-right: auto; 
+    }
+
+    .indexPaginationM { 
+        width: 12em;
+        margin-bottom: 1em;
+        margin-top: 1em;
+        margin-left: 0;
+        margin-right: 0;
+    
+    }
+
+    .indexPaginationM {
+        margin-left: 13.5em;
     }
 
 

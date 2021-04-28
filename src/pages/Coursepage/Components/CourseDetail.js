@@ -69,10 +69,6 @@ const CourseDetail = (props) => {
                         return <Box key={index}className="box-detail" boxShadow={3}>
                                     <MyCardContent>
                                         <Breadcrumbs aria-label="breadcrumb" >
-                                            <Link color="inherit" href="/" className={classes.link}>
-                                                <HomeIcon className={classes.icon} />
-                                                Oversikt
-                                            </Link>
                                             <Link color="inherit" href="/course" className={classes.link}>
                                                 <ListAltIcon className={classes.icon} />
                                                 Kurs
