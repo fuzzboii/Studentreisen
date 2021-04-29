@@ -1,16 +1,21 @@
 import React, { useState, useEffect} from 'react';
 import {useParams} from 'react-router-dom';
+import {useSelector, useDispatch} from 'react-redux';
+import axios from 'axios';
+
 import CourseList from './CourseList';
 import ModuleList from './ModuleList';
 import RelevantField from './RelevantField';
-import Pagination from '@material-ui/lab/Pagination';
-import axios from 'axios';
 import CookieService from '../../../global/Services/CookieService';
+import {tabCourse} from '../../../global/Services/Actions';
 
 import {Tabs, Tab, Typography, Button, TextField} from '@material-ui/core';
+import Pagination from '@material-ui/lab/Pagination';
 import SearchIcon from '@material-ui/icons/Search';
 import AddIcon from '@material-ui/icons/Add';
-import {makeStyles} from '@material-ui/core/styles';
+import {makeStyles } from '@material-ui/core/styles';
+
+
 
 
 function TabPanel(props) {
@@ -60,8 +65,9 @@ const RelevantFieldNav = (props) => {
           fetchData();
         },[field]);
       
-    
-        const [position, setPosition] = useState(0);
+        const getCoursePosition = useSelector(state => state.course_tab_position);
+        const dispatch = useDispatch();
+        const [position, setPosition] = useState(getCoursePosition);
 
         //States for søk
         const [input, setInput] = useState('');
@@ -119,8 +125,14 @@ const RelevantFieldNav = (props) => {
         
           
         const handleChange = (event, newValue) => {
-            setPosition(newValue);
-        }
+          setPosition(newValue);
+            if(newValue === 1) {
+              dispatch(tabCourse(newValue));
+            };
+            if(newValue === 0) {
+              dispatch(tabCourse(newValue));
+            }; 
+        };
     
         const handlePageCourse = (event, value) => {
           setcurrentPage_c(value);
