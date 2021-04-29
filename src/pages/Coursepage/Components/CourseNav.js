@@ -40,7 +40,6 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(2),
     marginLeft: theme.spacing(1),
     padding: theme.spacing(1),
-    width: theme.spacing(0.5),
     boxShadow: 'none',
     
   },
@@ -170,7 +169,7 @@ const CourseNav = (props) => {
                   </form>
                 <div className="wrapNewcourse">
                   {props.type === 3 || props.type === 4 && position == 0 &&
-                    <Button className={classes.buttonIcon} href="/course/new" variant="contained" color="primary" ><AddIcon/></Button>
+                    <Button className={classes.buttonIcon} href="/course/new" variant="contained" color="primary">Nytt kurs <AddIcon/></Button>
                   }
                 </div>
             </div>       
