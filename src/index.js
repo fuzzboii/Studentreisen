@@ -10,7 +10,6 @@ import Slide from '@material-ui/core/Slide';
 
 import {createStore} from 'redux';
 import allReducers from './global/Services/Reducers';
-import courseReducer from './global/Services/Reducers/tabCourse';
 import { Provider } from 'react-redux';
 
 const store = createStore(

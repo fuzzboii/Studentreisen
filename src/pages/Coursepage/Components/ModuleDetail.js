@@ -39,8 +39,11 @@ const ModuleDetail = (props) => {
         link: {
             display: 'flex',
             fontSize: '14px',
-          
+            '&:hover': {
+                cursor: 'pointer',
+            },
         },
+        
         icon: {
           marginRight: theme.spacing(0.5),
           paddingTop: theme.spacing(0.4),
@@ -96,7 +99,7 @@ const ModuleDetail = (props) => {
                                         <Breadcrumbs aria-label="breadcrumb" >
                                             <Link color="inherit" onClick={goBackHandle} className={classes.link}>
                                                 <ListAltIcon className={classes.icon} />
-                                                Kurs
+                                                Kursmodul
                                             </Link>
                                             <Typography color="textPrimary" className={classes.link}>
                                                 <DetailsIcon className={classes.icon}/>
