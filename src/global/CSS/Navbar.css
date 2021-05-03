@@ -53,12 +53,6 @@
     font-size: 2rem;
   }
 
-  .fa-user {
-    color: #fff;
-    font-size: 2rem;
-    
-  }
-
   .avatarWrap {
     display:flex;
     align-items: center;
