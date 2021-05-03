@@ -129,7 +129,7 @@ const SeminarNav = (props) => {
         </div>
         <div className="Seminar-HeadingTools">
           
-          {props.type === 3 || props.type === 4 &&
+          {(props.type === 2 || props.type === 4) &&
           <div className="Seminar-HeadingToolsWrapper">
             <div className="Seminar-HeadingToolsDesktop">
               <Button className="Seminar-ButtonNewDesktop" href="/seminar/ny" variant="contained" color="primary">Nytt seminar<AddIcon/></Button>
