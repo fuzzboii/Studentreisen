@@ -53,18 +53,13 @@
     font-size: 2rem;
   }
 
-  .fa-user {
-    color: #fff;
-    font-size: 2rem;
-    
-  }
-
   .avatarWrap {
     display:flex;
     align-items: center;
     position: absolute;
     padding: 0.5rem 1rem;
     right: 3.75rem;
+    /* Fjerner underscore under initialer, siden dette teknisk sett er en Link */
     text-decoration: none;
   }
 
@@ -184,7 +179,11 @@
 
 /* Laptop / Liten skjerm,, 720p */
 @media only screen and (min-width: 1280px) {
+  .navbarBody{
+    background: #4646a5;
+  }
   .navbar {
+    width: calc(100vw - 34px);
     position: sticky;
   }
 

@@ -199,7 +199,7 @@ function Navbar(props) {
     }
 
     if (!loading) return (
-        <>
+        <div className="navbarBody" >
           <nav className='navbar' id="bar" >
             <div className='navbar-container'>
               {!auth && <Link 
@@ -353,7 +353,7 @@ function Navbar(props) {
                 </Button>
               </DialogActions>
           </Dialog>
-        </>
+        </div>
       );
     }
 
