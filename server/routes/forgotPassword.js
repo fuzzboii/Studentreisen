@@ -61,7 +61,7 @@ router.post('/forgotPassword', async (req, res) => {
                             const subject = 'Glemt passord - Studentreisen';
                             const body =  'Hei!\n\nDu har mottatt denne eposten fordi du har bedt om å tilbakestille passordet ditt hos Studentreisen, om du ikke har bedt om dette kan du trygt ignorere denne eposten.\n\n' +
                                     'Vennligst trykk på lenken under for å fortsette med å endre passordet ditt.\n' + 
-                                    'http://localhost:3000/reset/' + buf.toString("hex") + "\n\n" + 
+                                    process.env.DOMAIN + '/reset/' + buf.toString("hex") + "\n\n" + 
                                     'Mvh\nStudentreisen';
                            
                             sendEmail(selResults[0].email, subject, body).then(function(response) {
