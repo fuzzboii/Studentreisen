@@ -33,22 +33,22 @@ function Footer() {
         <div className='links-section'>
             <div className='footer-link'>
               <h2>Om oss</h2>
-              <Link to=''>Link noe her</Link>
+              <Link to='/about'>Les her</Link>
             </div>
 
             <div className='footer-link'>
-              <h2>Hjelp</h2>
-              <Link to=''>Link noe her</Link>
+              <h2>Kontakt</h2>
+              <a href="mailto:usnstudentreisen@gmail.com">Send e-post</a>
             </div>
 
             <div className='footer-link'>
               <h2>Personvern</h2>
-              <Link to='/'>Link noe her</Link>
+              <Link to='/privacy'>Les her</Link>
             </div>
             
             <div className='footer-link'>
               <h2>Nettsider</h2>
-              <Link to='/'>USN</Link>
+              <a href="https://usn.no">USN</a>
             </div>
         </div>
         <section className='copyright-section'>
