@@ -318,10 +318,8 @@ router.post('/insertBilde', async (req, res) => {
             const filtype = opplastetFilnavn.substring(opplastetFilnavn.lastIndexOf('.'));
             const filnavn = "profilbilde" + brukerid + filtype;
 
-            const rootFolder = path.join(__dirname, '../../');
-
             const opplastetBilde = req.files.image;
-            opplastetBilde.mv(rootFolder + '/public/uploaded/' + filnavn);
+            opplastetBilde.mv(path.join(__dirname, process.env.USER_IMG_UPLOAD_PATH) + filnavn);
 
             // Opprett referanse til bildet
             let insertQuery = "INSERT INTO profilbilde (brukerid, plassering) VALUES(?, ?) ON DUPLICATE KEY UPDATE brukerid=?, plassering=?"
