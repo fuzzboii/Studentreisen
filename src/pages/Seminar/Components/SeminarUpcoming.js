@@ -80,7 +80,7 @@ const SeminarUpcoming = (props) => {
                 <SeminarAccordionSummary expandIcon={<SeminarExpandMoreIcon />} aria-controls="panel1a-content" id="Seminar-AccordionSummary">
                     <div className="Seminar-HeaderContent">
                         <h2 className="Seminar-Navn">{props.navn}</h2> 
-                        <p className="Seminar-OppstartVarighet">{moment.locale('nb'), moment(props.oppstart).format("MMM DD YYYY, hh:mm")} - {moment.locale('nb'), moment(props.varighet).format("MMM DD YYYY")}</p>  
+                        <p className="Seminar-OppstartVarighet">{moment.locale('nb'), moment(props.oppstart).format("MMM DD YYYY, HH:mm")} - {moment.locale('nb'), moment(props.varighet).format("MMM DD YYYY")}</p>  
                     </div>
                 </SeminarAccordionSummary>
                 <SeminarAccordionDetails className="Seminar-AccordationDetails">
@@ -137,7 +137,7 @@ const SeminarUpcoming = (props) => {
                         <div className="Seminar-CardDetails">
                             <DateRangeIcon className="DateIcon"/>
                             <div className="Seminar-DateDesktop">
-                                <div className="Seminar-OppstartDesktop">{moment.locale('nb'), moment(props.oppstart).format("MMM DD YYYY, hh:mm")} - </div>
+                                <div className="Seminar-OppstartDesktop">{moment.locale('nb'), moment(props.oppstart).format("MMM DD YYYY, HH:mm")} - </div>
                                 <div className="Seminar-VarighetDesktop">{moment.locale('nb'), moment(props.varighet).format("MMM DD YYYY")}</div>                                
                             </div>
                             
