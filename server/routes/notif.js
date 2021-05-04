@@ -19,7 +19,7 @@ router.post('/getNotifs', async (req, res) => {
                     }   
                     
                     if(results[0] !== undefined) {
-                        return res.json({results});
+                        return res.json({notifs : results});
                     } else {
                         return res.json({nodata : "Ingen kunngjøringer å vise"});
                     }

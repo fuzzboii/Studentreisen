@@ -160,8 +160,8 @@ function Navbar(props) {
           .post(process.env.REACT_APP_APIURL + "/notif/getNotifs", {token : CookieService.get("authtoken")} )
           // Utføres ved mottatt resultat
           .then(res => {
-            if(res.data.results) {
-              setNotif(res.data.results);
+            if(res.data.notifs) {
+              setNotif(res.data.notifs);
             } else if(res.data.nodata) {
               setNotif({nodata : res.data.nodata});
             }
