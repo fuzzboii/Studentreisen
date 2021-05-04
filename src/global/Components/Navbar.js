@@ -70,7 +70,6 @@ function Navbar(props) {
         setNotifUlest(1);
       }
       showButton();
-      setLoading(false);
     }, [props]); 
 
     // Legger til eller fjerner padding under navbar, for å skyve innholdet under nedover. //
@@ -186,8 +185,10 @@ function Navbar(props) {
       ]).then(axios.spread((res1, res2) => {
         if (res1.data.results != undefined) {
           setProfilbilde(res1.data.results[0].plassering)
+          setLoading(false);
         } else {
           setInitialer(res2.data.results[0].fnavn.charAt(0) + res2.data.results[0].enavn.charAt(0))
+          setLoading(false);
         }
       }))
     }
