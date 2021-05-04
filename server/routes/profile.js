@@ -54,7 +54,6 @@ router.post('/getBruker', async (req, res) => {
             let getQueryFormat = mysql.format(getQuery, [brukerid]);
             connection.query(getQueryFormat, (error, results) => {
                 if (error) {
-                    console.log("An error occurred while fetching user details, details: " + error.errno + ", " + error.sqlMessage)
                     return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
               
                 }
@@ -82,7 +81,6 @@ router.post('/getInteresser', async (req, res) => {
             let getQueryFormat = mysql.format(getQuery, [brukerid]);
             connection.query(getQueryFormat, (error, results) => {
                 if (error) {
-                    console.log("An error occurred while fetching user interests, details: " + error.errno + ", " + error.sqlMessage)
                     return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
               
                 }
@@ -110,14 +108,12 @@ router.post('/deleteInteresse', async (req, res) => {
             let insertQueryFormat = mysql.format(insertQuery, [brukerid, req.body.fagfeltid]);
             connection.query(insertQueryFormat, (error, results) => {
                 if (error) {
-                    console.log("An error occurred while deleting an interest, details: " + error.errno + ", " + error.sqlMessage)
                     return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
               
                 }
                 
                 // Returnerer påvirkede rader
                 if(results.length > 0) {
-                    // console.log("Hentet");
                     // return res.json({results});
                 } else {
                     return res.json({"status" : "error", "message" : "En feil oppstod under sletting av brukerens interesser"});
@@ -139,14 +135,12 @@ router.post('/postInteresse', async (req, res) => {
             let insertQueryFormat = mysql.format(insertQuery, [brukerid, req.body.fagfeltid]);
             connection.query(insertQueryFormat, (error, results) => {
                 if (error) {
-                    console.log("An error occurred while fetching user interests, details: " + error.errno + ", " + error.sqlMessage)
                     return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
               
                 }
                 
                 // Returnerer påvirkede rader
                 if(results.length > 0) {
-                    // console.log("Hentet");
                     // return res.json({results});
                 } else {
                     return res.json({"status" : "error", "message" : "En feil oppstod under henting av brukerens interesser"});
@@ -168,7 +162,6 @@ router.post('/updateTelefon', async (req, res) => {
             let updateQueryFormat = mysql.format(updateQuery, [req.body.telefon, brukerid])
             connection.query(updateQueryFormat, (error, results) => {
                 if (error) {
-                    console.log("An error occured while updating the users phone number, details: " + error.errno + ", " + error.sqlMessage)
                     return res.jason({ "status" : "error", "message" : "en intern feil oppstod, vennligst forsøk igjen senere" })
                 }
 
@@ -203,7 +196,6 @@ router.post('/updateEmail', async (req, res) => {
             let updateQueryFormat = mysql.format(updateQuery, [req.body.epost.toLowerCase(), brukerid])
             connection.query(updateQueryFormat, (error, results) => {
                 if (error) {
-                    console.log("An error occured while updating the users email, details: " + error.errno + ", " + error.sqlMessage)
                     // Duplikat av innføring
                     if (error.errno == 1062) {
                         return res.json({"status" : "error", "message" : "Epost allerede i bruk"})
@@ -214,33 +206,27 @@ router.post('/updateEmail', async (req, res) => {
 
                 if(results.affectedRows > 0) {
                     // email som oppbevares i authtoken må først krypteres
-                    console.log("Epost: " + req.body.epost.toLowerCase())
-                    console.log("Secret: " + process.env.TOKEN_SECRET)
                     const token = cryptojs.AES.encrypt(req.body.epost.toLowerCase(), process.env.TOKEN_SECRET);
 
                     // Setter dato på utløp, reverterer for øyeblikket "husk meg"
                     let date = new Date()
                     date.setTime(date.getTime() + ((60 * 3) * 60 * 1000))
-                    console.log("Dato: " + date)
 
                     let insertQuery = "INSERT INTO login_token(gjelderfor, token, utlopsdato) VALUES(?, ?, ?)"
                     let insertQueryFormat = mysql.format(insertQuery, [brukerid, token.toString(), date])
                     
                     connection.query(insertQueryFormat, (error2, results2) => {
                         if (error2) {
-                            console.log("1")
                             return res.json({"status" : "error", "message" : "En feil oppstod under oppdatering av brukerens email"})
                         }
                         if (results2.affectedRows > 0) {
                             return res.json({utlopsdato : date, token : token.toString()})
                         } else {
-                            console.log("2")
                             return res.json({"status" : "error", "message" : "En feil oppstod under oppdatering av brukerens email"})
                         }
                     })
 
                 } else {
-                    console.log("3")
                     return res.json({"status" : "error", "message" : "En feil oppstod under oppdatering av brukerens email"})
                 }
             })
@@ -291,7 +277,6 @@ router.post('/updatePassord', async (req, res) => {
             let updateQueryFormat = mysql.format(updateQuery, [hashedPwd, brukerid])
             connection.query(updateQueryFormat, (error, results) => {
                 if (error) {
-                    console.log("An error occured while updating the users password, details: " + error.errno + ", " + error.sqlMessage)
                     return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere"})
                 }
 

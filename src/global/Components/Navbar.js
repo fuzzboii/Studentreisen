@@ -179,8 +179,7 @@ function Navbar(props) {
     };
 
     const getAvatar = () => {
-      console.log("Sjekker autentisering")
-      console.log(auth)
+
       if (auth) {
         axios.all([
           axios.post(process.env.REACT_APP_APIURL + "/profile/getProfilbilde", {token : CookieService.get("authtoken")}),
@@ -196,7 +195,6 @@ function Navbar(props) {
         }))    
       } else {
         setLoading(false)
-        console.log("Ikke logget inn")
       }
     }
 
