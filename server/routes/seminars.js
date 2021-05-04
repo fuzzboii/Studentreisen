@@ -262,11 +262,9 @@ router.post('/submitSeminar', (req, res) => {
                                 const filtype = opplastetFilnavn.substring(opplastetFilnavn.lastIndexOf('.'));
                                 const filnavn = "seminar" + insertedSeminar.insertId + filtype;
 
-
-                                const rootFolder = path.join(__dirname, '../../');
         
                                 const opplastetBilde = req.files.image;
-                                opplastetBilde.mv(rootFolder + '/public/uploaded/' + filnavn);
+                                opplastetBilde.mv(path.join(__dirname, process.env.USER_IMG_UPLOAD_PATH) + filnavn);
 
                                 // Oppretter referanse til bilde og kobler mot seminar
                                 let insertImageQuery = "INSERT INTO bilde(plassering) VALUES(?)";

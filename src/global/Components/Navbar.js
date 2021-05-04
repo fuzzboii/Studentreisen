@@ -65,7 +65,9 @@ function Navbar(props) {
       setAuth(props.auth);
       setType(props.type);
       setNotif(props.notif);
-      getAvatar()
+      if(auth) {
+        getAvatar()
+      }
       if(props.notif !== undefined) {
         setNotifUlest(1);
       }
