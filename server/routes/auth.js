@@ -281,7 +281,7 @@ router.post('/login', async (req, res) => {
 });
 
 
-router.post('/updatePassord', async (req, res) => {
+router.post('/updatePassword', async (req, res) => {
     // Kontroller at passordet følger retningslinjer
     const validation = passwordValidation({password : req.body.pwd, password2 : req.body.pwd2})
 
