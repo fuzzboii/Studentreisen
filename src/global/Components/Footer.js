@@ -10,18 +10,18 @@ function Footer() {
           wholeDomain={true}
           showMarketingOption={false}
           showStatisticsOption={false}
+          showPreferencesOption={false}
 
           styles={{
               dialog: {}
           }}
 
-          message="Vi bruker informasjonskapsler (cookies) for å øke brukervennligheten."
+          message="Vi bruker informasjonskapsler (cookies) kun for lagring av din innlogget økt, ved å fortsette å bruke siden godkjenner du dette."
           necessaryOptionText="Nødvendige"
-          preferencesOptionText="Preferanser"
-          privacyPolicyLinkText=""
+          privacyPolicyLinkText="Les mer om personvernet her"
           managePreferencesButtonText="Endre mine valg"
           savePreferencesButtonText="Lagre og lukk"
-          acceptButtonText="Aksepter alle"
+          acceptButtonText="Aksepter"
 
           onAccept = {() => {}}
           onAcceptPreferences = {() => {}}
