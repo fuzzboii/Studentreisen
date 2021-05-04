@@ -96,7 +96,7 @@ function CourseOverview(props) {
                         tooltip: 'Nytt kurs',
                         isFreeAction: true,
                         onClick: () => {
-                            history.push("/course/ny");
+                            history.push("/course/new");
                         }
                     }
                 ]}

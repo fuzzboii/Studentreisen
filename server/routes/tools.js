@@ -120,7 +120,7 @@ router.post('/newUser', async (req, res) => {
                                         const subject = "Ny bruker - Studentreisen";
                                         const body = 'Hei ' + req.body.bruker.fnavn + '!\n\nDu har mottatt denne eposten fordi en administrator har opprettet en bruker for deg.\n\n' +
                                                     'Ditt midlertidige passord: ' + pass + '\n\n' + 
-                                                    'Du kan logge inn her: http://localhost:3000/login. Du vil bli bedt om å oppgi et nytt passord ved innlogging.\n\n' + 
+                                                    'Du kan logge inn her: ' + process.env.DOMAIN + '/login. Du vil bli bedt om å oppgi et nytt passord ved innlogging.\n\n' + 
                                                     'Mvh\nStudentreisen';
         
                                         sendEmail(req.body.bruker.email, subject, body);
