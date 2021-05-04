@@ -117,7 +117,7 @@ function App() {
           <Route path = "/seminar/seminarutgatte=:seminarid" render = {() =>(
             <SeminarDetailsExpired auth={auth} type={type} loading={loading} />
           )}/>
-          <Route path = "/seminar/ny"  render={() => (
+          <Route path = "/seminar/new"  render={() => (
               <SeminarNew auth={auth} type={type} loading={loading} />
             )} />
           <Route path = "/cv" render={() => (

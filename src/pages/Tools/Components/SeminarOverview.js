@@ -160,7 +160,7 @@ function SeminarOverview(props) {
                         tooltip: 'Nytt seminar',
                         isFreeAction: true,
                         onClick: () => {
-                            history.push("/seminar/ny");
+                            history.push("/seminar/new");
                         }
                     },
                     seminarData => ({

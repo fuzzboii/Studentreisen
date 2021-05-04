@@ -132,10 +132,10 @@ const SeminarNav = (props) => {
           {(props.type === 2 || props.type === 4) &&
           <div className="Seminar-HeadingToolsWrapper">
             <div className="Seminar-HeadingToolsDesktop">
-              <Button className="Seminar-ButtonNewDesktop" href="/seminar/ny" variant="contained" color="primary">Nytt seminar<AddIcon/></Button>
+              <Button className="Seminar-ButtonNewDesktop" href="/seminar/new" variant="contained" color="primary">Nytt seminar<AddIcon/></Button>
             </div>     
             <div className="Seminar-HeadingToolsMobile">
-              <Button className="Seminar-ButtonNewMobile" href="/seminar/ny" variant="contained" color="primary"><AddIcon/></Button>
+              <Button className="Seminar-ButtonNewMobile" href="/seminar/new" variant="contained" color="primary"><AddIcon/></Button>
             </div>
                     
           </div>
