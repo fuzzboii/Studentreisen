@@ -6,6 +6,7 @@ const mysql = require('mysql');
 let connection;
 try {
     connection = mysql.createPool({
+        connectionLimit : 1000,
         host: process.env.DBHOST,
         user: process.env.DBUSERNAME,
         password: process.env.DBPASSWORD,
