@@ -361,14 +361,14 @@ router.post('/submitSeminar', (req, res) => {
                             let insertQuery = "INSERT INTO seminar(navn, arrangor, adresse, oppstart, varighet, beskrivelse, tilgjengelighet) VALUES(?, ?, ?, ?, ?, ?, ?)";
                             let insertQueryFormat = mysql.format(insertQuery, [req.body.title, response.brukerid, req.body.address, req.body.startdate, req.body.enddate, req.body.description, (req.body.availability === "true") ? 1 : 0]);
                     
-                            connPool.query(insertQueryFormat, (error, results) => {
+                            connPool.query(insertQueryFormat, (error, insertedSeminar) => {
                                 connPool.release();
                                 if (error) {
                                     console.log("En feil oppstod under registrering av nytt seminar, detaljer: " + error.errno + ", " + error.sqlMessage)
                                     return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                                 }
                                 
-                                if(results.affectedRows > 0) {
+                                if(insertedSeminar.affectedRows > 0) {
                                     return res.json({ "status" : "success", "seminarid" : insertedSeminar.insertId});
                                 }
                             });
