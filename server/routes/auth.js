@@ -1,4 +1,4 @@
-const { connection } = require('../db');
+const mysqlpool = require('../db').pool;
 const mysql = require('mysql');
 const bcrypt = require('bcryptjs');
 const cryptojs = require('crypto-js');
@@ -98,61 +98,74 @@ router.post('/register', async (req, res) => {
                 const salt = await bcrypt.genSalt(10);
                 const hashedPW = await bcrypt.hash(req.body.password, salt);
 
-                // Sjekker om e-posten allerede eksisterer
-                let checkQuery = "SELECT email FROM bruker WHERE email = ?";
-                let checkQueryFormat = mysql.format(checkQuery, [req.body.email]);
-    
-                connection.query(checkQueryFormat, (error, results) => {
-                    if (error) {
-                        console.log("En feil oppstod ved henting av e-post under registrering, detaljer: " + error.errno + ", " + error.sqlMessage)
+                mysqlpool.getConnection(function(error, connPool) {
+                    if(error) {
                         return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                     }
-    
-                    if(results.length > 0) {
-                        return res.json({"status" : "error", "message" : "En bruker med denne e-posten eksisterer allerede"});
-                    } else {
 
-                        // Legg til brukeren
-                        let insertQuery = "INSERT INTO bruker(niva, fnavn, enavn, email, pwd) VALUES(?, ?, ?, ?, ?)";
-                        let insertQueryFormat = mysql.format(insertQuery, [process.env.ACCESS_STUDENT, req.body.fnavn, req.body.enavn, req.body.email.toLowerCase(), hashedPW]);
-                
-                        connection.query(insertQueryFormat, (error, results) => {
-                            if (error) {
-                                console.log("En feil oppstod under registrering av ny bruker, detaljer: " + error.errno + ", " + error.sqlMessage)
-                                return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
-                            }
+                    // Sjekker om e-posten allerede eksisterer
+                    let checkQuery = "SELECT email FROM bruker WHERE email = ?";
+                    let checkQueryFormat = mysql.format(checkQuery, [req.body.email]);
+        
+                    connPool.query(checkQueryFormat, (error, results) => {
+                        if (error) {
+                            connPool.release();
+                            console.log("En feil oppstod ved henting av e-post under registrering, detaljer: " + error.errno + ", " + error.sqlMessage)
+                            return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                        }
+        
+                        if(results.length > 0) {
+                            connPool.release();
+                            return res.json({"status" : "error", "message" : "En bruker med denne e-posten eksisterer allerede"});
+                        } else {
+
+                            // Legg til brukeren
+                            let insertQuery = "INSERT INTO bruker(niva, fnavn, enavn, email, pwd) VALUES(?, ?, ?, ?, ?)";
+                            let insertQueryFormat = mysql.format(insertQuery, [process.env.ACCESS_STUDENT, req.body.fnavn, req.body.enavn, req.body.email.toLowerCase(), hashedPW]);
+                    
+                            connPool.query(insertQueryFormat, (error, results) => {
+                                if (error) {
+                                    connPool.release();
+                                    console.log("En feil oppstod under registrering av ny bruker, detaljer: " + error.errno + ", " + error.sqlMessage)
+                                    return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                                }
+                                
+                                if(results.affectedRows > 0) {
+                                    // Bruker opprettet
+
+                                    // Endrer utløpsdatoen utifra "Husk meg"-feltet
+                                    let date = new Date();
+                                    date.setTime(date.getTime() + ((60 * 3) * 60 * 1000));
+
+                                    // Opprett en token utifra e-posten til brukeren
+                                    const token = cryptojs.AES.encrypt(req.body.email.toLowerCase(), process.env.TOKEN_SECRET);
+
+                                    // Legg til nye token i databasen med utløpsdato ovenfor
+                                    let insertQuery = "INSERT INTO login_token(gjelderfor, token, utlopsdato) VALUES(?, ?, ?)";
+                                    let insertQueryFormat = mysql.format(insertQuery, [results.insertId, token.toString(), date]);
                             
-                            if(results.affectedRows > 0) {
-                                // Bruker opprettet
+                                    connPool.query(insertQueryFormat, (error, results) => {
+                                        if (error) {
+                                            connPool.release();
+                                            console.log("En feil oppstod under oppretting av login_token for en ny bruker, detaljer: " + error.errno + ", " + error.sqlMessage)
+                                            return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                                        }
 
-                                // Endrer utløpsdatoen utifra "Husk meg"-feltet
-                                let date = new Date();
-                                date.setTime(date.getTime() + ((60 * 3) * 60 * 1000));
-
-                                // Opprett en token utifra e-posten til brukeren
-                                const token = cryptojs.AES.encrypt(req.body.email.toLowerCase(), process.env.TOKEN_SECRET);
-
-                                // Legg til nye token i databasen med utløpsdato ovenfor
-                                let insertQuery = "INSERT INTO login_token(gjelderfor, token, utlopsdato) VALUES(?, ?, ?)";
-                                let insertQueryFormat = mysql.format(insertQuery, [results.insertId, token.toString(), date]);
-                        
-                                connection.query(insertQueryFormat, (error, results) => {
-                                    if (error) {
-                                        console.log("En feil oppstod under oppretting av login_token for en ny bruker, detaljer: " + error.errno + ", " + error.sqlMessage)
-                                        return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
-                                    }
-
-                                    if(results.affectedRows > 0) {
-                                        return res.json({"status" : "success", "message" : "OK", "authtoken" : token.toString()});
-                                    } else {
-                                        return res.json({"status" : "success", "message" : "OK"});
-                                    }
-                                });
-                            } else {
-                                return res.json({"status" : "error", "message" : "En feil oppstod under oppretting av brukeren, vennligst forsøk igjen senere"});
-                            }
-                        });
-                    }
+                                        if(results.affectedRows > 0) {
+                                            connPool.release();
+                                            return res.json({"status" : "success", "message" : "OK", "authtoken" : token.toString()});
+                                        } else {
+                                            connPool.release();
+                                            return res.json({"status" : "success", "message" : "OK"});
+                                        }
+                                    });
+                                } else {
+                                    connPool.release();
+                                    return res.json({"status" : "error", "message" : "En feil oppstod under oppretting av brukeren, vennligst forsøk igjen senere"});
+                                }
+                            });
+                        }
+                    });
                 });
             } catch (error) {
                 // En feil oppstod under registreringen
@@ -219,60 +232,73 @@ router.post('/login', async (req, res) => {
             // Et ukjent validerings-problem oppstod, sender fulle meldingen til bruker
             return res.json({ "status" : "error", "message" : validation.error.details[0].message });
         } else {
-            // Henter brukerinfo utifra oppgitt e-post
-            let checkQuery = "SELECT brukerid, email, pwd, pwd_temp FROM bruker WHERE email = ?";
-            let checkQueryFormat = mysql.format(checkQuery, [req.body.email]);
 
-            connection.query(checkQueryFormat, (error, fetchedUser) => {
-                if (error) {
-                    console.log("En feil oppstod under sjekking av brukerinfo ved innlogging, detaljer: " + error.errno + ", " + error.sqlMessage)
+            mysqlpool.getConnection(function(error, connPool) {
+                if(error) {
                     return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                 }
-
-                if(fetchedUser[0] !== undefined) {
-                    const validatePass = bcrypt.compareSync(req.body.pwd, fetchedUser[0].pwd);
-                    
-                    if(validatePass) {
-                        // Bruker autentisert
-
-                        // Endrer utløpsdatoen utifra "Husk meg"-feltet
-                        let date = new Date();
-
-                        if(req.body.remember) {
-                            // Husk brukeren i 72 timer
-                            date.setTime(date.getTime() + ((60 * 72) * 60 * 1000));
-                        } else {
-                            // Husk brukeren i 3 timer
-                            date.setTime(date.getTime() + ((60 * 3) * 60 * 1000));
-                        }
-
-                        // Opprett en token utifra e-posten til brukeren
-                        const token = cryptojs.AES.encrypt(fetchedUser[0].email, process.env.TOKEN_SECRET);
-
-                        // Legg til nye token i databasen med utløpsdato ovenfor
-                        let insertQuery = "INSERT INTO login_token(gjelderfor, token, utlopsdato) VALUES(?, ?, ?)";
-                        let insertQueryFormat = mysql.format(insertQuery, [fetchedUser[0].brukerid, token.toString(), date]);
                 
-                        connection.query(insertQueryFormat, (error, results) => {
-                            if (error) {
-                                console.log("En feil oppstod under oppretting av login_token for en bruker, detaljer: " + error.errno + ", " + error.sqlMessage)
-                                return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                // Henter brukerinfo utifra oppgitt e-post
+                let checkQuery = "SELECT brukerid, email, pwd, pwd_temp FROM bruker WHERE email = ?";
+                let checkQueryFormat = mysql.format(checkQuery, [req.body.email]);
+
+                connPool.query(checkQueryFormat, (error, fetchedUser) => {
+                    if (error) {
+                        connPool.release();
+                        console.log("En feil oppstod under sjekking av brukerinfo ved innlogging, detaljer: " + error.errno + ", " + error.sqlMessage)
+                        return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                    }
+
+                    if(fetchedUser[0] !== undefined) {
+                        const validatePass = bcrypt.compareSync(req.body.pwd, fetchedUser[0].pwd);
+                        
+                        if(validatePass) {
+                            // Bruker autentisert
+
+                            // Endrer utløpsdatoen utifra "Husk meg"-feltet
+                            let date = new Date();
+
+                            if(req.body.remember) {
+                                // Husk brukeren i 72 timer
+                                date.setTime(date.getTime() + ((60 * 72) * 60 * 1000));
+                            } else {
+                                // Husk brukeren i 3 timer
+                                date.setTime(date.getTime() + ((60 * 3) * 60 * 1000));
                             }
 
-                            if(results.affectedRows > 0) {
-                                return res.json({"status" : "success", "message" : "OK", "authtoken" : token.toString(), "pwd_temp" : fetchedUser[0].pwd_temp});
-                            } else {
-                                return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
-                            }
-                        });
+                            // Opprett en token utifra e-posten til brukeren
+                            const token = cryptojs.AES.encrypt(fetchedUser[0].email, process.env.TOKEN_SECRET);
+
+                            // Legg til nye token i databasen med utløpsdato ovenfor
+                            let insertQuery = "INSERT INTO login_token(gjelderfor, token, utlopsdato) VALUES(?, ?, ?)";
+                            let insertQueryFormat = mysql.format(insertQuery, [fetchedUser[0].brukerid, token.toString(), date]);
+                    
+                            connPool.query(insertQueryFormat, (error, results) => {
+                                if (error) {
+                                    connPool.release();
+                                    console.log("En feil oppstod under oppretting av login_token for en bruker, detaljer: " + error.errno + ", " + error.sqlMessage)
+                                    return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                                }
+
+                                if(results.affectedRows > 0) {
+                                    connPool.release();
+                                    return res.json({"status" : "success", "message" : "OK", "authtoken" : token.toString(), "pwd_temp" : fetchedUser[0].pwd_temp});
+                                } else {
+                                    connPool.release();
+                                    return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                                }
+                            });
+                        } else {
+                            connPool.release();
+                            // Feil passord
+                            res.json({ "status" : "error", "message" : "Feil brukernavn eller passord" });
+                        }
                     } else {
-                        // Feil passord
-                        res.json({ "status" : "error", "message" : "Feil brukernavn eller passord" });
+                        connPool.release();
+                        // Feil e-post
+                        return res.json({ "status" : "error", "message" : "Feil brukernavn eller passord"});
                     }
-                } else {
-                    // Feil e-post
-                    return res.json({ "status" : "error", "message" : "Feil brukernavn eller passord"});
-                }
+                });
             });
         }
     } else {
@@ -316,21 +342,32 @@ router.post('/updatePassword', async (req, res) => {
             const hashedPwd = await bcrypt.hash(req.body.pwd, salt)
     
             verifyAuth(req.body.token).then( resAuth => {
-                let updateQuery = "UPDATE bruker SET pwd = ?, pwd_temp = 0 WHERE brukerid = ?"
-                let updateQueryFormat = mysql.format(updateQuery, [hashedPwd, resAuth.brukerid])
-                connection.query(updateQueryFormat, (error, results) => {
-                    if (error) {
-                        console.log("En feil oppstod ved oppdatering av midlertidig passord for en bruker, detaljer: " + error.errno + ", " + error.sqlMessage)
-                        return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere"})
+
+                mysqlpool.getConnection(function(error, connPool) {
+                    if(error) {
+                        return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                     }
-    
-                    if(results.affectedRows > 0) {
-                        return res.json({"status" : "success"})
-                    } else {
-                        return res.json({"status" : "error", "message" : "En feil oppstod under oppdatering av brukerens passord"})
-                    }
-                })
-            })
+
+                    let updateQuery = "UPDATE bruker SET pwd = ?, pwd_temp = 0 WHERE brukerid = ?"
+                    let updateQueryFormat = mysql.format(updateQuery, [hashedPwd, resAuth.brukerid])
+
+                    connPool.query(updateQueryFormat, (error, results) => {
+                        if (error) {
+                            connPool.release();
+                            console.log("En feil oppstod ved oppdatering av midlertidig passord for en bruker, detaljer: " + error.errno + ", " + error.sqlMessage)
+                            return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere"})
+                        }
+        
+                        if(results.affectedRows > 0) {
+                            connPool.release();
+                            return res.json({"status" : "success"})
+                        } else {
+                            connPool.release();
+                            return res.json({"status" : "error", "message" : "En feil oppstod under oppdatering av brukerens passord"})
+                        }
+                    });
+                });
+            });
         } else {
             res.status(400).json({"status" : "error", "message" : "Ikke tilstrekkelig data"})
         }

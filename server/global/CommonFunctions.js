@@ -1,4 +1,4 @@
-const { connection } = require('../db');
+const mysqlpool = require('../db').pool;
 const mysql = require('mysql');
 const nodemailer = require('nodemailer');
 
@@ -6,35 +6,45 @@ const verifyAuth = (token) => {
     return new Promise(function(resolve, reject){
         try {
             if(token !== undefined) {
-                token = token;
-                // Sjekker om authtoken fremdeles er gyldig
-                let checkQuery = "SELECT gjelderfor FROM login_token WHERE token = ? AND utlopsdato > NOW()";
-                let checkQueryFormat = mysql.format(checkQuery, [token]);
-    
-                connection.query(checkQueryFormat, (error, results) => {
-                    if (error) {
-                        console.log("En feil oppstod ved henting av token fra login_token: " + error.errno + ", " + error.sqlMessage)
+                mysqlpool.getConnection(function(error, connPool) {
+                    if(error) {
+                        return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                     }
-    
-                    if(results[0] !== undefined) {
-                        // authtoken er gyldig, henter brukerIDen
-                        checkQuery = "SELECT brukerid, niva FROM bruker WHERE brukerid = ?";
-                        checkQueryFormat = mysql.format(checkQuery, [results[0].gjelderfor]);
-    
-                        connection.query(checkQueryFormat, (error, results) => {
-                            if (error) {
-                                console.log("En feil oppstod ved henting av bruker nivå i BrukerOversikt: " + error.errno + ", " + error.sqlMessage);
-                            }
-    
-                            if(results[0] !== undefined) {
-                                resolve({"authenticated" : true, "usertype" : results[0].niva, "brukerid" : results[0].brukerid});
-                            } else {
-                                resolve({"authenticated" : false});
-                            }
-                        });
-                    } else {
-                        resolve({"authenticated" : false});
-                    }
+                    token = token;
+                    // Sjekker om authtoken fremdeles er gyldig
+                    let checkQuery = "SELECT gjelderfor FROM login_token WHERE token = ? AND utlopsdato > NOW()";
+                    let checkQueryFormat = mysql.format(checkQuery, [token]);
+        
+                    connPool.query(checkQueryFormat, (error, results) => {
+                        if (error) {
+                            connPool.release();
+                            console.log("En feil oppstod ved henting av token fra login_token: " + error.errno + ", " + error.sqlMessage)
+                        }
+        
+                        if(results[0] !== undefined) {
+                            // authtoken er gyldig, henter brukerIDen
+                            checkQuery = "SELECT brukerid, niva FROM bruker WHERE brukerid = ?";
+                            checkQueryFormat = mysql.format(checkQuery, [results[0].gjelderfor]);
+        
+                            connPool.query(checkQueryFormat, (error, results) => {
+                                if (error) {
+                                    connPool.release();
+                                    console.log("En feil oppstod ved henting av bruker nivå i BrukerOversikt: " + error.errno + ", " + error.sqlMessage);
+                                }
+        
+                                if(results[0] !== undefined) {
+                                    connPool.release();
+                                    resolve({"authenticated" : true, "usertype" : results[0].niva, "brukerid" : results[0].brukerid});
+                                } else {
+                                    connPool.release();
+                                    resolve({"authenticated" : false});
+                                }
+                            });
+                        } else {
+                            connPool.release();
+                            resolve({"authenticated" : false});
+                        }
+                    });
                 });
             } else {
                 resolve({"authenticated" : false});
