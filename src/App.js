@@ -22,6 +22,7 @@ import SeminarDetailsUpcoming from './pages/Seminar/Components/SeminarDetailsUpc
 import SeminarDetailsExpired from './pages/Seminar/Components/SeminarDetailsExpired';
 import SeminarNew from './pages/Seminar/Components/SeminarNew';
 import CV from './pages/CV/Components/CV';
+import Privacy from './pages/Privacy/Components/Privacy';
 
 import CookieService from './global/Services/CookieService';
 import AuthService from './global/Services/AuthService';
@@ -122,7 +123,10 @@ function App() {
             )} />
           <Route path = "/cv" render={() => (
             <CV auth={auth} type={type} loading={loading} />
-          )} />
+            )} />
+          <Privacy path = "/privacy" render={() => (
+            <Privacy auth={auth} type={type} loading={loading} />
+            )} />
         </Switch>
       <Footer />
     </>
