@@ -189,7 +189,7 @@ const SeminarDetailsExpired = (props) => {
                             <div className="SeminarDetails-Date">
                                 <EventIcon className="SeminarDetails-DateIcon"/> 
                                 <div className="SeminarDetails-OppstartVarighet">
-                                    <p className="SeminarDetails-Oppstart">{moment.locale('nb'), moment(seminar.oppstart).format("MMM DD YYYY, hh:mm")} -</p>
+                                    <p className="SeminarDetails-Oppstart">{moment.locale('nb'), moment(seminar.oppstart).format("MMM DD YYYY, HH:mm")} -</p>
                                     <p className="SeminarDetails-Varighet">{moment.locale('nb'), moment(seminar.varighet).format("MMM DD YYYY")}</p>    
                                 </div>
                             </div>

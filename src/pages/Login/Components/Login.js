@@ -251,7 +251,7 @@ class Login extends Component {
         axios
           // Henter API URL fra .env og utfører en POST request med dataen fra objektet over
           // Axios serialiserer objektet til JSON selv
-          .post(process.env.REACT_APP_APIURL + "/auth/updatePassord", {token : this.state.tempAuthtoken, pwd : this.state.tempPw, pwd2 : this.state.tempPw2})
+          .post(process.env.REACT_APP_APIURL + "/auth/updatePassword", {token : this.state.tempAuthtoken, pwd : this.state.tempPw, pwd2 : this.state.tempPw2})
           // Utføres ved mottatt resultat
           .then(res => {
             if(res.data.status == "success") {

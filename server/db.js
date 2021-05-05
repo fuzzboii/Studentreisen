@@ -5,16 +5,18 @@ const mysql = require('mysql');
 
 let connection;
 try {
-    connection = mysql.createConnection({
+    connection = mysql.createPool({
+        connectionLimit : 1000,
         host: process.env.DBHOST,
         user: process.env.DBUSERNAME,
         password: process.env.DBPASSWORD,
         database: process.env.DBNAME
     });
-    
-    connection.connect((error) => {
+
+    connection.getConnection(function(error, connPool) {
         if (!error) {
             console.log('Tilkoblet databasen');
+            connPool.release();
         } else {
             console.log("En feil oppstod ved tilkobling mot databasen: " + error.code);
         }
@@ -26,5 +28,4 @@ try {
 
 
 
-
-module.exports = {connection}
+exports.pool = connection

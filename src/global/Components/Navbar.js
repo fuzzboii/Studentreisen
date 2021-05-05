@@ -65,14 +65,11 @@ function Navbar(props) {
       setAuth(props.auth);
       setType(props.type);
       setNotif(props.notif);
-      if(auth) {
-        getAvatar()
-      }
+      getAvatar()
       if(props.notif !== undefined) {
         setNotifUlest(1);
       }
       showButton();
-      setLoading(false);
     }, [props]); 
 
     // Legger til eller fjerner padding under navbar, for å skyve innholdet under nedover. //
@@ -163,8 +160,8 @@ function Navbar(props) {
           .post(process.env.REACT_APP_APIURL + "/notif/getNotifs", {token : CookieService.get("authtoken")} )
           // Utføres ved mottatt resultat
           .then(res => {
-            if(res.data.results) {
-              setNotif(res.data.results);
+            if(res.data.notifs) {
+              setNotif(res.data.notifs);
             } else if(res.data.nodata) {
               setNotif({nodata : res.data.nodata});
             }
@@ -182,16 +179,23 @@ function Navbar(props) {
     };
 
     const getAvatar = () => {
-      axios.all([
-        axios.post(process.env.REACT_APP_APIURL + "/profile/getProfilbilde", {token : CookieService.get("authtoken")}),
-        axios.post(process.env.REACT_APP_APIURL + "/profile/getBruker", {token : CookieService.get("authtoken")})
-      ]).then(axios.spread((res1, res2) => {
-        if (res1.data.results != undefined) {
-          setProfilbilde(res1.data.results[0].plassering)
-        } else {
-          setInitialer(res2.data.results[0].fnavn.charAt(0) + res2.data.results[0].enavn.charAt(0))
-        }
-      }))
+
+      if (auth) {
+        axios.all([
+          axios.post(process.env.REACT_APP_APIURL + "/profile/getProfilbilde", {token : CookieService.get("authtoken")}),
+          axios.post(process.env.REACT_APP_APIURL + "/profile/getBruker", {token : CookieService.get("authtoken")})
+        ]).then(axios.spread((res1, res2) => {
+          if (res1.data.results != undefined) {
+            setProfilbilde(res1.data.results[0].plassering)
+            setLoading(false)
+          } else {
+            setInitialer(res2.data.results[0].fnavn.charAt(0) + res2.data.results[0].enavn.charAt(0))
+            setLoading(false)
+          }
+        }))    
+      } else {
+        setLoading(false)
+      }
     }
 
     if(loading) {

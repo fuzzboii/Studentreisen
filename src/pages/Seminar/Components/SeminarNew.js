@@ -107,7 +107,7 @@ class SeminarNew extends Component {
                                 .post(process.env.REACT_APP_APIURL + "/seminar/submitSeminar", data)
                                 // Utføres ved mottatt resultat
                                 .then(res => {
-                                    if(res.data.success) {
+                                    if(res.data.status === "success") {
                                         // Mottok OK fra server
                                         this.setState({
                                             authenticated: true
@@ -124,8 +124,8 @@ class SeminarNew extends Component {
                                         window.location.href=goto;
                                     } else {
                                         // Feil oppstod ved oppretting
-                                        this.props.enqueueSnackbar("Kunne ikke opprette seminar, vennligst forsøk igjen", { 
-                                            variant: 'error',
+                                        this.props.enqueueSnackbar(res.data.message, { 
+                                            variant: res.data.status,
                                             autoHideDuration: 5000,
                                         });
                                         this.setState({
