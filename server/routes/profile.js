@@ -1,4 +1,4 @@
-const { connection } = require('../db');
+const mysqlpool = require('../db').pool;
 const mysql = require('mysql');
 const bcrypt = require('bcryptjs');
 const cryptojs = require('crypto-js');
@@ -10,8 +10,14 @@ const path = require('path');
 // Henter alle fagfelter i database //
 router.get('/getFagfelt', async (req, res) => {
     try{
-        connection.query('SELECT * FROM fagfelt', (error, results) => {
-            res.send(results);
+        mysqlpool.getConnection(function(error, connPool) {
+            if(error) {
+                return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+            }
+            connPool.query('SELECT * FROM fagfelt', (error, results) => {
+                connPool.release();
+                res.send(results);
+            });
         });
 
     }catch(err) {
@@ -25,18 +31,24 @@ router.post('/getProfilbilde', async (req, res) => {
     if (req.body.token !== undefined) {
         verifyAuth(req.body.token).then( resAuth => {
             brukerid = resAuth.brukerid
-            let getQuery = "SELECT plassering FROM profilbilde WHERE brukerid = ?"
-            let getQueryFormat = mysql.format(getQuery, [brukerid])
-            connection.query(getQueryFormat, (error, results) => {
-                if (error) {
-                    return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" })
+            mysqlpool.getConnection(function(error, connPool) {
+                if(error) {
+                    return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                 }
+                let getQuery = "SELECT plassering FROM profilbilde WHERE brukerid = ?"
+                let getQueryFormat = mysql.format(getQuery, [brukerid])
+                connPool.query(getQueryFormat, (error, results) => {
+                    connPool.release();
+                    if (error) {
+                        return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" })
+                    }
 
-                if (results.length > 0) {
-                    return res.json({results})
-                } else {
-                    return res.json({"status" : "error", "message" : "Kunne ikke finne et profilbilde"})
-                }
+                    if (results.length > 0) {
+                        return res.json({results})
+                    } else {
+                        return res.json({"status" : "error", "message" : "Kunne ikke finne et profilbilde"})
+                    }
+                })
             })
         })
     } else {
@@ -50,20 +62,26 @@ router.post('/getBruker', async (req, res) => {
     if (req.body.token !== undefined) {
         verifyAuth(req.body.token).then( resAuth => {
             brukerid = resAuth.brukerid 
-            let getQuery = "SELECT fnavn, enavn, telefon, email, brukerid FROM bruker WHERE brukerid = ?";
-            let getQueryFormat = mysql.format(getQuery, [brukerid]);
-            connection.query(getQueryFormat, (error, results) => {
-                if (error) {
+            mysqlpool.getConnection(function(error, connPool) {
+                if(error) {
                     return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
-              
                 }
+                let getQuery = "SELECT fnavn, enavn, telefon, email, brukerid FROM bruker WHERE brukerid = ?";
+                let getQueryFormat = mysql.format(getQuery, [brukerid]);
+                connPool.query(getQueryFormat, (error, results) => {
+                    connPool.release();
+                    if (error) {
+                        return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                 
-                // Returnerer påvirkede rader
-                if(results[0] !== undefined) {
-                    return res.json({results});
-                } else {
-                    return res.json({"status" : "error", "message" : "En feil oppstod under henting av brukerdata"});
-                }
+                    }
+                    
+                    // Returnerer påvirkede rader
+                    if(results[0] !== undefined) {
+                        return res.json({results});
+                    } else {
+                        return res.json({"status" : "error", "message" : "En feil oppstod under henting av brukerdata"});
+                    }
+                });       
             });       
         })
         } else {
@@ -77,20 +95,26 @@ router.post('/getInteresser', async (req, res) => {
     if (req.body.token !== undefined) {
         verifyAuth(req.body.token).then( resAuth => {
             brukerid = resAuth.brukerid;
-            let getQuery = "SELECT beskrivelse, interesse.fagfeltid FROM interesse, fagfelt WHERE interesse.fagfeltid = fagfelt.fagfeltid AND interesse.brukerid = ?";
-            let getQueryFormat = mysql.format(getQuery, [brukerid]);
-            connection.query(getQueryFormat, (error, results) => {
-                if (error) {
+            mysqlpool.getConnection(function(error, connPool) {
+                if(error) {
                     return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
-              
                 }
+                let getQuery = "SELECT beskrivelse, interesse.fagfeltid FROM interesse, fagfelt WHERE interesse.fagfeltid = fagfelt.fagfeltid AND interesse.brukerid = ?";
+                let getQueryFormat = mysql.format(getQuery, [brukerid]);
+                connPool.query(getQueryFormat, (error, results) => {
+                    connPool.release();
+                    if (error) {
+                        return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                 
-                // Returnerer påvirkede rader
-                if(results.length > 0) {
-                    return res.json({results});
-                } else {
-                    return res.json({"status" : "error", "message" : "En feil oppstod under henting av brukerens interesser"});
-                }
+                    }
+                    
+                    // Returnerer påvirkede rader
+                    if(results.length > 0) {
+                        return res.json({results});
+                    } else {
+                        return res.json({"status" : "error", "message" : "En feil oppstod under henting av brukerens interesser"});
+                    }
+                });    
             });       
         })
         } else {
@@ -104,21 +128,27 @@ router.post('/deleteInteresse', async (req, res) => {
     if (req.body.token !== undefined && req.body.fagfeltid !== undefined) {
         verifyAuth(req.body.token).then( resAuth => {
             brukerid = resAuth.brukerid
-            let insertQuery = "DELETE FROM interesse WHERE brukerid = ? AND fagfeltid = ?";
-            let insertQueryFormat = mysql.format(insertQuery, [brukerid, req.body.fagfeltid]);
-            connection.query(insertQueryFormat, (error, results) => {
-                if (error) {
+            mysqlpool.getConnection(function(error, connPool) {
+                if(error) {
                     return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
-              
                 }
+                let insertQuery = "DELETE FROM interesse WHERE brukerid = ? AND fagfeltid = ?";
+                let insertQueryFormat = mysql.format(insertQuery, [brukerid, req.body.fagfeltid]);
+                connPool.query(insertQueryFormat, (error, results) => {
+                    connPool.release();
+                    if (error) {
+                        return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                 
-                // Returnerer påvirkede rader
-                if(results.length > 0) {
-                    // return res.json({results});
-                } else {
-                    return res.json({"status" : "error", "message" : "En feil oppstod under sletting av brukerens interesser"});
-                }
-            });       
+                    }
+
+                    // Returnerer påvirkede rader
+                    if(results.length > 0) {
+                        // return res.json({results});
+                    } else {
+                        return res.json({"status" : "error", "message" : "En feil oppstod under sletting av brukerens interesser"});
+                    }
+                });      
+            });     
         })
         } else {
             res.status(400).json({"status" : "error", "message" : "Ikke tilstrekkelig data"});
@@ -131,21 +161,27 @@ router.post('/postInteresse', async (req, res) => {
     if (req.body.token !== undefined && req.body.fagfeltid !== undefined) {
         verifyAuth(req.body.token).then( resAuth => {
             brukerid = resAuth.brukerid
-            let insertQuery = "INSERT INTO interesse(brukerid, fagfeltid) VALUES(?, ?)";
-            let insertQueryFormat = mysql.format(insertQuery, [brukerid, req.body.fagfeltid]);
-            connection.query(insertQueryFormat, (error, results) => {
-                if (error) {
+            mysqlpool.getConnection(function(error, connPool) {
+                if(error) {
                     return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
-              
                 }
+                let insertQuery = "INSERT INTO interesse(brukerid, fagfeltid) VALUES(?, ?)";
+                let insertQueryFormat = mysql.format(insertQuery, [brukerid, req.body.fagfeltid]);
+                connPool.query(insertQueryFormat, (error, results) => {
+                    connPool.release();
+                    if (error) {
+                        return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                 
-                // Returnerer påvirkede rader
-                if(results.length > 0) {
-                    // return res.json({results});
-                } else {
-                    return res.json({"status" : "error", "message" : "En feil oppstod under henting av brukerens interesser"});
-                }
-            });       
+                    }
+                    
+                    // Returnerer påvirkede rader
+                    if(results.length > 0) {
+                        // return res.json({results});
+                    } else {
+                        return res.json({"status" : "error", "message" : "En feil oppstod under henting av brukerens interesser"});
+                    }
+                });    
+            });      
         })
         } else {
             res.status(400).json({"status" : "error", "message" : "Ikke tilstrekkelig data"});
@@ -158,18 +194,24 @@ router.post('/updateTelefon', async (req, res) => {
     if (req.body.token !== undefined && req.body.telefon !== undefined) {
         verifyAuth(req.body.token).then( resAuth => {
             brukerid = resAuth.brukerid
-            let updateQuery = "UPDATE bruker SET telefon= ? WHERE brukerid= ?"
-            let updateQueryFormat = mysql.format(updateQuery, [req.body.telefon, brukerid])
-            connection.query(updateQueryFormat, (error, results) => {
-                if (error) {
-                    return res.jason({ "status" : "error", "message" : "en intern feil oppstod, vennligst forsøk igjen senere" })
+            mysqlpool.getConnection(function(error, connPool) {
+                if(error) {
+                    return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                 }
+                let updateQuery = "UPDATE bruker SET telefon= ? WHERE brukerid= ?"
+                let updateQueryFormat = mysql.format(updateQuery, [req.body.telefon, brukerid])
+                connPool.query(updateQueryFormat, (error, results) => {
+                    connPool.release();
+                    if (error) {
+                        return res.jason({ "status" : "error", "message" : "en intern feil oppstod, vennligst forsøk igjen senere" })
+                    }
 
-                if(results.length > 0) {
+                    if(results.length > 0) {
 
-                } else {
-                    return res.json({"status" : "error", "message" : "En feil oppstod under oppdatering av brukerens telefonnummer"})
-                }
+                    } else {
+                        return res.json({"status" : "error", "message" : "En feil oppstod under oppdatering av brukerens telefonnummer"})
+                    }
+                })
             })
         })
     } else {
@@ -192,43 +234,50 @@ router.post('/updateEmail', async (req, res) => {
     if (req.body.token !== undefined && req.body.epost !== undefined) {
         verifyAuth(req.body.token).then( resAuth => {
             brukerid = resAuth.brukerid
-            let updateQuery = "UPDATE bruker SET email= ? WHERE brukerid= ?"
-            let updateQueryFormat = mysql.format(updateQuery, [req.body.epost.toLowerCase(), brukerid])
-            connection.query(updateQueryFormat, (error, results) => {
-                if (error) {
-                    // Duplikat av innføring
-                    if (error.errno == 1062) {
-                        return res.json({"status" : "error", "message" : "Epost allerede i bruk"})
-                    } else {
-                        return res.json({"status" : "error", "message" : "En feil oppstod"})
-                    }
+            mysqlpool.getConnection(function(error, connPool) {
+                if(error) {
+                    return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                 }
-
-                if(results.affectedRows > 0) {
-                    // email som oppbevares i authtoken må først krypteres
-                    const token = cryptojs.AES.encrypt(req.body.epost.toLowerCase(), process.env.TOKEN_SECRET);
-
-                    // Setter dato på utløp, reverterer for øyeblikket "husk meg"
-                    let date = new Date()
-                    date.setTime(date.getTime() + ((60 * 3) * 60 * 1000))
-
-                    let insertQuery = "INSERT INTO login_token(gjelderfor, token, utlopsdato) VALUES(?, ?, ?)"
-                    let insertQueryFormat = mysql.format(insertQuery, [brukerid, token.toString(), date])
-                    
-                    connection.query(insertQueryFormat, (error2, results2) => {
-                        if (error2) {
-                            return res.json({"status" : "error", "message" : "En feil oppstod under oppdatering av brukerens email"})
-                        }
-                        if (results2.affectedRows > 0) {
-                            return res.json({utlopsdato : date, token : token.toString()})
+                let updateQuery = "UPDATE bruker SET email= ? WHERE brukerid= ?"
+                let updateQueryFormat = mysql.format(updateQuery, [req.body.epost.toLowerCase(), brukerid])
+                connPool.query(updateQueryFormat, (error, results) => {
+                    if (error) {
+                        connPool.release();
+                        // Duplikat av innføring
+                        if (error.errno == 1062) {
+                            return res.json({"status" : "error", "message" : "Epost allerede i bruk"})
                         } else {
-                            return res.json({"status" : "error", "message" : "En feil oppstod under oppdatering av brukerens email"})
+                            return res.json({"status" : "error", "message" : "En feil oppstod"})
                         }
-                    })
+                    }
 
-                } else {
-                    return res.json({"status" : "error", "message" : "En feil oppstod under oppdatering av brukerens email"})
-                }
+                    if(results.affectedRows > 0) {
+                        // email som oppbevares i authtoken må først krypteres
+                        const token = cryptojs.AES.encrypt(req.body.epost.toLowerCase(), process.env.TOKEN_SECRET);
+
+                        // Setter dato på utløp, reverterer for øyeblikket "husk meg"
+                        let date = new Date()
+                        date.setTime(date.getTime() + ((60 * 3) * 60 * 1000))
+
+                        let insertQuery = "INSERT INTO login_token(gjelderfor, token, utlopsdato) VALUES(?, ?, ?)"
+                        let insertQueryFormat = mysql.format(insertQuery, [brukerid, token.toString(), date])
+                        
+                        connPool.query(insertQueryFormat, (error2, results2) => {
+                            connPool.release();
+                            if (error2) {
+                                return res.json({"status" : "error", "message" : "En feil oppstod under oppdatering av brukerens email"})
+                            }
+                            if (results2.affectedRows > 0) {
+                                return res.json({utlopsdato : date, token : token.toString()})
+                            } else {
+                                return res.json({"status" : "error", "message" : "En feil oppstod under oppdatering av brukerens email"})
+                            }
+                        })
+
+                    } else {
+                        return res.json({"status" : "error", "message" : "En feil oppstod under oppdatering av brukerens email"})
+                    }
+                })
             })
         })
     } else {
@@ -273,18 +322,24 @@ router.post('/updatePassord', async (req, res) => {
         const hashedPwd = await bcrypt.hash(req.body.pwd, salt)
         verifyAuth(req.body.token).then( resAuth => {
             brukerid = resAuth.brukerid
-            let updateQuery = "UPDATE bruker SET pwd = ? WHERE brukerid = ?"
-            let updateQueryFormat = mysql.format(updateQuery, [hashedPwd, brukerid])
-            connection.query(updateQueryFormat, (error, results) => {
-                if (error) {
-                    return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere"})
+            mysqlpool.getConnection(function(error, connPool) {
+                if(error) {
+                    return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                 }
+                let updateQuery = "UPDATE bruker SET pwd = ? WHERE brukerid = ?"
+                let updateQueryFormat = mysql.format(updateQuery, [hashedPwd, brukerid])
+                connPool.query(updateQueryFormat, (error, results) => {
+                    connPool.release();
+                    if (error) {
+                        return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere"})
+                    }
 
-                if(results.affectedRows > 0) {
-                    return res.json({"status" : "success", "message" : "Passord endret"})
-                } else {
-                    return res.json({"status" : "error", "message" : "En feil oppstod under oppdatering av brukerens passord"})
-                }
+                    if(results.affectedRows > 0) {
+                        return res.json({"status" : "success", "message" : "Passord endret"})
+                    } else {
+                        return res.json({"status" : "error", "message" : "En feil oppstod under oppdatering av brukerens passord"})
+                    }
+                })
             })
         })
     } else {
@@ -298,27 +353,33 @@ router.post('/insertBilde', async (req, res) => {
         verifyAuth(req.body.token).then( resAuth => {
             brukerid = resAuth.brukerid
 
-            // Bruker har oppgitt et bilde som skal lastes opp
-            const opplastetFilnavn = req.files.image.name;
-            const filtype = opplastetFilnavn.substring(opplastetFilnavn.lastIndexOf('.'));
-            const filnavn = "profilbilde" + brukerid + filtype;
-
-            const opplastetBilde = req.files.image;
-            opplastetBilde.mv(path.join(__dirname, process.env.USER_IMG_UPLOAD_PATH) + filnavn);
-
-            // Opprett referanse til bildet
-            let insertQuery = "INSERT INTO profilbilde (brukerid, plassering) VALUES(?, ?) ON DUPLICATE KEY UPDATE brukerid=?, plassering=?"
-            let insertQueryFormat = mysql.format(insertQuery, [brukerid, filnavn, brukerid, filnavn])
-            connection.query(insertQueryFormat, (error, results) => {
-                if (error) {
-                    return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere"})
+            mysqlpool.getConnection(function(error, connPool) {
+                if(error) {
+                    return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                 }
+                // Bruker har oppgitt et bilde som skal lastes opp
+                const opplastetFilnavn = req.files.image.name;
+                const filtype = opplastetFilnavn.substring(opplastetFilnavn.lastIndexOf('.'));
+                const filnavn = "profilbilde" + brukerid + filtype;
 
-                if (results.affectedRows > 0) {
-                    return res.json({ "status" : "success", "message" : "Bilde lastet opp" })
-                } else {
-                    return res.json({"status" : "error", "message" : "En feil oppstod under opplasting av profilbilde"})
-                }
+                const opplastetBilde = req.files.image;
+                opplastetBilde.mv(path.join(__dirname, process.env.USER_IMG_UPLOAD_PATH) + filnavn);
+
+                // Opprett referanse til bildet
+                let insertQuery = "INSERT INTO profilbilde (brukerid, plassering) VALUES(?, ?) ON DUPLICATE KEY UPDATE brukerid=?, plassering=?"
+                let insertQueryFormat = mysql.format(insertQuery, [brukerid, filnavn, brukerid, filnavn])
+                connPool.query(insertQueryFormat, (error, results) => {
+                    connPool.release();
+                    if (error) {
+                        return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere"})
+                    }
+
+                    if (results.affectedRows > 0) {
+                        return res.json({ "status" : "success", "message" : "Bilde lastet opp" })
+                    } else {
+                        return res.json({"status" : "error", "message" : "En feil oppstod under opplasting av profilbilde"})
+                    }
+                })
             })
         })
     } else {
