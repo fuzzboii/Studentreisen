@@ -19,17 +19,17 @@ router.post('/getNotifs', async (req, res) => {
                     }   
                     
                     if(results[0] !== undefined) {
-                        return res.json({notifs : results});
+                        return res.json({"notifs" : results});
                     } else {
-                        return res.json({nodata : "Ingen kunngjøringer å vise"});
+                        return res.json({"nodata" : "Ingen kunngjøringer å vise"});
                     }
                 });
             } else {
-                return res.json({success: false});
+                return res.status(403).json({"status": "error", "message": "Ingen tilgang"});
             }
         }); 
     } else {
-        return res.status(403).send();
+        return res.status(403).json({"status": "error", "message": "Et eller flere felt mangler fra forespørselen"});
     }
 });
 
@@ -44,15 +44,19 @@ router.post('/readNotifs', async (req, res) => {
         
                         connection.query(readNotifsQueryFormat, (error, results) => {
                             if (error) {
+                                return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                             }
+                            
+                            return res.json({"status": "success", "message": "Kunngjøringer lest"});
                         });
                     });
                 }
+            } else {
+                return res.status(403).json({"status": "error", "message": "Ingen tilgang"});
             }
-            return res.json({});
         }); 
     } else {
-        return res.status(403).send();
+        return res.status(403).json({"status": "error", "message": "Et eller flere felt mangler fra forespørselen"});
     }
 });
 
