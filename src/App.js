@@ -75,7 +75,9 @@ function App() {
     <>
       <Navbar auth={auth} type={type} loading={loading} notif={notif} />
         <Switch>
-          <Route path = "/" exact component = {Home} />
+          <Route path = "/" exact render={() => (
+              <Home auth={auth} loading={loading} />
+            )} />
           <Route path = "/overview" render={() => (
               <HomeOverview auth={auth} type={type} loading={loading} />
             )} /> 
