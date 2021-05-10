@@ -312,20 +312,39 @@ function Profile(props) {
             token: token,
             fagfeltid: id
         }
-        axios.post(process.env.REACT_APP_APIURL + '/profile/deleteInteresse', data)
-        // Oppdaterer tilstanden til relevante arrays
-        fetch()
+        // Filtrer ut slettet interesse
+        const interesserNy = interesser.filter(item => item.fagfeltid !== id)
+        axios.post(process.env.REACT_APP_APIURL + '/profile/deleteInteresse', data).then(
+            // Oppdaterer tilstanden til relevante arrays
+            setInteresser(interesserNy)
+        )
     }
 
-    const insertInteresse = (id) => {
+    const insertInteresse = (id, navn) => {
         // Mottar fagfeltid, som id, for interesse som skal legges til
         const data = {
             token: token,
             fagfeltid: id
         }
-        axios.post(process.env.REACT_APP_APIURL + '/profile/postInteresse', data)
-        // Oppdaterer tilstanden til relevante arrays
-        fetch()
+
+        // Opprett nytt objekt for interesse, sett in i nytt array
+        const interesse = {
+            beskrivelse: navn,
+            fagfeltid: id
+        }
+        
+        let interesserNy = []
+
+        if (interesser != undefined) {
+            interesserNy = interesser.concat(interesse)
+        } else {
+            interesserNy = [interesse]
+        }
+
+        axios.post(process.env.REACT_APP_APIURL + '/profile/postInteresse', data).then(
+            // Oppdater tilstand til array
+            setInteresser(interesserNy)
+        )
     }
 
     const tlfUnlock = () => {
@@ -448,7 +467,7 @@ function Profile(props) {
                         {interesser !== undefined && fagfelt.map((f, key) => interesser.some(interesse => interesse.fagfeltid == f.fagfeltid) ? (
                             <Button key={key} className={classes.fagfeltButtonActive} onClick={() => deleteInteresse(f.fagfeltid)} >{f.beskrivelse}</Button>
                             ) : (
-                            <Button key={key} className={classes.fagfeltButton} onClick={() => insertInteresse(f.fagfeltid)} >{f.beskrivelse}</Button>
+                            <Button key={key} className={classes.fagfeltButton} onClick={() => insertInteresse(f.fagfeltid, f.beskrivelse)} >{f.beskrivelse}</Button>
                         ))}
                         {/* Om interesse-tabellen er helt tom, som f.eks. ved første besøk av profil-siden, kjører denne mappingen i stedet */}
                         {interesser == undefined && fagfelt.map((f, key) =>  (
