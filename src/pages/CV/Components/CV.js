@@ -4,41 +4,57 @@ import axios from 'axios';
 import CookieService from '../../../global/Services/CookieService';
 import Loader from '../../../global/Components/Loader';
 import NoAccess from '../../../global/Components/NoAccess';
-import Paper from '@material-ui/core/Paper';
+import CardContent from '@material-ui/core/CardContent';
+import Box from'@material-ui/core/Box';
 import Grid from'@material-ui/core/Grid';
 import moment from 'moment';
 import { Avatar } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import DeleteIcon from '@material-ui/icons/Delete';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogActions from '@material-ui/core/DialogActions';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import Input from '@material-ui/core/Input';
 
 function CV(props) {
 
     const [loading, setLoading] = useState(true);
-
     const [auth, setAuth] = useState(false);
 
     const token = CookieService.get("authtoken");
 
+    // Hente brukernavn og profilbilde
     const [fnavn, setFnavn] = useState("");
     const [enavn, setEnavn] = useState("");
     const [tlf, setTlf] = useState();
     const [email, setEmail] = useState();
     const [profilbilde, setProfilbilde] = useState();
-
+    
+    // Oppretting av arrays for CV
     const [utdanning, setUtdanning] = useState([[-1, -1]]);
     const [seminar, setSeminar] = useState([[-1,-1]]);
     const [jobb, setJobb] = useState([[-1, -1]]);
     const [annet, setAnnet] = useState([[-1, -1]])
 
+    // Oppretting av CV Innlegg
+    const [valgt_type, setValgt_type] = useState("");
+    const [opprett_innlegg, setOpprett_innlegg] = useState("");
+    const [opprett_datoFra, setOpprett_datoFra] = useState("");
+    const [opprett_datoTil, setOpprett_datoTil] = useState("");
 
     const useStyles = makeStyles ({
         avatar: {
             width: '10vh',
             height: '10vh',
-            marginLeft: '5vw',
-            marginRight: '2.5vw',
-            marginTop: '1vh',
-            marginBottom: '1vh'
-        }
+        },
+        grid: {
+            backgroundColor: 'white'
+            },
     });
 
     const classes = useStyles();
@@ -80,12 +96,105 @@ function CV(props) {
             }))
     }
 
-    useEffect( () => {
+    const [slettopen, setSlettopen] = useState(false);
+    const [opprettopen, setOpprettopen] = useState(false);
+
+    const handleCloseOpprettInnlegg = () => {
+        setOpprettopen(false);
+        const config ={
+            token: token,
+            opprett_cv_innlegg: opprett_innlegg,
+            opprettdatoFra: opprett_datoFra,
+            opprettdatoTil: opprett_datoTil
+        }
+        console.log(valgt_type)
+        if (valgt_type === "Seminar") {
+            axios.post(process.env.REACT_APP_APIURL + "/cv/postCVSeminar", config)
+            window.location.reload();
+        }
+        if (valgt_type === "Utdanning") {
+            axios.post(process.env.REACT_APP_APIURL + "/cv/postCVEducation", config)
+            window.location.reload();
+        }
+        if (valgt_type === "Jobberfaring") {
+            axios.post(process.env.REACT_APP_APIURL + "/cv/postCVWork", config)
+            window.location.reload();
+        }
+        if (valgt_type === "Annet") {
+            axios.post(process.env.REACT_APP_APIURL + "/cv/postCVOther", config)
+            window.location.reload();
+        }
+      };
+
+    const handleClickOpenOpprett =() => {
+        setOpprettopen(true);
+      };
+
+    const handleCloseOpprett = () => {
+        setOpprettopen(false);
+      };
+
+    const handleClickOpenSlett = () => {
+        setSlettopen(true);
+      };
+    
+    const handleCloseSlett = () => {
+        setSlettopen(false);
+      };
+
+    const handleCloseSlettInnleggSem = (cv_id) => {
+        setSlettopen(false);
+        console.log(cv_id + "Sem")
+        const config = {
+            token: token,
+            cv_seminar_id: cv_id           
+        }
+        axios.post(process.env.REACT_APP_APIURL + "/cv/slettInnleggSem", config)
+        window.location.reload();
+      };
+
+    const handleCloseSlettInnleggEdu = (id) => {
+        setSlettopen(false);
+        console.log(id + "Edu")
+        const config = {
+            token: token,
+            cv_education_id: id           
+        }
+        axios.post(process.env.REACT_APP_APIURL + "/cv/slettInnleggEdu", config)
+        window.location.reload();
+      };
+
+    const handleCloseSlettInnleggWork = (cv_id) => {
+        setSlettopen(false);
+        console.log(cv_id + "Work")
+        const config = {
+            token: token,
+            cv_work_id: cv_id           
+        }
+        axios.post(process.env.REACT_APP_APIURL + "/cv/slettInnleggWork", config)
+        window.location.reload();
+      };
+
+    const handleCloseSlettInnleggOther = (id) => {
+        setSlettopen(false);
+        console.log(id + "Other")
+        const config = {
+            token: token,
+            cv_other_id: id           
+        }
+        axios.post(process.env.REACT_APP_APIURL + "/cv/slettInnleggOther", config)
+        window.location.reload();
+      };
+    
+      useEffect( () => {
         setAuth(props.auth)
         fetch();
     }, [props]);
+    
+    const handleOpprettInnlegg = (event) => {
+        setOpprett_innlegg(event.target.value);
+    }
 
-   
     if (loading) {
         return (
             <section id="loading">
@@ -97,90 +206,255 @@ function CV(props) {
     if (auth && !loading) {
         return (  
             <div id="main_cv">
-                <Grid className='cv_profile' container>
-                    <label htmlFor="avatarInput">
-                        <Paper component="span" 
-                            style={{
-                                // "skru av" hover-skygge
-                                backgroundColor: '#f9f7f6'
-                            }}>
-                            <Avatar
-                                src={"/uploaded/" + profilbilde } 
-                                className={classes.avatar}
-                                />
-                        </Paper>
-                    </label>
-                    <Paper className='cv_profile_element'>
+                <Grid id="gridbox" className={classes.grid} 
+                p={2}
+                alignItems="center"
+                justify="center"
+                container
+                width="75%" >
+                    <Avatar
+                        src={"/uploaded/" + profilbilde } 
+                        className={classes.avatar}
+                        p={2}
+                        style={{alignSelf: 'center'
+                    }}
+                    />
+                    <Box alignItems="center">
                         <p>{"Navn: " + fnavn + " " + enavn} </p>
                         <p>{"Epost: " + email}</p>
                         <p>{"Telefonnummer: " + tlf}</p>
-                    </Paper>
+                    </Box>
                 </Grid>
-                <Grid container direction="column">
-                    <Grid>
-                        <Paper className='cv_elements' >
+
+
+                <Grid className={classes.grid}>
+                    <Button id="innleggButton" variant="contained" size="large" color="primary" className={classes.margin} onClick={handleClickOpenOpprett}>
+                        Opprett nytt innlegg
+                    </Button>
+                    <Dialog open={opprettopen} onClose={handleCloseOpprett} aria-labelledby="form-dialog-title">
+                        <DialogTitle id="cv_dialog_title">Legg til på CV</DialogTitle>
+                        <DialogContent>
+                            <Select onChange={(e) => setValgt_type(e.target.value)} required>
+                                <MenuItem value={"Seminar"}>Seminar</MenuItem>
+                                <MenuItem value={"Utdanning"}>Utdanning</MenuItem>
+                                <MenuItem value={"Jobberfaring"}>Jobberfaring</MenuItem>
+                                <MenuItem value={"Annet"}>Annet</MenuItem>
+                            </Select>
+
+                            <Input value={opprett_innlegg}
+                                    onChange={handleOpprettInnlegg} required>
+                                        Skriv inn innlegg her
+                            </Input>
+
+                            <Input
+                            id="date"
+                            label="datoFra"
+                            type="date"
+                            value={opprett_datoFra}
+                            onChange={(e) => setOpprett_datoFra(e.target.value)}
+                            InputLabelProps={{
+                            shrink: true,
+                            }}
+                            />
+                            <Input
+                            id="date"
+                            label="datoTil"
+                            type="date"
+                            value={opprett_datoTil}
+                            onChange={(e) => setOpprett_datoTil(e.target.value)}
+                            InputLabelProps={{
+                            shrink: true,
+                            }}
+                            />
+                        </DialogContent>
+                        <DialogActions>
+                        <Button onClick={handleCloseOpprett} color="primary">
+                            Avbryt
+                        </Button>
+                        <Button onClick={() => {handleCloseOpprettInnlegg()}} color="primary" autoFocus>
+                            Opprett
+                        </Button>
+                        </DialogActions>
+                    </Dialog>
+                    <CardContent>                    
+                        <Box boxShadow={1}>
                             <h1>Utdannelse</h1>
-                            <form className="cv_form">
-                                <input id="cv_input" type="text" name="post" maxlenght="128" required style={{width: "40em"}}/>
-                                <input id="cv_date_input" type="date" name="dateFrom" />
-                                <input id="cv_date_input" type="date" name="dateTill" />
-                                <button type="submit" style={{width: "5em"}}>Legg til</button>
-                            </form>
-                            {utdanning !== undefined && utdanning.map((utd, key) => (
-                                <div>
-                                    <text>{utd.innlegg}</text><text type="date">{moment.locale('nb'), moment(utd.datoFra).format("DD MM YYYY")}</text><text type="date" size="10">{moment.locale('nb'), moment(utd.datoTil).format("DD MM YYYY")}</text><button value={utd.cv_education_id} className="cvDelete" key={key}>Slett</button>
+                            {utdanning !== undefined && utdanning.map((utd, indexEdu) => (
+                                <div className="cv_returned_content">
+                                    {utd.datoFra !== null &&
+                                    <text className='cv_returned_datoTil' type="date">Fra: {moment.locale('nb'), moment(utd.datoFra).format("DD MMM YYYY")}</text>}
+                                    {utd.datoTil !== null && 
+                                    <text className='cv_returned_datoFra' type="date">Til: {moment.locale('nb'), moment(utd.datoTil).format("DD MMM YYYY")}</text>}
+                                    <p className='cv_returned_innlegg'>{utd.innlegg}</p>
+                                    <Button
+                                    type="submit"
+                                    size="small"
+                                    variant="outlined"
+                                    color="secondary"
+                                    className={classes.button}
+                                    startIcon={<DeleteIcon />}
+                                    key={indexEdu}
+                                    onClick={handleClickOpenSlett}
+                                    >
+                                    Slett Edu
+                                    </Button>
+                                    <Dialog open={slettopen} onClose={handleCloseSlett} aria-labelledby="form-dialog-title">
+                                        <DialogTitle id="cv_dialog_title">Slette innlegget?</DialogTitle>
+                                        <DialogContent>
+                                            <DialogContentText id="alert-dialog-description">
+                                                Er du sikker på at du ønsker å slette innlegget?
+                                            </DialogContentText>
+                                        </DialogContent>
+                                        <DialogActions>
+                                        <Button onClick={handleCloseSlett} color="primary">
+                                            Avbryt
+                                        </Button>
+                                        <Button value={utd.cv_education_id} onClick={() => {handleCloseSlettInnleggEdu()}} color="primary" autoFocus>
+                                            Slett
+                                        </Button>
+                                        </DialogActions>
+                                    </Dialog>
                                 </div>
                             ))}
-                        </Paper>
-                    </Grid>
-                    <Grid>
-                        <Paper className='cv_elements' >
+                            {utdanning === undefined &&
+                                <div>
+                                    <p>Ingen informasjon her enda.</p>
+                                </div>}
+                        </Box>
+                        <Box boxShadow={1}>
                             <h1>Seminarer og sertifiseringer</h1>
-                            <form className="cv_form">
-                                <input id="cv_input" type="text" name="post" maxlenght="128" required style={{width: "40em"}}/>
-                                <input id="cv_date_input" type="date" name="dateFrom" />
-                                <input id="cv_date_input" type="date" name="dateTill" />
-                                <button type="submit" style={{width: "5em"}}>Legg til</button>
-                            </form>
-                            {seminar !== undefined && seminar.map((sem, key) => (
-                            <div>
-                                <text>{sem.innlegg}</text><text type="date">{moment.locale('nb'), moment(sem.datoFra).format("MMM DD YYYY")}</text><text type="date" size="10">{moment.locale('nb'), moment(sem.datoTil).format("MMM DD YYYY")}</text><button key={key} />
-                            </div>
+                            {seminar !== undefined && seminar.map((sem, indexSem) => (
+                                <div className="cv_returned_content">
+                                    {sem.datoFra !== null && 
+                                    <text className='cv_returned' type="date">Fra: {moment.locale('nb'), moment(sem.datoFra).format("DD MMM YYYY")}</text>}
+                                    {sem.datoTil !== null && 
+                                    <text className='cv_returned' type="date">Til: {moment.locale('nb'), moment(sem.datoTil).format("DD MMM YYYY")}</text>}
+                                    <p className='cv_returned'>{sem.innlegg}</p>
+                                    <Button
+                                    type="submit"
+                                    size="small"
+                                    variant="outlined"
+                                    color="secondary"
+                                    className={classes.button}
+                                    startIcon={<DeleteIcon />}
+                                    key={indexSem}
+                                    onClick={handleClickOpenSlett}
+                                    >
+                                    Slett Sem
+                                    </Button>
+                                    <Dialog open={slettopen} onClose={handleCloseSlett} aria-labelledby="form-dialog-title">
+                                        <DialogTitle id="cv_dialog_title">Slette innlegget?</DialogTitle>
+                                        <DialogContent>
+                                            <DialogContentText id="alert-dialog-description">
+                                                Er du sikker på at du ønsker å slette innlegget?
+                                            </DialogContentText>
+                                        </DialogContent>
+                                        <DialogActions>
+                                        <Button onClick={handleCloseSlett} color="primary">
+                                            Avbryt
+                                        </Button>
+                                        <Button onClick={() => {handleCloseSlettInnleggSem(sem.cv_seminar_id)}} color="primary" autoFocus>
+                                            Slett
+                                        </Button>
+                                        </DialogActions>
+                                    </Dialog>
+                                </div>
                             ))}
-                        </Paper>
-                    </Grid>
-                    <Grid>
-                        <Paper className='cv_elements' >
+                            {seminar === undefined &&
+                                <div>
+                                    <p>Ingen informasjon her enda.</p>
+                                </div>}
+                        </Box>
+                        <Box boxShadow={1}>
                             <h1>Jobberfaring</h1>
-                            <form className="cv_form">
-                                <input id="cv_input" type="text" name="post" maxlenght="128" required style={{width: "40em"}}/>
-                                <input id="cv_date_input" type="date" name="dateFrom" />
-                                <input id="cv_date_input" type="date" name="dateTill" />
-                                <button type="submit" style={{width: "5em"}}>Legg til</button>
-                            </form>
-                            {jobb !== undefined && jobb.map((wor, key) => (
-                                <div>
-                                    <text>{wor.innlegg}</text><text type="date">{moment.locale('nb'), moment(wor.datoFra).format("MMM DD YYYY")}</text><text type="date" size="10">{moment.locale('nb'), moment(wor.datoTil).format("MMM DD YYYY")}</text><button key={key} />
+                            {jobb !== undefined && jobb.map((wor, indexWor) => (
+                                <div className="cv_returned_content">
+                                    {wor.datoFra !== null && 
+                                    <text className='cv_returned' type="date">{moment.locale('nb'), moment(wor.datoFra).format("DD MMM YYYY")}</text>}
+                                    {wor.datoTil !== null && 
+                                    <text className='cv_returned' type="date">{moment.locale('nb'), moment(wor.datoTil).format("DD MMM YYYY")}</text>}
+                                    <p className='cv_returned'>{wor.innlegg}</p>
+                                    <Button
+                                    type="submit"
+                                    size="small"
+                                    variant="outlined"
+                                    color="secondary"
+                                    className={classes.button}
+                                    startIcon={<DeleteIcon />}
+                                    key={indexWor}
+                                    onClick={handleClickOpenSlett}
+                                    >
+                                    Slett Work
+                                    </Button>
+                                    <Dialog open={slettopen} onClose={handleCloseSlett} aria-labelledby="form-dialog-title">
+                                        <DialogTitle id="cv_dialog_title">Slette innlegget?</DialogTitle>
+                                        <DialogContent>
+                                            <DialogContentText id="alert-dialog-description">
+                                                Er du sikker på at du ønsker å slette innlegget?
+                                            </DialogContentText>
+                                        </DialogContent>
+                                        <DialogActions>
+                                        <Button onClick={handleCloseSlett} color="primary">
+                                            Avbryt
+                                        </Button>
+                                        <Button onClick={() => {handleCloseSlettInnleggWork(wor.cv_education_id)}} color="primary" autoFocus>
+                                            Slett
+                                        </Button>
+                                        </DialogActions>
+                                    </Dialog>
                                 </div>
                                 ))}
-                        </Paper>
-                    </Grid>
-                    <Grid>
-                        <Paper className='cv_elements' >
+                                {jobb === undefined &&
+                                <div>
+                                    <p>Ingen informasjon her enda.</p>
+                                </div>}
+                        </Box>
+                        <Box boxShadow={1}>
                         <h1>Annet</h1>
-                            <form className="cv_form">  
-                                <input id="cv_input" type="text" name="post" maxlenght="128" required style={{width: "40em"}}/>
-                                <input id="cv_date_input" type="date" name="dateFrom" />
-                                <input id="cv_date_input" type="date" name="dateTill" />
-                                <button type="submit" style={{width: "5em"}}>Legg til</button>
-                            </form>
-                            {annet !== undefined && annet.map((ann, key) => (
-                                <div>
-                                    <text>{ann.innlegg}</text><text type="date">{moment.locale('nb'), moment(ann.datoFra).format("MMM DD YYYY")}</text><text type="date" size="10">{moment.locale('nb'), moment(ann.datoTil).format("MMM DD YYYY")}</text><button key={key} />
+                            {annet !== undefined && annet.map((ann, indexAnn) => (
+                                <div className="cv_returned_content">
+                                    {ann.datoFra !== null && 
+                                    <text className='cv_returned' type="date">{moment.locale('nb'), moment(ann.datoFra).format("DD MMM YYYY")}</text>}
+                                    {ann.datoTil !== null && 
+                                    <text className='cv_returned' type="date">{moment.locale('nb'), moment(ann.datoTil).format("DD MMM YYYY")}</text>}
+                                    <p className='cv_returned'>{ann.innlegg}</p>
+
+                                                                        <Button
+                                    type="submit"
+                                    size="small"
+                                    variant="outlined"
+                                    color="secondary"
+                                    className={classes.button}
+                                    startIcon={<DeleteIcon />}
+                                    key={indexAnn}
+                                    onClick={handleClickOpenSlett}
+                                    >
+                                    Slett Other
+                                    </Button>
+                                    <Dialog open={slettopen} onClose={handleCloseSlett} aria-labelledby="form-dialog-title">
+                                        <DialogTitle id="cv_dialog_title">Slette innlegget?</DialogTitle>
+                                        <DialogContent>
+                                            <DialogContentText id="alert-dialog-description">
+                                                Er du sikker på at du ønsker å slette innlegget?
+                                            </DialogContentText>
+                                        </DialogContent>
+                                        <DialogActions>
+                                        <Button onClick={handleCloseSlett} color="primary">
+                                            Avbryt
+                                        </Button>
+                                        <Button onClick={() => {handleCloseSlettInnleggOther(ann.cv_other_id)}} color="primary" autoFocus>
+                                            Slett
+                                        </Button>
+                                        </DialogActions>
+                                    </Dialog>
                                 </div>
                                 ))}
-                        </Paper>
-                    </Grid>
+                                {annet === undefined &&
+                                <div>
+                                    <p>Ingen informasjon her enda.</p>
+                                </div>}
+                        </Box>
+                    </CardContent>
                 </Grid>
             </div>                  
          );
