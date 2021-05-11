@@ -218,7 +218,7 @@ router.post('/getCVSeminar', async (req, res) => {
 
 router.post('/slettInnleggSem', async (req, res) => {
     let brukerid = undefined;
-    if (req.body.token !== undefined && req.body.cv_id !== undefined) {
+    if (req.body.token !== undefined && req.body.cv_seminar_id !== undefined) {
         verifyAuth(req.body.token).then( resAuth => {
             brukerid = resAuth.brukerid 
             mysqlpool.getConnection(function(error, connPool) {
@@ -226,7 +226,7 @@ router.post('/slettInnleggSem', async (req, res) => {
                     return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                 } 
                 let getQuery = "DELETE FROM cv_seminar WHERE brukerid = ? AND cv_seminar_id = ?";
-                let getQueryFormat = mysql.format(getQuery, [brukerid, req.body.cv_id]);
+                let getQueryFormat = mysql.format(getQuery, [brukerid, req.body.cv_seminar_id]);
                 connPool.query(getQueryFormat, (error, results) => {
                     connPool.release();
                     if (error) {
@@ -353,7 +353,7 @@ router.post('/getCVWork', async (req, res) => {
 
 router.post('/slettInnleggWork', async (req, res) => {
     let brukerid = undefined;
-    if (req.body.token !== undefined && req.body.cv_id !== undefined) {
+    if (req.body.token !== undefined && req.body.cv_work_id !== undefined) {
         verifyAuth(req.body.token).then( resAuth => {
             brukerid = resAuth.brukerid 
             mysqlpool.getConnection(function(error, connPool) {
@@ -361,7 +361,7 @@ router.post('/slettInnleggWork', async (req, res) => {
                     return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                 } 
                 let getQuery = "DELETE FROM cv_work WHERE brukerid = ? AND cv_work_id = ?";
-                let getQueryFormat = mysql.format(getQuery, [brukerid, req.body.cv_id]);
+                let getQueryFormat = mysql.format(getQuery, [brukerid, req.body.cv_work_id]);
                 connPool.query(getQueryFormat, (error, results) => {
                     connPool.release();
                     if (error) {
@@ -420,7 +420,7 @@ router.post('/getCVOther', async (req, res) => {
 
 router.post('/slettInnleggOther', async (req, res) => {
     let brukerid = undefined;
-    if (req.body.token !== undefined && req.body.cv_id !== undefined) {
+    if (req.body.token !== undefined && req.body.cv_other_id !== undefined) {
         verifyAuth(req.body.token).then( resAuth => {
             brukerid = resAuth.brukerid 
             mysqlpool.getConnection(function(error, connPool) {
@@ -428,7 +428,7 @@ router.post('/slettInnleggOther', async (req, res) => {
                     return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                 } 
                 let getQuery = "DELETE FROM cv_other WHERE brukerid = ? AND cv_other_id = ?";
-                let getQueryFormat = mysql.format(getQuery, [brukerid, req.body.cv_id]);
+                let getQueryFormat = mysql.format(getQuery, [brukerid, req.body.cv_other_id]);
                 connPool.query(getQueryFormat, (error, results) => {
                     connPool.release();
                     if (error) {

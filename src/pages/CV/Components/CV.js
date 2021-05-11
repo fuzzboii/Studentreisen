@@ -354,7 +354,7 @@ function CV(props) {
                                         <Button onClick={handleCloseSlett} color="primary">
                                             Avbryt
                                         </Button>
-                                        <Button onClick={() => {handleCloseSlettInnleggSem(sem.cv_seminar_id)}} color="primary" autoFocus>
+                                        <Button value={sem.cv_seminar_id} onClick={() => {handleCloseSlettInnleggSem(sem.cv_seminar_id)}} color="primary" autoFocus>
                                             Slett
                                         </Button>
                                         </DialogActions>
@@ -398,7 +398,7 @@ function CV(props) {
                                         <Button onClick={handleCloseSlett} color="primary">
                                             Avbryt
                                         </Button>
-                                        <Button onClick={() => {handleCloseSlettInnleggWork(wor.cv_education_id)}} color="primary" autoFocus>
+                                        <Button value={wor.cv_work_id} onClick={() => {handleCloseSlettInnleggWork(wor.cv_work_id)}} color="primary" autoFocus>
                                             Slett
                                         </Button>
                                         </DialogActions>
@@ -443,7 +443,7 @@ function CV(props) {
                                         <Button onClick={handleCloseSlett} color="primary">
                                             Avbryt
                                         </Button>
-                                        <Button onClick={() => {handleCloseSlettInnleggOther(ann.cv_other_id)}} color="primary" autoFocus>
+                                        <Button value={ann.cv_other_id} onClick={() => {handleCloseSlettInnleggOther(ann.cv_other_id)}} color="primary" autoFocus>
                                             Slett
                                         </Button>
                                         </DialogActions>
