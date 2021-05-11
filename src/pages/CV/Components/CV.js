@@ -160,8 +160,9 @@ function CV(props) {
             token: token,
             cv_education_id: id           
         }
-        axios.post(process.env.REACT_APP_APIURL + "/cv/slettInnleggEdu", config)
-        window.location.reload();
+        axios.post(process.env.REACT_APP_APIURL + "/cv/slettInnleggEdu", config).then(() => {
+            window.location.reload();
+        })
       };
 
     const handleCloseSlettInnleggWork = (cv_id) => {
@@ -309,7 +310,7 @@ function CV(props) {
                                         <Button onClick={handleCloseSlett} color="primary">
                                             Avbryt
                                         </Button>
-                                        <Button value={utd.cv_education_id} onClick={() => {handleCloseSlettInnleggEdu()}} color="primary" autoFocus>
+                                        <Button value={utd.cv_education_id} onClick={() => {handleCloseSlettInnleggEdu(utd.cv_education_id)}} color="primary" autoFocus>
                                             Slett
                                         </Button>
                                         </DialogActions>
