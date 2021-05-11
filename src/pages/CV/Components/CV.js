@@ -96,7 +96,10 @@ function CV(props) {
             }))
     }
 
-    const [slettopen, setSlettopen] = useState(false);
+    const [slettopenEducation, setSlettopenEducation] = useState(false);
+    const [slettopenSeminar, setSlettopenSeminar] = useState(false);
+    const [slettopenWork, setSlettopenWork] = useState(false);
+    const [slettopenOther, setSlettopenOther] = useState(false);
     const [opprettopen, setOpprettopen] = useState(false);
 
     const handleCloseOpprettInnlegg = () => {
@@ -134,16 +137,31 @@ function CV(props) {
         setOpprettopen(false);
       };
 
-    const handleClickOpenSlett = () => {
-        setSlettopen(true);
+    const handleClickOpenSlettEducation = () => {
+        setSlettopenEducation(true);
+      };
+
+    const handleClickOpenSlettSeminar = () => {
+        setSlettopenSeminar(true);
+      };
+
+    const handleClickOpenSlettWork = () => {
+        setSlettopenWork(true);
+      };
+
+    const handleClickOpenSlettOther = () => {
+        setSlettopenOther(true);
       };
     
     const handleCloseSlett = () => {
-        setSlettopen(false);
+        setSlettopenEducation(false);
+        setSlettopenSeminar(false);
+        setSlettopenWork(false);
+        setSlettopenOther(false);
       };
 
     const handleCloseSlettInnleggSem = (cv_id) => {
-        setSlettopen(false);
+        setSlettopenSeminar(false);
         console.log(cv_id + "Sem")
         const config = {
             token: token,
@@ -155,7 +173,7 @@ function CV(props) {
       };
 
     const handleCloseSlettInnleggEdu = (id) => {
-        setSlettopen(false);
+        setSlettopenEducation(false);
         console.log(id + "Edu")
         const config = {
             token: token,
@@ -167,7 +185,7 @@ function CV(props) {
       };
 
     const handleCloseSlettInnleggWork = (cv_id) => {
-        setSlettopen(false);
+        setSlettopenWork(false);
         console.log(cv_id + "Work")
         const config = {
             token: token,
@@ -179,7 +197,7 @@ function CV(props) {
       };
 
     const handleCloseSlettInnleggOther = (id) => {
-        setSlettopen(false);
+        setSlettopenOther(false);
         console.log(id + "Other")
         const config = {
             token: token,
@@ -298,11 +316,11 @@ function CV(props) {
                                     className={classes.button}
                                     startIcon={<DeleteIcon />}
                                     key={indexEdu}
-                                    onClick={handleClickOpenSlett}
+                                    onClick={handleClickOpenSlettEducation}
                                     >
                                     Slett Edu
                                     </Button>
-                                    <Dialog open={slettopen} onClose={handleCloseSlett} aria-labelledby="form-dialog-title">
+                                    <Dialog open={slettopenEducation} onClose={handleCloseSlett} aria-labelledby="form-dialog-title">
                                         <DialogTitle id="cv_dialog_title">Slette innlegget?</DialogTitle>
                                         <DialogContent>
                                             <DialogContentText id="alert-dialog-description">
@@ -342,11 +360,11 @@ function CV(props) {
                                     className={classes.button}
                                     startIcon={<DeleteIcon />}
                                     key={indexSem}
-                                    onClick={handleClickOpenSlett}
+                                    onClick={handleClickOpenSlettSeminar}
                                     >
                                     Slett Sem
                                     </Button>
-                                    <Dialog open={slettopen} onClose={handleCloseSlett} aria-labelledby="form-dialog-title">
+                                    <Dialog open={slettopenSeminar} onClose={handleCloseSlett} aria-labelledby="form-dialog-title">
                                         <DialogTitle id="cv_dialog_title">Slette innlegget?</DialogTitle>
                                         <DialogContent>
                                             <DialogContentText id="alert-dialog-description">
@@ -386,11 +404,11 @@ function CV(props) {
                                     className={classes.button}
                                     startIcon={<DeleteIcon />}
                                     key={indexWor}
-                                    onClick={handleClickOpenSlett}
+                                    onClick={handleClickOpenSlettWork}
                                     >
                                     Slett Work
                                     </Button>
-                                    <Dialog open={slettopen} onClose={handleCloseSlett} aria-labelledby="form-dialog-title">
+                                    <Dialog open={slettopenWork} onClose={handleCloseSlett} aria-labelledby="form-dialog-title">
                                         <DialogTitle id="cv_dialog_title">Slette innlegget?</DialogTitle>
                                         <DialogContent>
                                             <DialogContentText id="alert-dialog-description">
@@ -431,11 +449,11 @@ function CV(props) {
                                     className={classes.button}
                                     startIcon={<DeleteIcon />}
                                     key={indexAnn}
-                                    onClick={handleClickOpenSlett}
+                                    onClick={handleClickOpenSlettOther}
                                     >
                                     Slett Other
                                     </Button>
-                                    <Dialog open={slettopen} onClose={handleCloseSlett} aria-labelledby="form-dialog-title">
+                                    <Dialog open={slettopenOther} onClose={handleCloseSlett} aria-labelledby="form-dialog-title">
                                         <DialogTitle id="cv_dialog_title">Slette innlegget?</DialogTitle>
                                         <DialogContent>
                                             <DialogContentText id="alert-dialog-description">
