@@ -107,8 +107,20 @@ function Navbar(props) {
         padding: '0.5rem 1rem',
         display: 'grid',
         minWidth: '7rem',
-        transform: 'translate(30vw)',
-        textDecoration: 'none'
+        transform: 'translate(28vw)',
+        textDecoration: 'none',
+        ['@media (min-width:768px)']: {
+          transform: 'translate(38vw)'
+        },
+        ['@media (min-width:1024px)']: {
+          transform: 'translate(40vw)'
+        },
+        ['@media (min-width:1440px)']: {
+          transform: 'translate(38vw)'
+        },
+        ['@media (min-width:2560px)']: {
+          transform: 'translate(41vw)'
+        }
       },
 
       loggbtnmobil: {
