@@ -47,6 +47,8 @@ function CV(props) {
     const [opprett_datoFra, setOpprett_datoFra] = useState("");
     const [opprett_datoTil, setOpprett_datoTil] = useState("");
 
+    const [id, setID] = useState();
+
     const useStyles = makeStyles ({
         avatar: {
             width: '10vh',
@@ -137,20 +139,24 @@ function CV(props) {
         setOpprettopen(false);
       };
 
-    const handleClickOpenSlettEducation = () => {
+    const handleClickOpenSlettEducation = (cv_education_id) => {
         setSlettopenEducation(true);
+        setID(cv_education_id);
       };
 
-    const handleClickOpenSlettSeminar = () => {
+    const handleClickOpenSlettSeminar = (cv_seminar_id) => {
         setSlettopenSeminar(true);
+        setID(cv_seminar_id);
       };
 
-    const handleClickOpenSlettWork = () => {
+    const handleClickOpenSlettWork = (cv_work_id) => {
         setSlettopenWork(true);
+        setID(cv_work_id);
       };
 
-    const handleClickOpenSlettOther = () => {
+    const handleClickOpenSlettOther = (cv_other_id) => {
         setSlettopenOther(true);
+        setID(cv_other_id);
       };
     
     const handleCloseSlett = () => {
@@ -158,6 +164,7 @@ function CV(props) {
         setSlettopenSeminar(false);
         setSlettopenWork(false);
         setSlettopenOther(false);
+        setID(null);
       };
 
     const handleCloseSlettInnleggSem = (cv_id) => {
@@ -172,9 +179,8 @@ function CV(props) {
         })
       };
 
-    const handleCloseSlettInnleggEdu = (id) => {
+    const handleCloseSlettInnleggEdu = () => {
         setSlettopenEducation(false);
-        console.log(id + "Edu")
         const config = {
             token: token,
             cv_education_id: id           
@@ -184,21 +190,19 @@ function CV(props) {
         })
       };
 
-    const handleCloseSlettInnleggWork = (cv_id) => {
+    const handleCloseSlettInnleggWork = () => {
         setSlettopenWork(false);
-        console.log(cv_id + "Work")
         const config = {
             token: token,
-            cv_work_id: cv_id           
+            cv_work_id: id           
         }
         axios.post(process.env.REACT_APP_APIURL + "/cv/slettInnleggWork", config).then(() => {
             window.location.reload();
         })
       };
 
-    const handleCloseSlettInnleggOther = (id) => {
+    const handleCloseSlettInnleggOther = () => {
         setSlettopenOther(false);
-        console.log(id + "Other")
         const config = {
             token: token,
             cv_other_id: id           
@@ -316,7 +320,7 @@ function CV(props) {
                                     className={classes.button}
                                     startIcon={<DeleteIcon />}
                                     key={indexEdu}
-                                    onClick={handleClickOpenSlettEducation}
+                                    onClick={() => {handleClickOpenSlettEducation(utd.cv_education_id)}}
                                     >
                                     Slett Edu
                                     </Button>
@@ -331,7 +335,7 @@ function CV(props) {
                                         <Button onClick={handleCloseSlett} color="primary">
                                             Avbryt
                                         </Button>
-                                        <Button value={utd.cv_education_id} onClick={() => {handleCloseSlettInnleggEdu(utd.cv_education_id)}} color="primary" autoFocus>
+                                        <Button onClick={handleCloseSlettInnleggEdu} color="primary" autoFocus>
                                             Slett
                                         </Button>
                                         </DialogActions>
@@ -360,7 +364,7 @@ function CV(props) {
                                     className={classes.button}
                                     startIcon={<DeleteIcon />}
                                     key={indexSem}
-                                    onClick={handleClickOpenSlettSeminar}
+                                    onClick={() => {handleClickOpenSlettSeminar(sem.cv_seminar_id)}}
                                     >
                                     Slett Sem
                                     </Button>
@@ -375,7 +379,7 @@ function CV(props) {
                                         <Button onClick={handleCloseSlett} color="primary">
                                             Avbryt
                                         </Button>
-                                        <Button value={sem.cv_seminar_id} onClick={() => {handleCloseSlettInnleggSem(sem.cv_seminar_id)}} color="primary" autoFocus>
+                                        <Button onClick={handleCloseSlettInnleggSem} color="primary" autoFocus>
                                             Slett
                                         </Button>
                                         </DialogActions>
@@ -404,7 +408,7 @@ function CV(props) {
                                     className={classes.button}
                                     startIcon={<DeleteIcon />}
                                     key={indexWor}
-                                    onClick={handleClickOpenSlettWork}
+                                    onClick={() => {handleClickOpenSlettWork(wor.cv_work_id)}}
                                     >
                                     Slett Work
                                     </Button>
@@ -419,7 +423,7 @@ function CV(props) {
                                         <Button onClick={handleCloseSlett} color="primary">
                                             Avbryt
                                         </Button>
-                                        <Button value={wor.cv_work_id} onClick={() => {handleCloseSlettInnleggWork(wor.cv_work_id)}} color="primary" autoFocus>
+                                        <Button onClick={handleCloseSlettInnleggWork} color="primary" autoFocus>
                                             Slett
                                         </Button>
                                         </DialogActions>
@@ -449,7 +453,7 @@ function CV(props) {
                                     className={classes.button}
                                     startIcon={<DeleteIcon />}
                                     key={indexAnn}
-                                    onClick={handleClickOpenSlettOther}
+                                    onClick={() => {handleClickOpenSlettOther(ann.cv_other_id)}}
                                     >
                                     Slett Other
                                     </Button>
@@ -464,7 +468,7 @@ function CV(props) {
                                         <Button onClick={handleCloseSlett} color="primary">
                                             Avbryt
                                         </Button>
-                                        <Button value={ann.cv_other_id} onClick={() => {handleCloseSlettInnleggOther(ann.cv_other_id)}} color="primary" autoFocus>
+                                        <Button onClick={handleCloseSlettInnleggOther} color="primary" autoFocus>
                                             Slett
                                         </Button>
                                         </DialogActions>
