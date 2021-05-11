@@ -149,8 +149,9 @@ function CV(props) {
             token: token,
             cv_seminar_id: cv_id           
         }
-        axios.post(process.env.REACT_APP_APIURL + "/cv/slettInnleggSem", config)
-        window.location.reload();
+        axios.post(process.env.REACT_APP_APIURL + "/cv/slettInnleggSem", config).then(() => {
+            window.location.reload();
+        })
       };
 
     const handleCloseSlettInnleggEdu = (id) => {
@@ -172,8 +173,9 @@ function CV(props) {
             token: token,
             cv_work_id: cv_id           
         }
-        axios.post(process.env.REACT_APP_APIURL + "/cv/slettInnleggWork", config)
-        window.location.reload();
+        axios.post(process.env.REACT_APP_APIURL + "/cv/slettInnleggWork", config).then(() => {
+            window.location.reload();
+        })
       };
 
     const handleCloseSlettInnleggOther = (id) => {
@@ -183,8 +185,9 @@ function CV(props) {
             token: token,
             cv_other_id: id           
         }
-        axios.post(process.env.REACT_APP_APIURL + "/cv/slettInnleggOther", config)
-        window.location.reload();
+        axios.post(process.env.REACT_APP_APIURL + "/cv/slettInnleggOther", config).then(() => {
+            window.location.reload();
+        })
       };
     
       useEffect( () => {
