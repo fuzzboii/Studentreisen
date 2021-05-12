@@ -181,6 +181,16 @@ const CourseNav = (props) => {
                   <Tab className="tabKursmodul" label="Kursmodul" />
               </Tabs>
             </div>
+            
+            <div className="NavHeaderWrap">
+              { position == 0 &&
+                <h1 className="NavHeader">Alle kurs</h1>
+              }
+              { position == 1 &&
+                <h1 className="NavHeader">Kursmodul</h1>
+              }
+            </div>
+              
             {Object.entries(courses).length !== 0 &&
             <TabPanel value={position} index={0}>
                 <div className="content-overview">

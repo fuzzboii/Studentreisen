@@ -20,6 +20,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Input from '@material-ui/core/Input';
+import IconButton from '@material-ui/core/IconButton';
+import EditIcon from '@material-ui/icons/Edit';
 
 function CV(props) {
 
@@ -46,6 +48,135 @@ function CV(props) {
     const [opprett_innlegg, setOpprett_innlegg] = useState("");
     const [opprett_datoFra, setOpprett_datoFra] = useState("");
     const [opprett_datoTil, setOpprett_datoTil] = useState("");
+
+    // Lagrer id for sletting av CV innlegg
+    const [id, setID] = useState();
+
+    // For redigering av CV innlegg
+    const [redid, setRedid] = useState();
+    const [redinnlegg, setRedinnlegg] = useState();
+    const [reddatoFra, setReddatoFra] = useState("");
+    const [reddatoTil, setReddatoTil] = useState("");
+
+    const [redigeropenEducation, setRedigeropenEducation] = useState(false);
+    const [redigeropenSeminar, setRedigeropenSeminar] = useState(false);
+    const [redigeropenWork, setRedigeropenWork] = useState(false);
+    const [redigeropenOther, setRedigeropenOther] = useState(false);
+
+    const handleClickOpenRedigerEducation = (cv_education_id, innlegg, datoFra, datoTil) => {
+        setRedigeropenEducation(true);
+        setRedid(cv_education_id);
+        setRedinnlegg(innlegg);
+        setReddatoFra(datoFra);
+        setReddatoTil(datoTil);
+    };
+
+    const handleClickOpenRedigerSeminar = (cv_seminar_id, innlegg, datoFra, datoTil) => {
+        setRedigeropenSeminar(true);
+        setRedid(cv_seminar_id);
+        setRedinnlegg(innlegg);
+        setReddatoFra(datoFra);
+        setReddatoTil(datoTil);
+    };
+
+    const handleClickOpenRedigerWork = (cv_work_id, innlegg, datoFra, datoTil) => {
+        setRedigeropenWork(true);
+        setRedid(cv_work_id);
+        setRedinnlegg(innlegg);
+        setReddatoFra(datoFra);
+        setReddatoTil(datoTil);
+    };
+
+    const handleClickOpenRedigerOther = (cv_other_id, innlegg, datoFra, datoTil) => {
+        setRedigeropenOther(true);
+        setRedid(cv_other_id);
+        setRedinnlegg(innlegg);
+        setReddatoFra(datoFra);
+        setReddatoTil(datoTil);
+    };
+
+    const handleCloseRediger = () => {
+        setRedigeropenEducation(false);
+        setRedigeropenSeminar(false);
+        setRedigeropenWork(false);
+        setRedigeropenOther(false);
+        setRedid(null);
+        setRedinnlegg(null);
+        setReddatoFra(null);
+        setReddatoTil(null);
+    };
+
+    const handleCloseRedigerInnleggEdu = () => {
+        setRedigeropenEducation(false);
+        const config = {
+            token: token,
+            cv_education_id: redid,
+            innlegg: redinnlegg,
+            datoFra: moment(reddatoFra).format('YYYY-MM-DD'),
+            datoTil: moment(reddatoTil).format('YYYY-MM-DD')
+        }
+        axios.post(process.env.REACT_APP_APIURL + "/cv/redigerInnleggEdu", config).then(() => {
+            setRedid(null);
+            setRedinnlegg(null);
+            setReddatoFra(null);
+            setReddatoTil(null);
+            window.location.reload();
+        })
+    };
+
+    const handleCloseRedigerInnleggSem = () => {
+        setRedigeropenEducation(false);
+        const config = {
+            token: token,
+            cv_seminar_id: redid,
+            innlegg: redinnlegg,
+            datoFra: moment(reddatoFra).format('YYYY-MM-DD'),
+            datoTil: moment(reddatoTil).format('YYYY-MM-DD')
+        }
+        axios.post(process.env.REACT_APP_APIURL + "/cv/redigerInnleggSem", config).then(() => {
+            setRedid(null);
+            setRedinnlegg(null);
+            setReddatoFra(null);
+            setReddatoTil(null);
+            window.location.reload();
+        })
+    };
+
+    const handleCloseRedigerInnleggWor = () => {
+        setRedigeropenEducation(false);
+        const config = {
+            token: token,
+            cv_work_id: redid,
+            innlegg: redinnlegg,
+            datoFra: moment(reddatoFra).format('YYYY-MM-DD'),
+            datoTil: moment(reddatoTil).format('YYYY-MM-DD')
+        }
+        axios.post(process.env.REACT_APP_APIURL + "/cv/redigerInnleggWork", config).then(() => {
+            setRedid(null);
+            setRedinnlegg(null);
+            setReddatoFra(null);
+            setReddatoTil(null);
+            window.location.reload();
+        })
+    };
+
+    const handleCloseRedigerInnleggOth = () => {
+        setRedigeropenEducation(false);
+        const config = {
+            token: token,
+            cv_other_id: redid,
+            innlegg: redinnlegg,
+            datoFra: moment(reddatoFra).format('YYYY-MM-DD'),
+            datoTil: moment(reddatoTil).format('YYYY-MM-DD')
+        }
+        axios.post(process.env.REACT_APP_APIURL + "/cv/redigerInnleggOther", config).then(() => {
+            setRedid(null);
+            setRedinnlegg(null);
+            setReddatoFra(null);
+            setReddatoTil(null);
+            window.location.reload();
+        })
+    };
 
     const useStyles = makeStyles ({
         avatar: {
@@ -96,7 +227,10 @@ function CV(props) {
             }))
     }
 
-    const [slettopen, setSlettopen] = useState(false);
+    const [slettopenEducation, setSlettopenEducation] = useState(false);
+    const [slettopenSeminar, setSlettopenSeminar] = useState(false);
+    const [slettopenWork, setSlettopenWork] = useState(false);
+    const [slettopenOther, setSlettopenOther] = useState(false);
     const [opprettopen, setOpprettopen] = useState(false);
 
     const handleCloseOpprettInnlegg = () => {
@@ -106,24 +240,23 @@ function CV(props) {
             opprett_cv_innlegg: opprett_innlegg,
             opprettdatoFra: opprett_datoFra,
             opprettdatoTil: opprett_datoTil
-        }
-        console.log(valgt_type)
+        };
         if (valgt_type === "Seminar") {
-            axios.post(process.env.REACT_APP_APIURL + "/cv/postCVSeminar", config)
-            window.location.reload();
-        }
+            axios.post(process.env.REACT_APP_APIURL + "/cv/postCVSeminar", config).then(() => {
+                window.location.reload();
+        })}
         if (valgt_type === "Utdanning") {
-            axios.post(process.env.REACT_APP_APIURL + "/cv/postCVEducation", config)
-            window.location.reload();
-        }
+            axios.post(process.env.REACT_APP_APIURL + "/cv/postCVEducation", config).then(() => {
+                window.location.reload();
+        })}
         if (valgt_type === "Jobberfaring") {
-            axios.post(process.env.REACT_APP_APIURL + "/cv/postCVWork", config)
-            window.location.reload();
-        }
+            axios.post(process.env.REACT_APP_APIURL + "/cv/postCVWork", config).then(() => {
+                window.location.reload();
+        })}
         if (valgt_type === "Annet") {
-            axios.post(process.env.REACT_APP_APIURL + "/cv/postCVOther", config)
-            window.location.reload();
-        }
+            axios.post(process.env.REACT_APP_APIURL + "/cv/postCVOther", config).then(() => {
+                window.location.reload();
+        })}
       };
 
     const handleClickOpenOpprett =() => {
@@ -134,66 +267,86 @@ function CV(props) {
         setOpprettopen(false);
       };
 
-    const handleClickOpenSlett = () => {
-        setSlettopen(true);
+    const handleClickOpenSlettEducation = (cv_education_id) => {
+        setSlettopenEducation(true);
+        setID(cv_education_id);
+      };
+
+    const handleClickOpenSlettSeminar = (cv_seminar_id) => {
+        setSlettopenSeminar(true);
+        setID(cv_seminar_id);
+      };
+
+    const handleClickOpenSlettWork = (cv_work_id) => {
+        setSlettopenWork(true);
+        setID(cv_work_id);
+      };
+
+    const handleClickOpenSlettOther = (cv_other_id) => {
+        setSlettopenOther(true);
+        setID(cv_other_id);
       };
     
     const handleCloseSlett = () => {
-        setSlettopen(false);
+        setSlettopenEducation(false);
+        setSlettopenSeminar(false);
+        setSlettopenWork(false);
+        setSlettopenOther(false);
+        setID(null);
       };
 
-    const handleCloseSlettInnleggSem = (cv_id) => {
-        setSlettopen(false);
-        console.log(cv_id + "Sem")
+    const handleCloseSlettInnleggSem = () => {
+        setSlettopenSeminar(false);
         const config = {
             token: token,
-            cv_seminar_id: cv_id           
+            cv_seminar_id: id           
         }
-        axios.post(process.env.REACT_APP_APIURL + "/cv/slettInnleggSem", config)
-        window.location.reload();
+        axios.post(process.env.REACT_APP_APIURL + "/cv/slettInnleggSem", config).then(() => {
+            window.location.reload();
+        })
       };
 
-    const handleCloseSlettInnleggEdu = (id) => {
-        setSlettopen(false);
-        console.log(id + "Edu")
+    const handleCloseSlettInnleggEdu = () => {
+        setSlettopenEducation(false);
         const config = {
             token: token,
             cv_education_id: id           
         }
-        axios.post(process.env.REACT_APP_APIURL + "/cv/slettInnleggEdu", config)
-        window.location.reload();
+        axios.post(process.env.REACT_APP_APIURL + "/cv/slettInnleggEdu", config).then(() => {
+            window.location.reload();
+        })
       };
 
-    const handleCloseSlettInnleggWork = (cv_id) => {
-        setSlettopen(false);
-        console.log(cv_id + "Work")
+    const handleCloseSlettInnleggWork = () => {
+        setSlettopenWork(false);
         const config = {
             token: token,
-            cv_work_id: cv_id           
+            cv_work_id: id           
         }
-        axios.post(process.env.REACT_APP_APIURL + "/cv/slettInnleggWork", config)
-        window.location.reload();
+        axios.post(process.env.REACT_APP_APIURL + "/cv/slettInnleggWork", config).then(() => {
+            window.location.reload();
+        })
       };
 
-    const handleCloseSlettInnleggOther = (id) => {
-        setSlettopen(false);
-        console.log(id + "Other")
+    const handleCloseSlettInnleggOther = () => {
+        setSlettopenOther(false);
         const config = {
             token: token,
             cv_other_id: id           
         }
-        axios.post(process.env.REACT_APP_APIURL + "/cv/slettInnleggOther", config)
-        window.location.reload();
+        axios.post(process.env.REACT_APP_APIURL + "/cv/slettInnleggOther", config).then(() => {
+            window.location.reload();
+        })
       };
     
-      useEffect( () => {
+    useEffect( () => {
         setAuth(props.auth)
         fetch();
     }, [props]);
     
     const handleOpprettInnlegg = (event) => {
         setOpprett_innlegg(event.target.value);
-    }
+    };
 
     if (loading) {
         return (
@@ -282,9 +435,9 @@ function CV(props) {
                             {utdanning !== undefined && utdanning.map((utd, indexEdu) => (
                                 <div className="cv_returned_content">
                                     {utd.datoFra !== null &&
-                                    <text className='cv_returned_datoTil' type="date">Fra: {moment.locale('nb'), moment(utd.datoFra).format("DD MMM YYYY")}</text>}
+                                    <text className='cv_returned_datoTil' type="date">Fra: {moment.locale('nb'), moment(utd.datoFra).format("DD MM YYYY")}</text>}
                                     {utd.datoTil !== null && 
-                                    <text className='cv_returned_datoFra' type="date">Til: {moment.locale('nb'), moment(utd.datoTil).format("DD MMM YYYY")}</text>}
+                                    <text className='cv_returned_datoFra' type="date">Til: {moment.locale('nb'), moment(utd.datoTil).format("DD MM YYYY")}</text>}
                                     <p className='cv_returned_innlegg'>{utd.innlegg}</p>
                                     <Button
                                     type="submit"
@@ -294,11 +447,11 @@ function CV(props) {
                                     className={classes.button}
                                     startIcon={<DeleteIcon />}
                                     key={indexEdu}
-                                    onClick={handleClickOpenSlett}
+                                    onClick={() => {handleClickOpenSlettEducation(utd.cv_education_id)}}
                                     >
-                                    Slett Edu
+                                    Slett
                                     </Button>
-                                    <Dialog open={slettopen} onClose={handleCloseSlett} aria-labelledby="form-dialog-title">
+                                    <Dialog open={slettopenEducation} onClose={handleCloseSlett} aria-labelledby="form-dialog-title">
                                         <DialogTitle id="cv_dialog_title">Slette innlegget?</DialogTitle>
                                         <DialogContent>
                                             <DialogContentText id="alert-dialog-description">
@@ -309,8 +462,39 @@ function CV(props) {
                                         <Button onClick={handleCloseSlett} color="primary">
                                             Avbryt
                                         </Button>
-                                        <Button value={utd.cv_education_id} onClick={() => {handleCloseSlettInnleggEdu()}} color="primary" autoFocus>
+                                        <Button onClick={handleCloseSlettInnleggEdu} color="primary" autoFocus>
                                             Slett
+                                        </Button>
+                                        </DialogActions>
+                                    </Dialog>
+                                    
+                                    <Button
+                                        type="submit"
+                                        size="small"
+                                        variant="outlined"
+                                        color="primary"
+                                        className={classes.button}
+                                        startIcon={<EditIcon />}
+                                        onClick={() => {handleClickOpenRedigerEducation(utd.cv_education_id, utd.innlegg, utd.datoFra, utd.datoTil)}}
+                                        >
+                                        Rediger
+                                    </Button>
+                                    <Dialog open={redigeropenEducation} onClose={handleCloseRediger} aria-labelledby="form-dialog-title">
+                                        <DialogTitle id="cv_dialog_title">Rediger innlegg</DialogTitle>
+                                        <DialogContent>
+                                            <DialogContentText id="alert-dialog-description">
+                                                Rediger ditt innlegg
+                                            </DialogContentText>
+                                            <input type="date" value={reddatoFra} onChange={e => setReddatoFra(e.target.value)} pattern="\d{4}-\d{2}-\d{2}"></input>
+                                            <input type="date" value={reddatoTil} onChange={e => setReddatoTil(e.target.value)} pattern="\d{4}-\d{2}-\d{2}"></input>
+                                            <Input type="text" value={redinnlegg} onChange={e => setRedinnlegg(e.target.value)} required></Input>
+                                        </DialogContent>
+                                        <DialogActions>
+                                        <Button onClick={handleCloseRediger} color="primary">
+                                            Avbryt
+                                        </Button>
+                                        <Button onClick={handleCloseRedigerInnleggEdu} color="primary" autoFocus>
+                                            Bekreft
                                         </Button>
                                         </DialogActions>
                                     </Dialog>
@@ -326,9 +510,9 @@ function CV(props) {
                             {seminar !== undefined && seminar.map((sem, indexSem) => (
                                 <div className="cv_returned_content">
                                     {sem.datoFra !== null && 
-                                    <text className='cv_returned' type="date">Fra: {moment.locale('nb'), moment(sem.datoFra).format("DD MMM YYYY")}</text>}
+                                    <text className='cv_returned' type="date">Fra: {moment.locale('nb'), moment(sem.datoFra).format("DD MM YYYY")}</text>}
                                     {sem.datoTil !== null && 
-                                    <text className='cv_returned' type="date">Til: {moment.locale('nb'), moment(sem.datoTil).format("DD MMM YYYY")}</text>}
+                                    <text className='cv_returned' type="date">Til: {moment.locale('nb'), moment(sem.datoTil).format("DD MM YYYY")}</text>}
                                     <p className='cv_returned'>{sem.innlegg}</p>
                                     <Button
                                     type="submit"
@@ -338,11 +522,11 @@ function CV(props) {
                                     className={classes.button}
                                     startIcon={<DeleteIcon />}
                                     key={indexSem}
-                                    onClick={handleClickOpenSlett}
+                                    onClick={() => {handleClickOpenSlettSeminar(sem.cv_seminar_id)}}
                                     >
-                                    Slett Sem
+                                    Slett
                                     </Button>
-                                    <Dialog open={slettopen} onClose={handleCloseSlett} aria-labelledby="form-dialog-title">
+                                    <Dialog open={slettopenSeminar} onClose={handleCloseSlett} aria-labelledby="form-dialog-title">
                                         <DialogTitle id="cv_dialog_title">Slette innlegget?</DialogTitle>
                                         <DialogContent>
                                             <DialogContentText id="alert-dialog-description">
@@ -353,8 +537,37 @@ function CV(props) {
                                         <Button onClick={handleCloseSlett} color="primary">
                                             Avbryt
                                         </Button>
-                                        <Button onClick={() => {handleCloseSlettInnleggSem(sem.cv_seminar_id)}} color="primary" autoFocus>
+                                        <Button onClick={handleCloseSlettInnleggSem} color="primary" autoFocus>
                                             Slett
+                                        </Button>
+                                        </DialogActions>
+                                    </Dialog>
+                                    <Button
+                                        type="submit"
+                                        size="small" 
+                                        variant="outlined" 
+                                        color="primary" 
+                                        startIcon={<EditIcon />} 
+                                        onClick={() => {handleClickOpenRedigerSeminar(sem.cv_seminar_id, sem.innlegg, sem.datoFra, sem.datoTil)}}
+                                        >
+                                        Rediger
+                                    </Button>
+                                    <Dialog open={redigeropenSeminar} onClose={handleCloseRediger} aria-labelledby="form-dialog-title">
+                                        <DialogTitle id="cv_dialog_title">Rediger innlegg</DialogTitle>
+                                        <DialogContent>
+                                            <DialogContentText id="alert-dialog-description">
+                                                Rediger ditt innlegg
+                                            </DialogContentText>
+                                            <input type="date" value={reddatoFra} onChange={e => setReddatoFra(e.target.value)} pattern="\d{4}-\d{2}-\d{2}"></input>
+                                            <input type="date" value={reddatoTil} onChange={e => setReddatoTil(e.target.value)} pattern="\d{4}-\d{2}-\d{2}"></input>
+                                            <Input type="text" value={redinnlegg} onChange={e => setRedinnlegg(e.target.value)} required></Input>
+                                        </DialogContent>
+                                        <DialogActions>
+                                        <Button onClick={handleCloseRediger} color="primary">
+                                            Avbryt
+                                        </Button>
+                                        <Button onClick={handleCloseRedigerInnleggSem} color="primary" autoFocus>
+                                            Bekreft
                                         </Button>
                                         </DialogActions>
                                     </Dialog>
@@ -382,11 +595,11 @@ function CV(props) {
                                     className={classes.button}
                                     startIcon={<DeleteIcon />}
                                     key={indexWor}
-                                    onClick={handleClickOpenSlett}
+                                    onClick={() => {handleClickOpenSlettWork(wor.cv_work_id)}}
                                     >
-                                    Slett Work
+                                    Slett
                                     </Button>
-                                    <Dialog open={slettopen} onClose={handleCloseSlett} aria-labelledby="form-dialog-title">
+                                    <Dialog open={slettopenWork} onClose={handleCloseSlett} aria-labelledby="form-dialog-title">
                                         <DialogTitle id="cv_dialog_title">Slette innlegget?</DialogTitle>
                                         <DialogContent>
                                             <DialogContentText id="alert-dialog-description">
@@ -397,8 +610,38 @@ function CV(props) {
                                         <Button onClick={handleCloseSlett} color="primary">
                                             Avbryt
                                         </Button>
-                                        <Button onClick={() => {handleCloseSlettInnleggWork(wor.cv_education_id)}} color="primary" autoFocus>
+                                        <Button onClick={handleCloseSlettInnleggWork} color="primary" autoFocus>
                                             Slett
+                                        </Button>
+                                        </DialogActions>
+                                    </Dialog>
+
+                                    <Button
+                                        type="submit"
+                                        size="small"
+                                        variant="outlined"
+                                        color="primary"
+                                        className={classes.button}
+                                        startIcon={<EditIcon />}
+                                        onClick={() => {handleClickOpenRedigerWork(wor.cv_work_id, wor.innlegg, wor.datoFra, wor.datoTil)}}
+                                        >Rediger
+                                    </Button>
+                                    <Dialog open={redigeropenWork} onClose={handleCloseRediger} aria-labelledby="form-dialog-title">
+                                        <DialogTitle id="cv_dialog_title">Rediger innlegg</DialogTitle>
+                                        <DialogContent>
+                                            <DialogContentText id="alert-dialog-description">
+                                                Rediger ditt innlegg
+                                            </DialogContentText>
+                                            <input type="date" value={reddatoFra} onChange={e => setReddatoFra(e.target.value)} pattern="\d{4}-\d{2}-\d{2}"></input>
+                                            <input type="date" value={reddatoTil} onChange={e => setReddatoTil(e.target.value)} pattern="\d{4}-\d{2}-\d{2}"></input>
+                                            <Input type="text" value={redinnlegg} onChange={e => setRedinnlegg(e.target.value)} required></Input>
+                                        </DialogContent>
+                                        <DialogActions>
+                                        <Button onClick={handleCloseRediger} color="primary">
+                                            Avbryt
+                                        </Button>
+                                        <Button onClick={handleCloseRedigerInnleggWor} color="primary" autoFocus>
+                                            Bekreft
                                         </Button>
                                         </DialogActions>
                                     </Dialog>
@@ -419,7 +662,7 @@ function CV(props) {
                                     <text className='cv_returned' type="date">{moment.locale('nb'), moment(ann.datoTil).format("DD MMM YYYY")}</text>}
                                     <p className='cv_returned'>{ann.innlegg}</p>
 
-                                                                        <Button
+                                    <Button
                                     type="submit"
                                     size="small"
                                     variant="outlined"
@@ -427,11 +670,11 @@ function CV(props) {
                                     className={classes.button}
                                     startIcon={<DeleteIcon />}
                                     key={indexAnn}
-                                    onClick={handleClickOpenSlett}
+                                    onClick={() => {handleClickOpenSlettOther(ann.cv_other_id)}}
                                     >
-                                    Slett Other
+                                    Slett
                                     </Button>
-                                    <Dialog open={slettopen} onClose={handleCloseSlett} aria-labelledby="form-dialog-title">
+                                    <Dialog open={slettopenOther} onClose={handleCloseSlett} aria-labelledby="form-dialog-title">
                                         <DialogTitle id="cv_dialog_title">Slette innlegget?</DialogTitle>
                                         <DialogContent>
                                             <DialogContentText id="alert-dialog-description">
@@ -442,8 +685,38 @@ function CV(props) {
                                         <Button onClick={handleCloseSlett} color="primary">
                                             Avbryt
                                         </Button>
-                                        <Button onClick={() => {handleCloseSlettInnleggOther(ann.cv_other_id)}} color="primary" autoFocus>
+                                        <Button onClick={handleCloseSlettInnleggOther} color="primary" autoFocus>
                                             Slett
+                                        </Button>
+                                        </DialogActions>
+                                    </Dialog>
+                                    <Button
+                                        type="submit"
+                                        size="small"
+                                        variant="outlined"
+                                        color="primary"
+                                        className={classes.button}
+                                        startIcon={<EditIcon />}
+                                        onClick={() => {handleClickOpenRedigerOther(ann.cv_other_id, ann.innlegg, ann.datoFra, ann.datoTil)}}
+                                        >
+                                        Rediger
+                                    </Button>
+                                    <Dialog open={redigeropenOther} onClose={handleCloseRediger} aria-labelledby="form-dialog-title">
+                                        <DialogTitle id="cv_dialog_title">Rediger innlegg</DialogTitle>
+                                        <DialogContent>
+                                            <DialogContentText id="alert-dialog-description">
+                                                Rediger ditt innlegg
+                                            </DialogContentText>
+                                            <input type="date" value={reddatoFra} onChange={e => setReddatoFra(e.target.value)} pattern="\d{4}-\d{2}-\d{2}"></input>
+                                            <input type="date" value={reddatoTil} onChange={e => setReddatoTil(e.target.value)} pattern="\d{4}-\d{2}-\d{2}"></input>
+                                            <Input type="text" value={redinnlegg} onChange={e => setRedinnlegg(e.target.value)} required></Input>
+                                        </DialogContent>
+                                        <DialogActions>
+                                        <Button onClick={handleCloseRediger} color="primary">
+                                            Avbryt
+                                        </Button>
+                                        <Button onClick={handleCloseRedigerInnleggOth} color="primary" autoFocus>
+                                            Bekreft
                                         </Button>
                                         </DialogActions>
                                     </Dialog>

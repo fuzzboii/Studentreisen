@@ -43,10 +43,8 @@ function TabPanel(props) {
       marginTop: theme.spacing(2),
       marginLeft: theme.spacing(1),
       padding: theme.spacing(1),
-      width: theme.spacing(0.5),
-      '&:hover' : {
-        boxShadow: 'none',
-      },
+      boxShadow: 'none',
+      
     },
   
     search: {
@@ -83,12 +81,12 @@ const RelevantFieldNav = (props) => {
           const token = CookieService.get("authtoken");
                     
             const data = {felt: field}
-            const data2 = {token: token}
+            const dataToken = {token: token}
     
           axios.all([
             axios.post(process.env.REACT_APP_APIURL + "/course/getKursFiltrert", data),
             axios.get(process.env.REACT_APP_APIURL + "/course/module"),
-            axios.post(process.env.REACT_APP_APIURL + "/profile/getInteresser", data2)
+            axios.post(process.env.REACT_APP_APIURL + "/profile/getInteresser", dataToken)
     
           ]).then(axios.spread((res1, res2, res3) => {
             setCourses(res1.data);
@@ -176,7 +174,7 @@ const RelevantFieldNav = (props) => {
                       </form>
                     <div className="wrapNewcourse">
                       {props.type === 3 || props.type === 4 && position == 0 &&
-                        <Button className={classes.buttonIcon} href="/course/new" variant="contained" color="primary" ><AddIcon/></Button>
+                        <Button className={classes.buttonIcon} href="/course/new" variant="contained" color="primary">Nytt kurs <AddIcon/></Button>
                       }
                     </div>
                 </div>       
@@ -187,6 +185,15 @@ const RelevantFieldNav = (props) => {
                       <Tab className="tabKurs" label="Kurs" />
                       <Tab className="tabKursmodul" label="Kursmodul" />
                   </Tabs>
+                </div>
+
+                <div className="NavHeaderWrap">
+                  { position == 0 &&
+                    <h1 className="NavHeader">{field}</h1>
+                  }
+                  { position == 1 &&
+                    <h1 className="NavHeader">Kursmodul</h1>
+                  }
                 </div>
                 {Object.entries(courses).length !== 0 &&
                 <TabPanel value={position} index={0}>
