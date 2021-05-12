@@ -10,12 +10,10 @@
 #main_cv h1 {
     font-size: 1.2em;
     text-align: center;
-    margin-left: -9em;
     font-weight: normal;
 }
 
 .cv_profile {
-    max-width: 50%;
     margin-left: auto; margin-right: auto;
 }
 
@@ -24,18 +22,16 @@
 }
 
 .cv_elements {
-    max-width: 50%;
     margin-left: auto; margin-right: auto;
 }
 
-.cv-section {
+.cv_section {
     display: flex;
     background-color: rgb(247, 244, 244);
     }
 
 #cv_input {
-    display: flex;
-    min-width: 40em;
+    width:auto;
 }
 #cv_date_input {
     display: flex;
@@ -46,8 +42,43 @@
     display: inline;
 }
 
-#cv_form {
-    margin-bottom: 2vh;
-    display: flex;
-    flex-direction: row;
+.cv_form {
+    display: flex
+}
+
+.box_cv {
+    border: solid 1px black;
+}
+
+.cv_returned p {
+    max-width: 30ch;
+  }
+
+.cv_returned_innlegg {
+    font-size:1em;
+}
+
+.cv_returned_datoFra {
+    font-size:1em;
+    margin-left: auto;
+}
+
+.cv_returned_datoTil {
+    font-size:1em;
+    text-align: left;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#gridbox {
+    width: 85%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#innleggButton {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+
 }
