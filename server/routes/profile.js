@@ -207,7 +207,7 @@ router.post('/updateTelefon', async (req, res) => {
                     }
 
                     if(results.length > 0) {
-
+                        return res.jason({ "status" : "success", "message" : "Telefonnummer oppdatert" })
                     } else {
                         return res.json({"status" : "error", "message" : "En feil oppstod under oppdatering av brukerens telefonnummer"})
                     }
@@ -364,6 +364,11 @@ router.post('/insertBilde', async (req, res) => {
 
                 const opplastetBilde = req.files.image;
                 opplastetBilde.mv(path.join(__dirname, process.env.USER_IMG_UPLOAD_PATH) + filnavn);
+
+                // valider at filen er .jpg, .jpeg, eller .png
+                if (filtype !== '.jpg' && filtype !== '.jpeg' && filtype !== '.png') {
+                    return res.json({"status" : "error", "message" : "Profilbilder må være av filtype .jpg, .jpeg, eller .png"})
+                }
 
                 // Opprett referanse til bildet
                 let insertQuery = "INSERT INTO profilbilde (brukerid, plassering) VALUES(?, ?) ON DUPLICATE KEY UPDATE brukerid=?, plassering=?"

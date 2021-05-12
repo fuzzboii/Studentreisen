@@ -69,15 +69,6 @@ function Profile(props) {
                     setAlertDisplay("")
                     setAlertText(res.data.message)
                     setAlertSeverity("success")
-
-                    // Test på om dette er første opplastning av et profilbilde
-                    let first = false
-                    if (profilbilde == undefined) {
-                        first = true
-                    }
-                    if (first) {
-                        setProfilbilde(e.target.files[0].name)
-                    }
                     setProfilbilde(e.target.files[0].name)
                 }
             })
@@ -101,8 +92,22 @@ function Profile(props) {
             // Test at nummeret er en korrekt (norsk) lengde
             // Fjerne eventuelle mellomrom i opgitt nummer
             var tlfTrim = tlf.replace(/\s/g, '')
-            if (tlfTrim.charAt(0) === '+') {
-                if (tlfTrim.length == 11) {
+            if (tlfTrim.length == 8 || tlfTrim.length == 12 || tlfTrim.length == 11) {
+                if (tlfTrim.charAt(0) == '+' && tlfTrim.length == 11) {
+                    const config = {
+                        token: token,
+                        telefon: tlfTrim
+                    }
+                    
+                    axios.post(process.env.REACT_APP_APIURL + "/profile/updateTelefon", config).then(
+                        setAlertDisplay(""),
+                        setAlertText("Telefonnummer oppdatert!"),
+                        setAlertSeverity("success"),
+                        setUpdateTextTlf("Oppdater"),
+                        setUpdateBtnTlf(false),
+                        )
+                    }
+                else if (tlfTrim.length == 8 || tlfTrim.length == 12) {
                     const config = {
                         token: token,
                         telefon: tlfTrim
@@ -115,20 +120,12 @@ function Profile(props) {
                         setUpdateTextTlf("Oppdater"),
                         setUpdateBtnTlf(false)
                         )
+                } else {
+                    setAlertDisplay("")
+                    setAlertText("Telefonnummeret er ikke gyldig")
+                    setAlertSeverity("error")
+                    setUpdateTextTlf("Oppdater")
                 }
-            } else if (tlfTrim.length == 8 || tlfTrim.length == 12) {
-                const config = {
-                    token: token,
-                    telefon: tlfTrim
-                }
-                
-                axios.post(process.env.REACT_APP_APIURL + "/profile/updateTelefon", config).then(
-                    setAlertDisplay(""),
-                    setAlertText("Telefonnummer oppdatert!"),
-                    setAlertSeverity("success"),
-                    setUpdateTextTlf("Oppdater"),
-                    setUpdateBtnTlf(false)
-                    )
             } else {
                 setAlertDisplay("")
                 setAlertText("Telefonnummeret er ikke gyldig")
@@ -141,8 +138,7 @@ function Profile(props) {
             setAlertSeverity("error")
             setUpdateTextTlf("Oppdater")
         }
-        
-        }
+    }
         
         // Utføres når bruker gjør en handling i input-feltet for e-post
         const onEmailChange = e => {
@@ -370,14 +366,17 @@ function Profile(props) {
                 {/* Avatar */}
                 <input
                     onChange={onImgSubmit}
-                    accept="image/png, image/jpeg"
+                    accept=".png, .jpeg, .jpg"
                     id="avatarInput"
                     style={{
                         display: 'none',
                     }}
                     type="file"
                     />
-                <label htmlFor="avatarInput">
+                <label htmlFor="avatarInput"
+                    style={{
+                        // width: '10vw'
+                    }}>
                     <IconButton component="span" type="submit" 
                         style={{
                             // "skru av" hover-skygge
