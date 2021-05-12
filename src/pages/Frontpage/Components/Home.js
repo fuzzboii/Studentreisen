@@ -9,8 +9,6 @@ import { Redirect } from 'react-router';
 
 
 function Home(props) {
-    console.log(props);
-    
     return (
         <>
         {props.loading &&
