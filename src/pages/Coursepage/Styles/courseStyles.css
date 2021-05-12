@@ -100,6 +100,16 @@
    -webkit-box-orient: vertical;
 }
 
+.NavHeader {
+    display: grid;
+    font-size: 1.25rem;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    font-weight: 500;
+    line-height: 1.6;
+    letter-spacing: 0.0075em;
+
+}
+
 .course-list {
     display: grid;
     grid-row-gap: 1em;
@@ -310,6 +320,14 @@
         margin-right: auto;
     }
 
+    .NavHeaderWrap {
+        padding-left: 2em;
+        padding-right: 2em;
+        margin-left: auto;
+        margin-right: auto;
+
+    }
+
     .boxFlexOverview {
         display: flex;
     }
@@ -457,6 +475,10 @@
 
     
     .content-overview {
+        width: 70em;      
+    }
+
+    .NavHeaderWrap {
         width: 70em;      
     }
     .course-header-section {
