@@ -440,18 +440,17 @@ function CV(props) {
                                     {utd.datoTil !== null && 
                                     <text className='cv_returned_datoFra' type="date">Til: {moment.locale('nb'), moment(utd.datoTil).format("DD MM YYYY")}</text>}
                                     <p className='cv_returned_innlegg'>{utd.innlegg}</p>
-                                    
-                                        <Button className="cv_Delete"
+                                    <div className="cv_ButtonsWrapper">
+                                    <Button className="cv_Delete"
                                         type="submit"
                                         size="small"
-                                        variant="outlined"
                                         color="secondary"
                                         className={classes.button}
                                         startIcon={<DeleteIcon />}
                                         key={indexEdu}
                                         onClick={() => {handleClickOpenSlettEducation(utd.cv_education_id)}}
                                         >
-                                        Slett
+                                        
                                         </Button>
                                     
                                     <Dialog open={slettopenEducation} onClose={handleCloseSlett} aria-labelledby="form-dialog-title">
@@ -474,14 +473,14 @@ function CV(props) {
                                     <Button className="cv_Edit"
                                         type="submit"
                                         size="small"
-                                        variant="outlined"
                                         color="primary"
                                         className={classes.button}
                                         startIcon={<EditIcon />}
                                         onClick={() => {handleClickOpenRedigerEducation(utd.cv_education_id, utd.innlegg, utd.datoFra, utd.datoTil)}}
                                         >
-                                        Rediger
+                                        
                                     </Button>
+                                    </div>
                                     <Dialog open={redigeropenEducation} onClose={handleCloseRediger} aria-labelledby="form-dialog-title">
                                         <DialogTitle id="cv_dialog_title">Rediger innlegg</DialogTitle>
                                         <DialogContent>
@@ -501,6 +500,7 @@ function CV(props) {
                                         </Button>
                                         </DialogActions>
                                     </Dialog>
+                                    
                                 </div>
                             ))}
                             {utdanning === undefined &&
@@ -528,7 +528,7 @@ function CV(props) {
                                     key={indexSem}
                                     onClick={() => {handleClickOpenSlettSeminar(sem.cv_seminar_id)}}
                                     >
-                                    Slett
+                                    
                                     </Button>
                                     
                                     <Dialog open={slettopenSeminar} onClose={handleCloseSlett} aria-labelledby="form-dialog-title">
@@ -555,7 +555,7 @@ function CV(props) {
                                         startIcon={<EditIcon />} 
                                         onClick={() => {handleClickOpenRedigerSeminar(sem.cv_seminar_id, sem.innlegg, sem.datoFra, sem.datoTil)}}
                                         >
-                                        Rediger
+                                       
                                     </Button>
                                     </div>
                                     <Dialog open={redigeropenSeminar} onClose={handleCloseRediger} aria-labelledby="form-dialog-title">
@@ -593,17 +593,17 @@ function CV(props) {
                                     {wor.datoTil !== null && 
                                     <text className='cv_returned' type="date">{moment.locale('nb'), moment(wor.datoTil).format("DD MMM YYYY")}</text>}
                                     <p className='cv_returned'>{wor.innlegg}</p>
+                                    <div className="cv_ButtonsWrapper">
                                     <Button
                                     type="submit"
                                     size="small"
-                                    variant="outlined"
                                     color="secondary"
                                     className={classes.button}
                                     startIcon={<DeleteIcon />}
                                     key={indexWor}
                                     onClick={() => {handleClickOpenSlettWork(wor.cv_work_id)}}
                                     >
-                                    Slett
+                                    
                                     </Button>
                                     <Dialog open={slettopenWork} onClose={handleCloseSlett} aria-labelledby="form-dialog-title">
                                         <DialogTitle id="cv_dialog_title">Slette innlegget?</DialogTitle>
@@ -625,13 +625,13 @@ function CV(props) {
                                     <Button
                                         type="submit"
                                         size="small"
-                                        variant="outlined"
                                         color="primary"
                                         className={classes.button}
                                         startIcon={<EditIcon />}
                                         onClick={() => {handleClickOpenRedigerWork(wor.cv_work_id, wor.innlegg, wor.datoFra, wor.datoTil)}}
-                                        >Rediger
+                                        >
                                     </Button>
+                                    </div>
                                     <Dialog open={redigeropenWork} onClose={handleCloseRediger} aria-labelledby="form-dialog-title">
                                         <DialogTitle id="cv_dialog_title">Rediger innlegg</DialogTitle>
                                         <DialogContent>
@@ -667,18 +667,17 @@ function CV(props) {
                                     {ann.datoTil !== null && 
                                     <text className='cv_returned' type="date">{moment.locale('nb'), moment(ann.datoTil).format("DD MMM YYYY")}</text>}
                                     <p className='cv_returned'>{ann.innlegg}</p>
-
+                                    <div className="cv_ButtonsWrapper">
                                     <Button
                                     type="submit"
                                     size="small"
-                                    variant="outlined"
                                     color="secondary"
                                     className={classes.button}
                                     startIcon={<DeleteIcon />}
                                     key={indexAnn}
                                     onClick={() => {handleClickOpenSlettOther(ann.cv_other_id)}}
                                     >
-                                    Slett
+                                    
                                     </Button>
                                     <Dialog open={slettopenOther} onClose={handleCloseSlett} aria-labelledby="form-dialog-title">
                                         <DialogTitle id="cv_dialog_title">Slette innlegget?</DialogTitle>
@@ -699,14 +698,14 @@ function CV(props) {
                                     <Button
                                         type="submit"
                                         size="small"
-                                        variant="outlined"
                                         color="primary"
                                         className={classes.button}
                                         startIcon={<EditIcon />}
                                         onClick={() => {handleClickOpenRedigerOther(ann.cv_other_id, ann.innlegg, ann.datoFra, ann.datoTil)}}
                                         >
-                                        Rediger
+                                        
                                     </Button>
+                                    </div>
                                     <Dialog open={redigeropenOther} onClose={handleCloseRediger} aria-labelledby="form-dialog-title">
                                         <DialogTitle id="cv_dialog_title">Rediger innlegg</DialogTitle>
                                         <DialogContent>
