@@ -20,6 +20,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Input from '@material-ui/core/Input';
+import IconButton from '@material-ui/core/IconButton';
+import EditIcon from '@material-ui/icons/Edit';
 
 function CV(props) {
 
@@ -447,7 +449,7 @@ function CV(props) {
                                     key={indexEdu}
                                     onClick={() => {handleClickOpenSlettEducation(utd.cv_education_id)}}
                                     >
-                                    Slett Edu
+                                    Slett
                                     </Button>
                                     <Dialog open={slettopenEducation} onClose={handleCloseSlett} aria-labelledby="form-dialog-title">
                                         <DialogTitle id="cv_dialog_title">Slette innlegget?</DialogTitle>
@@ -470,12 +472,12 @@ function CV(props) {
                                         type="submit"
                                         size="small"
                                         variant="outlined"
-                                        color="secondary"
+                                        color="primary"
                                         className={classes.button}
-                                        startIcon={<DeleteIcon />}
+                                        startIcon={<EditIcon />}
                                         onClick={() => {handleClickOpenRedigerEducation(utd.cv_education_id, utd.innlegg, utd.datoFra, utd.datoTil)}}
                                         >
-                                        Rediger Edu
+                                        Rediger
                                     </Button>
                                     <Dialog open={redigeropenEducation} onClose={handleCloseRediger} aria-labelledby="form-dialog-title">
                                         <DialogTitle id="cv_dialog_title">Rediger innlegg</DialogTitle>
@@ -522,7 +524,7 @@ function CV(props) {
                                     key={indexSem}
                                     onClick={() => {handleClickOpenSlettSeminar(sem.cv_seminar_id)}}
                                     >
-                                    Slett Sem
+                                    Slett
                                     </Button>
                                     <Dialog open={slettopenSeminar} onClose={handleCloseSlett} aria-labelledby="form-dialog-title">
                                         <DialogTitle id="cv_dialog_title">Slette innlegget?</DialogTitle>
@@ -542,14 +544,13 @@ function CV(props) {
                                     </Dialog>
                                     <Button
                                         type="submit"
-                                        size="small"
-                                        variant="outlined"
-                                        color="secondary"
-                                        className={classes.button}
-                                        startIcon={<DeleteIcon />}
+                                        size="small" 
+                                        variant="outlined" 
+                                        color="primary" 
+                                        startIcon={<EditIcon />} 
                                         onClick={() => {handleClickOpenRedigerSeminar(sem.cv_seminar_id, sem.innlegg, sem.datoFra, sem.datoTil)}}
                                         >
-                                        Rediger Sem
+                                        Rediger
                                     </Button>
                                     <Dialog open={redigeropenSeminar} onClose={handleCloseRediger} aria-labelledby="form-dialog-title">
                                         <DialogTitle id="cv_dialog_title">Rediger innlegg</DialogTitle>
@@ -596,7 +597,7 @@ function CV(props) {
                                     key={indexWor}
                                     onClick={() => {handleClickOpenSlettWork(wor.cv_work_id)}}
                                     >
-                                    Slett Work
+                                    Slett
                                     </Button>
                                     <Dialog open={slettopenWork} onClose={handleCloseSlett} aria-labelledby="form-dialog-title">
                                         <DialogTitle id="cv_dialog_title">Slette innlegget?</DialogTitle>
@@ -619,12 +620,11 @@ function CV(props) {
                                         type="submit"
                                         size="small"
                                         variant="outlined"
-                                        color="secondary"
+                                        color="primary"
                                         className={classes.button}
-                                        startIcon={<DeleteIcon />}
+                                        startIcon={<EditIcon />}
                                         onClick={() => {handleClickOpenRedigerWork(wor.cv_work_id, wor.innlegg, wor.datoFra, wor.datoTil)}}
-                                        >
-                                        Rediger Edu
+                                        >Rediger
                                     </Button>
                                     <Dialog open={redigeropenWork} onClose={handleCloseRediger} aria-labelledby="form-dialog-title">
                                         <DialogTitle id="cv_dialog_title">Rediger innlegg</DialogTitle>
@@ -672,7 +672,7 @@ function CV(props) {
                                     key={indexAnn}
                                     onClick={() => {handleClickOpenSlettOther(ann.cv_other_id)}}
                                     >
-                                    Slett Other
+                                    Slett
                                     </Button>
                                     <Dialog open={slettopenOther} onClose={handleCloseSlett} aria-labelledby="form-dialog-title">
                                         <DialogTitle id="cv_dialog_title">Slette innlegget?</DialogTitle>
@@ -694,12 +694,12 @@ function CV(props) {
                                         type="submit"
                                         size="small"
                                         variant="outlined"
-                                        color="secondary"
+                                        color="primary"
                                         className={classes.button}
-                                        startIcon={<DeleteIcon />}
+                                        startIcon={<EditIcon />}
                                         onClick={() => {handleClickOpenRedigerOther(ann.cv_other_id, ann.innlegg, ann.datoFra, ann.datoTil)}}
                                         >
-                                        Rediger Edu
+                                        Rediger
                                     </Button>
                                     <Dialog open={redigeropenOther} onClose={handleCloseRediger} aria-labelledby="form-dialog-title">
                                         <DialogTitle id="cv_dialog_title">Rediger innlegg</DialogTitle>
