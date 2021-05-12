@@ -92,8 +92,8 @@ function Profile(props) {
             // Test at nummeret er en korrekt (norsk) lengde
             // Fjerne eventuelle mellomrom i opgitt nummer
             var tlfTrim = tlf.replace(/\s/g, '')
-            if (tlfTrim.charAt(0) == '+') {
-                if (tlfTrim.length == 11) {
+            if (tlfTrim.length == 8 || tlfTrim.length == 12 || tlfTrim.length == 11) {
+                if (tlfTrim.charAt(0) == '+' && tlfTrim.length == 11) {
                     const config = {
                         token: token,
                         telefon: tlfTrim
@@ -107,7 +107,7 @@ function Profile(props) {
                         setUpdateBtnTlf(false),
                         )
                     }
-                } else if (tlfTrim.length == 8 || tlfTrim.length == 12) {
+                else if (tlfTrim.length == 8 || tlfTrim.length == 12) {
                     const config = {
                         token: token,
                         telefon: tlfTrim
@@ -120,11 +120,17 @@ function Profile(props) {
                         setUpdateTextTlf("Oppdater"),
                         setUpdateBtnTlf(false)
                         )
-                    } else {
-                        setAlertDisplay("")
-                        setAlertText("Telefonnummeret er ikke gyldig")
-                        setAlertSeverity("error")
-                        setUpdateTextTlf("Oppdater")
+                } else {
+                    setAlertDisplay("")
+                    setAlertText("Telefonnummeret er ikke gyldig")
+                    setAlertSeverity("error")
+                    setUpdateTextTlf("Oppdater")
+                }
+            } else {
+                setAlertDisplay("")
+                setAlertText("Telefonnummeret er ikke gyldig")
+                setAlertSeverity("error")
+                setUpdateTextTlf("Oppdater")
             }
         } else {
             setAlertDisplay("")
@@ -132,8 +138,7 @@ function Profile(props) {
             setAlertSeverity("error")
             setUpdateTextTlf("Oppdater")
         }
-        
-        }
+    }
         
         // Utføres når bruker gjør en handling i input-feltet for e-post
         const onEmailChange = e => {
