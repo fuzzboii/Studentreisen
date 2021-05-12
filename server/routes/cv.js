@@ -75,8 +75,7 @@ router.post('/getBrukerbilde', async (req, res) => {
 
 // Legg til seminar på CV
 router.post('/postCVSeminar', async (req, res) => {
-    let brukerid = undefined
-
+    let brukerid = undefined;
     if (req.body.token !== undefined && req.body.opprett_cv_innlegg !== undefined) {
         verifyAuth(req.body.token).then( resAuth => {
             brukerid = resAuth.brukerid
@@ -102,8 +101,7 @@ router.post('/postCVSeminar', async (req, res) => {
 
 // Legg til utdanning på CV
 router.post('/postCVEducation', async (req, res) => {
-    let brukerid = undefined
-    console.log(req.body.opprett_cv_innlegg, req.body.opprettdatoFra, req.body.opprettdatoTil)
+    let brukerid = undefined;
     if (req.body.token !== undefined && req.body.opprett_cv_innlegg !== undefined) {
         verifyAuth(req.body.token).then( resAuth => {
             brukerid = resAuth.brukerid
@@ -130,8 +128,7 @@ router.post('/postCVEducation', async (req, res) => {
 
 // Legg til seminar på CV
 router.post('/postCVWork', async (req, res) => {
-    let brukerid = undefined
-    console.log(req.body.opprett_cv_innlegg, req.body.opprettdatoFra, req.body.opprettdatoTil)
+    let brukerid = undefined;
     if (req.body.token !== undefined && req.body.opprett_cv_innlegg !== undefined) {
         verifyAuth(req.body.token).then( resAuth => {
             brukerid = resAuth.brukerid
@@ -157,8 +154,7 @@ router.post('/postCVWork', async (req, res) => {
 
 // Legg til annet på CV
 router.post('/postCVOther', async (req, res) => {
-    let brukerid = undefined
-    console.log(req.body.opprett_cv_innlegg, req.body.opprettdatoFra, req.body.opprettdatoTil)
+    let brukerid = undefined;
     if (req.body.token !== undefined && req.body.opprett_cv_innlegg !== undefined) {
         verifyAuth(req.body.token).then( resAuth => {
             brukerid = resAuth.brukerid
@@ -449,6 +445,142 @@ router.post('/slettInnleggOther', async (req, res) => {
         } else {
             res.status(400).json({"status" : "error", "message" : "Ikke tilstrekkelig data"});
         }
+});
+
+// Redigerer innlegg i CV for utdanning
+router.post('/redigerInnleggEdu', async (req, res) => {
+    let brukerid = undefined;
+    if (req.body.token !== undefined && req.body.cv_education_id !== undefined) {
+        verifyAuth(req.body.token).then( resAuth => {
+            brukerid = resAuth.brukerid 
+            mysqlpool.getConnection(function(error, connPool) {
+                if(error) {
+                    return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                } 
+                let getQuery = "UPDATE cv_education SET datoFra = ?, datoTil= ?, innlegg= ? WHERE brukerid= ? AND cv_education_id= ?";
+                let getQueryFormat = mysql.format(getQuery, [(req.body.datoFra === 'Invalid date') ? null : req.body.datoFra, (req.body.datoTil === 'Invalid date') ? null : req.body.datoTil, req.body.innlegg, brukerid, req.body.cv_education_id]);
+                connPool.query(getQueryFormat, (error, results) => {
+                    connPool.release();
+                    if (error) {
+                        console.log("An error occurred while attempting to edit the post, details: " + error.errno + ", " + error.sqlMessage)
+                        return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                
+                    }
+                    
+                    // Returnerer påvirkede rader
+                    if(results.length > 0) {
+                        return res.json({results});
+                    } else {
+                        return res.json({"status" : "error", "message" : "En feil oppstod under redigering av innlegg"});
+                    }
+                });         
+            })
+        })
+    } else {
+        res.status(400).json({"status" : "error", "message" : "Ikke tilstrekkelig data"});
+    }
+});
+
+// Redigerer innlegg i CV for seminar
+router.post('/redigerInnleggSem', async (req, res) => {
+    let brukerid = undefined;
+    if (req.body.token !== undefined && req.body.cv_seminar_id !== undefined) {
+        verifyAuth(req.body.token).then( resAuth => {
+            brukerid = resAuth.brukerid 
+            mysqlpool.getConnection(function(error, connPool) {
+                if(error) {
+                    return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                } 
+                let getQuery = "UPDATE cv_seminar SET datoFra = ?, datoTil= ?, innlegg= ? WHERE brukerid= ? AND cv_seminar_id= ?";
+                let getQueryFormat = mysql.format(getQuery, [(req.body.datoFra === 'Invalid date') ? null : req.body.datoFra, (req.body.datoTil === 'Invalid date') ? null : req.body.datoTil, req.body.innlegg, brukerid, req.body.cv_seminar_id]);
+                connPool.query(getQueryFormat, (error, results) => {
+                    connPool.release();
+                    if (error) {
+                        console.log("An error occurred while attempting to edit the post, details: " + error.errno + ", " + error.sqlMessage)
+                        return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                
+                    }
+                    
+                    // Returnerer påvirkede rader
+                    if(results.length > 0) {
+                        return res.json({results});
+                    } else {
+                        return res.json({"status" : "error", "message" : "En feil oppstod under redigering av innlegg"});
+                    }
+                });         
+            })
+        })
+    } else {
+        res.status(400).json({"status" : "error", "message" : "Ikke tilstrekkelig data"});
+    }
+});
+
+// Redigerer innlegg i CV for jobberfaring
+router.post('/redigerInnleggWork', async (req, res) => {
+    let brukerid = undefined;
+    if (req.body.token !== undefined && req.body.cv_work_id !== undefined) {
+        verifyAuth(req.body.token).then( resAuth => {
+            brukerid = resAuth.brukerid 
+            mysqlpool.getConnection(function(error, connPool) {
+                if(error) {
+                    return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                } 
+                let getQuery = "UPDATE cv_work SET datoFra = ?, datoTil= ?, innlegg= ? WHERE brukerid= ? AND cv_work_id= ?";
+                let getQueryFormat = mysql.format(getQuery, [(req.body.datoFra === 'Invalid date') ? null : req.body.datoFra, (req.body.datoTil === 'Invalid date') ? null : req.body.datoTil, req.body.innlegg, brukerid, req.body.cv_work_id]);
+                connPool.query(getQueryFormat, (error, results) => {
+                    connPool.release();
+                    if (error) {
+                        console.log("An error occurred while attempting to edit the post, details: " + error.errno + ", " + error.sqlMessage)
+                        return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                
+                    }
+                    
+                    // Returnerer påvirkede rader
+                    if(results.length > 0) {
+                        return res.json({results});
+                    } else {
+                        return res.json({"status" : "error", "message" : "En feil oppstod under redigering av innlegg"});
+                    }
+                });         
+            })
+        })
+    } else {
+        res.status(400).json({"status" : "error", "message" : "Ikke tilstrekkelig data"});
+    }
+});
+
+// Redigerer innlegg i CV for annet
+router.post('/redigerInnleggOther', async (req, res) => {
+    let brukerid = undefined;
+    if (req.body.token !== undefined && req.body.cv_other_id !== undefined) {
+        verifyAuth(req.body.token).then( resAuth => {
+            brukerid = resAuth.brukerid 
+            mysqlpool.getConnection(function(error, connPool) {
+                if(error) {
+                    return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                } 
+                let getQuery = "UPDATE cv_other SET datoFra = ?, datoTil= ?, innlegg= ? WHERE brukerid= ? AND cv_other_id= ?";
+                let getQueryFormat = mysql.format(getQuery, [(req.body.datoFra === 'Invalid date') ? null : req.body.datoFra, (req.body.datoTil === 'Invalid date') ? null : req.body.datoTil, req.body.innlegg, brukerid, req.body.cv_other_id]);
+                connPool.query(getQueryFormat, (error, results) => {
+                    connPool.release();
+                    if (error) {
+                        console.log("An error occurred while attempting to edit the post, details: " + error.errno + ", " + error.sqlMessage)
+                        return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                
+                    }
+                    
+                    // Returnerer påvirkede rader
+                    if(results.length > 0) {
+                        return res.json({results});
+                    } else {
+                        return res.json({"status" : "error", "message" : "En feil oppstod under redigering av innlegg"});
+                    }
+                });         
+            })
+        })
+    } else {
+        res.status(400).json({"status" : "error", "message" : "Ikke tilstrekkelig data"});
+    }
 });
 
 module.exports = router;
