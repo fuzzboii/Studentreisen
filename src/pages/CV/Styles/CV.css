@@ -1,9 +1,10 @@
 #main_cv {
     min-width: 100%;
-    margin-left: auto; margin-right: auto;
     margin-top: 2em;
     margin-bottom: 2em;
     padding-top: 0.5em; padding-bottom: 0.5em;
+    width: 100%;
+    justify-content: center;
 }
 
 
@@ -70,15 +71,69 @@
     margin-right: auto;
 }
 
-#gridbox {
-    width: 85%;
-    margin-left: auto;
-    margin-right: auto;
-}
 
 #innleggButton {
     display: block;
     margin-left: auto;
     margin-right: auto;
 
+}
+
+.cv_ButtonsWrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    padding-bottom: 0.5em;
+}
+
+.cv_Delete {
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+
+
+
+/* Media queries
+----------------------------- */
+/* Større mobiler */
+@media screen and (min-width: 320px) {
+
+}
+/* Tab */
+@media screen and (min-width: 720px) {
+
+}
+
+/* Tab (pro) */
+@media screen and (min-width: 1024px) {
+
+}
+
+
+/* Laptop / Liten skjerm,, 720p */
+@media only screen and (min-width: 1280px) {
+
+    #main_cv {
+        grid-template-columns: 1200px;
+        display: grid;
+    }  
+
+}
+
+/* Medium skjerm, 1080p */
+@media screen and (min-width: 1920px) {
+
+    #main_cv {
+        grid-template-columns: 1200px;
+        display: grid;
+    }
+}
+
+/* Stor skjerm, 1440p */
+@media screen and (min-width: 2560px) {
+    #main_cv {
+        grid-template-columns: 1200px;
+        display: grid;
+    }
 }

@@ -364,7 +364,7 @@ function CV(props) {
                 alignItems="center"
                 justify="center"
                 container
-                width="75%" >
+                width="100%" >
                     <Avatar
                         src={"/uploaded/" + profilbilde } 
                         className={classes.avatar}
@@ -433,24 +433,27 @@ function CV(props) {
                         <Box boxShadow={1}>
                             <h1>Utdannelse</h1>
                             {utdanning !== undefined && utdanning.map((utd, indexEdu) => (
+                                
                                 <div className="cv_returned_content">
                                     {utd.datoFra !== null &&
                                     <text className='cv_returned_datoTil' type="date">Fra: {moment.locale('nb'), moment(utd.datoFra).format("DD MM YYYY")}</text>}
                                     {utd.datoTil !== null && 
                                     <text className='cv_returned_datoFra' type="date">Til: {moment.locale('nb'), moment(utd.datoTil).format("DD MM YYYY")}</text>}
                                     <p className='cv_returned_innlegg'>{utd.innlegg}</p>
-                                    <Button
-                                    type="submit"
-                                    size="small"
-                                    variant="outlined"
-                                    color="secondary"
-                                    className={classes.button}
-                                    startIcon={<DeleteIcon />}
-                                    key={indexEdu}
-                                    onClick={() => {handleClickOpenSlettEducation(utd.cv_education_id)}}
-                                    >
-                                    Slett
-                                    </Button>
+                                    
+                                        <Button className="cv_Delete"
+                                        type="submit"
+                                        size="small"
+                                        variant="outlined"
+                                        color="secondary"
+                                        className={classes.button}
+                                        startIcon={<DeleteIcon />}
+                                        key={indexEdu}
+                                        onClick={() => {handleClickOpenSlettEducation(utd.cv_education_id)}}
+                                        >
+                                        Slett
+                                        </Button>
+                                    
                                     <Dialog open={slettopenEducation} onClose={handleCloseSlett} aria-labelledby="form-dialog-title">
                                         <DialogTitle id="cv_dialog_title">Slette innlegget?</DialogTitle>
                                         <DialogContent>
@@ -468,7 +471,7 @@ function CV(props) {
                                         </DialogActions>
                                     </Dialog>
                                     
-                                    <Button
+                                    <Button className="cv_Edit"
                                         type="submit"
                                         size="small"
                                         variant="outlined"
@@ -508,16 +511,17 @@ function CV(props) {
                         <Box boxShadow={1}>
                             <h1>Seminarer og sertifiseringer</h1>
                             {seminar !== undefined && seminar.map((sem, indexSem) => (
+                                
                                 <div className="cv_returned_content">
                                     {sem.datoFra !== null && 
                                     <text className='cv_returned' type="date">Fra: {moment.locale('nb'), moment(sem.datoFra).format("DD MM YYYY")}</text>}
                                     {sem.datoTil !== null && 
                                     <text className='cv_returned' type="date">Til: {moment.locale('nb'), moment(sem.datoTil).format("DD MM YYYY")}</text>}
                                     <p className='cv_returned'>{sem.innlegg}</p>
+                                    <div className="cv_ButtonsWrapper">
                                     <Button
                                     type="submit"
                                     size="small"
-                                    variant="outlined"
                                     color="secondary"
                                     className={classes.button}
                                     startIcon={<DeleteIcon />}
@@ -526,6 +530,7 @@ function CV(props) {
                                     >
                                     Slett
                                     </Button>
+                                    
                                     <Dialog open={slettopenSeminar} onClose={handleCloseSlett} aria-labelledby="form-dialog-title">
                                         <DialogTitle id="cv_dialog_title">Slette innlegget?</DialogTitle>
                                         <DialogContent>
@@ -542,16 +547,17 @@ function CV(props) {
                                         </Button>
                                         </DialogActions>
                                     </Dialog>
+                                    
                                     <Button
                                         type="submit"
                                         size="small" 
-                                        variant="outlined" 
                                         color="primary" 
                                         startIcon={<EditIcon />} 
                                         onClick={() => {handleClickOpenRedigerSeminar(sem.cv_seminar_id, sem.innlegg, sem.datoFra, sem.datoTil)}}
                                         >
                                         Rediger
                                     </Button>
+                                    </div>
                                     <Dialog open={redigeropenSeminar} onClose={handleCloseRediger} aria-labelledby="form-dialog-title">
                                         <DialogTitle id="cv_dialog_title">Rediger innlegg</DialogTitle>
                                         <DialogContent>
