@@ -69,15 +69,6 @@ function Profile(props) {
                     setAlertDisplay("")
                     setAlertText(res.data.message)
                     setAlertSeverity("success")
-
-                    // Test på om dette er første opplastning av et profilbilde
-                    let first = false
-                    if (profilbilde == undefined) {
-                        first = true
-                    }
-                    if (first) {
-                        setProfilbilde(e.target.files[0].name)
-                    }
                     setProfilbilde(e.target.files[0].name)
                 }
             })
@@ -116,7 +107,7 @@ function Profile(props) {
                         setUpdateBtnTlf(false)
                         )
                 }
-            } else if (tlfTrim.length == 8 || tlfTrim.length == 12) {
+            } if (tlfTrim.length == 8 || tlfTrim.length == 12) {
                 const config = {
                     token: token,
                     telefon: tlfTrim
@@ -370,14 +361,17 @@ function Profile(props) {
                 {/* Avatar */}
                 <input
                     onChange={onImgSubmit}
-                    accept="image/png, image/jpeg"
+                    accept=".png, .jpeg, .jpg"
                     id="avatarInput"
                     style={{
                         display: 'none',
                     }}
                     type="file"
                     />
-                <label htmlFor="avatarInput">
+                <label htmlFor="avatarInput"
+                    style={{
+                        // width: '10vw'
+                    }}>
                     <IconButton component="span" type="submit" 
                         style={{
                             // "skru av" hover-skygge
