@@ -15,7 +15,7 @@ try {
 
     connection.getConnection(function(error, connPool) {
         if (!error) {
-            console.log('Tilkoblet databasen');
+            console.log('Tilkoblet database på ' + process.env.DBHOST);
             connPool.release();
         } else {
             console.log("En feil oppstod ved tilkobling mot databasen: " + error.code);
