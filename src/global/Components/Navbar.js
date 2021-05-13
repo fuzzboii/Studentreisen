@@ -40,6 +40,8 @@ function Navbar(props) {
 
     let history = useHistory()
 
+    const token = CookieService.get("authtoken");
+
     // Testing på om en "LOGG UT"-knapp skal vises i navbar eller i meny
     const showButton = () => {
       if (!loading) {
@@ -154,6 +156,7 @@ function Navbar(props) {
       shrink();
       closeMobileMenu();
       CookieService.remove("authtoken");
+      axios.post(process.env.REACT_APP_APIURL + "/notif/getNotifs", {token : token});
       setAuth(false);
       history.push("/")
     }
@@ -173,7 +176,7 @@ function Navbar(props) {
         axios
           // Henter API URL fra .env og utfører en POST request med dataen fra objektet over
           // Axios serialiserer objektet til JSON selv
-          .post(process.env.REACT_APP_APIURL + "/notif/getNotifs", {token : CookieService.get("authtoken")} )
+          .post(process.env.REACT_APP_APIURL + "/notif/getNotifs", {token : token} )
           // Utføres ved mottatt resultat
           .then(res => {
             if(res.data.notifs) {
@@ -186,7 +189,7 @@ function Navbar(props) {
         axios
           // Henter API URL fra .env og utfører en POST request med dataen fra objektet over
           // Axios serialiserer objektet til JSON selv
-          .post(process.env.REACT_APP_APIURL + "/notif/readNotifs", {token : CookieService.get("authtoken"), notifs : notif});
+          .post(process.env.REACT_APP_APIURL + "/notif/readNotifs", {token : token, notifs : notif});
       }
     };
     
@@ -195,19 +198,16 @@ function Navbar(props) {
     };
 
     const getAvatar = () => {
-
-      if (auth) {
-        axios.all([
-          axios.post(process.env.REACT_APP_APIURL + "/profile/getProfilbilde", {token : CookieService.get("authtoken")}),
-          axios.post(process.env.REACT_APP_APIURL + "/profile/getBruker", {token : CookieService.get("authtoken")})
-        ]).then(axios.spread((res1, res2) => {
-          setPbLoading(false);
-          if (res1.data.results[0].plassering !== undefined) {
-            setProfilbilde(res1.data.results[0].plassering);
-          } else {
-            setInitialer(res2.data.results[0].fnavn.charAt(0) + res2.data.results[0].enavn.charAt(0));
-          }
-        }))    
+      if (auth && token !== undefined) {
+        axios.post(process.env.REACT_APP_APIURL + "/profile/getProfilbilde", {token : token})
+          .then(res => {
+            setPbLoading(false);
+            if (res.data.results[0].plassering !== null) {
+              setProfilbilde(res.data.results[0].plassering);
+            } else {
+              setInitialer(res.data.results[0].fnavn + res.data.results[0].enavn);
+            }
+          });
       }
     }
 
