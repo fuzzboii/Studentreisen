@@ -43,7 +43,7 @@ function UserOverview(props) {
             });
     }
 
-    function sendNotif() {
+    const sendNotif = () => {
         if(notifMsg !== undefined && notifMsg !== "") {
             if(notifMsg.length <= 255) {
                 axios
