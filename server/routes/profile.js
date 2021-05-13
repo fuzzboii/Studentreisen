@@ -362,29 +362,30 @@ router.post('/insertBilde', async (req, res) => {
                 const filtype = opplastetFilnavn.substring(opplastetFilnavn.lastIndexOf('.'));
                 const filnavn = "profilbilde" + brukerid + filtype;
 
-                const opplastetBilde = req.files.image;
-                opplastetBilde.mv(path.join(__dirname, process.env.USER_IMG_UPLOAD_PATH) + filnavn);
-
-                // valider at filen er .jpg, .jpeg, eller .png
-                if (filtype !== '.jpg' && filtype !== '.jpeg' && filtype !== '.png') {
-                    return res.json({"status" : "error", "message" : "Profilbilder må være av filtype .jpg, .jpeg, eller .png"})
+                // Valider at filen er .jpg, .jpeg, .png eller .jfif
+                if (filtype !== '.jpg' && filtype !== '.jpeg' && filtype !== '.png' && filtype !== ".jfif") {
+                    return res.json({"status" : "error", "message" : "Profilbilder må være av filtype .jpg, .jpeg, .png, eller .jfif"})
+                } else {
+                    // Filtype OK
+                    const opplastetBilde = req.files.image;
+                    opplastetBilde.mv(path.join(__dirname, process.env.USER_IMG_UPLOAD_PATH) + filnavn);
+    
+                    // Opprett referanse til bildet
+                    let insertQuery = "INSERT INTO profilbilde (brukerid, plassering) VALUES(?, ?) ON DUPLICATE KEY UPDATE brukerid=?, plassering=?"
+                    let insertQueryFormat = mysql.format(insertQuery, [brukerid, filnavn, brukerid, filnavn])
+                    connPool.query(insertQueryFormat, (error, results) => {
+                        connPool.release();
+                        if (error) {
+                            return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere"})
+                        }
+    
+                        if (results.affectedRows > 0) {
+                            return res.json({ "status" : "success", "message" : "Bilde lastet opp" })
+                        } else {
+                            return res.json({"status" : "error", "message" : "En feil oppstod under opplasting av profilbilde"})
+                        }
+                    })
                 }
-
-                // Opprett referanse til bildet
-                let insertQuery = "INSERT INTO profilbilde (brukerid, plassering) VALUES(?, ?) ON DUPLICATE KEY UPDATE brukerid=?, plassering=?"
-                let insertQueryFormat = mysql.format(insertQuery, [brukerid, filnavn, brukerid, filnavn])
-                connPool.query(insertQueryFormat, (error, results) => {
-                    connPool.release();
-                    if (error) {
-                        return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere"})
-                    }
-
-                    if (results.affectedRows > 0) {
-                        return res.json({ "status" : "success", "message" : "Bilde lastet opp" })
-                    } else {
-                        return res.json({"status" : "error", "message" : "En feil oppstod under opplasting av profilbilde"})
-                    }
-                })
             })
         })
     } else {
