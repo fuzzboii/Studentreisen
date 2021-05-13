@@ -1,0 +1,118 @@
+#main_reset {
+    margin-top: 2em;
+    margin-bottom: 2em;
+    padding-top: 0.5em; padding-bottom: 0.5em;
+}
+
+#section_logo_reset {
+    display: block;
+    background-color: #4646a5;
+    height: 5em;
+    width: 10em;
+    margin-left: auto; margin-right: auto;
+    border-radius: 0.5em;
+    border: 2px solid #C9CACA;
+}
+
+#section_logo_reset img {
+    display: block;
+    max-height: 100%;
+    margin-left: auto; margin-right: auto;
+}
+
+#alert_reset {
+    width: 80%;
+    margin-top: 2em;
+    margin-left: auto; margin-right: auto;
+}
+
+#form_reset {
+    display: block;
+    width: 90%;
+    margin-top: 1em;
+    margin-left: auto; margin-right: auto;
+    align-items: center;
+}
+
+#form_reset input {
+    height: 2em;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#form_email_reset, #form_password_reset {
+    width: 100%;
+    margin-top: 1em;
+}
+
+#form_huskmeg {
+    display: block;
+}
+
+#form_glemt_reset {
+    margin-right: 10%;
+}
+
+#form_glemt_reset, #form_glemt_reset + button {
+    height: 2.5em;
+    width: 45%;
+    margin-top: 2em;
+    line-height: 1.2em;
+}
+
+#form_btn_reset {
+    height: 2.5em;
+    background-color: #4646a5;
+    color: white;
+    width: 100%;
+    margin-top: 4em;
+}
+
+#form_btn_reset:hover {
+    background-color: #5353cc;
+}
+
+/* Media queries
+----------------------------- */
+
+/* Tablet */
+@media screen and (min-width: 720px) {
+    
+    #main_reset {
+        width: 40em;
+        padding-bottom: 4em; padding-top: 4em;
+        padding-left: 1em; padding-right: 1em;
+        border: 2px solid #DDDDDD;
+        border-radius: 0.5em;
+        margin-left: auto; margin-right: auto;
+    }
+
+    #section_logo_reset {
+        height: 6em;
+        width: 11em;
+    }
+
+    #alert_reset {
+        width: 70%;
+    }
+
+    #form_reset {
+        display: block;
+        width: 90%;
+        margin-top: 2em;
+    }
+
+}
+
+
+/* Animasjoner
+----------------------------- */
+
+.fade_in {
+    animation: fade_in ease 0.5s;
+}
+
+@keyframes fade_in {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}

@@ -1,0 +1,89 @@
+.profile-header {
+    display: flex;
+}
+.profile-navn {
+    margin-top: 0;
+}
+
+.profile-title {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.profile-body {
+    margin-bottom: 0.7rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-item {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0.7rem;
+    background-color: #f2f2f2;
+    padding-left: 0.7rem;
+    padding-right: 0.7rem;
+    border-radius: 1.4rem;
+}
+
+.profile-subitem {
+    margin-left: 0.7rem;
+}
+
+.interesser {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0.7rem;
+    background-color: #f2f2f2;
+    padding-left: 0.7rem;
+    padding-right: 0.7rem;
+    border-radius: 1.4rem;
+}
+
+.profileForm {
+    margin-bottom: 2vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Media queries
+----------------------------- */
+/* Større mobiler */
+@media screen and (min-width: 375px) {
+}
+
+/* Tab */
+@media screen and (min-width: 768px) {
+    .interesser {
+        display: inline;
+    }
+
+
+}
+
+/* Laptop / Liten skjerm, 720p */
+@media only screen and (min-width: 960px) {
+    .profile-body {
+        flex-direction: row;
+    }
+
+    .profile-item {
+        margin-left: auto;
+        margin-right: auto;
+        width: 40vw;
+        margin-top: 2vh;
+    }
+
+    #form_profile_pwd {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+/* Medium skjerm, 1080p */
+@media screen and (min-width: 1920px) {
+}
+
+/* Stor skjerm, 1440p */
+@media screen and (min-width: 2560px) {
+}

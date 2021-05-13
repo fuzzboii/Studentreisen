@@ -1,0 +1,167 @@
+/* Module Detail page */
+.buttonWrapM {
+    padding-top: 1em;
+}
+
+.accordElementWrap {
+    display: grid;
+    grid-template-rows: auto;
+    width: 100%;
+    padding-left: 8px;
+    border-top: 1px solid rgb(211, 211, 211);
+}
+
+.border {
+    font-weight: 500;
+    color: #4646a5;
+}
+
+.overskriftKurs2 {
+    font-weight: 600;
+    color: #4646a5;
+
+}
+
+
+/* Module page */
+.modulbeskrivelse {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+    display: -webkit-box;
+   -webkit-line-clamp: 2; /* number of lines to show */
+   -webkit-box-orient: vertical;
+}
+
+.header p {
+    margin-top: 0em;
+    margin-bottom: 0em;
+    padding-top: 0.2em;
+    padding-bottom: 0.4em;
+    font-weight: 600;
+    font-size: 14.5px;
+}
+
+
+
+.indexPaginationM { 
+    width: 12em;
+    margin-bottom: 1em;
+    margin-top: 1em;
+    margin-left: auto;
+    margin-right: auto;
+
+}
+
+
+
+/* Misc */
+
+.content-main {
+    margin-top: 1em;
+}
+
+.moduleWrap {
+    display: flex;
+    justify-content: flex-start;
+}
+.position-icon {
+    position: relative;
+    top: 10px;
+    margin-right: 5px;
+}
+
+.iconBoxMod {
+    display: flex;
+}
+.iconBoxMod p {
+    margin-right: 1em;
+    margin-top: 10px;
+    margin-bottom: 0;
+    font-weight: 600;
+    font-size: 13px;
+    
+}
+
+.link {
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+    
+  }
+
+.modulesList {
+    display: grid;
+    row-gap: 1em;
+      
+}
+
+
+  /* ----------------------------- */
+ /* ------- Media queries ------- */
+/* ----------------------------- */
+
+/* Større mobiler */
+@media screen and (min-width: 370px) {
+
+}
+
+/* Tab */
+@media screen and (min-width: 720px) {
+
+    .wrapIndexModulePage {
+        display: grid;
+        width: 40em;
+    }
+    .module-section {
+        background-color: rgb(255, 255, 255);
+    }
+
+    .content-main {
+        padding-left: 2em;
+        padding-right: 2em;
+        margin-left: auto;
+        margin-right: auto; 
+    }
+
+   
+
+
+    
+
+  
+}
+
+/* Laptop / Liten skjerm,, 720p */
+@media only screen and (min-width: 1280px) {
+.content-main {
+    width: 70em;  
+}
+.module-section:hover {
+    background-color: #7474741a;
+    transition-timing-function: ease;
+    transition: 0.4s;
+    cursor: pointer;
+    opacity: 1;
+}
+
+
+
+.accordElementWrap:hover {
+    background-color: rgb(241, 241, 241);
+    transition-timing-function: ease;
+    transition: 0.4s;
+    cursor: pointer;
+    opacity: 1;
+}
+
+}
+
+/* Medium skjerm, 1080p */
+@media screen and (min-width: 1920px) {
+    
+}
+
+/* Stor skjerm, 1440p */
+@media screen and (min-width: 2560px) {
+
+}
