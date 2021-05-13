@@ -722,4 +722,52 @@ router.post('/publicizeSeminar', async (req, res) => {
     }
 });
 
+router.post('/sendNotif', async (req, res) => {
+    if(req.body.brukerid !== undefined && req.body.token !== undefined && req.body.msg !== undefined) {
+        if(req.body.msg.length <= 255) {
+            verifyAuth(req.body.token).then(function(response) {
+                if(response.authenticated) {
+                    mysqlpool.getConnection(function(error, connPool) {
+                        if(error) {
+                            return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                        }
+                        // Kun Administrator skal kunne opprette en ny kunngjøring
+                        if(response.usertype.toString() === process.env.ACCESS_ADMINISTRATOR) {
+                            // Oppretter nye kunngjøringen
+    
+                            let updateQuery = "INSERT INTO kunngjoring(av, til, tekst, dato) VALUES(?, ?, ?, NOW())";
+                            let updateQueryFormat = mysql.format(updateQuery, [response.brukerid, req.body.brukerid, req.body.msg]);
+    
+                            connPool.query(updateQueryFormat, (error, results) => {
+                                connPool.release();
+                                if (error) {
+                                    console.log("En feil oppstod under oppretting av kunngjøring til bruker, detaljer: " + error.errno + ", " + error.sqlMessage)
+                                    return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                                }
+                                
+                                if(results.affectedRows > 0) {
+                                    // Kunngjøring opprettet
+                                    return res.json({ "status" : "success", "message" : "Kunngjøring opprettet" });
+                                } else {
+                                    return res.json({ "status" : "error", "message" : "Kunne ikke opprette kunngjøring, vennligst forsøk igjen" });
+                                }
+                            });
+                        } else {
+                            // Bruker har ikke tilgang, loggfører
+                            console.log("En innlogget bruker uten riktige tilganger har forsøkt å opprette en kunngjøring, brukerens ID: " + response.brukerid)
+                            return res.json({ "status" : "error", "message" : "Ingen tilgang, om feilen fortsetter, forsøk å logg ut og inn igjen" });
+                        }
+                    });
+                } else {
+                    return res.json({ "status" : "error", "message" : "Ingen tilgang, om feilen fortsetter, forsøk å logg ut og inn igjen" });
+                }
+            })
+        } else {
+            return res.json({ "status" : "error", "message" : "Kunngjøringen kan ikke være over 255 tegn" });
+        }
+    } else {
+        return res.json({ "status" : "error", "message" : "Ett eller flere felt mangler fra forespørselen" });
+    }
+});
+
 module.exports = router;
