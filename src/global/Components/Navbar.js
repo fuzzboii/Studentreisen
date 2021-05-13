@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 
-import { Button, Avatar } from '@material-ui/core';
+import { Button, Avatar, CircularProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import NotificationImportantIcon from '@material-ui/icons/NotificationImportant';
 import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
@@ -22,9 +22,10 @@ import Loader from './Loader';
 function Navbar(props) {
     const [click, setClick] = useState(false);
     const [button, setButton] = useState(true);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     // States for profilbilde
     const [profilbilde, setProfilbilde] = useState()
+    const [pbLoading, setPbLoading] = useState(true);
     const [initialer, setInitialer] = useState("")
     // Props som mottas fra App, viser til om bruker er inn-/utlogget
     const [auth, setAuth] = useState(false);
@@ -65,6 +66,7 @@ function Navbar(props) {
       setAuth(props.auth);
       setType(props.type);
       setNotif(props.notif);
+      setLoading(props.loading);
       getAvatar()
       if(props.notif !== undefined) {
         setNotifUlest(1);
@@ -199,22 +201,30 @@ function Navbar(props) {
           axios.post(process.env.REACT_APP_APIURL + "/profile/getProfilbilde", {token : CookieService.get("authtoken")}),
           axios.post(process.env.REACT_APP_APIURL + "/profile/getBruker", {token : CookieService.get("authtoken")})
         ]).then(axios.spread((res1, res2) => {
-          if (res1.data.results != undefined) {
-            setProfilbilde(res1.data.results[0].plassering)
-            setLoading(false)
+          setPbLoading(false);
+          if (res1.data.results[0].plassering !== undefined) {
+            setProfilbilde(res1.data.results[0].plassering);
           } else {
-            setInitialer(res2.data.results[0].fnavn.charAt(0) + res2.data.results[0].enavn.charAt(0))
-            setLoading(false)
+            setInitialer(res2.data.results[0].fnavn.charAt(0) + res2.data.results[0].enavn.charAt(0));
           }
         }))    
-      } else {
-        setLoading(false)
       }
     }
 
     if(loading) {
       return(
-        null
+        <div className="navbarBody" >
+          <nav className='navbar' id="bar" >
+            <div className='navbar-container'>
+              <Link tabIndex={1}
+                to="/" 
+                className="navbar-logo" 
+                onClick={closeMobileMenu}>
+                <img className="navbar-logo-png" src={favicon} alt="USN" /> 
+              </Link>
+            </div>
+          </nav>
+        </div>
       );
     }
 
@@ -222,13 +232,13 @@ function Navbar(props) {
         <div className="navbarBody" >
           <nav className='navbar' id="bar" >
             <div className='navbar-container'>
-              {!auth && <Link 
+              {!auth && <Link tabIndex={1}
                 to="/" 
                 className="navbar-logo" 
                 onClick={closeMobileMenu}>
                 <img className="navbar-logo-png" src={favicon} alt="USN" /> 
               </Link> }
-              {auth && <Link
+              {auth && <Link tabIndex={1}
                 to="/overview"
                 className="navbar-logo"
                 onClick={closeMobileMenu} >
@@ -264,7 +274,8 @@ function Navbar(props) {
                   className={classes.navbtn} 
                   onClick={onLink}
                   component={Link} 
-                  to='/course'>
+                  to='/course'
+                  tabIndex={2}>
                   Kurs
                 </Button>
 
@@ -273,6 +284,7 @@ function Navbar(props) {
                   onClick={onLink}
                   component={Link}
                   to='/seminar'
+                  tabIndex={3}
                 >
                 Seminarer
                 </Button>
@@ -282,6 +294,7 @@ function Navbar(props) {
                   onClick={onLink}
                   component={Link}
                   to='/CV'
+                  tabIndex={4}
                 >
                   CV
                 </Button>
@@ -291,6 +304,7 @@ function Navbar(props) {
                   onClick={onLink}
                   component={Link}
                   to='/overview'
+                  tabIndex={5}
                 >
                   Oversikt
                 </Button>
@@ -300,29 +314,35 @@ function Navbar(props) {
                     className={classes.navbtn}
                     onClick={onLink}
                     component={Link} 
-                    to='/Tools' >
+                    to='/Tools' 
+                    tabIndex={6}>
                       Verktøy
                   </Button>
                 }
               </div> }
 
               {auth && (notif !== null && notifUlest > 0) && 
-                <NotificationImportantIcon id="notif-bell" onClick={notifClickOpen} />
+                  <NotificationImportantIcon tabIndex={7} id="notif-bell" onClick={notifClickOpen} />
               }
               {auth && (notif == null || notifUlest == 0) &&
-                <NotificationsNoneIcon id="notif-bell" onClick={notifClickOpen} />
+                  <NotificationsNoneIcon tabIndex={7} id="notif-bell" onClick={notifClickOpen} onKeyUp={e => e.code === "Enter" ? notifClickOpen() : ""} />
               }
 
               {auth && <Link
                 to='/Profile'
                 className="avatarWrap">
-                <Avatar
-                  src={"/uploaded/" + profilbilde }
-                  className={classes.avatar}
-                >
-                  {/* Hvis det ikke eksisterer et bilde for brukeren faller avatar tilbake på initialer */}
-                  {initialer}
-                </Avatar>
+                {pbLoading && 
+                  <CircularProgress color="secondary" />
+                }
+                {!pbLoading && 
+                  <Avatar
+                    src={"/uploaded/" + profilbilde }
+                    className={classes.avatar}
+                  >
+                    {/* Hvis det ikke eksisterer et bilde for brukeren faller avatar tilbake på initialer */}
+                    {initialer}
+                  </Avatar>
+                }
               </Link>}
               {button && auth && <Button onClick={loggUt} className={classes.loggbtn} > LOGG UT </Button> }
               {button && !auth && <Link to='/Register' className={classes.loggbtnNoAuth} > REGISTRER </Link> }
