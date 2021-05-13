@@ -435,7 +435,7 @@ router.post('/getAllSeminarData', async (req, res) => {
                             if(results[0] !== undefined) {
                                 return res.json({ "status" : "success", results });
                             } else {
-                                return res.json({ "status" : "info", "message" : "Ingen seminar å vise" });
+                                return res.json({ "status" : "info", "message" : "Du har ingen seminarer å vise" });
                             }
                         });
                     } else {
