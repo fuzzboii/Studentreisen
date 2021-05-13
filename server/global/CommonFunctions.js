@@ -6,10 +6,13 @@ const verifyAuth = (token, ip) => {
     return new Promise(function(resolve, reject){
         try {
             if(token !== undefined && ip !== undefined) {
-                // Bestemmer om brukeren er på localhost eller ikke
-                if(ip.length == 0) {
-                    // Localhost
-                    ip = "localhost";
+                // Bestemmer om brukeren kan være på localhost eller ikke
+                if(process.env.DEVMODE === "true") {
+                    // Tillater en IP-adresse å være tom
+                    if(ip.length == 0) {
+                        // Localhost
+                        ip = "devmode";
+                    }
                 }
 
                 mysqlpool.getConnection(function(error, connPool) {

@@ -132,14 +132,21 @@ router.post('/register', async (req, res) => {
                                 
                                 if(results.affectedRows > 0) {
                                     // Bruker opprettet
-                            
-                                    // Kobler token mot en IP-adresse
                                     let ip;
-                                    if(req.socket.remoteAddress.substring(7).length == 0) {
-                                        // Localhost
-                                        ip = "localhost";
+                                    if(process.env.DEVMODE === "true") {
+                                        // Tillater en IP-adresse å være tom
+                                        if(req.socket.remoteAddress.substring(7).length == 0) {
+                                            // Localhost
+                                            ip = "devmode";
+                                        } else {
+                                            ip = req.socket.remoteAddress.substring(7);
+                                        }
                                     } else {
-                                        ip = req.socket.remoteAddress.substring(7);
+                                        if(req.socket.remoteAddress.substring(7).length == 0) {
+                                            return res.json({ "status" : "error", "message" : "IP-adressen er ugyldig" });
+                                        } else {
+                                            ip = req.socket.remoteAddress.substring(7);
+                                        }
                                     }
 
                                     // Endrer utløpsdatoen utifra "Husk meg"-feltet
@@ -263,14 +270,21 @@ router.post('/login', async (req, res) => {
                         
                         if(validatePass) {
                             // Bruker autentisert
-                            
-                            // Kobler token mot en IP-adresse
                             let ip;
-                            if(req.socket.remoteAddress.substring(7).length == 0) {
-                                // Localhost
-                                ip = "localhost";
+                            if(process.env.DEVMODE === "true") {
+                                // Tillater en IP-adresse å være tom
+                                if(req.socket.remoteAddress.substring(7).length == 0) {
+                                    // Localhost
+                                    ip = "devmode";
+                                } else {
+                                    ip = req.socket.remoteAddress.substring(7);
+                                }
                             } else {
-                                ip = req.socket.remoteAddress.substring(7);
+                                if(req.socket.remoteAddress.substring(7).length == 0) {
+                                    return res.json({ "status" : "error", "message" : "IP-adressen er ugyldig" });
+                                } else {
+                                    ip = req.socket.remoteAddress.substring(7);
+                                }
                             }
 
                             // Endrer utløpsdatoen utifra "Husk meg"-feltet

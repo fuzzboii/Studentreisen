@@ -21,11 +21,20 @@ router.post('/auth', async (req, res) => {
         } else {      
             // Henter IP-adressen til brukeren
             let ip;
-            if(req.socket.remoteAddress.substring(7).length == 0) {
-                // Localhost
-                ip = "localhost";
+            if(process.env.DEVMODE === "true") {
+                // Tillater en IP-adresse å være tom
+                if(req.socket.remoteAddress.substring(7).length == 0) {
+                    // Localhost
+                    ip = "devmode";
+                } else {
+                    ip = req.socket.remoteAddress.substring(7);
+                }
             } else {
-                ip = req.socket.remoteAddress.substring(7);
+                if(req.socket.remoteAddress.substring(7).length == 0) {
+                    return res.json({ "authenticated" : false});
+                } else {
+                    ip = req.socket.remoteAddress.substring(7);
+                }
             }
 
             mysqlpool.getConnection(function(error, connPool) {
