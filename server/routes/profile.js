@@ -35,7 +35,11 @@ router.post('/getProfilbilde', async (req, res) => {
                 if(error) {
                     return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                 }
-                let getQuery = "SELECT plassering FROM profilbilde WHERE brukerid = ?"
+                let getQuery = `SELECT plassering, SUBSTRING(fnavn, 1, 1) as fnavn, SUBSTRING(fnavn, 1, 1) as enavn 
+                                FROM bruker
+                                LEFT JOIN profilbilde
+                                ON profilbilde.brukerid = bruker.brukerid
+                                WHERE bruker.brukerid = ?`;
                 let getQueryFormat = mysql.format(getQuery, [brukerid])
                 connPool.query(getQueryFormat, (error, results) => {
                     connPool.release();
