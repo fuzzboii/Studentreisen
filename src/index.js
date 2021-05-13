@@ -17,22 +17,20 @@ const store = createStore(
 );
 
 ReactDOM.render(
-  <React.StrictMode>
-    <Router >
-      <SnackbarProvider 
-        maxSnack={3}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "center"
-        }}
-        TransitionComponent={Slide}
-      >
-        <Provider store={store}>
-          <App />
-        </Provider>
-      </SnackbarProvider>
-    </Router >
-  </React.StrictMode>,
+  <Router >
+    <SnackbarProvider 
+      maxSnack={3}
+      anchorOrigin={{
+        vertical: "top",
+        horizontal: "center"
+      }}
+      TransitionComponent={Slide}
+    >
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </SnackbarProvider>
+  </Router >,
   document.getElementById('root')
 );
 
