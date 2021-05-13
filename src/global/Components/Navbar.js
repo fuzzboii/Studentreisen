@@ -202,7 +202,7 @@ function Navbar(props) {
         axios.post(process.env.REACT_APP_APIURL + "/profile/getProfilbilde", {token : token})
           .then(res => {
             setPbLoading(false);
-            if (res.data.results[0].plassering !== null) {
+            if (res.data.results !== undefined && res.data.results[0].plassering !== null) {
               setProfilbilde(res.data.results[0].plassering);
             } else {
               setInitialer(res.data.results[0].fnavn + res.data.results[0].enavn);
