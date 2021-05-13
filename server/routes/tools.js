@@ -315,10 +315,14 @@ router.post('/deleteUser', async (req, res) => {
                                         let deleteQuery = "DELETE FROM bruker WHERE brukerid = ? AND fnavn = ? AND enavn = ? AND email = ?";
                                         let deleteQueryFormat = mysql.format(deleteQuery, [req.body.bruker.brukerid, req.body.bruker.fnavn, req.body.bruker.enavn, req.body.bruker.email.toLowerCase()]);
                                     
-                                        // Endre brukeren
+                                        // Sletter brukeren
                                         connPool.query(deleteQueryFormat, (error, results) => {
                                             connPool.release();
                                             if (error) {
+                                                if(error.errno === 1451) {
+                                                    // Contraint feiler (Har koblinger utover login_token eller lignende), brukeren kan ikke slettes
+                                                    return res.json({ "status" : "error", "message" : "Denne brukeren kan ikke slettes" });
+                                                }
                                                 console.log("En feil oppstod under sletting av eksisterende bruker, detaljer: " + error.errno + ", " + error.sqlMessage)
                                                 return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                                             }
