@@ -371,7 +371,7 @@ function Profile(props) {
                     {/* Avatar */}
                     <input
                         onChange={onImgSubmit}
-                        accept=".png, .jpeg, .jpg"
+                        accept=".png, .jpeg, .jpg, .jfif"
                         id="avatarInput"
                         style={{
                             display: 'none',
