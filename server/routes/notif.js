@@ -14,7 +14,7 @@ router.post('/getNotifs', async (req, res) => {
                         return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                     }
         
-                    let getNotifsQuery = "SELECT kid, CONCAT(fnavn, ' ', enavn) as lagetav, tekst, dato FROM kunngjoring, bruker WHERE av = brukerid AND til = ? AND dato >= NOW() - INTERVAL 7 DAY ORDER BY kid DESC LIMIT 5";
+                    let getNotifsQuery = "SELECT kid, CONCAT(fnavn, ' ', enavn) as lagetav, tekst, dato, lest FROM kunngjoring, bruker WHERE av = brukerid AND til = ? AND dato >= NOW() - INTERVAL 7 DAY ORDER BY kid DESC LIMIT 5";
                     let getNotifsQueryFormat = mysql.format(getNotifsQuery, [response.brukerid]);
 
                     connPool.query(getNotifsQueryFormat, (error, results) => {

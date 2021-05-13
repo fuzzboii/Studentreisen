@@ -164,7 +164,9 @@ function Navbar(props) {
 
     const notifClickOpen = () => {
       setNotifAapen(true);
-      setNotifUlest(0);
+      if(!props.notif) {
+        setNotifUlest(0);
+      }
       if(notif !== undefined && notif == null) {
         axios
           // Henter API URL fra .env og utfører en POST request med dataen fra objektet over
@@ -330,7 +332,16 @@ function Navbar(props) {
         
           <Dialog onClose={notifClose} aria-labelledby="customized-dialog-title" open={notifAapen}>
               <DialogTitle id="customized-dialog-title" onClose={notifClose}>
-                Kunngjøringer fra de siste 7 dagene
+                {notifUlest !== 0 &&
+                  <>
+                    Uleste kunngjøringer
+                  </>
+                }
+                {notifUlest == 0 &&
+                  <>
+                    Kunngjøringer fra de siste 7 dagene
+                  </>
+                }
               </DialogTitle>
               <DialogContent dividers>
                 {notif && notif.nodata !== undefined &&
