@@ -42,6 +42,7 @@ function Profile(props) {
     const [updateBtnEmail, setUpdateBtnEmail] = useState(false)
     
     // States for personalia.
+    const [initialer, setInitialer] = useState("")
     const [profilbilde, setProfilbilde] = useState()
     const [fnavn, setFnavn] = useState("");
     const [enavn, setEnavn] = useState("");
@@ -290,7 +291,11 @@ function Profile(props) {
                 setFagfelt(res2.data);
                 setInteresser(res3.data.results);
                 if (res4.data.results !== undefined) {
-                    setProfilbilde(res4.data.results[0].plassering)
+                    if(res4.data.results[0].plassering !== null) {
+                        setProfilbilde(res4.data.results[0].plassering);
+                    } else {
+                        setInitialer(res4.data.results[0].fnavn + res4.data.results[0].enavn);
+                    }
                 }
                 // Data er ferdig hentet fra server
                 setLoading(false);
@@ -382,10 +387,9 @@ function Profile(props) {
                                 // "skru av" hover-skygge
                                 backgroundColor: '#f9f7f6'
                             }}>
-                            <Avatar
-                                src={"/uploaded/" + profilbilde } 
-                                className={classes.avatar}
-                                />
+                            <Avatar src={"/uploaded/" + profilbilde } className={classes.avatar}> 
+                                {initialer}
+                            </Avatar>
                         </IconButton>
                     </label>
 
