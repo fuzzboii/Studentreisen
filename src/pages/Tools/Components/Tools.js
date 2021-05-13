@@ -20,6 +20,7 @@ function Tools(props) {
     let swiper;
     const swipeOptions = useMemo(() => ({
         continuous: false,
+        disableScroll: true,
         callback(e) {
             setPosition(e)
         }
