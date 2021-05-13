@@ -351,7 +351,7 @@ function Profile(props) {
         setUpdateBtnEmail(true)
     }
 
-    if (loading) {
+    if (props.loading) {
         return (
             <section id="loading">
                 <Loader />
@@ -479,7 +479,7 @@ function Profile(props) {
 
         </div>
     );
-    } else {
+    } else if(!auth && !loading) {
         return (
             // Brukeren er ikke innlogget, omdiriger
             <NoAccess />
