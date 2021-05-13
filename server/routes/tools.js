@@ -11,7 +11,7 @@ const router = require('express').Router();
 // Bruker
 router.post('/getAllUserData', async (req, res) => {
     if(req.body !== undefined && req.body.token !== undefined) {
-        verifyAuth(req.body.token).then(function(response) {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then(function(response) {
             if(response.authenticated) {
                 // Kun Administrator skal kunne se oversikten
                 if(response.usertype.toString() === process.env.ACCESS_ADMINISTRATOR) {
@@ -96,7 +96,7 @@ router.post('/newUser', async (req, res) => {
             return res.json({ "status" : "error", "message" : validation.error.details[0].message });
         }
 
-        verifyAuth(req.body.token).then(function(response) {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then(function(response) {
             if(response.authenticated) {
                 // Kun Administrator skal kunne manuelt opprette en bruker
                 if(response.usertype.toString() === process.env.ACCESS_ADMINISTRATOR) {
@@ -223,7 +223,7 @@ router.post('/updateUser', async (req, res) => {
             return res.json({ "status" : "error", "message" : validation.error.details[0].message });
         }
 
-        verifyAuth(req.body.token).then(function(response) {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then(function(response) {
             if(response.authenticated) {
                 // Kun Administrator skal kunne manuelt endre en bruker
                 if(response.usertype.toString() === process.env.ACCESS_ADMINISTRATOR) {
@@ -279,7 +279,7 @@ router.post('/updateUser', async (req, res) => {
 router.post('/deleteUser', async (req, res) => {
     if(req.body.bruker !== undefined && req.body.token !== undefined) {
         if(req.body.bruker.niva !== undefined && req.body.bruker.niva.toString() !== process.env.ACCESS_ADMINISTRATOR) {
-            verifyAuth(req.body.token).then(function(response) {
+            verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then(function(response) {
                 if(response.authenticated) {
                     // Kun Administrator skal kunne slette en bruker
                     if(response.usertype.toString() === process.env.ACCESS_ADMINISTRATOR) {
@@ -354,7 +354,7 @@ router.post('/deleteUser', async (req, res) => {
 // Kurs
 router.post('/getAllCourseData', async (req, res) => {
     if(req.body !== undefined && req.body.token !== undefined) {
-        verifyAuth(req.body.token).then(function(response) {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then(function(response) {
             if(response.authenticated) {
                 // Kun Administrator skal kunne se oversikten
                 if(response.usertype.toString() === process.env.ACCESS_ADMINISTRATOR) {
@@ -396,7 +396,7 @@ router.post('/getAllCourseData', async (req, res) => {
 // Seminar
 router.post('/getAllSeminarData', async (req, res) => {
     if(req.body !== undefined && req.body.token !== undefined) {
-        verifyAuth(req.body.token).then(function(response) {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then(function(response) {
             if(response.authenticated) {
                 mysqlpool.getConnection(function(error, connPool) {
                     if(error) {
@@ -456,7 +456,7 @@ router.post('/getAllSeminarData', async (req, res) => {
 
 router.post('/deleteSeminar', async (req, res) => {
     if(req.body.seminarid !== undefined && req.body.token !== undefined && req.body.sluttdato !== undefined) {
-        verifyAuth(req.body.token).then(function(response) {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then(function(response) {
             if(response.authenticated) {
                 mysqlpool.getConnection(function(error, connPool) {
                     if(error) {
@@ -640,7 +640,7 @@ router.post('/deleteSeminar', async (req, res) => {
 
 router.post('/publicizeSeminar', async (req, res) => {
     if(req.body.seminarid !== undefined && req.body.token !== undefined && req.body.tilgjengelighet !== undefined) {
-        verifyAuth(req.body.token).then(function(response) {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then(function(response) {
             if(response.authenticated) {
                 mysqlpool.getConnection(function(error, connPool) {
                     if(error) {
@@ -725,7 +725,7 @@ router.post('/publicizeSeminar', async (req, res) => {
 router.post('/sendNotif', async (req, res) => {
     if(req.body.brukerid !== undefined && req.body.token !== undefined && req.body.msg !== undefined) {
         if(req.body.msg.length <= 255) {
-            verifyAuth(req.body.token).then(function(response) {
+            verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then(function(response) {
                 if(response.authenticated) {
                     mysqlpool.getConnection(function(error, connPool) {
                         if(error) {

@@ -132,6 +132,15 @@ router.post('/register', async (req, res) => {
                                 
                                 if(results.affectedRows > 0) {
                                     // Bruker opprettet
+                            
+                                    // Kobler token mot en IP-adresse
+                                    let ip;
+                                    if(req.socket.remoteAddress.substring(7).length == 0) {
+                                        // Localhost
+                                        ip = "localhost";
+                                    } else {
+                                        ip = req.socket.remoteAddress.substring(7);
+                                    }
 
                                     // Endrer utløpsdatoen utifra "Husk meg"-feltet
                                     let date = new Date();
@@ -141,8 +150,8 @@ router.post('/register', async (req, res) => {
                                     const token = cryptojs.AES.encrypt(req.body.email.toLowerCase(), process.env.TOKEN_SECRET);
 
                                     // Legg til nye token i databasen med utløpsdato ovenfor
-                                    let insertQuery = "INSERT INTO login_token(gjelderfor, token, utlopsdato) VALUES(?, ?, ?)";
-                                    let insertQueryFormat = mysql.format(insertQuery, [results.insertId, token.toString(), date]);
+                                    let insertQuery = "INSERT INTO login_token(gjelderfor, token, ip, utlopsdato) VALUES(?, ?, ?, ?)";
+                                    let insertQueryFormat = mysql.format(insertQuery, [results.insertId, token.toString(), ip, date]);
                             
                                     connPool.query(insertQueryFormat, (error, results) => {
                                         if (error) {
@@ -254,6 +263,15 @@ router.post('/login', async (req, res) => {
                         
                         if(validatePass) {
                             // Bruker autentisert
+                            
+                            // Kobler token mot en IP-adresse
+                            let ip;
+                            if(req.socket.remoteAddress.substring(7).length == 0) {
+                                // Localhost
+                                ip = "localhost";
+                            } else {
+                                ip = req.socket.remoteAddress.substring(7);
+                            }
 
                             // Endrer utløpsdatoen utifra "Husk meg"-feltet
                             let date = new Date();
@@ -270,8 +288,8 @@ router.post('/login', async (req, res) => {
                             const token = cryptojs.AES.encrypt(fetchedUser[0].email, process.env.TOKEN_SECRET);
 
                             // Legg til nye token i databasen med utløpsdato ovenfor
-                            let insertQuery = "INSERT INTO login_token(gjelderfor, token, utlopsdato) VALUES(?, ?, ?)";
-                            let insertQueryFormat = mysql.format(insertQuery, [fetchedUser[0].brukerid, token.toString(), date]);
+                            let insertQuery = "INSERT INTO login_token(gjelderfor, token, ip, utlopsdato) VALUES(?, ?, ?, ?)";
+                            let insertQueryFormat = mysql.format(insertQuery, [fetchedUser[0].brukerid, token.toString(), ip, date]);
                     
                             connPool.query(insertQueryFormat, (error, results) => {
                                 if (error) {

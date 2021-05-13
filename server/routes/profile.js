@@ -29,7 +29,7 @@ router.get('/getFagfelt', async (req, res) => {
 router.post('/getProfilbilde', async (req, res) => {
     let brukerid = undefined;
     if (req.body.token !== undefined) {
-        verifyAuth(req.body.token).then( resAuth => {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
             brukerid = resAuth.brukerid
             mysqlpool.getConnection(function(error, connPool) {
                 if(error) {
@@ -64,7 +64,7 @@ router.post('/getProfilbilde', async (req, res) => {
 router.post('/getBruker', async (req, res) => {
     let brukerid = undefined;
     if (req.body.token !== undefined) {
-        verifyAuth(req.body.token).then( resAuth => {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
             brukerid = resAuth.brukerid 
             mysqlpool.getConnection(function(error, connPool) {
                 if(error) {
@@ -97,7 +97,7 @@ router.post('/getBruker', async (req, res) => {
 router.post('/getInteresser', async (req, res) => {
     let brukerid = undefined;
     if (req.body.token !== undefined) {
-        verifyAuth(req.body.token).then( resAuth => {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
             brukerid = resAuth.brukerid;
             mysqlpool.getConnection(function(error, connPool) {
                 if(error) {
@@ -130,7 +130,7 @@ router.post('/getInteresser', async (req, res) => {
 router.post('/deleteInteresse', async (req, res) => {
     let brukerid = undefined;
     if (req.body.token !== undefined && req.body.fagfeltid !== undefined) {
-        verifyAuth(req.body.token).then( resAuth => {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
             brukerid = resAuth.brukerid
             mysqlpool.getConnection(function(error, connPool) {
                 if(error) {
@@ -163,7 +163,7 @@ router.post('/deleteInteresse', async (req, res) => {
 router.post('/postInteresse', async (req, res) => {
     let brukerid = undefined;
     if (req.body.token !== undefined && req.body.fagfeltid !== undefined) {
-        verifyAuth(req.body.token).then( resAuth => {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
             brukerid = resAuth.brukerid
             mysqlpool.getConnection(function(error, connPool) {
                 if(error) {
@@ -196,7 +196,7 @@ router.post('/postInteresse', async (req, res) => {
 router.post('/updateTelefon', async (req, res) => {
     let brukerid = undefined
     if (req.body.token !== undefined && req.body.telefon !== undefined) {
-        verifyAuth(req.body.token).then( resAuth => {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
             brukerid = resAuth.brukerid
             mysqlpool.getConnection(function(error, connPool) {
                 if(error) {
@@ -236,7 +236,7 @@ router.post('/updateEmail', async (req, res) => {
 
     let brukerid = undefined
     if (req.body.token !== undefined && req.body.epost !== undefined) {
-        verifyAuth(req.body.token).then( resAuth => {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
             brukerid = resAuth.brukerid
             mysqlpool.getConnection(function(error, connPool) {
                 if(error) {
@@ -324,7 +324,7 @@ router.post('/updatePassord', async (req, res) => {
         // Salt og hash passord
         const salt = await bcrypt.genSalt(10)
         const hashedPwd = await bcrypt.hash(req.body.pwd, salt)
-        verifyAuth(req.body.token).then( resAuth => {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
             brukerid = resAuth.brukerid
             mysqlpool.getConnection(function(error, connPool) {
                 if(error) {
@@ -354,7 +354,7 @@ router.post('/updatePassord', async (req, res) => {
 router.post('/insertBilde', async (req, res) => {
     if (req.body.token !== undefined && req.files) {
         let brukerid = undefined
-        verifyAuth(req.body.token).then( resAuth => {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
             brukerid = resAuth.brukerid
 
             mysqlpool.getConnection(function(error, connPool) {

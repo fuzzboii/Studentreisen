@@ -7,7 +7,7 @@ const { verifyAuth } = require('../global/CommonFunctions');
 
 router.post('/getNotifs', async (req, res) => {
     if(req.body.token !== undefined) {
-        verifyAuth(req.body.token).then(function(response) {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then(function(response) {
             if(response.authenticated) {
                 mysqlpool.getConnection(function(error, connPool) {
                     if(error) {
@@ -42,7 +42,7 @@ router.post('/getNotifs', async (req, res) => {
 
 router.post('/readNotifs', async (req, res) => {
     if(req.body.token !== undefined && req.body.notifs !== undefined) {
-        verifyAuth(req.body.token).then(function(response) {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then(function(response) {
             if(response.authenticated) {
                 if(req.body.notifs.length >= 1) {
                     mysqlpool.getConnection(function(error, connPool) {

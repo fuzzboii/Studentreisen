@@ -2,23 +2,30 @@ const mysqlpool = require('../db').pool;
 const mysql = require('mysql');
 const nodemailer = require('nodemailer');
 
-const verifyAuth = (token) => {
+const verifyAuth = (token, ip) => {
     return new Promise(function(resolve, reject){
         try {
-            if(token !== undefined) {
+            if(token !== undefined && ip !== undefined) {
+                // Bestemmer om brukeren er på localhost eller ikke
+                if(ip.length == 0) {
+                    // Localhost
+                    ip = "localhost";
+                }
+
                 mysqlpool.getConnection(function(error, connPool) {
                     if(error) {
-                        return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                        resolve({"authenticated" : false});
                     }
                     token = token;
                     // Sjekker om authtoken fremdeles er gyldig
-                    let checkQuery = "SELECT gjelderfor FROM login_token WHERE token = ? AND utlopsdato > NOW()";
-                    let checkQueryFormat = mysql.format(checkQuery, [token]);
+                    let checkQuery = "SELECT gjelderfor FROM login_token WHERE token = ? AND ip = ? AND utlopsdato > NOW()";
+                    let checkQueryFormat = mysql.format(checkQuery, [token, ip]);
         
                     connPool.query(checkQueryFormat, (error, results) => {
                         if (error) {
                             connPool.release();
                             console.log("En feil oppstod ved henting av token fra login_token: " + error.errno + ", " + error.sqlMessage)
+                            resolve({"authenticated" : false});
                         }
         
                         if(results[0] !== undefined) {

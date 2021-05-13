@@ -8,7 +8,7 @@ const router = require('express').Router();
 //Henter brukerens påmeldte seminarer
 router.post('/getEnlistedSeminars', async (req, res) => {
     if(req.body.token !== undefined) {
-        verifyAuth(req.body.token).then( resAuth => {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
             brukerid = resAuth.brukerid 
             mysqlpool.getConnection(function(error, connPool) {
                 if(error) {
@@ -193,7 +193,7 @@ router.get('/getAllSeminarExpiredData', async (req, res) => {
     router.post('/postEnlist', async (req, res) => {
         let brukerid = undefined;
         if (req.body.token !== undefined && req.body.seminarid !== undefined) {
-            verifyAuth(req.body.token).then( resAuth => {
+            verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
                 brukerid = resAuth.brukerid
 
                 mysqlpool.getConnection(function(error, connPool) {
@@ -228,7 +228,7 @@ router.get('/getAllSeminarExpiredData', async (req, res) => {
     router.post('/deleteEnlist', async (req, res) => {
         let brukerid = undefined;
         if (req.body.token !== undefined && req.body.seminarid !== undefined) {
-            verifyAuth(req.body.token).then( resAuth => {
+            verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
                 brukerid = resAuth.brukerid
                 mysqlpool.getConnection(function(error, connPool) {
                     if(error) {
@@ -295,7 +295,7 @@ router.get('/getAllSeminarExpiredData', async (req, res) => {
 
 router.post('/submitSeminar', (req, res) => {
     if(req.body.title !== undefined && req.body.startdate !== undefined && req.body.enddate !== undefined && req.body.address !== undefined && req.body.description !== undefined && req.body.token !== undefined) {
-        verifyAuth(req.body.token).then(function(response) {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then(function(response) {
             if(response.authenticated) {
                 if(response.usertype.toString() !== process.env.ACCESS_STUDENT) {
                     mysqlpool.getConnection(function(error, connPool) {
