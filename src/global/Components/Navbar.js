@@ -267,14 +267,16 @@ function Navbar(props) {
                 <Button
                   className={classes.loggbtnmobil}
                   onClick={loggUt}
-                  id='loggBtnMobil'>
+                  id='loggBtnMobil'
+                  style={{"visibility" : "visible"}}>
                   Logg ut
                 </Button>
                 :
                 <Button
                   className={classes.loggbtnmobilBar}
                   onClick={loggUt}
-                  id='loggBtnMobil'>
+                  id='loggBtnMobil'
+                  style={{"visibility" : "visible"}}>
                   Logg ut
                 </Button>
                 }
