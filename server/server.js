@@ -28,7 +28,7 @@ app.use(cors());
 
 // Tillater tilkoblinger fra ACCESS_ORIGIN satt i .env
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", process.env.ACCESS_ORIGIN + ":" + process.env.WEBPORT);
+  res.setHeader("Access-Control-Allow-Origin", process.env.ACCESS_ORIGIN);
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"
@@ -51,13 +51,13 @@ app.use('/api/v1/cv', cvRoute);
 // Starter server
 if(process.env.DEVMODE) {
   app.listen(process.env.PORT, () => {
-      console.log("API-serveren kjører i devmodus på HTTP, den kan nåes på " + process.env.ACCESS_ORIGIN + ":" + process.env.PORT)
+      console.log("API-serveren kjører i devmodus på HTTP");
   });
 } else {
   https.createServer({
       key: fs.readFileSync(process.env.PRIVATEKEY),
       cert: fs.readFileSync(process.env.CERTIFICATE)
   }, app).listen(process.env.PORT, () => {
-    console.log("API-serveren kjører på HTTPS, den kan nåes på " + process.env.ACCESS_ORIGIN + ":" + process.env.PORT)
+    console.log("API-serveren kjører på HTTPS");
   });
 }
