@@ -28,7 +28,7 @@ app.use(cors());
 
 // Tillater tilkoblinger fra ACCESS_ORIGIN satt i .env
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", process.env.ACCESS_ORIGIN);
+  res.setHeader("Access-Control-Allow-Origin", process.env.ACCESS_ORIGIN + ":" + process.env.WEBPORT);
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"
