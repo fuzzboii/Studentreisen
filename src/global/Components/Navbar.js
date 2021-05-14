@@ -111,7 +111,7 @@ function Navbar(props) {
         padding: '0.5rem 1rem',
         display: 'grid',
         minWidth: '7rem',
-        transform: 'translate(28vw)',
+        transform: 'translate(24vw)',
         textDecoration: 'none',
         ['@media (min-width:768px)']: {
           transform: 'translate(38vw)'
