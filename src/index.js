@@ -12,6 +12,7 @@ import {createStore} from 'redux';
 import allReducers from './global/Services/Reducers';
 import { Provider } from 'react-redux';
 
+// Gir tilgang til Redux funksjoner og chrome-extension til å teste
 const store = createStore(
   allReducers, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );

@@ -1,4 +1,7 @@
+// React spesifikt
 import { Component } from 'react';
+
+// Studentreisen-assets og komponenter
 import CourseNav from './CourseNav';
 import '../Styles/courseStyles.css';
 import '../Styles/moduleStyles.css';
@@ -7,7 +10,7 @@ import NoAccess from '../../../global/Components/NoAccess';
 import CookieService from '../../../global/Services/CookieService';
 import AuthService from '../../../global/Services/AuthService';
 
-
+// Klassekomponenten for hele kurssiden
 class Overview extends Component {
     constructor(props) {
         super(props);
@@ -22,7 +25,7 @@ class Overview extends Component {
                 </section>
             );
         }
-        
+        // Bruker autentisert
         if(!this.props.loading && this.props.auth) {
             return (            
                 <div>

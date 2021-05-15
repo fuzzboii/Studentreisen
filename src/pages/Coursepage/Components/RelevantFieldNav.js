@@ -1,23 +1,32 @@
+// React spesifikt
 import React, { useState, useEffect} from 'react';
 import {useParams} from 'react-router-dom';
 import {useSelector, useDispatch} from 'react-redux';
+
+// 3rd-party Packages
 import axios from 'axios';
 
+// Studentreisen-assets og komponenter
 import CourseList from './CourseList';
 import ModuleList from './ModuleList';
 import RelevantField from './RelevantField';
 import CookieService from '../../../global/Services/CookieService';
 import {tabCourse} from '../../../global/Services/Actions';
 
+// Material UI komponenter
 import {Tabs, Tab, Typography, Button, TextField} from '@material-ui/core';
 import Pagination from '@material-ui/lab/Pagination';
 import SearchIcon from '@material-ui/icons/Search';
 import AddIcon from '@material-ui/icons/Add';
 import {makeStyles } from '@material-ui/core/styles';
 
+// Denne komponenten er ganske lik CourseNav i kode,
+// forskjell er at states er populert med annet data 
+// og bruker andre API-kall
 
 
-
+// Komponent for tab, bestemmer hva som skal vises
+// avhengig av en gitt verdi 
 function TabPanel(props) {
     const { children, value, index } = props;
   
@@ -30,6 +39,7 @@ function TabPanel(props) {
     );
   };
 
+  // Styling for Material Design komponenter
   const useStyles = makeStyles((theme) => ({
     button: {
       marginLeft: theme.spacing(1),
@@ -54,15 +64,18 @@ function TabPanel(props) {
   }));
   
 
+// Starten av filkomponent
 const RelevantFieldNav = (props) => {
     
+      // Hook for å få tilgang på styling, og henter kursfilternavn fra URL
       const classes = useStyles();
       let {field} = useParams();
     
         useEffect(()=>{
           fetchData();
         },[field]);
-      
+        
+        // Hooks for å få tilgang på Redux funksjoner og definerer Tab-komponentens posisjon
         const getCoursePosition = useSelector(state => state.course_tab_position);
         const dispatch = useDispatch();
         const [position, setPosition] = useState(getCoursePosition);
@@ -72,23 +85,27 @@ const RelevantFieldNav = (props) => {
         const [modulesDefault, setModulesDefault] = useState([]);
         const [coursesDefault, setCoursesDefault] = useState([]);
 
-        // States for pagination
+        // States for å legge inn innhentet data
         const [courses, setCourses] = useState([]);
         const [modules, setModules] = useState([]);
         const [fields, setFields] = useState([]);
-    
+
+        // Henter kursdata
         const fetchData = () => {
           const token = CookieService.get("authtoken");
                     
             const data = {felt: field}
             const dataToken = {token: token}
-    
+          
+          // Tre forkjellige API-kall mot server-side
           axios.all([
             axios.post(process.env.REACT_APP_APIURL + "/course/getKursFiltrert", data),
             axios.get(process.env.REACT_APP_APIURL + "/course/module"),
             axios.post(process.env.REACT_APP_APIURL + "/profile/getInteresser", dataToken)
     
           ]).then(axios.spread((res1, res2, res3) => {
+
+            // Populerer states med innhentet data
             setCourses(res1.data);
             setCoursesDefault(res1.data);
             setModules(res2.data);
@@ -98,7 +115,7 @@ const RelevantFieldNav = (props) => {
         };       
         
         
-    
+        // States for pagination
         const [currentPage_c, setcurrentPage_c] = useState(1);
         const [postsPerPage_c, setPostsPerPage_c] = useState(12);
     
@@ -121,7 +138,7 @@ const RelevantFieldNav = (props) => {
         const numberOfPages_m = Math.ceil(modules.length / postsPerPage_m);
         const interval_m =  mindexOfFirstPost + currentPosts_m.length;
         
-          
+        // Bytter verdien til tab-posisjon, og lagrer det i Redux states store
         const handleChange = (event, newValue) => {
           setPosition(newValue);
             if(newValue === 1) {
@@ -131,7 +148,9 @@ const RelevantFieldNav = (props) => {
               dispatch(tabCourse(newValue));
             }; 
         };
-    
+
+
+        //PAGINATION: Håndterer bytte av sider
         const handlePageCourse = (event, value) => {
           setcurrentPage_c(value);
         };
@@ -140,20 +159,24 @@ const RelevantFieldNav = (props) => {
           setcurrentPage_m(value);
         };
 
-        //Funksjoner for søk
+        // Håndterer tekstfelt innskrivning
         const onInputChange = e => {
           setInput(e.target.value);
         }
 
+        // Håndterer søkebar funksjonalitet
         const updateInput = async (e) => {
             e.preventDefault();
 
+            // Søk for Kursdata
             if(position === 0) {
               const filtered = coursesDefault.filter(courses => {
                 return courses.navn.toLowerCase().includes(input.toLowerCase())
               });
               setCourses(filtered);
             };
+
+            // Søk for Kursmoduldata
             if(position === 1) {
               const filtered = modulesDefault.filter(modules => {
                 return modules.navn.toLowerCase().includes(input.toLowerCase())
@@ -166,6 +189,7 @@ const RelevantFieldNav = (props) => {
     
       return (
               <div>
+                {/* Søkebar og Nytt kurs knapp */}
                 <div className="course-header-section">
                   <div className="search-wrap">
                       <form className="searchBox" onSubmit={updateInput} >    
@@ -179,14 +203,16 @@ const RelevantFieldNav = (props) => {
                     </div>
                 </div>       
               </div>
-
+                  
+                {/* Tab */}
                 <div className="BorderBox"> 
                   <Tabs className="tab" value={position} indicatorColor="primary" textColor="primary" onChange={handleChange}>
                       <Tab className="tabKurs" label="Kurs" />
                       <Tab className="tabKursmodul" label="Kursmodul" />
                   </Tabs>
                 </div>
-
+                
+                {/* Overskrifter */}
                 <div className="NavHeaderWrap">
                   { position == 0 &&
                     <h1 className="NavHeader">{field}</h1>
@@ -195,6 +221,8 @@ const RelevantFieldNav = (props) => {
                     <h1 className="NavHeader">Kursmodul</h1>
                   }
                 </div>
+
+                {/*  Tab posisjon for kursliste og Relevantkursliste */}
                 {Object.entries(courses).length !== 0 &&
                 <TabPanel value={position} index={0}>
                     <div className="content-overview">
@@ -220,7 +248,9 @@ const RelevantFieldNav = (props) => {
 
                     </div>
                 </TabPanel>
-                }  
+                } 
+
+                {/*  Tab posisjon for kursmodul */}
                 {Object.entries(modules).length !== 0 &&
                 <TabPanel value={position} index={1}>
                     <div className="content-main">

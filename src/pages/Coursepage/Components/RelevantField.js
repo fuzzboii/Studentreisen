@@ -1,24 +1,29 @@
+// React spesifikt
 import React, {useState} from "react";
 import {Link} from 'react-router-dom';
+
+// Studentreisen-assets og komponenter
 import Box from '@material-ui/core/Box';
 import CardContent from '@material-ui/core/CardContent';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import {makeStyles} from '@material-ui/core/styles';
 
+// Styling for Material Design komponenter
+const useStyles = makeStyles((theme) => ({
+    link: {
+        display: 'flex',
+        fontSize: '14px',
+      
+    },
+    icon: {
+      marginRight: theme.spacing(0),
+      paddingTop: theme.spacing(0.3),
+      height: 15,
+      width: 15,
+    },
+  }));
+
 const RelevantField = (props) => {
-    const useStyles = makeStyles((theme) => ({
-        link: {
-            display: 'flex',
-            fontSize: '14px',
-          
-        },
-        icon: {
-          marginRight: theme.spacing(0),
-          paddingTop: theme.spacing(0.3),
-          height: 15,
-          width: 15,
-        },
-      }));
 
     const classes = useStyles();
     
