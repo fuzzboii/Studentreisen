@@ -7,7 +7,7 @@ const router = require('express').Router();
 router.post('/getBruker', async (req, res) => {
     let brukerid = undefined;
     if (req.body.token !== undefined) {
-        verifyAuth(req.body.token).then( resAuth => {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
             brukerid = resAuth.brukerid 
             mysqlpool.getConnection(function(error, connPool) {
                 if(error) {
@@ -41,7 +41,7 @@ router.post('/getBruker', async (req, res) => {
 router.post('/getBrukerbilde', async (req, res) => {
     let brukerid = undefined;
     if (req.body.token !== undefined) {
-        verifyAuth(req.body.token).then( resAuth => {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
             brukerid = resAuth.brukerid 
             mysqlpool.getConnection(function(error, connPool) {
                 if(error) {
@@ -77,7 +77,7 @@ router.post('/getBrukerbilde', async (req, res) => {
 router.post('/postCVSeminar', async (req, res) => {
     let brukerid = undefined;
     if (req.body.token !== undefined && req.body.opprett_cv_innlegg !== undefined) {
-        verifyAuth(req.body.token).then( resAuth => {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
             brukerid = resAuth.brukerid
             mysqlpool.getConnection(function(error, connPool) {
                 if(error) {
@@ -103,7 +103,7 @@ router.post('/postCVSeminar', async (req, res) => {
 router.post('/postCVEducation', async (req, res) => {
     let brukerid = undefined;
     if (req.body.token !== undefined && req.body.opprett_cv_innlegg !== undefined) {
-        verifyAuth(req.body.token).then( resAuth => {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
             brukerid = resAuth.brukerid
             mysqlpool.getConnection(function(error, connPool) {
                 if(error) {
@@ -130,7 +130,7 @@ router.post('/postCVEducation', async (req, res) => {
 router.post('/postCVWork', async (req, res) => {
     let brukerid = undefined;
     if (req.body.token !== undefined && req.body.opprett_cv_innlegg !== undefined) {
-        verifyAuth(req.body.token).then( resAuth => {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
             brukerid = resAuth.brukerid
             mysqlpool.getConnection(function(error, connPool) {
                 if(error) {
@@ -156,7 +156,7 @@ router.post('/postCVWork', async (req, res) => {
 router.post('/postCVOther', async (req, res) => {
     let brukerid = undefined;
     if (req.body.token !== undefined && req.body.opprett_cv_innlegg !== undefined) {
-        verifyAuth(req.body.token).then( resAuth => {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
             brukerid = resAuth.brukerid
             mysqlpool.getConnection(function(error, connPool) {
                 if(error) {
@@ -182,7 +182,7 @@ router.post('/postCVOther', async (req, res) => {
 router.post('/getCVSeminar', async (req, res) => {
     let brukerid = undefined;
     if (req.body.token !== undefined) {
-        verifyAuth(req.body.token).then( resAuth => {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
             brukerid = resAuth.brukerid
             mysqlpool.getConnection(function(error, connPool) {
                 if(error) {
@@ -215,7 +215,7 @@ router.post('/getCVSeminar', async (req, res) => {
 router.post('/slettInnleggSem', async (req, res) => {
     let brukerid = undefined;
     if (req.body.token !== undefined && req.body.cv_seminar_id !== undefined) {
-        verifyAuth(req.body.token).then( resAuth => {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
             brukerid = resAuth.brukerid 
             mysqlpool.getConnection(function(error, connPool) {
                 if(error) {
@@ -249,7 +249,7 @@ router.post('/slettInnleggSem', async (req, res) => {
 router.post('/getCVEducation', async (req, res) => {
     let brukerid = undefined;
     if (req.body.token !== undefined)  {
-        verifyAuth(req.body.token).then( resAuth => {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
             brukerid = resAuth.brukerid 
             mysqlpool.getConnection(function(error, connPool) {
                 if(error) {
@@ -283,7 +283,7 @@ router.post('/getCVEducation', async (req, res) => {
 router.post('/slettInnleggEdu', async (req, res) => {
     let brukerid = undefined;
     if (req.body.token !== undefined && req.body.cv_education_id !== undefined) {
-        verifyAuth(req.body.token).then( resAuth => {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
             brukerid = resAuth.brukerid 
             mysqlpool.getConnection(function(error, connPool) {
                 if(error) {
@@ -317,7 +317,7 @@ router.post('/slettInnleggEdu', async (req, res) => {
 router.post('/getCVWork', async (req, res) => {
     let brukerid = undefined;
     if (req.body.token !== undefined) {
-        verifyAuth(req.body.token).then( resAuth => {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
             brukerid = resAuth.brukerid 
             mysqlpool.getConnection(function(error, connPool) {
                 if(error) {
@@ -350,7 +350,7 @@ router.post('/getCVWork', async (req, res) => {
 router.post('/slettInnleggWork', async (req, res) => {
     let brukerid = undefined;
     if (req.body.token !== undefined && req.body.cv_work_id !== undefined) {
-        verifyAuth(req.body.token).then( resAuth => {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
             brukerid = resAuth.brukerid 
             mysqlpool.getConnection(function(error, connPool) {
                 if(error) {
@@ -384,7 +384,7 @@ router.post('/slettInnleggWork', async (req, res) => {
 router.post('/getCVOther', async (req, res) => {
     let brukerid = undefined;
     if (req.body.token !== undefined) {
-        verifyAuth(req.body.token).then( resAuth => {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
             brukerid = resAuth.brukerid 
             mysqlpool.getConnection(function(error, connPool) {
                 if(error) {
@@ -417,7 +417,7 @@ router.post('/getCVOther', async (req, res) => {
 router.post('/slettInnleggOther', async (req, res) => {
     let brukerid = undefined;
     if (req.body.token !== undefined && req.body.cv_other_id !== undefined) {
-        verifyAuth(req.body.token).then( resAuth => {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
             brukerid = resAuth.brukerid 
             mysqlpool.getConnection(function(error, connPool) {
                 if(error) {
@@ -451,7 +451,7 @@ router.post('/slettInnleggOther', async (req, res) => {
 router.post('/redigerInnleggEdu', async (req, res) => {
     let brukerid = undefined;
     if (req.body.token !== undefined && req.body.cv_education_id !== undefined) {
-        verifyAuth(req.body.token).then( resAuth => {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
             brukerid = resAuth.brukerid 
             mysqlpool.getConnection(function(error, connPool) {
                 if(error) {
@@ -485,7 +485,7 @@ router.post('/redigerInnleggEdu', async (req, res) => {
 router.post('/redigerInnleggSem', async (req, res) => {
     let brukerid = undefined;
     if (req.body.token !== undefined && req.body.cv_seminar_id !== undefined) {
-        verifyAuth(req.body.token).then( resAuth => {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
             brukerid = resAuth.brukerid 
             mysqlpool.getConnection(function(error, connPool) {
                 if(error) {
@@ -519,7 +519,7 @@ router.post('/redigerInnleggSem', async (req, res) => {
 router.post('/redigerInnleggWork', async (req, res) => {
     let brukerid = undefined;
     if (req.body.token !== undefined && req.body.cv_work_id !== undefined) {
-        verifyAuth(req.body.token).then( resAuth => {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
             brukerid = resAuth.brukerid 
             mysqlpool.getConnection(function(error, connPool) {
                 if(error) {
@@ -553,7 +553,7 @@ router.post('/redigerInnleggWork', async (req, res) => {
 router.post('/redigerInnleggOther', async (req, res) => {
     let brukerid = undefined;
     if (req.body.token !== undefined && req.body.cv_other_id !== undefined) {
-        verifyAuth(req.body.token).then( resAuth => {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
             brukerid = resAuth.brukerid 
             mysqlpool.getConnection(function(error, connPool) {
                 if(error) {

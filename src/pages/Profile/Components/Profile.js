@@ -42,6 +42,7 @@ function Profile(props) {
     const [updateBtnEmail, setUpdateBtnEmail] = useState(false)
     
     // States for personalia.
+    const [initialer, setInitialer] = useState("")
     const [profilbilde, setProfilbilde] = useState()
     const [fnavn, setFnavn] = useState("");
     const [enavn, setEnavn] = useState("");
@@ -69,15 +70,6 @@ function Profile(props) {
                     setAlertDisplay("")
                     setAlertText(res.data.message)
                     setAlertSeverity("success")
-
-                    // Test på om dette er første opplastning av et profilbilde
-                    let first = false
-                    if (profilbilde == undefined) {
-                        first = true
-                    }
-                    if (first) {
-                        setProfilbilde(e.target.files[0].name)
-                    }
                     setProfilbilde(e.target.files[0].name)
                 }
             })
@@ -101,8 +93,22 @@ function Profile(props) {
             // Test at nummeret er en korrekt (norsk) lengde
             // Fjerne eventuelle mellomrom i opgitt nummer
             var tlfTrim = tlf.replace(/\s/g, '')
-            if (tlfTrim.charAt(0) === '+') {
-                if (tlfTrim.length == 11) {
+            if (tlfTrim.length == 8 || tlfTrim.length == 12 || tlfTrim.length == 11) {
+                if (tlfTrim.charAt(0) == '+' && tlfTrim.length == 11) {
+                    const config = {
+                        token: token,
+                        telefon: tlfTrim
+                    }
+                    
+                    axios.post(process.env.REACT_APP_APIURL + "/profile/updateTelefon", config).then(
+                        setAlertDisplay(""),
+                        setAlertText("Telefonnummer oppdatert!"),
+                        setAlertSeverity("success"),
+                        setUpdateTextTlf("Oppdater"),
+                        setUpdateBtnTlf(false),
+                        )
+                    }
+                else if (tlfTrim.length == 8 || tlfTrim.length == 12) {
                     const config = {
                         token: token,
                         telefon: tlfTrim
@@ -115,20 +121,12 @@ function Profile(props) {
                         setUpdateTextTlf("Oppdater"),
                         setUpdateBtnTlf(false)
                         )
+                } else {
+                    setAlertDisplay("")
+                    setAlertText("Telefonnummeret er ikke gyldig")
+                    setAlertSeverity("error")
+                    setUpdateTextTlf("Oppdater")
                 }
-            } else if (tlfTrim.length == 8 || tlfTrim.length == 12) {
-                const config = {
-                    token: token,
-                    telefon: tlfTrim
-                }
-                
-                axios.post(process.env.REACT_APP_APIURL + "/profile/updateTelefon", config).then(
-                    setAlertDisplay(""),
-                    setAlertText("Telefonnummer oppdatert!"),
-                    setAlertSeverity("success"),
-                    setUpdateTextTlf("Oppdater"),
-                    setUpdateBtnTlf(false)
-                    )
             } else {
                 setAlertDisplay("")
                 setAlertText("Telefonnummeret er ikke gyldig")
@@ -141,8 +139,7 @@ function Profile(props) {
             setAlertSeverity("error")
             setUpdateTextTlf("Oppdater")
         }
-        
-        }
+    }
         
         // Utføres når bruker gjør en handling i input-feltet for e-post
         const onEmailChange = e => {
@@ -294,7 +291,11 @@ function Profile(props) {
                 setFagfelt(res2.data);
                 setInteresser(res3.data.results);
                 if (res4.data.results !== undefined) {
-                    setProfilbilde(res4.data.results[0].plassering)
+                    if(res4.data.results[0].plassering !== null) {
+                        setProfilbilde(res4.data.results[0].plassering);
+                    } else {
+                        setInitialer(res4.data.results[0].fnavn + res4.data.results[0].enavn);
+                    }
                 }
                 // Data er ferdig hentet fra server
                 setLoading(false);
@@ -364,123 +365,125 @@ function Profile(props) {
     }
 
     if (auth && !loading) {
-    return (
-        <div>
-            <div className='profile-header' >
-                {/* Avatar */}
-                <input
-                    onChange={onImgSubmit}
-                    accept="image/png, image/jpeg"
-                    id="avatarInput"
-                    style={{
-                        display: 'none',
-                    }}
-                    type="file"
-                    />
-                <label htmlFor="avatarInput">
-                    <IconButton component="span" type="submit" 
+        return (
+            <div>
+                <div className='profile-header' >
+                    {/* Avatar */}
+                    <input
+                        onChange={onImgSubmit}
+                        accept=".png, .jpeg, .jpg, .jfif"
+                        id="avatarInput"
                         style={{
-                            // "skru av" hover-skygge
-                            backgroundColor: '#f9f7f6'
+                            display: 'none',
+                        }}
+                        type="file"
+                        />
+                    <label htmlFor="avatarInput"
+                        style={{
+                            // width: '10vw'
                         }}>
-                        <Avatar
-                            src={"/uploaded/" + profilbilde } 
-                            className={classes.avatar}
-                            />
-                    </IconButton>
-                </label>
+                        <IconButton component="span" type="submit" 
+                            style={{
+                                // "skru av" hover-skygge
+                                backgroundColor: '#f9f7f6'
+                            }}>
+                            <Avatar src={"/uploaded/" + profilbilde } className={classes.avatar}> 
+                                {initialer}
+                            </Avatar>
+                        </IconButton>
+                    </label>
 
-                <h1 className='profile-title'> Profil </h1>
-            </div>
+                    <h1 className='profile-title'> Profil </h1>
+                </div>
 
-            <div className='profile-body' >
-                <div className='profile-item' >
-                <h2 className='profile-subheader' > Personalia </h2>
-                <h3 className='profile-navn' > {fnavn + " " + enavn} </h3>
-                {/* Kondisjonell rendring, for å "låse" opp og igjen feltet */}
-                    {
-                        !updateBtnTlf ?
-                        <>
-                        <FormControl id="form-profile-tlf-control">
-                            <InputLabel>Telefonnummer</InputLabel>
-                            <Input type="string" variant="outlined" value={tlf} disabled={true} />
-                        </FormControl>
-                        <Button className={classes.profileButton} variant="contained" onClick={tlfUnlock} > Endre </Button>
-                        </>
-                        :
-                        <form className="profileForm" id="form-profile-tlf" onSubmit={onTlfSubmit} >
-                        <FormControl id="form-profile-tlf-control">
-                            <InputLabel>Telefonnummer</InputLabel>
-                            <Input type="string" variant="outlined" value={tlf} onChange={onTlfChange} required={true} />
-                        </FormControl>
-                        <Button className={classes.profileButton} type="submit" variant="contained" > {updateTextTlf} </Button>
-                        </form>
-                    }
-
-                    {
-                        !updateBtnEmail ? 
-                        <>
-                        <FormControl id="form-profile-email-control">
-                            <InputLabel>E-post</InputLabel>
-                            <Input type="string" variant="outlined" value={email} disabled={true} />
-                        </FormControl>
-                        <Button className={classes.profileButton} variant="contained" onClick={emailUnlock} > Endre </Button>
-                        </>
-                        :
-                        <form className="profileForm" id="form-profile-email" onSubmit={onEmailSubmit} >
-                        <FormControl id="form-profile-email-control">
-                            <InputLabel>E-post</InputLabel>
-                            <Input type="string" variant="outlined" value={email} onChange={onEmailChange} required={true} />
-                        </FormControl>
-                        <Button className={classes.profileButton} type="submit" variant="contained" > {updateTextEmail} </Button>
-                        </form>
-                    }
-
-                    <form className="profileForm" id="form-profile-pwd" onSubmit={onPwdSubmit} >
-                        <FormControl id="form-pwd-profile">
-                            <InputLabel>Nytt passord</InputLabel>
-                            <Input type="password" className={classes.input} variant="outlined" onChange={onPwdChange} required={true} />
-                        </FormControl>
-                        <FormControl id="form-pwd2-profile">
-                            <InputLabel>Bekreft passord</InputLabel>
-                            <Input type="password" variant="outlined" onChange={onPwd2Change} required={true} />
-                        </FormControl>
-                        {/* Viser ulike knapper avhengig av om det finnes input av passord og bekreftet passord */}
-                        {pwd == "" || pwd2 == "" ? 
-                        <Button id="pwdSubmit" className={classes.profileButton} type="submit" variant="contained" disabled={true}> {updateTextPwd} </Button> 
-                        :
-                        <Button id="pwdSubmit" className={classes.profileButton} type="submit" variant="contained"> {updateTextPwd} </Button>
+                <div className='profile-body' >
+                    <div className='profile-item' >
+                    <h2 className='profile-subheader' > Personalia </h2>
+                    <h3 className='profile-navn' > {fnavn + " " + enavn} </h3>
+                    {/* Kondisjonell rendring, for å "låse" opp og igjen feltet */}
+                        {
+                            !updateBtnTlf ?
+                            <>
+                            <FormControl id="form-profile-tlf-control">
+                                <InputLabel>Telefonnummer</InputLabel>
+                                <Input type="string" variant="outlined" value={tlf} disabled={true} />
+                            </FormControl>
+                            <Button className={classes.profileButton} variant="contained" onClick={tlfUnlock} > Endre </Button>
+                            </>
+                            :
+                            <form className="profileForm" id="form-profile-tlf" onSubmit={onTlfSubmit} >
+                            <FormControl id="form-profile-tlf-control">
+                                <InputLabel>Telefonnummer</InputLabel>
+                                <Input type="string" variant="outlined" value={tlf} onChange={onTlfChange} required={true} />
+                            </FormControl>
+                            <Button className={classes.profileButton} type="submit" variant="contained" > {updateTextTlf} </Button>
+                            </form>
                         }
 
-                    </form>
-                <Alert id="alert-register" className="fade_in" style={{display: alertDisplay}} variant="outlined" severity={alertSeverity}>
-                    {alertText}
-                </Alert>
-                </div>
+                        {
+                            !updateBtnEmail ? 
+                            <>
+                            <FormControl id="form-profile-email-control">
+                                <InputLabel>E-post</InputLabel>
+                                <Input type="string" variant="outlined" value={email} disabled={true} />
+                            </FormControl>
+                            <Button className={classes.profileButton} variant="contained" onClick={emailUnlock} > Endre </Button>
+                            </>
+                            :
+                            <form className="profileForm" id="form-profile-email" onSubmit={onEmailSubmit} >
+                            <FormControl id="form-profile-email-control">
+                                <InputLabel>E-post</InputLabel>
+                                <Input type="string" variant="outlined" value={email} onChange={onEmailChange} required={true} />
+                            </FormControl>
+                            <Button className={classes.profileButton} type="submit" variant="contained" > {updateTextEmail} </Button>
+                            </form>
+                        }
 
-                <div className='profile-item' >
-                    <h2 className='profile-subheader' > Interesser </h2>
-                    <div className='interesser' >
-                        {/* .map() iterer gjennom objekt i arrayen, og returnerer ett komponent per objekt */}
-                        {/* .some(), satt som ternær operatør for visning */}
-                        {/* Slik testes det om fagfeltet finnes i tabellen for aktive interesser, og tilsvarende knapp vises */}
-                        {interesser !== undefined && fagfelt.map((f, key) => interesser.some(interesse => interesse.fagfeltid == f.fagfeltid) ? (
-                            <Button key={key} className={classes.fagfeltButtonActive} onClick={() => deleteInteresse(f.fagfeltid)} >{f.beskrivelse}</Button>
-                            ) : (
-                            <Button key={key} className={classes.fagfeltButton} onClick={() => insertInteresse(f.fagfeltid, f.beskrivelse)} >{f.beskrivelse}</Button>
-                        ))}
-                        {/* Om interesse-tabellen er helt tom, som f.eks. ved første besøk av profil-siden, kjører denne mappingen i stedet */}
-                        {interesser == undefined && fagfelt.map((f, key) =>  (
-                            <Button key={key} className={classes.fagfeltButton} onClick={() => insertInteresse(f.fagfeltid)} >{f.beskrivelse}</Button>
-                        ))}
+                        <form className="profileForm" id="form-profile-pwd" onSubmit={onPwdSubmit} >
+                            <FormControl id="form-pwd-profile">
+                                <InputLabel>Nytt passord</InputLabel>
+                                <Input type="password" className={classes.input} variant="outlined" onChange={onPwdChange} required={true} />
+                            </FormControl>
+                            <FormControl id="form-pwd2-profile">
+                                <InputLabel>Bekreft passord</InputLabel>
+                                <Input type="password" variant="outlined" onChange={onPwd2Change} required={true} />
+                            </FormControl>
+                            {/* Viser ulike knapper avhengig av om det finnes input av passord og bekreftet passord */}
+                            {pwd == "" || pwd2 == "" ? 
+                            <Button id="pwdSubmit" className={classes.profileButton} type="submit" variant="contained" disabled={true}> {updateTextPwd} </Button> 
+                            :
+                            <Button id="pwdSubmit" className={classes.profileButton} type="submit" variant="contained"> {updateTextPwd} </Button>
+                            }
+
+                        </form>
+                    <Alert id="alert-register" className="fade_in" style={{display: alertDisplay}} variant="outlined" severity={alertSeverity}>
+                        {alertText}
+                    </Alert>
                     </div>
-                </div>
-                
-            </div>
 
-        </div>
-    );
-    } else {
+                    <div className='profile-item' >
+                        <h2 className='profile-subheader' > Interesser </h2>
+                        <div className='interesser' >
+                            {/* .map() iterer gjennom objekt i arrayen, og returnerer ett komponent per objekt */}
+                            {/* .some(), satt som ternær operatør for visning */}
+                            {/* Slik testes det om fagfeltet finnes i tabellen for aktive interesser, og tilsvarende knapp vises */}
+                            {interesser !== undefined && fagfelt.map((f, key) => interesser.some(interesse => interesse.fagfeltid == f.fagfeltid) ? (
+                                <Button key={key} className={classes.fagfeltButtonActive} onClick={() => deleteInteresse(f.fagfeltid)} >{f.beskrivelse}</Button>
+                                ) : (
+                                <Button key={key} className={classes.fagfeltButton} onClick={() => insertInteresse(f.fagfeltid, f.beskrivelse)} >{f.beskrivelse}</Button>
+                            ))}
+                            {/* Om interesse-tabellen er helt tom, som f.eks. ved første besøk av profil-siden, kjører denne mappingen i stedet */}
+                            {interesser == undefined && fagfelt.map((f, key) =>  (
+                                <Button key={key} className={classes.fagfeltButton} onClick={() => insertInteresse(f.fagfeltid)} >{f.beskrivelse}</Button>
+                            ))}
+                        </div>
+                    </div>
+                    
+                </div>
+
+            </div>
+        );
+    } else if(!auth && !loading) {
         return (
             // Brukeren er ikke innlogget, omdiriger
             <NoAccess />

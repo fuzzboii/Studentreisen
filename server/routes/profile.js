@@ -29,13 +29,17 @@ router.get('/getFagfelt', async (req, res) => {
 router.post('/getProfilbilde', async (req, res) => {
     let brukerid = undefined;
     if (req.body.token !== undefined) {
-        verifyAuth(req.body.token).then( resAuth => {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
             brukerid = resAuth.brukerid
             mysqlpool.getConnection(function(error, connPool) {
                 if(error) {
                     return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                 }
-                let getQuery = "SELECT plassering FROM profilbilde WHERE brukerid = ?"
+                let getQuery = `SELECT plassering, SUBSTRING(fnavn, 1, 1) as fnavn, SUBSTRING(fnavn, 1, 1) as enavn 
+                                FROM bruker
+                                LEFT JOIN profilbilde
+                                ON profilbilde.brukerid = bruker.brukerid
+                                WHERE bruker.brukerid = ?`;
                 let getQueryFormat = mysql.format(getQuery, [brukerid])
                 connPool.query(getQueryFormat, (error, results) => {
                     connPool.release();
@@ -60,7 +64,7 @@ router.post('/getProfilbilde', async (req, res) => {
 router.post('/getBruker', async (req, res) => {
     let brukerid = undefined;
     if (req.body.token !== undefined) {
-        verifyAuth(req.body.token).then( resAuth => {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
             brukerid = resAuth.brukerid 
             mysqlpool.getConnection(function(error, connPool) {
                 if(error) {
@@ -93,7 +97,7 @@ router.post('/getBruker', async (req, res) => {
 router.post('/getInteresser', async (req, res) => {
     let brukerid = undefined;
     if (req.body.token !== undefined) {
-        verifyAuth(req.body.token).then( resAuth => {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
             brukerid = resAuth.brukerid;
             mysqlpool.getConnection(function(error, connPool) {
                 if(error) {
@@ -126,7 +130,7 @@ router.post('/getInteresser', async (req, res) => {
 router.post('/deleteInteresse', async (req, res) => {
     let brukerid = undefined;
     if (req.body.token !== undefined && req.body.fagfeltid !== undefined) {
-        verifyAuth(req.body.token).then( resAuth => {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
             brukerid = resAuth.brukerid
             mysqlpool.getConnection(function(error, connPool) {
                 if(error) {
@@ -159,7 +163,7 @@ router.post('/deleteInteresse', async (req, res) => {
 router.post('/postInteresse', async (req, res) => {
     let brukerid = undefined;
     if (req.body.token !== undefined && req.body.fagfeltid !== undefined) {
-        verifyAuth(req.body.token).then( resAuth => {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
             brukerid = resAuth.brukerid
             mysqlpool.getConnection(function(error, connPool) {
                 if(error) {
@@ -192,7 +196,7 @@ router.post('/postInteresse', async (req, res) => {
 router.post('/updateTelefon', async (req, res) => {
     let brukerid = undefined
     if (req.body.token !== undefined && req.body.telefon !== undefined) {
-        verifyAuth(req.body.token).then( resAuth => {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
             brukerid = resAuth.brukerid
             mysqlpool.getConnection(function(error, connPool) {
                 if(error) {
@@ -207,7 +211,7 @@ router.post('/updateTelefon', async (req, res) => {
                     }
 
                     if(results.length > 0) {
-
+                        return res.jason({ "status" : "success", "message" : "Telefonnummer oppdatert" })
                     } else {
                         return res.json({"status" : "error", "message" : "En feil oppstod under oppdatering av brukerens telefonnummer"})
                     }
@@ -232,7 +236,7 @@ router.post('/updateEmail', async (req, res) => {
 
     let brukerid = undefined
     if (req.body.token !== undefined && req.body.epost !== undefined) {
-        verifyAuth(req.body.token).then( resAuth => {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
             brukerid = resAuth.brukerid
             mysqlpool.getConnection(function(error, connPool) {
                 if(error) {
@@ -320,7 +324,7 @@ router.post('/updatePassord', async (req, res) => {
         // Salt og hash passord
         const salt = await bcrypt.genSalt(10)
         const hashedPwd = await bcrypt.hash(req.body.pwd, salt)
-        verifyAuth(req.body.token).then( resAuth => {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
             brukerid = resAuth.brukerid
             mysqlpool.getConnection(function(error, connPool) {
                 if(error) {
@@ -350,7 +354,7 @@ router.post('/updatePassord', async (req, res) => {
 router.post('/insertBilde', async (req, res) => {
     if (req.body.token !== undefined && req.files) {
         let brukerid = undefined
-        verifyAuth(req.body.token).then( resAuth => {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
             brukerid = resAuth.brukerid
 
             mysqlpool.getConnection(function(error, connPool) {
@@ -362,24 +366,30 @@ router.post('/insertBilde', async (req, res) => {
                 const filtype = opplastetFilnavn.substring(opplastetFilnavn.lastIndexOf('.'));
                 const filnavn = "profilbilde" + brukerid + filtype;
 
-                const opplastetBilde = req.files.image;
-                opplastetBilde.mv(path.join(__dirname, process.env.USER_IMG_UPLOAD_PATH) + filnavn);
-
-                // Opprett referanse til bildet
-                let insertQuery = "INSERT INTO profilbilde (brukerid, plassering) VALUES(?, ?) ON DUPLICATE KEY UPDATE brukerid=?, plassering=?"
-                let insertQueryFormat = mysql.format(insertQuery, [brukerid, filnavn, brukerid, filnavn])
-                connPool.query(insertQueryFormat, (error, results) => {
-                    connPool.release();
-                    if (error) {
-                        return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere"})
-                    }
-
-                    if (results.affectedRows > 0) {
-                        return res.json({ "status" : "success", "message" : "Bilde lastet opp" })
-                    } else {
-                        return res.json({"status" : "error", "message" : "En feil oppstod under opplasting av profilbilde"})
-                    }
-                })
+                // Valider at filen er .jpg, .jpeg, .png eller .jfif
+                if (filtype !== '.jpg' && filtype !== '.jpeg' && filtype !== '.png' && filtype !== ".jfif") {
+                    return res.json({"status" : "error", "message" : "Profilbilder må være av filtype .jpg, .jpeg, .png, eller .jfif"})
+                } else {
+                    // Filtype OK
+                    const opplastetBilde = req.files.image;
+                    opplastetBilde.mv(path.join(__dirname, process.env.USER_IMG_UPLOAD_PATH) + filnavn);
+    
+                    // Opprett referanse til bildet
+                    let insertQuery = "INSERT INTO profilbilde (brukerid, plassering) VALUES(?, ?) ON DUPLICATE KEY UPDATE brukerid=?, plassering=?"
+                    let insertQueryFormat = mysql.format(insertQuery, [brukerid, filnavn, brukerid, filnavn])
+                    connPool.query(insertQueryFormat, (error, results) => {
+                        connPool.release();
+                        if (error) {
+                            return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere"})
+                        }
+    
+                        if (results.affectedRows > 0) {
+                            return res.json({ "status" : "success", "message" : "Bilde lastet opp" })
+                        } else {
+                            return res.json({"status" : "error", "message" : "En feil oppstod under opplasting av profilbilde"})
+                        }
+                    })
+                }
             })
         })
     } else {

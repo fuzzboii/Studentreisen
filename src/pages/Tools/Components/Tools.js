@@ -17,17 +17,8 @@ import '../CSS/Tools.css';
 function Tools(props) {
     const [position, setPosition] = useState(0);
 
-    let swiper;
-    const swipeOptions = useMemo(() => ({
-        continuous: false,
-        callback(e) {
-            setPosition(e)
-        }
-    }), []);
-  
     const handleTabChange = (e, newIndex) => {
         setPosition(newIndex);
-        swiper.slide(newIndex);
     };
 
     return (
@@ -48,17 +39,21 @@ function Tools(props) {
                         <Tab label="Seminar"/>
                     </Tabs>
                 </section>
-                <ReactSwipe swipeOptions={swipeOptions} ref={listener => (swiper = listener)}>
+                {position === 0 &&
                     <div className="tools_div">
                         <UserOverview activeTool={position} />
                     </div>
+                }
+                {position === 1 && 
                     <div className="tools_div">
                         <CourseOverview activeTool={position} />
                     </div>
+                }
+                {position === 2 &&
                     <div className="tools_div">
                         <SeminarOverview activeTool={position} />
                     </div>
-                </ReactSwipe>
+                }
             </main>
         }{!props.loading && props.auth && (props.type === 3 || props.type === 2) &&
             <main id="tools_main">

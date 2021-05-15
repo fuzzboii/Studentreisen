@@ -125,7 +125,7 @@ router.get('/', async (req, res) => {
 
 router.post('/getFagfelt', (req, res) => {
     if(req.body.token !== undefined) {
-        verifyAuth(req.body.token).then(function(response) {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then(function(response) {
             if(response.authenticated) {
                 
                 mysqlpool.getConnection(function(error, connPool) {
@@ -162,7 +162,7 @@ router.post('/getFagfelt', (req, res) => {
 
 router.post('/submitCourse', (req, res) => {
     if(req.body.emnekode !== undefined && req.body.navn !== undefined && req.body.beskrivelse !== undefined && req.body.spraak !== undefined && req.body.semester !== undefined && req.body.studiepoeng !== undefined && req.body.lenke !== undefined && req.body.fagfeltid !== undefined && req.body.token !== undefined) {
-        verifyAuth(req.body.token).then(function(response) {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then(function(response) {
             if(response.authenticated) {
                 if(response.usertype.toString() == process.env.ACCESS_COORDINATOR || response.usertype.toString() == process.env.ACCESS_ADMINISTRATOR) {
                     mysqlpool.getConnection(function(error, connPool) {

@@ -18,14 +18,32 @@ router.post('/auth', async (req, res) => {
         if(validation.error) {
             // Validering feilet for den dekrypterte e-posten, antar token er ugyldig
             return res.json({ "authenticated" : false});
-        } else {
+        } else {      
+            // Henter IP-adressen til brukeren
+            let ip;
+            if(process.env.DEVMODE === "true") {
+                // Tillater en IP-adresse å være tom
+                if(req.socket.remoteAddress.substring(7).length == 0) {
+                    // Localhost
+                    ip = "devmode";
+                } else {
+                    ip = req.socket.remoteAddress.substring(7);
+                }
+            } else {
+                if(req.socket.remoteAddress.substring(7).length == 0) {
+                    return res.json({ "authenticated" : false});
+                } else {
+                    ip = req.socket.remoteAddress.substring(7);
+                }
+            }
+
             mysqlpool.getConnection(function(error, connPool) {
                 if(error) {
                     return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                 }
                 // Sjekk om token fremdeles er gyldig
-                let checkQuery = "SELECT gjelderfor, niva FROM login_token, bruker WHERE gjelderfor in (SELECT brukerid as gjelderfor FROM bruker WHERE email = ?) AND gjelderfor = brukerid AND token = ? AND utlopsdato > NOW();";
-                let checkQueryFormat = mysql.format(checkQuery, [decryptedToken.toString(cryptojs.enc.Utf8), req.body.token]);
+                let checkQuery = "SELECT gjelderfor, ip, niva FROM login_token, bruker WHERE gjelderfor in (SELECT brukerid as gjelderfor FROM bruker WHERE email = ?) AND gjelderfor = brukerid AND token = ? AND ip = ? AND utlopsdato > NOW();";
+                let checkQueryFormat = mysql.format(checkQuery, [decryptedToken.toString(cryptojs.enc.Utf8), req.body.token, ip]);
 
                 connPool.query(checkQueryFormat, (error, results) => {
                     if (error) {

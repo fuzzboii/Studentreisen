@@ -1,6 +1,6 @@
 // React spesifikt
 import { Component } from 'react';
-import {useLocation} from 'react-router-dom';
+import {Redirect, useLocation} from 'react-router-dom';
 
 // Studentreisen-assets og komponenter
 import '../Styles/styles.css';
@@ -22,42 +22,11 @@ export const LocationDisplay = () => {
 class HomeOverview extends Component {
     constructor(props) {
         super(props);
-        
-        this.state = {
-            loading : true, authenticated : false, 
-        }
-    }
-
-    
-
-    componentDidMount() {
-        // Henter authtoken-cookie
-        const token = CookieService.get("authtoken");
-
-        if(token !== undefined) {
-            // Om token eksisterer sjekker vi mot serveren om brukeren har en gyldig token
-            AuthService.isAuthenticated(token).then(res => {
-                if(!res.authenticated) {
-                    // Sletter authtoken om token eksisterer lokalt men ikke er gyldig på server
-                    CookieService.remove("authtoken");
-                }
-                this.setState({
-                    authenticated : res.authenticated,
-                    loading: false
-                });
-            });
-        } else {
-            this.setState({
-                authenticated : false,
-                loading: false
-            });
-        }
     }
 
     render() {
-        const {loading, authenticated, usertype} = this.state;
 
-        if(loading) {
+        if(this.props.loading) {
             // Om vi er i loading fasen (Før mottatt data fra API) vises det et Loading ikon
             return(
                 <section id="loading">
@@ -66,7 +35,7 @@ class HomeOverview extends Component {
             );
         }
         
-        if(!loading && authenticated) {
+        if(!this.props.loading && this.props.auth) {
             return (            
                 <div className="main">
                     <div className="cardLink-Wrap">
@@ -84,7 +53,7 @@ class HomeOverview extends Component {
         } else {
             return (
                 // Ugyldig eller ikke-eksisterende token 
-                <NoAccess />
+                <Redirect to="/"/>
             );
         }
     }    
