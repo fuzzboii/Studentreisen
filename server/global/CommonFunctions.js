@@ -2,6 +2,7 @@ const mysqlpool = require('../db').pool;
 const mysql = require('mysql');
 const nodemailer = require('nodemailer');
 
+// Autentisering for bruker fra andre funksjoner på serversiden 
 const verifyAuth = (token, ip) => {
     return new Promise(function(resolve, reject){
         try {
