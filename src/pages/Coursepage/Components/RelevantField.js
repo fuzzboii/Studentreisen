@@ -23,8 +23,10 @@ const useStyles = makeStyles((theme) => ({
     },
   }));
 
+// Komponent for å gi forslag om andre fagområder, data'en blir overført fra CourseNav og RelevantField
 const RelevantField = (props) => {
 
+    // Hook for å få tilgang på styling
     const classes = useStyles();
     
     return(
