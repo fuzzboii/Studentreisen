@@ -49,7 +49,7 @@ app.use('/api/v1/notif', notifRoute);
 app.use('/api/v1/cv', cvRoute);
 
 // Starter server
-if(process.env.DEVMODE) {
+if(process.env.DEVMODE === "true") {
   app.listen(process.env.PORT, () => {
       console.log("API-serveren kjører i devmodus på HTTP");
   });
