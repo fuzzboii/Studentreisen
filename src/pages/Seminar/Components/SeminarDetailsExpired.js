@@ -55,26 +55,6 @@ const SeminarDetailsExpired = (props) => {
         setSeminars(res.data);
     })}
     
-/*     //Sletting av seminar
-    const deleteSeminar = async (seminarid, varighet, bilde) => {
-        console.log("TODO:\n\tImplementere feilmeldinger");
-        try {
-            axios
-                .post(process.env.REACT_APP_APIURL + "/tools/deleteSeminar", {seminarid : seminarid, sluttdato : varighet, bilde : bilde, token : CookieService.get("authtoken")})
-                // Utføres ved mottatt resultat
-                .then(res => {
-                    if(res.data.success) {
-                        window.location.href="/seminar";
-                    } else {
-                        // Vis feilmelding
-                    }
-                }).catch(e => {
-                    // Vis feilmelding
-                });
-        } catch(e) {
-            // Vis feilmelding
-        }
-    }; */
  
     // Alert, melding
     const [alertTextDelete, setAlertTextDelete] = useState();
@@ -135,7 +115,7 @@ const SeminarDetailsExpired = (props) => {
             <div className="SeminarDetails">
             {seminarsExpired.map(seminar => { if(seminarid == seminar.seminarid)           
                 return ( 
-                    <div className="SeminarDetails-Content">
+                    <div className="SeminarDetails-Content" key={seminar.seminarid}>
                         {/*Header seksjonen */}
                         <div className="SeminarDetails-Header">
                             <div className="SeminarDetailsHeading">
