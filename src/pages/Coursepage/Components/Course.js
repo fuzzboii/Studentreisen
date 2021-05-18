@@ -1,4 +1,7 @@
+// React spesifikt
 import React from "react";
+
+// 3rd-party Packages
 import Box from '@material-ui/core/Box';
 import CardContent from '@material-ui/core/CardContent';
 import LanguageIcon from '@material-ui/icons/Language';
@@ -6,7 +9,7 @@ import SchoolIcon from '@material-ui/icons/School';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 
 
-
+// Komponent for å rendrere hvert enkelt kurs i kurslisten, data'en blir overført fra CourseNav, gjennom CourseList
 const Course = (props) => {
 
     return (
@@ -37,4 +40,3 @@ const Course = (props) => {
 };
 
 export default Course;
-/*<p className="kursbeskrivelse">{props.beskrivelse}</p> */

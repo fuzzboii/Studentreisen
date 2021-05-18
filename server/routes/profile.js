@@ -207,11 +207,11 @@ router.post('/updateTelefon', async (req, res) => {
                 connPool.query(updateQueryFormat, (error, results) => {
                     connPool.release();
                     if (error) {
-                        return res.jason({ "status" : "error", "message" : "en intern feil oppstod, vennligst forsøk igjen senere" })
+                        return res.json({ "status" : "error", "message" : "en intern feil oppstod, vennligst forsøk igjen senere" })
                     }
 
                     if(results.length > 0) {
-                        return res.jason({ "status" : "success", "message" : "Telefonnummer oppdatert" })
+                        return res.json({ "status" : "success", "message" : "Telefonnummer oppdatert" })
                     } else {
                         return res.json({"status" : "error", "message" : "En feil oppstod under oppdatering av brukerens telefonnummer"})
                     }

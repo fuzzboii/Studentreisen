@@ -8,19 +8,6 @@ const { verifyAuth } = require('../global/CommonFunctions');
 
 const router = require('express').Router();
 
-/*
-Order
-{
-    "email": "",
-    "fnavn": "",
-    "enavn": "",
-    "pwd": ""
-}
-*/
-
-router.get('/register', async (req, res) => {
-    res.status(404).send();
-});
 
 router.post('/register', async (req, res) => {
     if(req.body.email !== undefined && req.body.fnavn !== undefined && req.body.enavn !== undefined && req.body.password !== undefined && req.body.password2 !== undefined) {
@@ -193,18 +180,6 @@ router.post('/register', async (req, res) => {
     }
 });
 
-
-/*
-Order
-{
-    "email": "",
-    "pwd": ""
-}
-*/
-
-router.get('/login', async (req, res) => {
-    res.status(404).send();;
-});
 
 router.post('/login', async (req, res) => {
     if(req.body.email !== undefined && req.body.pwd !== undefined && req.body.remember !== undefined) {

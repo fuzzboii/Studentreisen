@@ -89,7 +89,7 @@ router.post('/postCVSeminar', async (req, res) => {
                     connPool.release();
                     if (error) {
                         console.log("An error occured while adding to CV, details: " + error.errno + ", " + error.sqlMessage)
-                        return res.jason({ "status" : "error", "message" : "en intern feil oppstod, vennligst forsøk igjen senere" })
+                        return res.json({ "status" : "error", "message" : "en intern feil oppstod, vennligst forsøk igjen senere" })
                     }
                 })
             })
@@ -116,7 +116,7 @@ router.post('/postCVEducation', async (req, res) => {
                     connPool.release();
                     if (error) {
                         console.log("An error occured while  adding to CV, details: " + error.errno + ", " + error.sqlMessage)
-                        return res.jason({ "status" : "error", "message" : "en intern feil oppstod, vennligst forsøk igjen senere" })
+                        return res.json({ "status" : "error", "message" : "en intern feil oppstod, vennligst forsøk igjen senere" })
                     }
                 })
             })
@@ -142,7 +142,7 @@ router.post('/postCVWork', async (req, res) => {
                     connPool.release();
                     if (error) {
                         console.log("An error occured while  adding to CV, details: " + error.errno + ", " + error.sqlMessage)
-                        return res.jason({ "status" : "error", "message" : "en intern feil oppstod, vennligst forsøk igjen senere" })
+                        return res.json({ "status" : "error", "message" : "en intern feil oppstod, vennligst forsøk igjen senere" })
                     }
                 })
             })
@@ -168,7 +168,7 @@ router.post('/postCVOther', async (req, res) => {
                     connPool.release();
                     if (error) {
                         console.log("An error occured while  adding to CV, details: " + error.errno + ", " + error.sqlMessage)
-                        return res.jason({ "status" : "error", "message" : "en intern feil oppstod, vennligst forsøk igjen senere" })
+                        return res.json({ "status" : "error", "message" : "en intern feil oppstod, vennligst forsøk igjen senere" })
                     }
                 })
             })
@@ -202,7 +202,7 @@ router.post('/getCVSeminar', async (req, res) => {
                     if(results.length > 0) {
                         return res.json({results});
                     } else {
-                        return res.json({"status" : "error", "message" : "En feil oppstod under henting av brukerens innelegg i seminar listen"});
+                        return res.json({"status" : "error", "message" : "Ingen data funnet i brukerens innlegg i seminar listen"});
                     }
                 });       
             })
@@ -269,7 +269,7 @@ router.post('/getCVEducation', async (req, res) => {
                     if(results.length > 0) {
                         return res.json({results});
                     } else {
-                        return res.json({"status" : "error", "message" : "En feil oppstod under henting av brukerens innlegg i utdannings listen"});
+                        return res.json({"status" : "error", "message" : "Ingen data funnet i brukerens innlegg i utdannings listen"});
                     }
                 });         
             })
@@ -337,7 +337,7 @@ router.post('/getCVWork', async (req, res) => {
                     if(results.length > 0) {
                         return res.json({results});
                     } else {
-                        return res.json({"status" : "error", "message" : "En feil oppstod under henting av brukerens jobberfaringer i listen"});
+                        return res.json({"status" : "error", "message" : "Ingen data funnet i brukerens jobberfaringer i listen"});
                     }
                 });        
             })
@@ -404,7 +404,7 @@ router.post('/getCVOther', async (req, res) => {
                     if(results.length > 0) {
                         return res.json({results});
                     } else {
-                        return res.json({"status" : "error", "message" : "En feil oppstod under henting av brukerens innlegg i annet listen"});
+                        return res.json({"status" : "error", "message" : "Ingen data funnet i brukerens innlegg i annet listen"});
                     }
                 });          
             })

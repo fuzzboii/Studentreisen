@@ -1,6 +1,8 @@
+// React spesifikt
 import {Link} from 'react-router-dom';
 import Course from './Course';
 
+// Komponent for å mappe antall kurs i useStaten og lenke til et spesifikk kurs, data'en blir overført fra CourseNav.
 const CourseList = ({courses}) => { 
 
     return (

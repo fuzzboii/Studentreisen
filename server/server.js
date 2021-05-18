@@ -49,15 +49,15 @@ app.use('/api/v1/notif', notifRoute);
 app.use('/api/v1/cv', cvRoute);
 
 // Starter server
-if(process.env.DEVMODE) {
+if(process.env.DEVMODE === "true") {
   app.listen(process.env.PORT, () => {
-      console.log("API-serveren kjører i devmodus på HTTP, den kan nåes på " + process.env.ACCESS_ORIGIN + ":" + process.env.PORT)
+      console.log("API-serveren kjører i devmodus på HTTP");
   });
 } else {
   https.createServer({
       key: fs.readFileSync(process.env.PRIVATEKEY),
       cert: fs.readFileSync(process.env.CERTIFICATE)
   }, app).listen(process.env.PORT, () => {
-    console.log("API-serveren kjører på HTTPS, den kan nåes på " + process.env.ACCESS_ORIGIN + ":" + process.env.PORT)
+    console.log("API-serveren kjører på HTTPS");
   });
 }

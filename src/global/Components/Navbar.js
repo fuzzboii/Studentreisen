@@ -111,8 +111,17 @@ function Navbar(props) {
         padding: '0.5rem 1rem',
         display: 'grid',
         minWidth: '7rem',
-        transform: 'translate(28vw)',
+        transform: 'translate(24vw)',
         textDecoration: 'none',
+        ['@media (min-width:370px)']: {
+          transform: 'translate(28vw)'
+        },
+        ['@media (min-width:480px)']: {
+          transform: 'translate(32vw)'
+        },
+        ['@media (min-width:640px)']: {
+          transform: 'translate(36vw)'
+        },
         ['@media (min-width:768px)']: {
           transform: 'translate(38vw)'
         },
@@ -258,14 +267,16 @@ function Navbar(props) {
                 <Button
                   className={classes.loggbtnmobil}
                   onClick={loggUt}
-                  id='loggBtnMobil'>
+                  id='loggBtnMobil'
+                  style={{"visibility" : "visible"}}>
                   Logg ut
                 </Button>
                 :
                 <Button
                   className={classes.loggbtnmobilBar}
                   onClick={loggUt}
-                  id='loggBtnMobil'>
+                  id='loggBtnMobil'
+                  style={{"visibility" : "visible"}}>
                   Logg ut
                 </Button>
                 }
@@ -322,7 +333,7 @@ function Navbar(props) {
               </div> }
 
               {auth && (notif !== null && notifUlest > 0) && 
-                  <NotificationImportantIcon tabIndex={7} id="notif-bell" onClick={notifClickOpen} />
+                  <NotificationImportantIcon tabIndex={7} id="notif-bell" onClick={notifClickOpen} onKeyUp={e => e.code === "Enter" ? notifClickOpen() : ""} />
               }
               {auth && (notif == null || notifUlest == 0) &&
                   <NotificationsNoneIcon tabIndex={7} id="notif-bell" onClick={notifClickOpen} onKeyUp={e => e.code === "Enter" ? notifClickOpen() : ""} />
