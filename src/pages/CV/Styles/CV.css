@@ -43,6 +43,10 @@
     display: inline;
 }
 
+.cv_select {
+    min-width: 7em;
+}
+
 .cv_form {
     display: flex
 }
@@ -51,26 +55,22 @@
     border: solid 1px black;
 }
 
-.cv_returned p {
-    max-width: 30ch;
-  }
-
 .cv_returned_innlegg {
     font-size:1em;
-}
-
-.cv_returned_datoFra {
-    font-size:1em;
-    margin-left: auto;
+    text-align: center;
 }
 
 .cv_returned_datoTil {
-    font-size:1em;
-    text-align: left;
-    margin-left: auto;
-    margin-right: auto;
+    padding-right: 2em;
 }
 
+.cv_returned_datoFra {
+    padding-left: 2em;
+}
+
+.cv_profil_info {
+    padding-left: 1em;
+}
 
 #innleggButton {
     display: block;
@@ -90,6 +90,7 @@
     margin-left: 1em;
     margin-right: 1em;
 }
+
 
 
 

@@ -89,7 +89,7 @@ router.post('/postCVSeminar', async (req, res) => {
                     connPool.release();
                     if (error) {
                         console.log("An error occured while adding to CV, details: " + error.errno + ", " + error.sqlMessage)
-                        return res.jason({ "status" : "error", "message" : "en intern feil oppstod, vennligst forsøk igjen senere" })
+                        return res.json({ "status" : "error", "message" : "en intern feil oppstod, vennligst forsøk igjen senere" })
                     }
                 })
             })
@@ -116,7 +116,7 @@ router.post('/postCVEducation', async (req, res) => {
                     connPool.release();
                     if (error) {
                         console.log("An error occured while  adding to CV, details: " + error.errno + ", " + error.sqlMessage)
-                        return res.jason({ "status" : "error", "message" : "en intern feil oppstod, vennligst forsøk igjen senere" })
+                        return res.json({ "status" : "error", "message" : "en intern feil oppstod, vennligst forsøk igjen senere" })
                     }
                 })
             })
@@ -142,7 +142,7 @@ router.post('/postCVWork', async (req, res) => {
                     connPool.release();
                     if (error) {
                         console.log("An error occured while  adding to CV, details: " + error.errno + ", " + error.sqlMessage)
-                        return res.jason({ "status" : "error", "message" : "en intern feil oppstod, vennligst forsøk igjen senere" })
+                        return res.json({ "status" : "error", "message" : "en intern feil oppstod, vennligst forsøk igjen senere" })
                     }
                 })
             })
@@ -168,7 +168,7 @@ router.post('/postCVOther', async (req, res) => {
                     connPool.release();
                     if (error) {
                         console.log("An error occured while  adding to CV, details: " + error.errno + ", " + error.sqlMessage)
-                        return res.jason({ "status" : "error", "message" : "en intern feil oppstod, vennligst forsøk igjen senere" })
+                        return res.json({ "status" : "error", "message" : "en intern feil oppstod, vennligst forsøk igjen senere" })
                     }
                 })
             })

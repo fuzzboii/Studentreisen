@@ -20,7 +20,6 @@ import DialogActions from '@material-ui/core/DialogActions';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Input from '@material-ui/core/Input';
-import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
 
 function CV(props) {
@@ -190,7 +189,6 @@ function CV(props) {
 
     const classes = useStyles();
 
-//    const [profilbilde, setProfilbilde] = useState();
     const fetch = () => {
         // Authtoken sendes ved for å hente pålogget brukers ID
         const config = {
@@ -373,9 +371,9 @@ function CV(props) {
                     }}
                     />
                     <Box alignItems="center">
-                        <p>{"Navn: " + fnavn + " " + enavn} </p>
-                        <p>{"Epost: " + email}</p>
-                        <p>{"Telefonnummer: " + tlf}</p>
+                        <p className='cv_profil_info'>{"Navn: " + fnavn + " " + enavn} </p>
+                        <p className='cv_profil_info'>{"Epost: " + email}</p>
+                        <p className='cv_profil_info'>{"Telefonnummer: " + tlf}</p>
                     </Box>
                 </Grid>
 
@@ -387,9 +385,9 @@ function CV(props) {
                     <Dialog open={opprettopen} onClose={handleCloseOpprett} aria-labelledby="form-dialog-title">
                         <DialogTitle id="cv_dialog_title">Legg til på CV</DialogTitle>
                         <DialogContent>
-                            <Select onChange={(e) => setValgt_type(e.target.value)} required>
-                                <MenuItem value={"Seminar"}>Seminar</MenuItem>
+                            <Select className='cv_select' onChange={(e) => setValgt_type(e.target.value)} required>
                                 <MenuItem value={"Utdanning"}>Utdanning</MenuItem>
+                                <MenuItem value={"Seminar"}>Seminar</MenuItem>
                                 <MenuItem value={"Jobberfaring"}>Jobberfaring</MenuItem>
                                 <MenuItem value={"Annet"}>Annet</MenuItem>
                             </Select>
@@ -397,7 +395,7 @@ function CV(props) {
                             <Input value={opprett_innlegg}
                                     onChange={handleOpprettInnlegg} required>
                                         Skriv inn innlegg her
-                            </Input>
+                            </Input><br />
 
                             <Input
                             id="date"
@@ -430,15 +428,15 @@ function CV(props) {
                         </DialogActions>
                     </Dialog>
                     <CardContent>                    
-                        <Box boxShadow={1}>
+                        <Box boxShadow={5}>
                             <h1>Utdannelse</h1>
                             {utdanning !== undefined && utdanning.map((utd, indexEdu) => (
                                 
                                 <div className="cv_returned_content">
                                     {utd.datoFra !== null &&
-                                    <text className='cv_returned_datoTil' type="date">Fra: {moment.locale('nb'), moment(utd.datoFra).format("DD MM YYYY")}</text>}
+                                    <text className='cv_returned_datoFra' type="date">{moment.locale('nb'), moment(utd.datoFra).format("DD MMM YYYY")} &nbsp;&nbsp;</text>}
                                     {utd.datoTil !== null && 
-                                    <text className='cv_returned_datoFra' type="date">Til: {moment.locale('nb'), moment(utd.datoTil).format("DD MM YYYY")}</text>}
+                                    <text className='cv_returned_datoTil' type="date">- &nbsp;&nbsp;{moment.locale('nb'), moment(utd.datoTil).format("DD MMM YYYY")}</text>}
                                     <p className='cv_returned_innlegg'>{utd.innlegg}</p>
                                     <div className="cv_ButtonsWrapper">
                                     <Button className="cv_Delete"
@@ -488,7 +486,7 @@ function CV(props) {
                                                 Rediger ditt innlegg
                                             </DialogContentText>
                                             <input type="date" value={reddatoFra} onChange={e => setReddatoFra(e.target.value)} pattern="\d{4}-\d{2}-\d{2}"></input>
-                                            <input type="date" value={reddatoTil} onChange={e => setReddatoTil(e.target.value)} pattern="\d{4}-\d{2}-\d{2}"></input>
+                                            <input type="date" value={reddatoTil} onChange={e => setReddatoTil(e.target.value)} pattern="\d{4}-\d{2}-\d{2}"></input><br />
                                             <Input type="text" value={redinnlegg} onChange={e => setRedinnlegg(e.target.value)} required></Input>
                                         </DialogContent>
                                         <DialogActions>
@@ -508,16 +506,16 @@ function CV(props) {
                                     <p>Ingen informasjon her enda.</p>
                                 </div>}
                         </Box>
-                        <Box boxShadow={1}>
+                        <Box boxShadow={5}>
                             <h1>Seminarer og sertifiseringer</h1>
                             {seminar !== undefined && seminar.map((sem, indexSem) => (
                                 
                                 <div className="cv_returned_content">
                                     {sem.datoFra !== null && 
-                                    <text className='cv_returned' type="date">Fra: {moment.locale('nb'), moment(sem.datoFra).format("DD MM YYYY")}</text>}
+                                    <text className='cv_returned_datoFra' type="date">{moment.locale('nb'), moment(sem.datoFra).format("DD MMM YYYY")} &nbsp;&nbsp;</text>}
                                     {sem.datoTil !== null && 
-                                    <text className='cv_returned' type="date">Til: {moment.locale('nb'), moment(sem.datoTil).format("DD MM YYYY")}</text>}
-                                    <p className='cv_returned'>{sem.innlegg}</p>
+                                    <text className='cv_returned_datoTil' type="date">- &nbsp;&nbsp;{moment.locale('nb'), moment(sem.datoTil).format("DD MMM YYYY")}</text>}
+                                    <p className='cv_returned_innlegg'>{sem.innlegg}</p>
                                     <div className="cv_ButtonsWrapper">
                                     <Button
                                     type="submit"
@@ -565,7 +563,7 @@ function CV(props) {
                                                 Rediger ditt innlegg
                                             </DialogContentText>
                                             <input type="date" value={reddatoFra} onChange={e => setReddatoFra(e.target.value)} pattern="\d{4}-\d{2}-\d{2}"></input>
-                                            <input type="date" value={reddatoTil} onChange={e => setReddatoTil(e.target.value)} pattern="\d{4}-\d{2}-\d{2}"></input>
+                                            <input type="date" value={reddatoTil} onChange={e => setReddatoTil(e.target.value)} pattern="\d{4}-\d{2}-\d{2}"></input><br />
                                             <Input type="text" value={redinnlegg} onChange={e => setRedinnlegg(e.target.value)} required></Input>
                                         </DialogContent>
                                         <DialogActions>
@@ -584,15 +582,15 @@ function CV(props) {
                                     <p>Ingen informasjon her enda.</p>
                                 </div>}
                         </Box>
-                        <Box boxShadow={1}>
+                        <Box boxShadow={5}>
                             <h1>Jobberfaring</h1>
                             {jobb !== undefined && jobb.map((wor, indexWor) => (
                                 <div className="cv_returned_content">
                                     {wor.datoFra !== null && 
-                                    <text className='cv_returned' type="date">{moment.locale('nb'), moment(wor.datoFra).format("DD MMM YYYY")}</text>}
+                                    <text className='cv_returned_datoFra' type="date">{moment.locale('nb'), moment(wor.datoFra).format("DD MMM YYYY")} &nbsp;&nbsp;</text>}
                                     {wor.datoTil !== null && 
-                                    <text className='cv_returned' type="date">{moment.locale('nb'), moment(wor.datoTil).format("DD MMM YYYY")}</text>}
-                                    <p className='cv_returned'>{wor.innlegg}</p>
+                                    <text className='cv_returned_datoTil' type="date">- &nbsp;&nbsp;{moment.locale('nb'), moment(wor.datoTil).format("DD MMM YYYY")}</text>}
+                                    <p className='cv_returned_innlegg'>{wor.innlegg}</p>
                                     <div className="cv_ButtonsWrapper">
                                     <Button
                                     type="submit"
@@ -639,7 +637,7 @@ function CV(props) {
                                                 Rediger ditt innlegg
                                             </DialogContentText>
                                             <input type="date" value={reddatoFra} onChange={e => setReddatoFra(e.target.value)} pattern="\d{4}-\d{2}-\d{2}"></input>
-                                            <input type="date" value={reddatoTil} onChange={e => setReddatoTil(e.target.value)} pattern="\d{4}-\d{2}-\d{2}"></input>
+                                            <input type="date" value={reddatoTil} onChange={e => setReddatoTil(e.target.value)} pattern="\d{4}-\d{2}-\d{2}"></input><br />
                                             <Input type="text" value={redinnlegg} onChange={e => setRedinnlegg(e.target.value)} required></Input>
                                         </DialogContent>
                                         <DialogActions>
@@ -658,15 +656,15 @@ function CV(props) {
                                     <p>Ingen informasjon her enda.</p>
                                 </div>}
                         </Box>
-                        <Box boxShadow={1}>
+                        <Box boxShadow={5}>
                         <h1>Annet</h1>
                             {annet !== undefined && annet.map((ann, indexAnn) => (
                                 <div className="cv_returned_content">
                                     {ann.datoFra !== null && 
-                                    <text className='cv_returned' type="date">{moment.locale('nb'), moment(ann.datoFra).format("DD MMM YYYY")}</text>}
+                                    <text className='cv_returned_datoFra' type="date">{moment.locale('nb'), moment(ann.datoFra).format("DD MMM YYYY")} &nbsp;&nbsp;</text>}
                                     {ann.datoTil !== null && 
-                                    <text className='cv_returned' type="date">{moment.locale('nb'), moment(ann.datoTil).format("DD MMM YYYY")}</text>}
-                                    <p className='cv_returned'>{ann.innlegg}</p>
+                                    <text className='cv_returned_datoTil' type="date">- &nbsp;&nbsp;{moment.locale('nb'), moment(ann.datoTil).format("DD MMM YYYY")}</text>}
+                                    <p className='cv_returned_innlegg'>{ann.innlegg}</p>
                                     <div className="cv_ButtonsWrapper">
                                     <Button
                                     type="submit"
@@ -713,7 +711,7 @@ function CV(props) {
                                                 Rediger ditt innlegg
                                             </DialogContentText>
                                             <input type="date" value={reddatoFra} onChange={e => setReddatoFra(e.target.value)} pattern="\d{4}-\d{2}-\d{2}"></input>
-                                            <input type="date" value={reddatoTil} onChange={e => setReddatoTil(e.target.value)} pattern="\d{4}-\d{2}-\d{2}"></input>
+                                            <input type="date" value={reddatoTil} onChange={e => setReddatoTil(e.target.value)} pattern="\d{4}-\d{2}-\d{2}"></input><br />
                                             <Input type="text" value={redinnlegg} onChange={e => setRedinnlegg(e.target.value)} required></Input>
                                         </DialogContent>
                                         <DialogActions>
