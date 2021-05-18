@@ -99,6 +99,7 @@
 
 .cv_returned_content {
     border-bottom: 0.1px solid lightgray;
+    box-shadow: 0.5px 0.5px lightgray;
 }
 
 
