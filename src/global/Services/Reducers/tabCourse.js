@@ -1,3 +1,4 @@
+// Reducer for tabkurs posisjon
 const courseReducer = (state = 0, action) => {
     switch(action.type){
         case 'TAB_COURSE':

@@ -12,27 +12,26 @@ import {createStore} from 'redux';
 import allReducers from './global/Services/Reducers';
 import { Provider } from 'react-redux';
 
+// Gir tilgang til Redux funksjoner og chrome-extension til å teste
 const store = createStore(
   allReducers, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
 
 ReactDOM.render(
-  <React.StrictMode>
-    <Router >
-      <SnackbarProvider 
-        maxSnack={3}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "center"
-        }}
-        TransitionComponent={Slide}
-      >
-        <Provider store={store}>
-          <App />
-        </Provider>
-      </SnackbarProvider>
-    </Router >
-  </React.StrictMode>,
+  <Router >
+    <SnackbarProvider 
+      maxSnack={3}
+      anchorOrigin={{
+        vertical: "top",
+        horizontal: "center"
+      }}
+      TransitionComponent={Slide}
+    >
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </SnackbarProvider>
+  </Router >,
   document.getElementById('root')
 );
 

@@ -1,9 +1,15 @@
+// React spesifikt
 import React, { useState, useContext} from 'react';
+
+// Studentreisen-assets og komponenter
 import {EnlistedContext} from './EnlistedContext';
 import EnlistedSeminar from './EnlistedSeminar';
 
 
+// Komponent for å mappe antall seminarer i en useState
 const EnlistedList = () => {
+
+    // Henter data som blir overført gjennom EnlistedProvider i EnlistedContext
     const [enlists, setEnlists] = useContext(EnlistedContext);
 
     return(

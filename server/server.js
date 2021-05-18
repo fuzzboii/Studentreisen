@@ -3,6 +3,9 @@ const express = require("express");
 const fileupload = require("express-fileupload");
 const cors = require('cors');
 
+const https = require('https');
+const fs = require('fs');
+
 // Importerer routes vi bruker
 const authRoute = require('./routes/auth');
 const forgotPasswordRoute = require('./routes/forgotPassword');
@@ -23,9 +26,9 @@ app.use(express.json());
 app.use(fileupload());
 app.use(cors());
 
-// Midlertidig header for å tillate tilkoblinger fra localhost:3000, vil sannsynligvis bli endret til studentreisen.no ved senere tidspunkt
+// Tillater tilkoblinger fra ACCESS_ORIGIN satt i .env
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.setHeader("Access-Control-Allow-Origin", process.env.ACCESS_ORIGIN);
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"
@@ -45,6 +48,16 @@ app.use('/api/v1/profile', profileRoute);
 app.use('/api/v1/notif', notifRoute);
 app.use('/api/v1/cv', cvRoute);
 
-app.listen(process.env.PORT, () => {
-    console.log("Serveren kjører")
-});
+// Starter server
+if(process.env.DEVMODE === "true") {
+  app.listen(process.env.PORT, () => {
+      console.log("API-serveren kjører i devmodus på HTTP");
+  });
+} else {
+  https.createServer({
+      key: fs.readFileSync(process.env.PRIVATEKEY),
+      cert: fs.readFileSync(process.env.CERTIFICATE)
+  }, app).listen(process.env.PORT, () => {
+    console.log("API-serveren kjører på HTTPS");
+  });
+}

@@ -8,7 +8,7 @@ const router = require('express').Router();
 //Henter brukerens påmeldte seminarer
 router.post('/getEnlistedSeminars', async (req, res) => {
     if(req.body.token !== undefined) {
-        verifyAuth(req.body.token).then( resAuth => {
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
             brukerid = resAuth.brukerid 
             mysqlpool.getConnection(function(error, connPool) {
                 if(error) {
@@ -193,7 +193,7 @@ router.get('/getAllSeminarExpiredData', async (req, res) => {
     router.post('/postEnlist', async (req, res) => {
         let brukerid = undefined;
         if (req.body.token !== undefined && req.body.seminarid !== undefined) {
-            verifyAuth(req.body.token).then( resAuth => {
+            verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
                 brukerid = resAuth.brukerid
 
                 mysqlpool.getConnection(function(error, connPool) {
@@ -228,7 +228,7 @@ router.get('/getAllSeminarExpiredData', async (req, res) => {
     router.post('/deleteEnlist', async (req, res) => {
         let brukerid = undefined;
         if (req.body.token !== undefined && req.body.seminarid !== undefined) {
-            verifyAuth(req.body.token).then( resAuth => {
+            verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
                 brukerid = resAuth.brukerid
                 mysqlpool.getConnection(function(error, connPool) {
                     if(error) {
@@ -295,16 +295,20 @@ router.get('/getAllSeminarExpiredData', async (req, res) => {
 
 router.post('/submitSeminar', (req, res) => {
     if(req.body.title !== undefined && req.body.startdate !== undefined && req.body.enddate !== undefined && req.body.address !== undefined && req.body.description !== undefined && req.body.token !== undefined) {
-        verifyAuth(req.body.token).then(function(response) {
+        // Kun innloggede brukere skal kunne opprette et seminar, verifiserer authtoken og IP
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then(function(response) {
             if(response.authenticated) {
+                // Bruker er innlogget med gyldig token og IP
                 if(response.usertype.toString() !== process.env.ACCESS_STUDENT) {
+                    // Bruker er ikke av type Student
                     mysqlpool.getConnection(function(error, connPool) {
                         if(error) {
                             return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                         }
                         
+                        // Sjekker om et bilde skal opplastes
                         if(req.files) {
-                            // Oppretter seminar
+                            // Oppretter seminar med bilde
                             let insertSeminarQuery = "INSERT INTO seminar(navn, arrangor, adresse, oppstart, varighet, beskrivelse, tilgjengelighet) VALUES(?, ?, ?, ?, ?, ?, ?)";
                             let insertSeminarQueryFormat = mysql.format(insertSeminarQuery, [req.body.title, response.brukerid, req.body.address, req.body.startdate, req.body.enddate, req.body.description, (req.body.availability === "true") ? 1 : 0]);
                     
@@ -321,39 +325,45 @@ router.post('/submitSeminar', (req, res) => {
                                     const filtype = opplastetFilnavn.substring(opplastetFilnavn.lastIndexOf('.'));
                                     const filnavn = "seminar" + insertedSeminar.insertId + filtype;
 
-            
-                                    const opplastetBilde = req.files.image;
-                                    opplastetBilde.mv(path.join(__dirname, process.env.USER_IMG_UPLOAD_PATH) + filnavn);
-
-                                    // Oppretter referanse til bilde og kobler mot seminar
-                                    let insertImageQuery = "INSERT INTO bilde(plassering) VALUES(?)";
-                                    let insertImageQueryFormat = mysql.format(insertImageQuery, [filnavn]);
-                            
-                                    connPool.query(insertImageQueryFormat, (error, insertedImage) => {
-                                        if (error) {
-                                            connPool.release();
-                                            console.log("En feil oppstod ved oppretting av nytt bilde til et seminar, detaljer: " + error.errno + ", " + error.sqlMessage)
-                                            return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
-                                        }
-                                        
-                                        if(insertedImage.affectedRows > 0) {
-                                            // Oppretter referanse til bilde og kobler mot seminar
-                                            let insertQuery = "UPDATE seminar SET bildeid = ? WHERE seminarid = ?";
-                                            let insertQueryFormat = mysql.format(insertQuery, [insertedImage.insertId, insertedSeminar.insertId]);
-                                    
-                                            connPool.query(insertQueryFormat, (error, results) => {
+                                    // valider at filen er .jpg, .jpeg, .png eller .jfif
+                                    if (filtype !== '.jpg' && filtype !== '.jpeg' && filtype !== '.png' && filtype !== ".jfif") {
+                                        return res.json({"status" : "error", "message" : "Seminarbilder må være av filtype .jpg, .jpeg, .png, eller .jfif"})
+                                    } else {
+                                        // Filtype OK
+                                        const opplastetBilde = req.files.image;
+                                        opplastetBilde.mv(path.join(__dirname, process.env.USER_IMG_UPLOAD_PATH) + filnavn);
+    
+                                        // Oppretter referanse til bilde og kobler mot seminar
+                                        let insertImageQuery = "INSERT INTO bilde(plassering) VALUES(?)";
+                                        let insertImageQueryFormat = mysql.format(insertImageQuery, [filnavn]);
+                                
+                                        connPool.query(insertImageQueryFormat, (error, insertedImage) => {
+                                            if (error) {
                                                 connPool.release();
-                                                if (error) {
-                                                    console.log("En feil oppstod ved kobling av bilde og seminar, detaljer: " + error.errno + ", " + error.sqlMessage)
-                                                    return res.json({ "status" : "info", "message" : "Seminaret er opprettet, men feil oppstod ved lagring av bilde" });
-                                                }
-                                                
-                                                if(results.affectedRows > 0) {
-                                                    return res.json({ "status" : "success", "seminarid" : insertedSeminar.insertId});
-                                                }
-                                            });
-                                        }
-                                    });
+                                                console.log("En feil oppstod ved oppretting av nytt bilde til et seminar, detaljer: " + error.errno + ", " + error.sqlMessage)
+                                                return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                                            }
+                                            
+                                            if(insertedImage.affectedRows > 0) {
+                                                // Oppretter referanse til bilde og kobler mot seminar
+                                                let insertQuery = "UPDATE seminar SET bildeid = ? WHERE seminarid = ?";
+                                                let insertQueryFormat = mysql.format(insertQuery, [insertedImage.insertId, insertedSeminar.insertId]);
+                                        
+                                                connPool.query(insertQueryFormat, (error, results) => {
+                                                    // Løser ut kobling til database nå som alle spørringer er ferdige
+                                                    connPool.release();
+                                                    if (error) {
+                                                        console.log("En feil oppstod ved kobling av bilde og seminar, detaljer: " + error.errno + ", " + error.sqlMessage)
+                                                        return res.json({ "status" : "info", "message" : "Seminaret er opprettet, men feil oppstod ved lagring av bilde" });
+                                                    }
+                                                    
+                                                    if(results.affectedRows > 0) {
+                                                        return res.json({ "status" : "success", "seminarid" : insertedSeminar.insertId});
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    }
                                 }
                             });
                         } else {
@@ -380,10 +390,12 @@ router.post('/submitSeminar', (req, res) => {
                     return res.json({ "status" : "error", "message" : "Ingen tilgang, om feilen fortsetter, forsøk å logg ut og inn igjen" });
                 }
             } else {
+                // Authtoken er ikke gyldig / IP-adresse passer ikke authtoken
                 return res.json({ "status" : "error", "message" : "Ingen tilgang, om feilen fortsetter, forsøk å logg ut og inn igjen" });
             }
         })
     } else {
+        // Et av de påkrevde feltene er ikke tilstede i forspørselen
         return res.status(400).json({"status" : "error", "message" : "Ikke tilstrekkelig data"})
     }
 }); 

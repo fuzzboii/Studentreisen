@@ -1,20 +1,26 @@
+// React spesifikt
 import React, { useState, useEffect} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
+
+// 3rd-party Packages
 import axios from 'axios';
 
+// Studentreisen-assets og komponenter
 import CourseList from './CourseList';
 import ModuleList from './ModuleList';
 import RelevantField from './RelevantField';
 import CookieService from '../../../global/Services/CookieService';
 import {tabCourse} from '../../../global/Services/Actions';
 
+// Material UI komponenter 
 import {Tabs, Tab, Typography, Button, TextField} from '@material-ui/core';
 import Pagination from '@material-ui/lab/Pagination';
 import SearchIcon from '@material-ui/icons/Search';
 import AddIcon from '@material-ui/icons/Add';
-import {makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 
-
+// Komponent for tab, bestemmer hva som skal vises
+// avhengig av en gitt verdi 
 function TabPanel(props) {
   const { children, value, index } = props;
 
@@ -27,6 +33,7 @@ function TabPanel(props) {
   );
 }
 
+// Styling for Material Design komponenter
 const useStyles = makeStyles((theme) => ({
   button: {
     marginLeft: theme.spacing(1),
@@ -50,14 +57,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// Starten av filkomponent
 const CourseNav = (props) => {
+
+  // Hook for å få tilgang på styling
   const classes = useStyles();
 
     useEffect(()=>{
       fetchData();
     },[]);
   
-
+    // Hooks for å få tilgang på Redux funksjoner og definerer Tab-komponentens posisjon
     const getCoursePosition = useSelector(state => state.course_tab_position);
     const dispatch = useDispatch();
     const [position, setPosition] = useState(getCoursePosition);
@@ -67,33 +77,37 @@ const CourseNav = (props) => {
     const [modulesDefault, setModulesDefault] = useState([]);
     const [coursesDefault, setCoursesDefault] = useState([]);
 
-    // States for pagination
+    // States for å legge inn innhentet data
     const [courses, setCourses] = useState([]);
     const [modules, setModules] = useState([]);
     const [fields, setFields] = useState([]);
 
+    // Henter kursdata
     const fetchData = () => {
       const token = CookieService.get("authtoken");
                 
-        const data = {
+      const data = {
             token: token
         }
 
+      // Tre forkjellige API-kall mot server-side
       axios.all([
         axios.get(process.env.REACT_APP_APIURL + "/course/"),
         axios.get(process.env.REACT_APP_APIURL + "/course/module"),
         axios.post(process.env.REACT_APP_APIURL + "/profile/getInteresser", data)
 
       ]).then(axios.spread((res1, res2, res3) => {
+        
+        // Populerer states med innhentet data
         setCourses(res1.data);
         setCoursesDefault(res1.data);
         setModules(res2.data);
         setModulesDefault(res2.data);
         setFields(res3.data.results);
-        console.log(res3.data.results);
       }));
     };
    
+    // States for pagination
     const [currentPage_c, setcurrentPage_c] = useState(1);
     const [postsPerPage_c, setPostsPerPage_c] = useState(12);
 
@@ -116,7 +130,7 @@ const CourseNav = (props) => {
     const numberOfPages_m = Math.ceil(modules.length / postsPerPage_m);
     const interval_m =  mindexOfFirstPost + currentPosts_m.length;
     
-      
+    // Bytter verdien til tab-posisjon, og lagrer det i Redux states store
     const handleChange = (event, newValue) => {
       setPosition(newValue);
         if(newValue === 1) {
@@ -127,6 +141,7 @@ const CourseNav = (props) => {
         }; 
     };
 
+    //PAGINATION: Håndterer bytte av sider
     const handlePageCourse = (event, value) => {
       setcurrentPage_c(value);
     };
@@ -135,20 +150,23 @@ const CourseNav = (props) => {
       setcurrentPage_m(value);
     };
     
-    //Funksjoner for søk
+    // Håndterer tekstfelt innskrivning
     const onInputChange = e => {
       setInput(e.target.value);
     }
 
+    // Håndterer søkebar funksjonalitet
     const updateInput = async (e) => {
       e.preventDefault();
 
+      // Søk for Kursdata
       if(position === 0) {
         const filtered = coursesDefault.filter(courses => {
           return courses.navn.toLowerCase().includes(input.toLowerCase())
         });
         setCourses(filtered);
       };
+      // Søk for Kursmoduldata
       if(position === 1) {
         const filtered = modulesDefault.filter(modules => {
           return modules.navn.toLowerCase().includes(input.toLowerCase())
@@ -160,7 +178,8 @@ const CourseNav = (props) => {
 
 
     return (
-        <div>
+        <div> 
+            {/* Søkebar og Nytt kurs knapp */}
             <div className="course-header-section">
               <div className="search-wrap">
                   <form className="searchBox" onSubmit={updateInput} >    
@@ -175,6 +194,7 @@ const CourseNav = (props) => {
             </div>       
           </div>
 
+            {/* Tab */}
             <div className="BorderBox"> 
               <Tabs className="tab" value={position} indicatorColor="primary" textColor="primary" onChange={handleChange}>
                   <Tab className="tabKurs" label="Kurs" />
@@ -182,6 +202,7 @@ const CourseNav = (props) => {
               </Tabs>
             </div>
             
+            {/* Overskrifter */}
             <div className="NavHeaderWrap">
               { position == 0 &&
                 <h1 className="NavHeader">Alle kurs</h1>
@@ -191,6 +212,7 @@ const CourseNav = (props) => {
               }
             </div>
               
+            {/*  Tab posisjon for kursliste og Relevantkursliste */}
             {Object.entries(courses).length !== 0 &&
             <TabPanel value={position} index={0}>
                 <div className="content-overview">
@@ -216,7 +238,9 @@ const CourseNav = (props) => {
 
                 </div>
             </TabPanel>
-            }  
+            }
+
+            {/*  Tab posisjon for kursmodul */}
             {Object.entries(modules).length !== 0 &&
             <TabPanel value={position} index={1}>
                 <div className="content-main">

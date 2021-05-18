@@ -11,9 +11,10 @@ const router = require('express').Router();
 // Bruker
 router.post('/getAllUserData', async (req, res) => {
     if(req.body !== undefined && req.body.token !== undefined) {
-        verifyAuth(req.body.token).then(function(response) {
+        // Sørger for at bruker som henter data er innlogget
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then(function(response) {
             if(response.authenticated) {
-                // Kun Administrator skal kunne se oversikten
+                // Bruker er innlogget, sjekker brukertype, kun Administrator skal kunne se oversikten
                 if(response.usertype.toString() === process.env.ACCESS_ADMINISTRATOR) {
                     mysqlpool.getConnection(function(error, connPool) {
                         if(error) {
@@ -43,10 +44,12 @@ router.post('/getAllUserData', async (req, res) => {
                     return res.json({ "status" : "error", "message" : "Ingen tilgang, om feilen fortsetter, forsøk å logg ut og inn igjen" });
                 }
             } else {
+                // Authtoken er ikke gyldig / IP-adresse passer ikke med token
                 return res.json({ "status" : "error", "message" : "Ingen tilgang, om feilen fortsetter, forsøk å logg ut og inn igjen" });
             }
         });
     } else {
+        // Token mangler fra forespørselen
         return res.json({ "status" : "error", "message" : "Ett eller flere felt mangler fra forespørselen" });
     }
 });
@@ -96,7 +99,8 @@ router.post('/newUser', async (req, res) => {
             return res.json({ "status" : "error", "message" : validation.error.details[0].message });
         }
 
-        verifyAuth(req.body.token).then(function(response) {
+        // Sjekker om token er gyldig og at IP-adresse passer token
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then(function(response) {
             if(response.authenticated) {
                 // Kun Administrator skal kunne manuelt opprette en bruker
                 if(response.usertype.toString() === process.env.ACCESS_ADMINISTRATOR) {
@@ -106,7 +110,9 @@ router.post('/newUser', async (req, res) => {
 
                         // Salter og hasher passordet
                         bcrypt.genSalt(10).then(function(genSalt) {
+                            // Generert salt er mottatt
                             bcrypt.hash(pass, genSalt).then(function(genPass) {
+                                // Hashet passord er mottatt
                                 const hashedPW = genPass;
 
                                 mysqlpool.getConnection(function(error, connPool) {
@@ -133,7 +139,7 @@ router.post('/newUser', async (req, res) => {
                                             const subject = "Ny bruker - Studentreisen";
                                             const body = 'Hei ' + req.body.bruker.fnavn + '!\n\nDu har mottatt denne eposten fordi en administrator har opprettet en bruker for deg.\n\n' +
                                                         'Ditt midlertidige passord: ' + pass + '\n\n' + 
-                                                        'Du kan logge inn her: ' + process.env.DOMAIN + '/login. Du vil bli bedt om å oppgi et nytt passord ved innlogging.\n\n' + 
+                                                        'Du kan logge inn her: ' + process.env.EMAIL_DOMAIN + '/login. Du vil bli bedt om å oppgi et nytt passord ved innlogging.\n\n' + 
                                                         'Mvh\nStudentreisen';
             
                                             sendEmail(req.body.bruker.email, subject, body);
@@ -165,14 +171,17 @@ router.post('/newUser', async (req, res) => {
                         return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                     }
                 } else {
-                    return res.json({ "status" : "error", "message" : "Ingen tilgang" });
+                    console.log("En innlogget bruker uten riktige tilganger har forsøkt å opprette en bruker, brukerens ID: " + response.brukerid);
+                    return res.json({ "status" : "error", "message" : "Ingen tilgang, om feilen fortsetter, forsøk å logg ut og inn igjen" });
                 }
             } else {
-                return res.json({ "status" : "error", "message" : "Ingen tilgang" });
+                // Authtoken er ikke gyldig / IP-adresse passer ikke med token
+                return res.json({ "status" : "error", "message" : "Ingen tilgang, om feilen fortsetter, forsøk å logg ut og inn igjen" });
             }
         })
 
     } else {
+        // Et av de påkrevde feltene for en ny bruker er ikke tilstede i forespørselen
         return res.json({ "status" : "error", "message" : "Ett eller flere felt mangler fra forespørselen" });
     }
 });
@@ -223,7 +232,8 @@ router.post('/updateUser', async (req, res) => {
             return res.json({ "status" : "error", "message" : validation.error.details[0].message });
         }
 
-        verifyAuth(req.body.token).then(function(response) {
+        // Sjekker om token er gyldig og at IP-adresse passer token
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then(function(response) {
             if(response.authenticated) {
                 // Kun Administrator skal kunne manuelt endre en bruker
                 if(response.usertype.toString() === process.env.ACCESS_ADMINISTRATOR) {
@@ -263,14 +273,17 @@ router.post('/updateUser', async (req, res) => {
                         return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                     }
                 } else {
-                    return res.json({ "status" : "error", "message" : "Ingen tilgang" });
+                    console.log("En innlogget bruker uten riktige tilganger har forsøkt å endre en bruker, brukerens ID: " + response.brukerid);
+                    return res.json({ "status" : "error", "message" : "Ingen tilgang, om feilen fortsetter, forsøk å logg ut og inn igjen" });
                 }
             } else {
-                return res.json({ "status" : "error", "message" : "Ingen tilgang" });
+                // Authtoken er ikke gyldig / IP-adresse passer ikke med token
+                return res.json({ "status" : "error", "message" : "Ingen tilgang, om feilen fortsetter, forsøk å logg ut og inn igjen" });
             }
         })
 
     } else {
+        // Et av de påkrevde feltene for en ny bruker er ikke tilstede i forespørselen
         return res.json({ "status" : "error", "message" : "Ett eller flere felt mangler fra forespørselen" });
     }
 });
@@ -278,8 +291,10 @@ router.post('/updateUser', async (req, res) => {
 
 router.post('/deleteUser', async (req, res) => {
     if(req.body.bruker !== undefined && req.body.token !== undefined) {
+        // Passer på at brukeren som skal slettes ikke er en administrator
         if(req.body.bruker.niva !== undefined && req.body.bruker.niva.toString() !== process.env.ACCESS_ADMINISTRATOR) {
-            verifyAuth(req.body.token).then(function(response) {
+            // Sjekker om token er gyldig og at IP-adresse passer token
+            verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then(function(response) {
                 if(response.authenticated) {
                     // Kun Administrator skal kunne slette en bruker
                     if(response.usertype.toString() === process.env.ACCESS_ADMINISTRATOR) {
@@ -315,10 +330,14 @@ router.post('/deleteUser', async (req, res) => {
                                         let deleteQuery = "DELETE FROM bruker WHERE brukerid = ? AND fnavn = ? AND enavn = ? AND email = ?";
                                         let deleteQueryFormat = mysql.format(deleteQuery, [req.body.bruker.brukerid, req.body.bruker.fnavn, req.body.bruker.enavn, req.body.bruker.email.toLowerCase()]);
                                     
-                                        // Endre brukeren
+                                        // Sletter brukeren
                                         connPool.query(deleteQueryFormat, (error, results) => {
                                             connPool.release();
                                             if (error) {
+                                                if(error.errno === 1451) {
+                                                    // Contraint feiler (Har koblinger utover login_token eller lignende), brukeren kan ikke slettes
+                                                    return res.json({ "status" : "error", "message" : "Denne brukeren kan ikke slettes" });
+                                                }
                                                 console.log("En feil oppstod under sletting av eksisterende bruker, detaljer: " + error.errno + ", " + error.sqlMessage)
                                                 return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                                             }
@@ -337,16 +356,19 @@ router.post('/deleteUser', async (req, res) => {
                             return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                         }
                     } else {
-                        return res.json({ "status" : "error", "message" : "Ingen tilgang" });
+                        console.log("En innlogget bruker uten riktige tilganger har forsøkt å slette en bruker, brukerens ID: " + response.brukerid);
+                        return res.json({ "status" : "error", "message" : "Ingen tilgang, om feilen fortsetter, forsøk å logg ut og inn igjen" });
                     }
                 } else {
-                    return res.json({ "status" : "error", "message" : "Ingen tilgang" });
+                    // Authtoken er ikke gyldig / IP-adresse passer ikke med token
+                    return res.json({ "status" : "error", "message" : "Ingen tilgang, om feilen fortsetter, forsøk å logg ut og inn igjen" });
                 }
             })
         } else {
             return res.json({ "status" : "error", "message" : "Du kan ikke slette en Administrator" });
         }
     } else {
+        // Et av de påkrevde feltene for en ny bruker er ikke tilstede i forespørselen
         return res.json({ "status" : "error", "message" : "Ett eller flere felt mangler fra forespørselen" });
     }
 });
@@ -354,7 +376,8 @@ router.post('/deleteUser', async (req, res) => {
 // Kurs
 router.post('/getAllCourseData', async (req, res) => {
     if(req.body !== undefined && req.body.token !== undefined) {
-        verifyAuth(req.body.token).then(function(response) {
+        // Sjekker om token er gyldig og at IP-adresse passer token
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then(function(response) {
             if(response.authenticated) {
                 // Kun Administrator skal kunne se oversikten
                 if(response.usertype.toString() === process.env.ACCESS_ADMINISTRATOR) {
@@ -385,10 +408,12 @@ router.post('/getAllCourseData', async (req, res) => {
                     return res.json({ "status" : "error", "message" : "Ingen tilgang, om feilen fortsetter, forsøk å logg ut og inn igjen" });
                 }
             } else {
+                // Authtoken er ikke gyldig / IP-adresse passer ikke med token
                 return res.json({ "status" : "error", "message" : "Ingen tilgang, om feilen fortsetter, forsøk å logg ut og inn igjen" });
             }
         });
     } else {
+        // Et av de påkrevde feltene for en ny bruker er ikke tilstede i forespørselen
         return res.json({ "status" : "error", "message" : "Ett eller flere felt mangler fra forespørselen" });
     }
 });
@@ -396,7 +421,8 @@ router.post('/getAllCourseData', async (req, res) => {
 // Seminar
 router.post('/getAllSeminarData', async (req, res) => {
     if(req.body !== undefined && req.body.token !== undefined) {
-        verifyAuth(req.body.token).then(function(response) {
+        // Sjekker om token er gyldig og at IP-adresse passer token
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then(function(response) {
             if(response.authenticated) {
                 mysqlpool.getConnection(function(error, connPool) {
                     if(error) {
@@ -435,7 +461,7 @@ router.post('/getAllSeminarData', async (req, res) => {
                             if(results[0] !== undefined) {
                                 return res.json({ "status" : "success", results });
                             } else {
-                                return res.json({ "status" : "info", "message" : "Ingen seminar å vise" });
+                                return res.json({ "status" : "info", "message" : "Du har ingen seminarer å vise" });
                             }
                         });
                     } else {
@@ -445,10 +471,12 @@ router.post('/getAllSeminarData', async (req, res) => {
                     }
                 });
             } else {
+                // Authtoken er ikke gyldig / IP-adresse passer ikke med token
                 return res.json({ "status" : "error", "message" : "Ingen tilgang, om feilen fortsetter, forsøk å logg ut og inn igjen" });
             }
         });
     } else {
+        // Et av de påkrevde feltene for en ny bruker er ikke tilstede i forespørselen
         return res.json({ "status" : "error", "message" : "Ett eller flere felt mangler fra forespørselen" });
     }
 });
@@ -456,7 +484,8 @@ router.post('/getAllSeminarData', async (req, res) => {
 
 router.post('/deleteSeminar', async (req, res) => {
     if(req.body.seminarid !== undefined && req.body.token !== undefined && req.body.sluttdato !== undefined) {
-        verifyAuth(req.body.token).then(function(response) {
+        // Sjekker om token er gyldig og at IP-adresse passer token
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then(function(response) {
             if(response.authenticated) {
                 mysqlpool.getConnection(function(error, connPool) {
                     if(error) {
@@ -624,24 +653,30 @@ router.post('/deleteSeminar', async (req, res) => {
                                     return res.json({ "status" : "error", "message" : "Du kan ikke slette et seminar fremover i tid" });
                                 }
                             } else {
+                                // Bruker har ikke tilgang, loggfører
+                                console.log("En innlogget bruker uten riktige tilganger har forsøkt å slette et seminar, brukerens ID: " + results[0].brukerid)
                                 return res.json({ "status" : "error", "message" : "Ingen tilgang, om feilen fortsetter, forsøk å logg ut og inn igjen" });
                             }
                         });
                     }
                 });
             } else {
+                // Authtoken er ikke gyldig / IP-adresse passer ikke med token
                 return res.json({ "status" : "error", "message" : "Ingen tilgang, om feilen fortsetter, forsøk å logg ut og inn igjen" });
             }
         })
     } else {
+        // Et av de påkrevde feltene for en ny bruker er ikke tilstede i forespørselen
         return res.json({ "status" : "error", "message" : "Ett eller flere felt mangler fra forespørselen" });
     }
 });
 
 router.post('/publicizeSeminar', async (req, res) => {
     if(req.body.seminarid !== undefined && req.body.token !== undefined && req.body.tilgjengelighet !== undefined) {
-        verifyAuth(req.body.token).then(function(response) {
+        // Sjekker om token er gyldig og at IP-adresse passer token
+        verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then(function(response) {
             if(response.authenticated) {
+                // Bruker er innlogget, oppretter kobling til databasen 
                 mysqlpool.getConnection(function(error, connPool) {
                     if(error) {
                         return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
@@ -708,16 +743,75 @@ router.post('/publicizeSeminar', async (req, res) => {
                                     }
                                 });
                             } else {
+                                // Bruker har ikke tilgang, loggfører
+                                console.log("En innlogget bruker uten riktige tilganger har forsøkt å publisere/avpublisere et seminar, brukerens ID: " + results[0].brukerid)
                                 return res.json({ "status" : "error", "message" : "Ingen tilgang, om feilen fortsetter, forsøk å logg ut og inn igjen" });
                             }
                         });
                     }
                 });
             } else {
+                // Authtoken er ikke gyldig / IP-adresse passer ikke med token
                 return res.json({ "status" : "error", "message" : "Ingen tilgang, om feilen fortsetter, forsøk å logg ut og inn igjen" });
             }
         })
     } else {
+        // Et av de påkrevde feltene for en ny bruker er ikke tilstede i forespørselen
+        return res.json({ "status" : "error", "message" : "Ett eller flere felt mangler fra forespørselen" });
+    }
+});
+
+router.post('/sendNotif', async (req, res) => {
+    if(req.body.brukerid !== undefined && req.body.token !== undefined && req.body.msg !== undefined) {
+        // Sjekker lengden på kunngjøringen
+        if(req.body.msg.length <= 255) {
+            // Sjekker om token er gyldig og at IP-adresse passer token
+            verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then(function(response) {
+                if(response.authenticated) {
+                    // Bruker innlogget, oppretter kobling til databasen
+                    mysqlpool.getConnection(function(error, connPool) {
+                        if(error) {
+                            return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                        }
+                        // Kun Administrator skal kunne opprette en ny kunngjøring
+                        if(response.usertype.toString() === process.env.ACCESS_ADMINISTRATOR) {
+                            // Oppretter nye kunngjøringen
+    
+                            let updateQuery = "INSERT INTO kunngjoring(av, til, tekst, dato) VALUES(?, ?, ?, NOW())";
+                            let updateQueryFormat = mysql.format(updateQuery, [response.brukerid, req.body.brukerid, req.body.msg]);
+    
+                            connPool.query(updateQueryFormat, (error, results) => {
+                                connPool.release();
+                                if (error) {
+                                    console.log("En feil oppstod under oppretting av kunngjøring til bruker, detaljer: " + error.errno + ", " + error.sqlMessage)
+                                    return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
+                                }
+                                
+                                if(results.affectedRows > 0) {
+                                    // Kunngjøring opprettet
+                                    return res.json({ "status" : "success", "message" : "Kunngjøring opprettet" });
+                                } else {
+                                    // Feil oppstod ved oppretting av kunngjøring
+                                    return res.json({ "status" : "error", "message" : "Kunne ikke opprette kunngjøring, vennligst forsøk igjen" });
+                                }
+                            });
+                        } else {
+                            // Bruker har ikke tilgang, loggfører
+                            console.log("En innlogget bruker uten riktige tilganger har forsøkt å opprette en kunngjøring, brukerens ID: " + response.brukerid)
+                            return res.json({ "status" : "error", "message" : "Ingen tilgang, om feilen fortsetter, forsøk å logg ut og inn igjen" });
+                        }
+                    });
+                } else {
+                    // Authtoken er ikke gyldig / IP-adresse passer ikke med token
+                    return res.json({ "status" : "error", "message" : "Ingen tilgang, om feilen fortsetter, forsøk å logg ut og inn igjen" });
+                }
+            })
+        } else {
+            // Kunngjøringen er for lang
+            return res.json({ "status" : "error", "message" : "Kunngjøringen kan ikke være over 255 tegn" });
+        }
+    } else {
+        // Et av de påkrevde feltene for en ny bruker er ikke tilstede i forespørselen
         return res.json({ "status" : "error", "message" : "Ett eller flere felt mangler fra forespørselen" });
     }
 });

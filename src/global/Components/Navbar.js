@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 
-import { Button, Avatar } from '@material-ui/core';
+import { Button, Avatar, CircularProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import NotificationImportantIcon from '@material-ui/icons/NotificationImportant';
 import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
@@ -22,9 +22,10 @@ import Loader from './Loader';
 function Navbar(props) {
     const [click, setClick] = useState(false);
     const [button, setButton] = useState(true);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     // States for profilbilde
     const [profilbilde, setProfilbilde] = useState()
+    const [pbLoading, setPbLoading] = useState(true);
     const [initialer, setInitialer] = useState("")
     // Props som mottas fra App, viser til om bruker er inn-/utlogget
     const [auth, setAuth] = useState(false);
@@ -38,6 +39,8 @@ function Navbar(props) {
     const closeMobileMenu = () => setClick(false);
 
     let history = useHistory()
+
+    const token = CookieService.get("authtoken");
 
     // Testing på om en "LOGG UT"-knapp skal vises i navbar eller i meny
     const showButton = () => {
@@ -65,6 +68,7 @@ function Navbar(props) {
       setAuth(props.auth);
       setType(props.type);
       setNotif(props.notif);
+      setLoading(props.loading);
       getAvatar()
       if(props.notif !== undefined) {
         setNotifUlest(1);
@@ -107,8 +111,17 @@ function Navbar(props) {
         padding: '0.5rem 1rem',
         display: 'grid',
         minWidth: '7rem',
-        transform: 'translate(28vw)',
+        transform: 'translate(24vw)',
         textDecoration: 'none',
+        ['@media (min-width:370px)']: {
+          transform: 'translate(28vw)'
+        },
+        ['@media (min-width:480px)']: {
+          transform: 'translate(32vw)'
+        },
+        ['@media (min-width:640px)']: {
+          transform: 'translate(36vw)'
+        },
         ['@media (min-width:768px)']: {
           transform: 'translate(38vw)'
         },
@@ -152,6 +165,7 @@ function Navbar(props) {
       shrink();
       closeMobileMenu();
       CookieService.remove("authtoken");
+      axios.post(process.env.REACT_APP_APIURL + "/notif/getNotifs", {token : token});
       setAuth(false);
       history.push("/")
     }
@@ -164,12 +178,14 @@ function Navbar(props) {
 
     const notifClickOpen = () => {
       setNotifAapen(true);
-      setNotifUlest(0);
+      if(!props.notif) {
+        setNotifUlest(0);
+      }
       if(notif !== undefined && notif == null) {
         axios
           // Henter API URL fra .env og utfører en POST request med dataen fra objektet over
           // Axios serialiserer objektet til JSON selv
-          .post(process.env.REACT_APP_APIURL + "/notif/getNotifs", {token : CookieService.get("authtoken")} )
+          .post(process.env.REACT_APP_APIURL + "/notif/getNotifs", {token : token} )
           // Utføres ved mottatt resultat
           .then(res => {
             if(res.data.notifs) {
@@ -182,7 +198,7 @@ function Navbar(props) {
         axios
           // Henter API URL fra .env og utfører en POST request med dataen fra objektet over
           // Axios serialiserer objektet til JSON selv
-          .post(process.env.REACT_APP_APIURL + "/notif/readNotifs", {token : CookieService.get("authtoken"), notifs : notif});
+          .post(process.env.REACT_APP_APIURL + "/notif/readNotifs", {token : token, notifs : notif});
       }
     };
     
@@ -191,28 +207,33 @@ function Navbar(props) {
     };
 
     const getAvatar = () => {
-
-      if (auth) {
-        axios.all([
-          axios.post(process.env.REACT_APP_APIURL + "/profile/getProfilbilde", {token : CookieService.get("authtoken")}),
-          axios.post(process.env.REACT_APP_APIURL + "/profile/getBruker", {token : CookieService.get("authtoken")})
-        ]).then(axios.spread((res1, res2) => {
-          if (res1.data.results != undefined) {
-            setProfilbilde(res1.data.results[0].plassering)
-            setLoading(false)
-          } else {
-            setInitialer(res2.data.results[0].fnavn.charAt(0) + res2.data.results[0].enavn.charAt(0))
-            setLoading(false)
-          }
-        }))    
-      } else {
-        setLoading(false)
+      if (auth && token !== undefined) {
+        axios.post(process.env.REACT_APP_APIURL + "/profile/getProfilbilde", {token : token})
+          .then(res => {
+            setPbLoading(false);
+            if (res.data.results !== undefined && res.data.results[0].plassering !== null) {
+              setProfilbilde(res.data.results[0].plassering);
+            } else {
+              setInitialer(res.data.results[0].fnavn + res.data.results[0].enavn);
+            }
+          });
       }
     }
 
     if(loading) {
       return(
-        null
+        <div className="navbarBody" >
+          <nav className='navbar' id="bar" >
+            <div className='navbar-container'>
+              <Link tabIndex={1}
+                to="/" 
+                className="navbar-logo" 
+                onClick={closeMobileMenu}>
+                <img className="navbar-logo-png" src={favicon} alt="USN" /> 
+              </Link>
+            </div>
+          </nav>
+        </div>
       );
     }
 
@@ -220,13 +241,13 @@ function Navbar(props) {
         <div className="navbarBody" >
           <nav className='navbar' id="bar" >
             <div className='navbar-container'>
-              {!auth && <Link 
+              {!auth && <Link tabIndex={1}
                 to="/" 
                 className="navbar-logo" 
                 onClick={closeMobileMenu}>
                 <img className="navbar-logo-png" src={favicon} alt="USN" /> 
               </Link> }
-              {auth && <Link
+              {auth && <Link tabIndex={1}
                 to="/overview"
                 className="navbar-logo"
                 onClick={closeMobileMenu} >
@@ -246,14 +267,16 @@ function Navbar(props) {
                 <Button
                   className={classes.loggbtnmobil}
                   onClick={loggUt}
-                  id='loggBtnMobil'>
+                  id='loggBtnMobil'
+                  style={{"visibility" : "visible"}}>
                   Logg ut
                 </Button>
                 :
                 <Button
                   className={classes.loggbtnmobilBar}
                   onClick={loggUt}
-                  id='loggBtnMobil'>
+                  id='loggBtnMobil'
+                  style={{"visibility" : "visible"}}>
                   Logg ut
                 </Button>
                 }
@@ -262,7 +285,8 @@ function Navbar(props) {
                   className={classes.navbtn} 
                   onClick={onLink}
                   component={Link} 
-                  to='/course'>
+                  to='/course'
+                  tabIndex={2}>
                   Kurs
                 </Button>
 
@@ -271,6 +295,7 @@ function Navbar(props) {
                   onClick={onLink}
                   component={Link}
                   to='/seminar'
+                  tabIndex={3}
                 >
                 Seminarer
                 </Button>
@@ -280,6 +305,7 @@ function Navbar(props) {
                   onClick={onLink}
                   component={Link}
                   to='/CV'
+                  tabIndex={4}
                 >
                   CV
                 </Button>
@@ -289,6 +315,7 @@ function Navbar(props) {
                   onClick={onLink}
                   component={Link}
                   to='/overview'
+                  tabIndex={5}
                 >
                   Oversikt
                 </Button>
@@ -298,29 +325,35 @@ function Navbar(props) {
                     className={classes.navbtn}
                     onClick={onLink}
                     component={Link} 
-                    to='/Tools' >
+                    to='/Tools' 
+                    tabIndex={6}>
                       Verktøy
                   </Button>
                 }
               </div> }
 
               {auth && (notif !== null && notifUlest > 0) && 
-                <NotificationImportantIcon id="notif-bell" onClick={notifClickOpen} />
+                  <NotificationImportantIcon tabIndex={7} id="notif-bell" onClick={notifClickOpen} />
               }
               {auth && (notif == null || notifUlest == 0) &&
-                <NotificationsNoneIcon id="notif-bell" onClick={notifClickOpen} />
+                  <NotificationsNoneIcon tabIndex={7} id="notif-bell" onClick={notifClickOpen} onKeyUp={e => e.code === "Enter" ? notifClickOpen() : ""} />
               }
 
               {auth && <Link
                 to='/Profile'
                 className="avatarWrap">
-                <Avatar
-                  src={"/uploaded/" + profilbilde }
-                  className={classes.avatar}
-                >
-                  {/* Hvis det ikke eksisterer et bilde for brukeren faller avatar tilbake på initialer */}
-                  {initialer}
-                </Avatar>
+                {pbLoading && 
+                  <CircularProgress color="secondary" />
+                }
+                {!pbLoading && 
+                  <Avatar
+                    src={"/uploaded/" + profilbilde }
+                    className={classes.avatar}
+                  >
+                    {/* Hvis det ikke eksisterer et bilde for brukeren faller avatar tilbake på initialer */}
+                    {initialer}
+                  </Avatar>
+                }
               </Link>}
               {button && auth && <Button onClick={loggUt} className={classes.loggbtn} > LOGG UT </Button> }
               {button && !auth && <Link to='/Register' className={classes.loggbtnNoAuth} > REGISTRER </Link> }
@@ -330,7 +363,16 @@ function Navbar(props) {
         
           <Dialog onClose={notifClose} aria-labelledby="customized-dialog-title" open={notifAapen}>
               <DialogTitle id="customized-dialog-title" onClose={notifClose}>
-                Kunngjøringer fra de siste 7 dagene
+                {notifUlest !== 0 &&
+                  <>
+                    Uleste kunngjøringer
+                  </>
+                }
+                {notifUlest == 0 &&
+                  <>
+                    Kunngjøringer fra de siste 7 dagene
+                  </>
+                }
               </DialogTitle>
               <DialogContent dividers>
                 {notif && notif.nodata !== undefined &&

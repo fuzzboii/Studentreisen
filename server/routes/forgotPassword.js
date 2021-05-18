@@ -1,14 +1,12 @@
 const mysqlpool = require('../db').pool;
-const { emailValidation, passwordValidation } = require('../validation');
 const mysql = require('mysql');
+
 const router = require('express').Router();
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto'); 
-const { sendEmail } = require('../global/CommonFunctions');
 
-router.get('/forgotPassword', async (req, res) => {
-    res.send(404);
-});
+const { emailValidation, passwordValidation } = require('../validation');
+const { sendEmail } = require('../global/CommonFunctions');
 
 router.post('/forgotPassword', async (req, res) => {
     if(req.body.epost !== undefined) {
@@ -67,12 +65,15 @@ router.post('/forgotPassword', async (req, res) => {
                                     console.log("En feil oppstod ved oppretting av glemtpassord_token, detaljer: " + error.errno + ", " + error.sqlMessage)
                                     return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                                 }
+
+                                // Oppretter teksten for e-posten som sendes til bruker.
                                 const subject = 'Glemt passord - Studentreisen';
                                 const body =  'Hei!\n\nDu har mottatt denne eposten fordi du har bedt om å tilbakestille passordet ditt hos Studentreisen, om du ikke har bedt om dette kan du trygt ignorere denne eposten.\n\n' +
                                         'Vennligst trykk på lenken under for å fortsette med å endre passordet ditt.\n' + 
-                                        process.env.DOMAIN + '/reset/' + buf.toString("hex") + "\n\n" + 
+                                        process.env.EMAIL_DOMAIN + '/reset/' + buf.toString("hex") + "\n\n" + 
                                         'Mvh\nStudentreisen';
                             
+                                // Sender e-posten med funksjonen fra CommonFunctions
                                 sendEmail(selResults[0].email, subject, body).then(function(response) {
                                     return res.json({ "status" : "success", "message" : "ok" });
                                 });
@@ -91,10 +92,6 @@ router.post('/forgotPassword', async (req, res) => {
     }
 });
 
-
-router.get('/resetPassword', async (req, res) => {
-    res.send(404);
-});
 
 router.post('/resetPassword', async (req, res) => {
     if(req.body.password !== undefined && req.body.password2 !== undefined && req.body.token !== undefined) {
@@ -181,6 +178,7 @@ router.post('/resetPassword', async (req, res) => {
                                             }
                                             
                                             if(delLResults.affectedRows > 0) {
+                                                // Aktive innlogginger har blitt slettet, tidligere innloggede økter må logge inn med det nye passordet.
                                                 return res.json({ "status" : "success", "message" : "OK" });
                                             } else {
                                                 // Ingen aktive login tokens funnet, sender fremdeles OK til bruker
@@ -195,6 +193,7 @@ router.post('/resetPassword', async (req, res) => {
 
                             } else {
                                 connPool.release();
+                                // Kunne ikke oppdatere passord
                                 return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                             }
                         });

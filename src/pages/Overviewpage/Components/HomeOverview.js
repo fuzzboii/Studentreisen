@@ -1,6 +1,8 @@
+// React spesifikt
 import { Component } from 'react';
 import {Redirect, useLocation} from 'react-router-dom';
 
+// Studentreisen-assets og komponenter
 import '../Styles/styles.css';
 import CardLinks from './CardLinks';
 import EnlistedList from './EnlistedList';
@@ -10,16 +12,13 @@ import NoAccess from '../../../global/Components/NoAccess';
 import CookieService from '../../../global/Services/CookieService';
 import AuthService from '../../../global/Services/AuthService';
 
-
-
-
 export const LocationDisplay = () => {
     const location = useLocation()
   
     return <div data-testid="location-display">{location.pathname}</div>
   }
 
-
+// Klassekomponenten for hovedsiden
 class HomeOverview extends Component {
     constructor(props) {
         super(props);

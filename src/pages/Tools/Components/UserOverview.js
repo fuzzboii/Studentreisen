@@ -1,17 +1,22 @@
-import React from "react";
+import React, { forwardRef } from "react";
 
 // 3rd-party Packages
 import MaterialTable from "material-table";
 import axios from "axios";
 import { useSnackbar } from 'notistack';
+import AddAlertIcon from '@material-ui/icons/AddAlert';
 
 // Studentreisen-assets og komponenter
 import CookieService from '../../../global/Services/CookieService';
 import ValidationService from '../../../global/Services/ValidationService';
+import { Button, FormControl, InputLabel, Input, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Checkbox, FormControlLabel, TextareaAutosize } from '@material-ui/core';
 
 function UserOverview(props) {
     let [brukere, setBrukere] = React.useState([]);
     let [isLoading, setIsLoading] = React.useState(true);
+    let [openNotif, SetOpenNotif] = React.useState(false);
+    let [notifMsg, SetNotifMsg] = React.useState();
+    let [notifUsr, SetNotifUsr] = React.useState([]);
     const { enqueueSnackbar } = useSnackbar();
 
     const token = {
@@ -37,6 +42,42 @@ function UserOverview(props) {
                 }
             });
     }
+
+    const sendNotif = () => {
+        if(notifMsg !== undefined && notifMsg !== "") {
+            if(notifMsg.length <= 255) {
+                axios
+                    // Henter API URL fra .env og utfører en POST request med dataen fra objektet over
+                    // Axios serialiserer objektet til JSON selv
+                    .post(process.env.REACT_APP_APIURL + "/tools/sendNotif", {token : token.token, brukerid : notifUsr.brukerid, msg : notifMsg})
+                    // Utføres ved mottatt resultat
+                    .then(res => {
+                        if(res.data.status === "success") {
+                            enqueueSnackbar(res.data.message, { 
+                                variant: res.data.status,
+                                autoHideDuration: 3000,
+                            });
+                            SetOpenNotif(false);
+                            SetNotifMsg("");
+                        } else {
+                            enqueueSnackbar(res.data.message, { 
+                                variant: res.data.status,
+                                autoHideDuration: 5000,
+                            });
+                        }
+                    });
+            } else {
+                enqueueSnackbar("Kunngjøringen kan ikke være over 255 tegn", { 
+                    variant: "error",
+                    autoHideDuration: 3000,
+                });
+            }
+        }
+    }
+    
+    const icons = {
+        AddAlert: forwardRef((props, ref) => <AddAlertIcon {...props} ref={ref} />)
+    };
     
     const columns = [
         { title: "#", field: "brukerid", type: "numeric", editable: 'never' },
@@ -239,7 +280,24 @@ function UserOverview(props) {
 
     return (
         <section id="tools_overview_section">
-          <MaterialTable columns={columns} data={brukere} localization={localization} editable={editable} isLoading={isLoading} title="Brukeroversikt" />
+            <MaterialTable title="Brukeroversikt" columns={columns} data={brukere} localization={localization} editable={editable} isLoading={isLoading} actions={[
+                {
+                    icon: icons.AddAlert,
+                    tooltip: 'Opprett ny kunngjøring',
+                    onClick: (e, brukerData) => {SetOpenNotif(true); SetNotifUsr(brukerData)}
+                }
+            ]} />
+            <Dialog open={openNotif} onClose={() => SetOpenNotif(false)} fullWidth maxWidth={"sm"} aria-labelledby="useroverview_dialog_title">
+                <DialogTitle id="useroverview_dialog_title">Ny kunngjøring</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>Opprett ny kunngjøring til bruker</DialogContentText>
+                    <Input autoFocus value={notifMsg} onChange={e => SetNotifMsg(e.target.value)} margin="dense" type="textarea" label="Melding til bruker" multiline fullWidth rows={4} rowsMax={8} />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => SetOpenNotif(false)} color="primary">Avbryt</Button>
+                    <Button disabled={!notifMsg} onClick={() => sendNotif()} color="primary">Send kunngjøring</Button>
+                </DialogActions>
+            </Dialog>
         </section>
     );
 }

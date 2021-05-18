@@ -8,19 +8,6 @@ const { verifyAuth } = require('../global/CommonFunctions');
 
 const router = require('express').Router();
 
-/*
-Order
-{
-    "email": "",
-    "fnavn": "",
-    "enavn": "",
-    "pwd": ""
-}
-*/
-
-router.get('/register', async (req, res) => {
-    res.status(404).send();
-});
 
 router.post('/register', async (req, res) => {
     if(req.body.email !== undefined && req.body.fnavn !== undefined && req.body.enavn !== undefined && req.body.password !== undefined && req.body.password2 !== undefined) {
@@ -132,6 +119,22 @@ router.post('/register', async (req, res) => {
                                 
                                 if(results.affectedRows > 0) {
                                     // Bruker opprettet
+                                    let ip;
+                                    if(process.env.DEVMODE === "true") {
+                                        // Tillater en IP-adresse å være tom
+                                        if(req.socket.remoteAddress.substring(7).length == 0) {
+                                            // Localhost
+                                            ip = "devmode";
+                                        } else {
+                                            ip = req.socket.remoteAddress.substring(7);
+                                        }
+                                    } else {
+                                        if(req.socket.remoteAddress.substring(7).length == 0) {
+                                            return res.json({ "status" : "error", "message" : "IP-adressen er ugyldig" });
+                                        } else {
+                                            ip = req.socket.remoteAddress.substring(7);
+                                        }
+                                    }
 
                                     // Endrer utløpsdatoen utifra "Husk meg"-feltet
                                     let date = new Date();
@@ -141,21 +144,19 @@ router.post('/register', async (req, res) => {
                                     const token = cryptojs.AES.encrypt(req.body.email.toLowerCase(), process.env.TOKEN_SECRET);
 
                                     // Legg til nye token i databasen med utløpsdato ovenfor
-                                    let insertQuery = "INSERT INTO login_token(gjelderfor, token, utlopsdato) VALUES(?, ?, ?)";
-                                    let insertQueryFormat = mysql.format(insertQuery, [results.insertId, token.toString(), date]);
+                                    let insertQuery = "INSERT INTO login_token(gjelderfor, token, ip, utlopsdato) VALUES(?, ?, ?, ?)";
+                                    let insertQueryFormat = mysql.format(insertQuery, [results.insertId, token.toString(), ip, date]);
                             
                                     connPool.query(insertQueryFormat, (error, results) => {
+                                        connPool.release();
                                         if (error) {
-                                            connPool.release();
                                             console.log("En feil oppstod under oppretting av login_token for en ny bruker, detaljer: " + error.errno + ", " + error.sqlMessage)
                                             return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                                         }
 
                                         if(results.affectedRows > 0) {
-                                            connPool.release();
                                             return res.json({"status" : "success", "message" : "OK", "authtoken" : token.toString()});
                                         } else {
-                                            connPool.release();
                                             return res.json({"status" : "success", "message" : "OK"});
                                         }
                                     });
@@ -174,22 +175,11 @@ router.post('/register', async (req, res) => {
         }
 
     } else {
+        // Ett eller flere felt mangler fra forespørselen
         return res.json({"status" : "error", "message" : "Ikke tilstrekkelig data"});
     }
 });
 
-
-/*
-Order
-{
-    "email": "",
-    "pwd": ""
-}
-*/
-
-router.get('/login', async (req, res) => {
-    res.status(404).send();;
-});
 
 router.post('/login', async (req, res) => {
     if(req.body.email !== undefined && req.body.pwd !== undefined && req.body.remember !== undefined) {
@@ -254,6 +244,22 @@ router.post('/login', async (req, res) => {
                         
                         if(validatePass) {
                             // Bruker autentisert
+                            let ip;
+                            if(process.env.DEVMODE === "true") {
+                                // Tillater en IP-adresse å være tom
+                                if(req.socket.remoteAddress.substring(7).length == 0) {
+                                    // Localhost
+                                    ip = "devmode";
+                                } else {
+                                    ip = req.socket.remoteAddress.substring(7);
+                                }
+                            } else {
+                                if(req.socket.remoteAddress.substring(7).length == 0) {
+                                    return res.json({ "status" : "error", "message" : "IP-adressen er ugyldig" });
+                                } else {
+                                    ip = req.socket.remoteAddress.substring(7);
+                                }
+                            }
 
                             // Endrer utløpsdatoen utifra "Husk meg"-feltet
                             let date = new Date();
@@ -270,21 +276,19 @@ router.post('/login', async (req, res) => {
                             const token = cryptojs.AES.encrypt(fetchedUser[0].email, process.env.TOKEN_SECRET);
 
                             // Legg til nye token i databasen med utløpsdato ovenfor
-                            let insertQuery = "INSERT INTO login_token(gjelderfor, token, utlopsdato) VALUES(?, ?, ?)";
-                            let insertQueryFormat = mysql.format(insertQuery, [fetchedUser[0].brukerid, token.toString(), date]);
+                            let insertQuery = "INSERT INTO login_token(gjelderfor, token, ip, utlopsdato) VALUES(?, ?, ?, ?)";
+                            let insertQueryFormat = mysql.format(insertQuery, [fetchedUser[0].brukerid, token.toString(), ip, date]);
                     
                             connPool.query(insertQueryFormat, (error, results) => {
+                                connPool.release();
                                 if (error) {
-                                    connPool.release();
                                     console.log("En feil oppstod under oppretting av login_token for en bruker, detaljer: " + error.errno + ", " + error.sqlMessage)
                                     return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                                 }
 
                                 if(results.affectedRows > 0) {
-                                    connPool.release();
                                     return res.json({"status" : "success", "message" : "OK", "authtoken" : token.toString(), "pwd_temp" : fetchedUser[0].pwd_temp});
                                 } else {
-                                    connPool.release();
                                     return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                                 }
                             });
@@ -302,6 +306,7 @@ router.post('/login', async (req, res) => {
             });
         }
     } else {
+        // Ett eller flere felt mangler fra forespørselen
         res.status(400).json({"status" : "error", "message" : "Ikke tilstrekkelig data"});
     }
 });
@@ -341,34 +346,39 @@ router.post('/updatePassword', async (req, res) => {
             const salt = await bcrypt.genSalt(10)
             const hashedPwd = await bcrypt.hash(req.body.pwd, salt)
     
-            verifyAuth(req.body.token).then( resAuth => {
-
+            // Sjekker om authtoken sendt fra bruker er gyldig
+            verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
+                // Oppretter tilkobling til databasen
                 mysqlpool.getConnection(function(error, connPool) {
                     if(error) {
                         return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
                     }
-
+                    // Oppretter spørringen for å oppdaterere bruker sitt passord
                     let updateQuery = "UPDATE bruker SET pwd = ?, pwd_temp = 0 WHERE brukerid = ?"
                     let updateQueryFormat = mysql.format(updateQuery, [hashedPwd, resAuth.brukerid])
 
+                    // Utfører spørringen
                     connPool.query(updateQueryFormat, (error, results) => {
+                        // Lukker kobling til database etter bruk
+                        connPool.release();
                         if (error) {
-                            connPool.release();
+                            // Feil oppstod i utførelse av database-spørringen, loggfører og sender melding til bruker
                             console.log("En feil oppstod ved oppdatering av midlertidig passord for en bruker, detaljer: " + error.errno + ", " + error.sqlMessage)
                             return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere"})
                         }
         
                         if(results.affectedRows > 0) {
-                            connPool.release();
+                            // Alt OK
                             return res.json({"status" : "success"})
                         } else {
-                            connPool.release();
+                            // Feil oppstod i svaret fra database-spørringen, kunne ikke oppdatere passordet
                             return res.json({"status" : "error", "message" : "En feil oppstod under oppdatering av brukerens passord"})
                         }
                     });
                 });
             });
         } else {
+            // Ett eller flere felt mangler fra forespørselen
             res.status(400).json({"status" : "error", "message" : "Ikke tilstrekkelig data"})
         }
     }

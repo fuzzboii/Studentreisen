@@ -5,7 +5,7 @@
 }
 
 #section_logo_login {
-    display: block;
+    display: none;
     background-color: #4646a5;
     height: 5em;
     width: 10em;
@@ -88,6 +88,7 @@
     }
 
     #section_logo_login {
+        display: block;
         height: 6em;
         width: 11em;
     }

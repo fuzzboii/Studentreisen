@@ -1,23 +1,30 @@
+// React spesifikt
 import React from 'react';
 import {Link} from 'react-router-dom';
+
+// Material UI komponenter
 import ArrowForwardIosSharpIcon from '@material-ui/icons/ArrowForwardIosSharp';
 import {makeStyles} from '@material-ui/core/styles';
 
+// 3rd-party Packages
 import moment from 'moment';
 import 'moment/locale/nb';
 
+// Styling for Material Design komponenter
+const useStyles = makeStyles((theme) => ({
+    icon: {
+      position: "absolute",
+      right: 0,
+      top: "50%",
+      transform: "translateY(-50%)",
+    },
+  }));
+
+// Komponent for å rendrere et enkelt påmeldt seminar i seminarlisten, data'en blir overført fra EnlistedList
 const EnlistedSeminar = (props) => {
 
-    const useStyles = makeStyles((theme) => ({
-        icon: {
-          position: "absolute",
-          right: 0,
-          top: "50%",
-          transform: "translateY(-50%)",
-        },
-      }));
-
-      const classes = useStyles();
+    // Hook for å få tilgang på styling
+    const classes = useStyles();
 
     return(
         <div className="borderWrap" component={Link} to={`/seminar/seminarkommende=${props.id}`}>
