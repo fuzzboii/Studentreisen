@@ -202,7 +202,7 @@ router.post('/getCVSeminar', async (req, res) => {
                     if(results.length > 0) {
                         return res.json({results});
                     } else {
-                        return res.json({"status" : "error", "message" : "En feil oppstod under henting av brukerens innelegg i seminar listen"});
+                        return res.json({"status" : "error", "message" : "Ingen data funnet i brukerens innlegg i seminar listen"});
                     }
                 });       
             })
@@ -269,7 +269,7 @@ router.post('/getCVEducation', async (req, res) => {
                     if(results.length > 0) {
                         return res.json({results});
                     } else {
-                        return res.json({"status" : "error", "message" : "En feil oppstod under henting av brukerens innlegg i utdannings listen"});
+                        return res.json({"status" : "error", "message" : "Ingen data funnet i brukerens innlegg i utdannings listen"});
                     }
                 });         
             })
@@ -337,7 +337,7 @@ router.post('/getCVWork', async (req, res) => {
                     if(results.length > 0) {
                         return res.json({results});
                     } else {
-                        return res.json({"status" : "error", "message" : "En feil oppstod under henting av brukerens jobberfaringer i listen"});
+                        return res.json({"status" : "error", "message" : "Ingen data funnet i brukerens jobberfaringer i listen"});
                     }
                 });        
             })
@@ -404,7 +404,7 @@ router.post('/getCVOther', async (req, res) => {
                     if(results.length > 0) {
                         return res.json({results});
                     } else {
-                        return res.json({"status" : "error", "message" : "En feil oppstod under henting av brukerens innlegg i annet listen"});
+                        return res.json({"status" : "error", "message" : "Ingen data funnet i brukerens innlegg i annet listen"});
                     }
                 });          
             })

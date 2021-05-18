@@ -194,6 +194,7 @@ function CV(props) {
         const config = {
             token: token
         }
+
         axios
             // Flere spørringer kjøres samtidig, vent til ALLE er ferdige
             .all([
@@ -373,7 +374,10 @@ function CV(props) {
                     <Box alignItems="center">
                         <p className='cv_profil_info'>{"Navn: " + fnavn + " " + enavn} </p>
                         <p className='cv_profil_info'>{"Epost: " + email}</p>
-                        <p className='cv_profil_info'>{"Telefonnummer: " + tlf}</p>
+                        {tlf !== null && 
+                        <p className='cv_profil_info'>{"Telefonnummer: " + tlf}</p>}
+                        {tlf === null && 
+                        <p className='cv_profil_info'>Telefonnummer: Ingen</p>}
                     </Box>
                 </Grid>
 
@@ -429,7 +433,7 @@ function CV(props) {
                     </Dialog>
                     <CardContent>                    
                         <Box bgcolor="white" boxShadow={5}>
-                            <h1>Utdannelse</h1>
+                            <h1 className="cv_innlegg_overskrift">Utdannelse</h1>
                             {utdanning !== undefined && utdanning.map((utd, indexEdu) => (
                                 
                                 <div className="cv_returned_content">
@@ -503,7 +507,7 @@ function CV(props) {
                             ))}
                             {utdanning === undefined &&
                                 <div>
-                                    <p className='cv_returned_innlegg'>Ingen informasjon her enda.</p>
+                                    <p className='cv_returned_innlegg_tom'>Ingen informasjon her enda.</p>
                                 </div>}
                         </Box>
                         <Box bgcolor="white" boxShadow={5}>
@@ -579,7 +583,7 @@ function CV(props) {
                             ))}
                             {seminar === undefined &&
                                 <div>
-                                    <p className='cv_returned_innlegg'>Ingen informasjon her enda.</p>
+                                    <p className='cv_returned_innlegg_tom'>Ingen informasjon her enda.</p>
                                 </div>}
                         </Box>
                         <Box bgcolor="white" boxShadow={5}>
@@ -653,7 +657,7 @@ function CV(props) {
                                 ))}
                                 {jobb === undefined &&
                                 <div>
-                                    <p className='cv_returned_innlegg'>Ingen informasjon her enda.</p>
+                                    <p className='cv_returned_innlegg_tom'>Ingen informasjon her enda.</p>
                                 </div>}
                         </Box>
                         <Box bgcolor="white" boxShadow={5}>
@@ -727,7 +731,7 @@ function CV(props) {
                                 ))}
                                 {annet === undefined &&
                                 <div>
-                                    <p className='cv_returned_innlegg'>Ingen informasjon her enda.</p>
+                                    <p className='cv_returned_innlegg_tom'>Ingen informasjon her enda.</p>
                                 </div>}
                         </Box>
                     </CardContent>
