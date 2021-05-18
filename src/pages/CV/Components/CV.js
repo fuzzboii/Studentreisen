@@ -182,7 +182,7 @@ function CV(props) {
             width: '10vh',
             height: '10vh',
         },
-        grid: {
+        cardcontent: {
             backgroundColor: 'white'
             },
     });
@@ -428,7 +428,7 @@ function CV(props) {
                         </DialogActions>
                     </Dialog>
                     <CardContent>                    
-                        <Box boxShadow={5}>
+                        <Box bgcolor="white" boxShadow={5}>
                             <h1>Utdannelse</h1>
                             {utdanning !== undefined && utdanning.map((utd, indexEdu) => (
                                 
@@ -506,7 +506,7 @@ function CV(props) {
                                     <p className='cv_returned_innlegg'>Ingen informasjon her enda.</p>
                                 </div>}
                         </Box>
-                        <Box boxShadow={5}>
+                        <Box bgcolor="white" boxShadow={5}>
                             <h1>Seminarer og sertifiseringer</h1>
                             {seminar !== undefined && seminar.map((sem, indexSem) => (
                                 
@@ -582,7 +582,7 @@ function CV(props) {
                                     <p className='cv_returned_innlegg'>Ingen informasjon her enda.</p>
                                 </div>}
                         </Box>
-                        <Box boxShadow={5}>
+                        <Box bgcolor="white" boxShadow={5}>
                             <h1>Jobberfaring</h1>
                             {jobb !== undefined && jobb.map((wor, indexWor) => (
                                 <div className="cv_returned_content">
@@ -656,7 +656,7 @@ function CV(props) {
                                     <p className='cv_returned_innlegg'>Ingen informasjon her enda.</p>
                                 </div>}
                         </Box>
-                        <Box boxShadow={5}>
+                        <Box bgcolor="white" boxShadow={5}>
                         <h1>Annet</h1>
                             {annet !== undefined && annet.map((ann, indexAnn) => (
                                 <div className="cv_returned_content">
