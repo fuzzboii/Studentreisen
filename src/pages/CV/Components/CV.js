@@ -436,11 +436,11 @@ function CV(props) {
                             <h1 className="cv_innlegg_overskrift">Utdannelse</h1>
                             {utdanning !== undefined && utdanning.map((utd, indexEdu) => (
                                 
-                                <div className="cv_returned_content">
+                                <div className="cv_returned_content" key={indexEdu}>
                                     {utd.datoFra !== null &&
-                                    <text className='cv_returned_datoFra' type="date">{moment.locale('nb'), moment(utd.datoFra).format("DD MMM YYYY")} &nbsp;&nbsp;</text>}
+                                    <p className='cv_returned_datoFra' type="date">{moment.locale('nb'), moment(utd.datoFra).format("DD MMM YYYY")} </p>}
                                     {utd.datoTil !== null && 
-                                    <text className='cv_returned_datoTil' type="date">- &nbsp;&nbsp;{moment.locale('nb'), moment(utd.datoTil).format("DD MMM YYYY")}</text>}
+                                    <p className='cv_returned_datoTil' type="date">{moment.locale('nb'), moment(utd.datoTil).format("DD MMM YYYY")}</p>}
                                     <p className='cv_returned_innlegg'>{utd.innlegg}</p>
                                     <div className="cv_ButtonsWrapper">
                                     <Button className="cv_Delete"
@@ -449,7 +449,6 @@ function CV(props) {
                                         color="secondary"
                                         className={classes.button}
                                         startIcon={<DeleteIcon />}
-                                        key={indexEdu}
                                         onClick={() => {handleClickOpenSlettEducation(utd.cv_education_id)}}
                                         >
                                         
@@ -514,11 +513,11 @@ function CV(props) {
                             <h1>Seminarer og sertifiseringer</h1>
                             {seminar !== undefined && seminar.map((sem, indexSem) => (
                                 
-                                <div className="cv_returned_content">
+                                <div className="cv_returned_content" key={indexSem}>
                                     {sem.datoFra !== null && 
-                                    <text className='cv_returned_datoFra' type="date">{moment.locale('nb'), moment(sem.datoFra).format("DD MMM YYYY")} &nbsp;&nbsp;</text>}
+                                    <p className='cv_returned_datoFra' type="date">{moment.locale('nb'), moment(sem.datoFra).format("DD MMM YYYY")} </p>}
                                     {sem.datoTil !== null && 
-                                    <text className='cv_returned_datoTil' type="date">- &nbsp;&nbsp;{moment.locale('nb'), moment(sem.datoTil).format("DD MMM YYYY")}</text>}
+                                    <p className='cv_returned_datoTil' type="date">{moment.locale('nb'), moment(sem.datoTil).format("DD MMM YYYY")}</p>}
                                     <p className='cv_returned_innlegg'>{sem.innlegg}</p>
                                     <div className="cv_ButtonsWrapper">
                                     <Button
@@ -527,7 +526,6 @@ function CV(props) {
                                     color="secondary"
                                     className={classes.button}
                                     startIcon={<DeleteIcon />}
-                                    key={indexSem}
                                     onClick={() => {handleClickOpenSlettSeminar(sem.cv_seminar_id)}}
                                     >
                                     
@@ -589,11 +587,11 @@ function CV(props) {
                         <Box bgcolor="white" boxShadow={2}>
                             <h1>Jobberfaring</h1>
                             {jobb !== undefined && jobb.map((wor, indexWor) => (
-                                <div className="cv_returned_content">
+                                <div className="cv_returned_content" key={indexWor}>
                                     {wor.datoFra !== null && 
-                                    <text className='cv_returned_datoFra' type="date">{moment.locale('nb'), moment(wor.datoFra).format("DD MMM YYYY")} &nbsp;&nbsp;</text>}
+                                    <p className='cv_returned_datoFra' type="date">{moment.locale('nb'), moment(wor.datoFra).format("DD MMM YYYY")} </p>}
                                     {wor.datoTil !== null && 
-                                    <text className='cv_returned_datoTil' type="date">- &nbsp;&nbsp;{moment.locale('nb'), moment(wor.datoTil).format("DD MMM YYYY")}</text>}
+                                    <p className='cv_returned_datoTil' type="date">{moment.locale('nb'), moment(wor.datoTil).format("DD MMM YYYY")}</p>}
                                     <p className='cv_returned_innlegg'>{wor.innlegg}</p>
                                     <div className="cv_ButtonsWrapper">
                                     <Button
@@ -602,7 +600,6 @@ function CV(props) {
                                     color="secondary"
                                     className={classes.button}
                                     startIcon={<DeleteIcon />}
-                                    key={indexWor}
                                     onClick={() => {handleClickOpenSlettWork(wor.cv_work_id)}}
                                     >
                                     
@@ -663,11 +660,11 @@ function CV(props) {
                         <Box bgcolor="white" boxShadow={2}>
                         <h1>Annet</h1>
                             {annet !== undefined && annet.map((ann, indexAnn) => (
-                                <div className="cv_returned_content">
+                                <div className="cv_returned_content" key={indexAnn}>
                                     {ann.datoFra !== null && 
-                                    <text className='cv_returned_datoFra' type="date">{moment.locale('nb'), moment(ann.datoFra).format("DD MMM YYYY")} &nbsp;&nbsp;</text>}
+                                    <p className='cv_returned_datoFra' type="date">{moment.locale('nb'), moment(ann.datoFra).format("DD MMM YYYY")} </p>}
                                     {ann.datoTil !== null && 
-                                    <text className='cv_returned_datoTil' type="date">- &nbsp;&nbsp;{moment.locale('nb'), moment(ann.datoTil).format("DD MMM YYYY")}</text>}
+                                    <p className='cv_returned_datoTil' type="date">{moment.locale('nb'), moment(ann.datoTil).format("DD MMM YYYY")}</p>}
                                     <p className='cv_returned_innlegg'>{ann.innlegg}</p>
                                     <div className="cv_ButtonsWrapper">
                                     <Button
@@ -676,7 +673,6 @@ function CV(props) {
                                     color="secondary"
                                     className={classes.button}
                                     startIcon={<DeleteIcon />}
-                                    key={indexAnn}
                                     onClick={() => {handleClickOpenSlettOther(ann.cv_other_id)}}
                                     >
                                     
