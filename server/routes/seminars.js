@@ -258,39 +258,6 @@ router.get('/getAllSeminarExpiredData', async (req, res) => {
                 res.status(400).json({"status" : "error", "message" : "Ikke tilstrekkelig data"});
             }
     });
-    
-    
-    router.post('/', async (req, res) => {
-        if(req.body.emnekode !== undefined && req.body.navn !== undefined && req.body.beskrivelse !== undefined && req.body.semester !== undefined
-            && req.body.studiepoeng !== undefined && req.body.lenke !== undefined) {
-
-            mysqlpool.getConnection(function(error, connPool) {
-                if(error) {
-                    return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
-                }
-                let insertQuery = "INSERT INTO seminar (bildeid, arrangor, adresse, oppstart, varighet, beskrivelse, tilgjengelighet) VALUES (?, ?, ?, ?, ?, ?)";
-                let insertQueryFormat = mysql.format(insertQuery, [req.body.emnekode, req.body.navn, req.body.beskrivelse, req.body.semester, req.body.studiepoeng, req.body.lenke]);
-
-                connPool.query(insertQueryFormat, (error, results) => {
-                    connPool.release();
-                    if (error) {
-                        console.log("An error occurred while user was creating a course, details: " + error.errno + ", " + error.sqlMessage)
-                        return res.json({ "status" : "error", "message" : "En intern feil oppstod, vennligst forsøk igjen senere" });
-                
-                    }
-                    // Returning the number of affected rows to indicate the insert went OK
-                    if(results.affectedRows > 0) {
-                        res.status(200).json({"status" : "success", "message" : "Seminar opprettet"});
-                    } else {
-                        res.status(400).json({"status" : "error", "message" : "En feil oppstod under oppretting av seminaret"});
-                    }
-                });
-            });
-
-    } else {
-        res.status(400).json({"status" : "error", "message" : "Ikke tilstrekkelig data"});
-       }
-    });
 
 
 router.post('/submitSeminar', (req, res) => {
