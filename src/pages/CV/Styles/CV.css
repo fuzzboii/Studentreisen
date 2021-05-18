@@ -67,11 +67,14 @@
 }
 
 .cv_returned_datoTil {
-    padding-right: 2em;
+    padding-left: 2em;
+    display: inline;
+    float: "right"
 }
 
 .cv_returned_datoFra {
     padding-left: 2em;
+    display: inline;
 }
 
 .cv_profil_info {
@@ -113,12 +116,20 @@
 }
 /* Tab */
 @media screen and (min-width: 720px) {
-
+    .cv_returned_innlegg {
+        font-size:1em;
+        text-align: center;
+        
+    }
 }
 
 /* Tab (pro) */
 @media screen and (min-width: 1024px) {
-
+    .cv_returned_innlegg {
+        font-size:1em;
+        text-align: center;
+        
+    }
 }
 
 
@@ -128,6 +139,11 @@
     #main_cv {
         grid-template-columns: 1200px;
         display: grid;
+    }
+    .cv_returned_innlegg {
+        font-size:1em;
+        text-align: center;
+        
     }  
 
 }
@@ -139,12 +155,22 @@
         grid-template-columns: 1200px;
         display: grid;
     }
+    .cv_returned_innlegg {
+        font-size:1em;
+        text-align: center;
+        
+    }
 }
 
 /* Stor skjerm, 1440p */
 @media screen and (min-width: 2560px) {
     #main_cv {
         grid-template-columns: 1200px;
-        display: grid;
+        display: grid;  
+    }
+    .cv_returned_innlegg {
+        font-size:1em;
+        text-align: center;
+        
     }
 }

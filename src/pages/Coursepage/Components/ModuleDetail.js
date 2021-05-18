@@ -80,7 +80,6 @@ const ModuleDetail = (props) => {
     // Henter kursmoduldata
     const fetchData = async () => {     
         const res = await axios.get(process.env.REACT_APP_APIURL + "/course/module");
-        console.log(res.data);
         setModules(res.data);
     };
 
@@ -88,7 +87,6 @@ const ModuleDetail = (props) => {
     const fetchPost = async () => {
         const data = {modulkode: modulkode}; 
         const res = await axios.post(process.env.REACT_APP_APIURL + "/course/module", data);
-        console.log(res.data);
         setCoursemods(res.data);
     };
 

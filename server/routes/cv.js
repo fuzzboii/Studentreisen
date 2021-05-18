@@ -271,7 +271,6 @@ router.post('/slettInnleggSem', async (req, res) => {
 router.post('/getCVEducation', async (req, res) => {
     let brukerid = undefined;
     if (req.body.token !== undefined)  {
-        console.log(req.body.token)
         verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
             brukerid = resAuth.brukerid 
             mysqlpool.getConnection(function(error, connPool) {
