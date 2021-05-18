@@ -503,7 +503,7 @@ function CV(props) {
                             ))}
                             {utdanning === undefined &&
                                 <div>
-                                    <p>Ingen informasjon her enda.</p>
+                                    <p className='cv_returned_innlegg'>Ingen informasjon her enda.</p>
                                 </div>}
                         </Box>
                         <Box boxShadow={5}>
@@ -579,7 +579,7 @@ function CV(props) {
                             ))}
                             {seminar === undefined &&
                                 <div>
-                                    <p>Ingen informasjon her enda.</p>
+                                    <p className='cv_returned_innlegg'>Ingen informasjon her enda.</p>
                                 </div>}
                         </Box>
                         <Box boxShadow={5}>
@@ -653,7 +653,7 @@ function CV(props) {
                                 ))}
                                 {jobb === undefined &&
                                 <div>
-                                    <p>Ingen informasjon her enda.</p>
+                                    <p className='cv_returned_innlegg'>Ingen informasjon her enda.</p>
                                 </div>}
                         </Box>
                         <Box boxShadow={5}>
@@ -727,7 +727,7 @@ function CV(props) {
                                 ))}
                                 {annet === undefined &&
                                 <div>
-                                    <p>Ingen informasjon her enda.</p>
+                                    <p className='cv_returned_innlegg'>Ingen informasjon her enda.</p>
                                 </div>}
                         </Box>
                     </CardContent>
