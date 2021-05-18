@@ -16,6 +16,8 @@ function Footer() {
               dialog: {}
           }}
 
+          policyLink="/privacy"
+
           message="Vi bruker informasjonskapsler (cookies) kun for lagring av din innlogget økt, ved å fortsette å bruke siden godkjenner du dette."
           necessaryOptionText="Nødvendige"
           privacyPolicyLinkText="Les mer om personvernet her"
