@@ -333,7 +333,7 @@ function Navbar(props) {
               </div> }
 
               {auth && (notif !== null && notifUlest > 0) && 
-                  <NotificationImportantIcon tabIndex={7} id="notif-bell" onClick={notifClickOpen} />
+                  <NotificationImportantIcon tabIndex={7} id="notif-bell" onClick={notifClickOpen} onKeyUp={e => e.code === "Enter" ? notifClickOpen() : ""} />
               }
               {auth && (notif == null || notifUlest == 0) &&
                   <NotificationsNoneIcon tabIndex={7} id="notif-bell" onClick={notifClickOpen} onKeyUp={e => e.code === "Enter" ? notifClickOpen() : ""} />
