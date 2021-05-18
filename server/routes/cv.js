@@ -91,6 +91,12 @@ router.post('/postCVSeminar', async (req, res) => {
                         console.log("An error occured while adding to CV, details: " + error.errno + ", " + error.sqlMessage)
                         return res.json({ "status" : "error", "message" : "en intern feil oppstod, vennligst forsøk igjen senere" })
                     }
+                    // Returnerer påvirkede rader
+                    if(results) {
+                        return res.json({"status" : "success", "message" : "Data ble lagt inn i seminar listen"});
+                    } else {
+                        return res.json({"status" : "error", "message" : "Ingen data ble lagt inn i seminar listen"});
+                    }
                 })
             })
         })
@@ -118,6 +124,12 @@ router.post('/postCVEducation', async (req, res) => {
                         console.log("An error occured while  adding to CV, details: " + error.errno + ", " + error.sqlMessage)
                         return res.json({ "status" : "error", "message" : "en intern feil oppstod, vennligst forsøk igjen senere" })
                     }
+                    // Returnerer påvirkede rader
+                    if(results) {
+                        return res.json({"status" : "success", "message" : "Data ble lagt inn i utdanning listen"});
+                    } else {
+                        return res.json({"status" : "error", "message" : "Ingen data ble lagt inn i utdanning listen"});
+                    }
                 })
             })
         })
@@ -144,6 +156,12 @@ router.post('/postCVWork', async (req, res) => {
                         console.log("An error occured while  adding to CV, details: " + error.errno + ", " + error.sqlMessage)
                         return res.json({ "status" : "error", "message" : "en intern feil oppstod, vennligst forsøk igjen senere" })
                     }
+                    // Returnerer påvirkede rader
+                    if(results) {
+                        return res.json({"status" : "success", "message" : "Data ble lagt inn i arbeidserfaring listen"});
+                    } else {
+                        return res.json({"status" : "error", "message" : "Ingen data ble lagt inn i arbeidserfaring listen"});
+                    }
                 })
             })
         })
@@ -169,6 +187,12 @@ router.post('/postCVOther', async (req, res) => {
                     if (error) {
                         console.log("An error occured while  adding to CV, details: " + error.errno + ", " + error.sqlMessage)
                         return res.json({ "status" : "error", "message" : "en intern feil oppstod, vennligst forsøk igjen senere" })
+                    }
+                    // Returnerer påvirkede rader
+                    if(results) {
+                        return res.json({"status" : "success", "message" : "Data ble lagt inn i annet listen"});
+                    } else {
+                        return res.json({"status" : "error", "message" : "Ingen data ble lagt inn i annet listen"});
                     }
                 })
             })
@@ -232,10 +256,8 @@ router.post('/slettInnleggSem', async (req, res) => {
                     }
                     
                     // Returnerer påvirkede rader
-                    if(results.length > 0) {
-                        return res.json({results});
-                    } else {
-                        return res.json({"status" : "error", "message" : "En feil oppstod under sletting av innlegg"});
+                    if(results) {
+                        return res.json({"status" : "success", "message" :"Innlegget ble slettet"});
                     }
                 });         
             })
@@ -249,6 +271,7 @@ router.post('/slettInnleggSem', async (req, res) => {
 router.post('/getCVEducation', async (req, res) => {
     let brukerid = undefined;
     if (req.body.token !== undefined)  {
+        console.log(req.body.token)
         verifyAuth(req.body.token, req.socket.remoteAddress.substring(7)).then( resAuth => {
             brukerid = resAuth.brukerid 
             mysqlpool.getConnection(function(error, connPool) {
@@ -300,10 +323,8 @@ router.post('/slettInnleggEdu', async (req, res) => {
                     }
                     
                     // Returnerer påvirkede rader
-                    if(results.length > 0) {
-                        return res.json({results});
-                    } else {
-                        return res.json({"status" : "error", "message" : "En feil oppstod under sletting av innlegg"});
+                    if(results) {
+                        return res.json({"status" : "success", "message" :"Innlegget ble slettet"});
                     }
                 });         
             })
@@ -367,10 +388,8 @@ router.post('/slettInnleggWork', async (req, res) => {
                     }
                     
                     // Returnerer påvirkede rader
-                    if(results.length > 0) {
-                        return res.json({results});
-                    } else {
-                        return res.json({"status" : "error", "message" : "En feil oppstod under sletting av innlegg"});
+                    if(results) {
+                        return res.json({"status" : "success", "message" :"Innlegget ble slettet"});
                     }
                 });         
             })
@@ -434,10 +453,8 @@ router.post('/slettInnleggOther', async (req, res) => {
                     }
                     
                     // Returnerer påvirkede rader
-                    if(results.length > 0) {
-                        return res.json({results});
-                    } else {
-                        return res.json({"status" : "error", "message" : "En feil oppstod under sletting av innlegg"});
+                    if(results) {
+                        return res.json({"status" : "success", "message" :"Innlegget ble slettet"});
                     }
                 });        
             })
@@ -468,11 +485,9 @@ router.post('/redigerInnleggEdu', async (req, res) => {
                     }
                     
                     // Returnerer påvirkede rader
-                    if(results.length > 0) {
-                        return res.json({results});
-                    } else {
-                        return res.json({"status" : "error", "message" : "En feil oppstod under redigering av innlegg"});
-                    }
+                    if(results) {
+                        return res.json({"status" : "success", "message" : "Innlegget er redigert!"});
+                    } 
                 });         
             })
         })
@@ -502,11 +517,9 @@ router.post('/redigerInnleggSem', async (req, res) => {
                     }
                     
                     // Returnerer påvirkede rader
-                    if(results.length > 0) {
-                        return res.json({results});
-                    } else {
-                        return res.json({"status" : "error", "message" : "En feil oppstod under redigering av innlegg"});
-                    }
+                    if(results) {
+                        return res.json({"status" : "success", "message" : "Innlegget er redigert!"});
+                    } 
                 });         
             })
         })
@@ -536,11 +549,9 @@ router.post('/redigerInnleggWork', async (req, res) => {
                     }
                     
                     // Returnerer påvirkede rader
-                    if(results.length > 0) {
-                        return res.json({results});
-                    } else {
-                        return res.json({"status" : "error", "message" : "En feil oppstod under redigering av innlegg"});
-                    }
+                    if(results) {
+                        return res.json({"status" : "success", "message" : "Innlegget er redigert!"});
+                    } 
                 });         
             })
         })
@@ -570,11 +581,9 @@ router.post('/redigerInnleggOther', async (req, res) => {
                     }
                     
                     // Returnerer påvirkede rader
-                    if(results.length > 0) {
-                        return res.json({results});
-                    } else {
-                        return res.json({"status" : "error", "message" : "En feil oppstod under redigering av innlegg"});
-                    }
+                    if(results) {
+                        return res.json({"status" : "success", "message" : "Innlegget er redigert!"});
+                    } 
                 });         
             })
         })
