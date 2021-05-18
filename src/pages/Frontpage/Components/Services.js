@@ -9,7 +9,7 @@ import '../CSS/Services.css';
 
 // Komponent for Tjenester/Services delt i 3 deler (Kurs, seminar, CV). Data hentes og endres på Data.js.
 function Services({
-    heading, subheading, kursDesc, seminarDesc, cvDesc
+    heading, subheading, courseDesc, seminarDesc, cvDesc
 }) {
     return (
         <div className="services_section">
@@ -23,7 +23,7 @@ function Services({
                             <FaChalkboardTeacher size="3em" />
                         </div>
                         <h3>Kurs</h3>
-                        <p>{kursDesc}</p>
+                        <p>{courseDesc}</p>
                     </div>
             
                     <div className="services_container-info">

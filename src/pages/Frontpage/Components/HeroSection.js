@@ -10,20 +10,20 @@ import '../../../App.css';
 import '../CSS/HeroSection.css';
 import reise from '../../../assets/reise.svg';
 
-// Komponent for HeroSection med enkel mulighet til å bytte farger på tekst dersom det legges til et bakgrunnsbilde fremfor å gjøre større endringer i CSS. 
+
 //Data hentes og endres på Data.js.
 
 function HeroSection({
-    lightBg, lightText, lightTextDesc, headline, description, imgStart
+    headline, description, imgStart
 }) {
     return (
-        <div className={lightBg ? "home_hero-section" : "home_hero-section darkBg"}>
+        <div className={"home_hero-section home_hero-Bg"}>
             <div className="hero-container">
                 <div className="row home_hero-row" style={{display: "flex", flexDirection: imgStart === "start" ? "row-reverse" : "row"}}>
                     <div className="home_hero_column">
                         <div className="home_hero-text">
-                            <h1 className={lightText ? "heading" : "heading dark"}>{headline}</h1>
-                            <p className={lightTextDesc ? "home_hero-subtitle" : "home_hero-subtitle dark"}>{description}</p>
+                            <h1 className={"heading"}>{headline}</h1>
+                            <p className={"home_hero-subtitle"}>{description}</p>
                             <Link to="/Register" style={{ textDecoration: "none" }}>
                                 <Button className='button' variant="contained" color="default">Sett i gang reisen</Button>
                             </Link>
