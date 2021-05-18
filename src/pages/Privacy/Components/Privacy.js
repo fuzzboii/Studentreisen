@@ -12,7 +12,7 @@ function Privacy() {
             <Grid id="privacy_grid">
                 <Card>
                     <CardContent>
-                        <h1>Personsvern erklæring for studentreisen.no </h1>
+                        <h1>Personvernerklæring for studentreisen.no </h1>
                             <h2>Her beskriver vi hvordan vi samler inn og bruker informasjon om besøk på våre nettsider. </h2>
                                 <p>Det er Datatilsynet som er klageinstans ved feil i behandlinger av personopplysninger, 
                                     men har du spørsmål knyttet til personvern på våre nettsider kan du gjerne kontakte oss på e-postadressen 
