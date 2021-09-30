@@ -1,3 +1,7 @@
+# Studenreisen (Description)
+
+This is a proof-of-concept that was created as part of my bachelor's thesis. The project was created by five students and carried out in accordance with a client's set of requirements, as well as a written thesis conducted by a mentor.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
