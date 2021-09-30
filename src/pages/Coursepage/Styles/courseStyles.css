@@ -1,0 +1,507 @@
+ .link {
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+    
+  }
+
+  .link2 {
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+    
+  }
+
+  .linkFlex {
+      display: flex;
+      margin-top: 0.8em;
+    
+    
+  }
+
+.course-section {
+    background-color: rgb(247, 244, 244);    
+
+}
+
+.BorderBox {
+    border-bottom:1px solid rgb(226, 226, 226);
+}
+
+
+
+.relevance-list {
+    visibility: hidden;
+    position: absolute;
+
+}
+
+.relevanceHeader {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+    padding-bottom: 0.5em;
+    border-bottom: solid 1px rgba(87, 87, 87, 0.253);
+    
+}
+
+
+.undervisningsspråk {
+    margin-top: 0.5em;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.course-sectionTop {
+    border-bottom: solid rgb(221, 220, 220) 1px;
+
+}
+
+.kursnavn {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0;
+    color: #4646a5;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+   -webkit-line-clamp: 1; /* number of lines to show */
+   -webkit-box-orient: vertical;
+}
+
+.kursinfo{
+    display: grid;
+    grid-template-columns: auto 3.5em 2em;
+}
+
+.kursinfo p {
+    margin-top: 0.2em;
+    margin-bottom: 0em;
+    padding-top: 0.2em;
+    padding-bottom: 0.4em;
+    font-weight: 600;
+    font-size: 14px;
+}
+.kurskode {
+    margin-top: 0.2em;
+    margin-bottom: 0em;
+    padding-top: 0.2em;
+    padding-bottom: 0.4em;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+
+.kursbeskrivelse {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+   -webkit-line-clamp: 3; /* number of lines to show */
+   -webkit-box-orient: vertical;
+}
+
+.NavHeader {
+    display: grid;
+    font-size: 1.25rem;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    font-weight: 500;
+    line-height: 1.6;
+    letter-spacing: 0.0075em;
+
+}
+
+.course-list {
+    display: grid;
+    grid-row-gap: 1em;
+}
+
+
+.indexPagination { 
+        margin-bottom: 1em;
+        margin-top: 1em;
+    
+}
+
+.searchBox {
+    display: grid;
+    grid-template-columns: auto auto;
+    margin-left: 8px;
+    
+}
+
+.wrapNewcourse {
+    margin-bottom: 1em;
+}
+
+.content-overview {
+    margin-top: 1em;
+}
+
+.indexRes2 {
+    display: grid;
+    grid-template-rows: auto auto;
+    
+}
+
+.indexCenterWrap {
+    display: flex;
+    justify-content: center;
+    
+}
+/* Course Detail page */
+
+.kursinfo-tekst p {
+    margin-top: 0.2em;
+    margin-bottom: 0.5em;
+    padding-top: 0.2em;
+    padding-bottom: 0.4em;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.kursinfo-tekst {
+    display: flex;
+    justify-content:space-between;
+    
+
+}
+
+.courseHeader {
+    border-bottom: 1px solid rgb(163, 163, 163);
+}
+
+
+
+.courseButton {
+    width: 100%;
+}
+
+
+.courseBody  {
+    margin-bottom: 1em;
+    margin-top: 1em;
+}
+
+.courseBody h2 {
+    margin: 0;
+    font-weight: 600;
+}
+
+.courseBody h2 {
+    
+    font-weight: 600;
+}
+
+.overskriftKurs {
+    font-weight: 600;
+    color: #4646a5;
+
+}
+
+.buttonWrap {
+    padding-top: 1em;
+    border-top: 1px solid rgb(163, 163, 163);
+}
+
+/* Misc */
+
+.fieldFormat {
+    font-size: 14px;
+    margin: 0;
+}
+
+.iconBox {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.language-icon {
+    position: relative;
+    /* Adjust these values accordingly */
+    top: 9.0px;
+    right: 2px;
+       
+}
+
+.language-icon2 {
+    position: relative;
+    /* Adjust these values accordingly */
+    top: 7.5px;
+    right: 2px;
+}
+
+.beskrivelse {
+    width: 35em;
+    overflow: hidden;
+    text-overflow: ellipsis; 
+    white-space: nowrap; 
+}
+
+
+/* Nytt Kurs
+----------------------------- */
+/* Knapp for nytt kurs */
+
+
+#CourseNew_main {
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#CourseNew_button_back {
+    margin-top: 1em;
+}
+
+#CourseNew_form {
+    display: grid;
+    margin-bottom: 2em;
+}
+
+#CourseNew_form input {
+    height: 2em;
+    box-sizing: border-box;
+}
+
+#CourseNew_formcontrol {
+    margin-top: 1em;
+}
+
+#CourseNew_iconbutton_remove {
+    padding-left: 0;
+    width: 7em;
+    font-size: 1em;
+    justify-content: left;
+    margin-bottom: 1.5em;
+}
+
+#CourseNew_input_imageprev, #CourseNew_p_noimage {
+    max-height: 10em;
+    max-width: 100%;
+    margin-top: 1.5em;
+}
+
+#CourseNew_iconbutton_select {
+    padding: 0;
+    margin-bottom: 1.5em;
+}
+
+#CourseNew_button_submit {
+    margin-top: 2em;
+}
+
+
+/* Media queries
+----------------------------- */
+/* Større mobiler */
+@media screen and (min-width: 370px) {
+
+}
+
+/* Tab */
+@media screen and (min-width: 720px) {
+
+    .wrapNewcourse {
+        margin-bottom: 0em;
+    }
+
+    .searchBox {
+        display: grid;
+        grid-template-columns: 20em 8em;
+        margin-left: 0;
+        
+    }
+
+
+    .content-overview {        
+        padding-left: 2em;
+        padding-right: 2em;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .NavHeaderWrap {
+        padding-left: 2em;
+        padding-right: 2em;
+        margin-left: auto;
+        margin-right: auto;
+
+    }
+
+    .boxFlexOverview {
+        display: flex;
+    }
+
+    .searchbar-course {
+        width: 20em;
+    }
+
+    .course-header-section {
+        padding-left: 2em;
+        padding-right: 2em;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .search-wrap {
+        display: flex;
+    }
+
+    .wrap-list {
+        display: grid;
+        grid-template-columns: auto auto;
+        
+        column-gap: 1em;
+    }
+
+    .relevance-list {
+        visibility: visible;
+        position: relative;
+        background-color: #f0f0f0;
+        width: 17em;
+        margin-bottom: 5em;
+    
+    }
+    
+    .course-section {
+        background-color: rgb(255, 255, 255);
+        width: 100%;
+        }
+
+    .box-detail {
+        max-width: 40em;
+    }
+
+    .courseBody {
+        margin-top: 0;
+        padding: 1em;
+    }
+    .courseButton {
+        width: auto;
+        background-color: rgb(234, 240, 255);
+        border: 2px solid #3bafa2;
+        border-radius: 3px;
+        color: #3bafa2;
+        padding: 1em;
+        font-size: 16px;
+        font-weight: 500;
+        transition: 0.3s;
+    }
+
+    .buttonWrap {
+        padding-left: 1em;
+    }
+
+    .course-detail {
+        display: flex;
+        margin-top: 1em;
+        padding-left: 2em;
+        padding-right: 2em;
+        margin: 0 auto;
+        
+    }
+
+    .tab {
+        padding-left: 2em;
+        padding-right: 2em;
+        margin: 0 auto;
+    }
+
+    
+    .indexRes {
+        flex: none;
+
+    }
+
+    
+
+    .indexPosition {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+}
+
+
+
+/* Tab (pro) */
+@media screen and (min-width: 1024px) {
+
+    /* Nytt kurs */
+    #CourseNew_main {
+        max-width: 61em;
+    }
+    .course-list {
+        grid-template-columns: repeat(2, 1fr);
+        /* this is the same as grid-template-rows: 300px 300px; */
+        align-items: center;
+        grid-column-gap: 1em;   
+    }
+
+    .course-section {
+        min-width: 18em;
+    }
+}
+
+/* Laptop / Liten skjerm,, 720p */
+@media only screen and (min-width: 1280px) {
+
+    .indexPosition {
+        margin-left: 0;
+        margin-right: 0;
+    }
+    
+    .course-section:hover {
+        background-color: #7474741a;;
+        transition-timing-function: ease;
+        transition: 0.4s;
+        cursor: pointer;
+        opacity: 1;
+    }
+
+    .link2:hover {
+        color: #4646a5;
+        transition-timing-function: ease;
+        transition: 0.2s;
+        
+      }
+
+    .tab {
+        width: 70em;
+        padding-left: 2em;
+        padding-right: 2em;
+        margin: 0 auto;
+    }
+
+    
+    .content-overview {
+        width: 70em;      
+    }
+
+    .NavHeaderWrap {
+        width: 70em;      
+    }
+    .course-header-section {
+        width: 70em;
+    }
+
+    .course-detail {
+        width: 50em;
+        padding-left: 2em;
+        padding-right: 2em;
+        margin-left: auto;
+        margin-right: auto;
+     
+    }   
+    
+}
+
+/* Medium skjerm, 1080p */
+@media screen and (min-width: 1920px) {
+    
+
+}
+
+/* Stor skjerm, 1440p */
+@media screen and (min-width: 2560px) {
+}

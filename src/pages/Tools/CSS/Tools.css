@@ -1,0 +1,34 @@
+#tools_main {
+    display: flex;
+    flex-direction: column;
+}
+
+#tools_section {
+    border-bottom:1px solid rgb(226, 226, 226);
+}
+
+.tools_div {
+    margin-bottom: 2em;
+}
+
+#tools_overview_section {
+    margin-top: 2em;
+    width: 90%;
+    margin-left: 5%; margin-right: 5%;
+}
+  
+  
+/* Media queries
+----------------------------- */
+  
+/* Tab */
+@media screen and (min-width: 720px) {
+}
+
+/* Laptop / Liten skjerm,, 720p */
+@media screen and (min-width: 1280px) {
+    #tools_overview_section {
+        max-width: 80em;
+        margin-left: auto; margin-right: auto;
+    }
+}

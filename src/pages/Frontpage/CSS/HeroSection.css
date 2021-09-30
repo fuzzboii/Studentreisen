@@ -1,0 +1,94 @@
+.home_hero-section {
+    color: #ffff;
+    padding-top: 4em;
+    padding-bottom: 4em;
+}
+
+.home_hero-row {
+    align-items: center;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: stretch;
+    justify-content: center;
+}
+
+
+.home_hero_column {
+    margin-bottom: 1em;
+    margin-left: 2em; 
+    margin-right: 2em;
+}
+
+.button {
+    justify-content: center;
+    text-decoration: none;
+}
+
+.home_hero-text {
+    max-width: 540px;
+    padding-top: 0;
+    padding-bottom: 2em;
+}
+
+.heading {
+    margin-bottom: 24px;
+    font-size: 2em;
+    line-height: 1.1;
+    font-weight: 600;
+    color: #f7f8fa;
+}
+
+
+.home_hero-Bg {
+    background-color: #4646a5;
+}
+
+.home_hero-subtitle {
+    max-width: 440px;
+    margin-bottom: 1.5em;
+    font-size: 18px;
+    line-height: 24px;
+}
+
+.hero-img {
+    max-width: 95%;
+    margin-top: 0;
+    margin-right: 0;
+    padding-right: 0;
+}
+
+
+
+
+
+/* Media queries
+----------------------------- */
+/* Større mobiler */
+@media screen and (min-width: 370px) {
+}
+
+/* Tab */
+@media screen and (min-width: 720px) {
+
+
+    .heading {
+        font-size: 4em;
+    }
+}
+
+/* Laptop / Liten skjerm,, 720p */
+@media only screen and (min-width: 1280px) {
+
+}
+
+/* Medium skjerm, 1080p */
+@media screen and (min-width: 1920px) {
+
+}
+
+/* Stor skjerm, 1440p */
+@media screen and (min-width: 2560px) {
+}

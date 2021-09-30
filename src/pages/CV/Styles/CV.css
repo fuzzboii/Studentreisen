@@ -1,0 +1,176 @@
+#main_cv {
+    min-width: 100%;
+    margin-top: 2em;
+    margin-bottom: 2em;
+    padding-top: 0.5em; padding-bottom: 0.5em;
+    width: 100%;
+    justify-content: center;
+}
+
+
+#main_cv h1 {
+    font-size: 1.2em;
+    text-align: center;
+    font-weight: normal;
+}
+
+.cv_profile {
+    margin-left: auto; margin-right: auto;
+}
+
+.cv_profile_element {
+    margin-left: auto; margin-right: auto;
+}
+
+.cv_elements {
+    margin-left: auto; margin-right: auto;
+}
+
+.cv_section {
+    display: flex;
+    background-color: rgb(247, 244, 244);
+    }
+
+#cv_input {
+    width:auto;
+}
+#cv_date_input {
+    display: flex;
+    max-width: 20em;
+}
+
+#cv_courses form {
+    display: inline;
+}
+
+.cv_select {
+    min-width: 7em;
+}
+
+.cv_form {
+    display: flex
+}
+
+.box_cv {
+    border: solid 1px black;
+}
+
+.cv_returned_innlegg {
+    font-size:1em;
+    text-align: center;
+}
+
+.cv_returned_innlegg_tom {
+    font-size:1em;
+    text-align: center;
+    padding-bottom: 1em;
+}
+
+.cv_returned_datoTil {
+    padding-left: 2em;
+    display: inline;
+    float: "right"
+}
+
+.cv_returned_datoFra {
+    padding-left: 2em;
+    display: inline;
+}
+
+.cv_profil_info {
+    padding-left: 1em;
+}
+
+#innleggButton {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+
+}
+
+.cv_ButtonsWrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    padding-bottom: 0.5em;
+}
+
+.cv_Delete {
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+.cv_returned_content {
+    border-bottom: 0.1px solid lightgray;
+    box-shadow: 0.5px 0.5px lightgray;
+}
+
+
+
+
+/* Media queries
+----------------------------- */
+/* Større mobiler */
+@media screen and (min-width: 320px) {
+
+}
+/* Tab */
+@media screen and (min-width: 720px) {
+    .cv_returned_innlegg {
+        font-size:1em;
+        text-align: center;
+        
+    }
+}
+
+/* Tab (pro) */
+@media screen and (min-width: 1024px) {
+    .cv_returned_innlegg {
+        font-size:1em;
+        text-align: center;
+        
+    }
+}
+
+
+/* Laptop / Liten skjerm,, 720p */
+@media only screen and (min-width: 1280px) {
+
+    #main_cv {
+        grid-template-columns: 1200px;
+        display: grid;
+    }
+    .cv_returned_innlegg {
+        font-size:1em;
+        text-align: center;
+        
+    }  
+
+}
+
+/* Medium skjerm, 1080p */
+@media screen and (min-width: 1920px) {
+
+    #main_cv {
+        grid-template-columns: 1200px;
+        display: grid;
+    }
+    .cv_returned_innlegg {
+        font-size:1em;
+        text-align: center;
+        
+    }
+}
+
+/* Stor skjerm, 1440p */
+@media screen and (min-width: 2560px) {
+    #main_cv {
+        grid-template-columns: 1200px;
+        display: grid;  
+    }
+    .cv_returned_innlegg {
+        font-size:1em;
+        text-align: center;
+        
+    }
+}
