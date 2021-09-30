@@ -1,6 +1,6 @@
 # Studenreisen (Description)
 
-This is a proof-of-concept that was created as part of my bachelor's thesis. The project was created by five students and carried out in accordance with a client's set of requirements, as well as a written thesis conducted by a mentor.
+This is a proof-of-concept that was created as part of my bachelor's thesis. The project was created by five students and carried out in accordance with a client's set of requirements, as well as a written thesis conducted by our group under the supervision of a mentor.
 
 # Getting Started with Create React App
 
